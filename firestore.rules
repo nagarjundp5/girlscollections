@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global deny-all default rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Privilege collections: 100% blocked from client SDK read/write access.
+    // Access is mediated exclusively by server-side Firebase Admin SDK.
+    match /users/{userId} { allow read, write: if false; }
+    match /products/{productId} { allow read, write: if false; }
+    match /categories/{catId} { allow read, write: if false; }
+    match /wishlist/{wishId} { allow read, write: if false; }
+    match /settings/{docId} { allow read, write: if false; }
+    match /admin/{docId} { allow read, write: if false; }
+
+    // 3. Order Tracking rules: Any user can read if they know the order UUID document ID.
+    // All writes are blocked except server-side firebase-admin SDK.
+    match /order_tracking/{orderId} {
+      allow get: if true;
+      allow list: if false;
+      allow write: if false;
+    }
+
+    // 4. Pending Checkouts rules: Only the authenticated user who created it can read.
+    // All writes are blocked except server-side firebase-admin SDK.
+    match /pending_checkouts/{checkoutId} {
+      allow get, list: if request.auth != null && resource.data.user_id == request.auth.uid;
+      allow write: if false;
+    }
+  }
+}

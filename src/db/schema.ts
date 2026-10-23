@@ -1,0 +1,541 @@
+import { pgTable, uuid, text, integer, boolean, timestamp, jsonb, pgEnum, unique, index, serial } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+
+// 0. Order Status Enum
+export const orderStatusEnum = pgEnum('order_status_enum', [
+  'placed',
+  'confirmed',
+  'packed',
+  'shipped',
+  'delivered',
+  'cancelled',
+  'pending_payment',
+  'payment_verifying',
+  'failed',
+  'expired',
+  'preparing',
+  'ready_for_pickup',
+  'collected',
+  'payment_mismatch'
+]);
+
+// 1. Categories Table
+export const categories = pgTable('categories', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  slug: text('slug').unique().notNull(),
+  parent_group: text('parent_group'), // e.g. "Kurta Sets", "Frocks", "Gowns", "Ethnic Sets", "Western/Casual", "Bottoms"
+  age_group: text('age_group').$type<'ladies' | 'kids' | 'unisex'>().notNull().default('ladies'),
+  image_url: text('image_url'),
+  description: text('description'),
+  parent_id: uuid('parent_id').references((): any => categories.id, { onDelete: 'cascade' }),
+  is_active: boolean('is_active').notNull().default(true),
+  display_order: integer('display_order').notNull().default(0),
+  sort_order: integer('sort_order').notNull().default(0),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 2. Products Table
+export const products = pgTable('products', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  slug: text('slug').unique().notNull(),
+  description: text('description').notNull(),
+  price: integer('price').notNull(), // stored in paise, e.g. 129900 for ₹1299
+  compare_price: integer('compare_price'), // strikethrough MRP in paise
+  category: text('category').notNull(), // main category slug
+  subcategory: text('subcategory'), // subcategory slug
+  gender: text('gender').notNull(), // 'unisex' | 'women' | 'kids'
+  fit_type: text('fit_type').$type<'regular' | 'plus_size'>().notNull().default('regular'),
+  images: text('images').array().notNull().default(sql`'{}'::text[]`), // Array of Cloudinary URLs
+  sizes: text('sizes').array().notNull().default(sql`'{"XS", "S", "M", "L", "XL", "XXL"}'::text[]`),
+  stock_quantity: jsonb('stock').$type<Record<string, number>>().notNull().default(sql`'{"XS": 0, "S": 0, "M": 0, "L": 0, "XL": 0, "XXL": 0}'::jsonb`),
+  is_featured: boolean('is_featured').notNull().default(false),
+  paired_with: text('paired_with'),
+  is_active: boolean('is_active').notNull().default(true),
+  weight_grams: integer('weight_grams').notNull().default(0),
+  length_cm: integer('length_cm'),
+  breadth_cm: integer('breadth_cm'),
+  height_cm: integer('height_cm'),
+  units_sold: integer('units_sold').notNull().default(0),
+  // Dynamic filter attributes & Lagorii-style specs
+  age_ranges: text('age_ranges').array().notNull().default(sql`'{}'::text[]`),
+  colours: text('colours').array().notNull().default(sql`'{}'::text[]`),
+  fabric: text('fabric'),
+  occasion: text('occasion'),
+  style_silhouette: text('style_silhouette'),
+  work_type: text('work_type'),
+  sleeve: text('sleeve'),
+  neckline: text('neckline'),
+  length_type: text('length_type'),
+  set_type: text('set_type'),
+  care_instructions: text('care_instructions'),
+  is_custom_tailoring: boolean('is_custom_tailoring').notNull().default(false),
+  seo_title: text('seo_title'),
+  seo_description: text('seo_description'),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('products_category_idx').on(t.category),
+  index('products_slug_idx').on(t.slug),
+  index('products_units_sold_idx').on(t.units_sold),
+  index('products_gender_idx').on(t.gender),
+  index('products_price_idx').on(t.price),
+  index('products_is_active_idx').on(t.is_active),
+  index('products_created_at_idx').on(t.created_at),
+]);
+
+// 2b. Product Variants Table
+export const productVariants = pgTable('product_variants', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  product_id: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  colour_name: text('colour_name').notNull(),
+  colour_hex: text('colour_hex'), // optional hex code, e.g. '#000000'
+  images: text('images').array().notNull().default(sql`'{}'::text[]`), // Cloudinary URLs for this variant
+  sizes: text('sizes').array().notNull().default(sql`'{"XS", "S", "M", "L", "XL", "XXL"}'::text[]`),
+  stock_quantity: jsonb('stock_quantity').$type<Record<string, number>>().notNull().default(sql`'{"XS": 0, "S": 0, "M": 0, "L": 0, "XL": 0, "XXL": 0}'::jsonb`),
+  stock_qty: integer('stock_qty').notNull().default(0),
+  sku: text('sku').unique().notNull(),
+  price_override: integer('price_override'), // in paise, nullable (falls back to products.price / base_price if null)
+  is_active: boolean('is_active').notNull().default(true),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 3. Orders Table
+export const orders = pgTable('orders', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: text('user_id'), // Clerk User ID
+  order_number: text('order_number').unique().notNull(), // format: TGC-1001
+  customer_name: text('customer_name').notNull(),
+  customer_email: text('customer_email').notNull(),
+  customer_phone: text('customer_phone').notNull(), // 10-digit Indian mobile
+  shipping_address: jsonb('shipping_address').$type<{
+    line1: string;
+    line2?: string;
+    city: string;
+    state: string;
+    pincode: string;
+  }>(), // Nullable for store pickup orders
+  items: jsonb('items').$type<Array<{
+    id: string; // product ID
+    name: string;
+    size: string;
+    quantity: number;
+    price: number; // in paise
+    image: string;
+    slug: string;
+  }>>().notNull(),
+  subtotal: integer('subtotal').notNull(),
+  shipping_charge: integer('shipping_charge').notNull().default(0),
+  discount_amount: integer('discount_amount').notNull().default(0),
+  discount_code: text('discount_code'),
+  total: integer('total').notNull(),
+  payment_method: text('payment_method').$type<'cod' | 'online'>(),
+  payment_status: text('payment_status').$type<'pending' | 'verifying' | 'paid' | 'failed' | 'refunded'>().notNull().default('pending'),
+  payment_id: text('payment_id'),
+  razorpay_order_id: text('razorpay_order_id'),
+  order_status: text('order_status').notNull().default('CREATED'),
+  fulfillment_type: text('fulfillment_type').$type<'shiprocket' | 'borzo' | 'store_pickup'>().notNull().default('shiprocket'),
+  pickup_status: text('pickup_status'),
+  pickup_code: text('pickup_code'),
+  payment_type: text('payment_type').$type<'cod' | 'prepaid'>(),
+  booking_amount: integer('booking_amount').notNull().default(0), // in paise, e.g. 20000 for ₹200 COD booking
+  remaining_amount: integer('remaining_amount').notNull().default(0), // in paise
+  deposit_amount: integer('deposit_amount'),
+  deposit_status: text('deposit_status'),
+  verified_phone: text('verified_phone'),
+  courier_partner: text('courier_partner'),
+  courier_name: text('courier_name'),
+  courier_provider: text('courier_provider'),
+  tracking_number: text('tracking_number'),
+  awb_code: text('awb_code'),
+  label_url: text('label_url'),
+  tracking_url: text('tracking_url'),
+  provider_request_id: text('provider_request_id'),
+  provider_shipment_id: text('provider_shipment_id'),
+  shiprocket_order_id: text('shiprocket_order_id'),
+  borzo_order_id: text('borzo_order_id'),
+  paid_at: timestamp('paid_at', { withTimezone: true }),
+  cancel_allowed_until: timestamp('cancel_allowed_until', { withTimezone: true }),
+  hold_expires_at: timestamp('hold_expires_at', { withTimezone: true }),
+  zone: text('zone'),
+  invoice_number: text('invoice_number'),
+  notes: text('notes'),
+  needs_manual_refund: boolean('needs_manual_refund').notNull().default(false),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 4. Discount Codes Table
+export const discountCodes = pgTable('discount_codes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  code: text('code').unique().notNull(),
+  discount_type: text('discount_type').$type<'percentage' | 'fixed_amount'>().notNull(),
+  discount_value: integer('discount_value').notNull(), // e.g. 10 for 10%, or 20000 for ₹200
+  min_order_value: integer('min_order_value').default(0),
+  max_discount_amount: integer('max_discount_amount'),
+  usage_limit: integer('usage_limit'),
+  used_count: integer('used_count').notNull().default(0),
+  target_phone: text('target_phone'), // 10-digit Indian phone number for targeted discounts
+  is_phone_locked: boolean('is_phone_locked').notNull().default(false),
+  is_active: boolean('is_active').notNull().default(true),
+  expires_at: timestamp('expires_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 5a. Settings Table — application key/value configuration (shipping, COD, Razorpay, Borzo, etc.)
+export const settings = pgTable('settings', {
+  key: text('key').primaryKey().notNull(),
+  value: text('value').notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 5b. Store Settings Table — invoice & store profile (legal name, GST, address, invoice sequence)
+export const storeSettings = pgTable('store_settings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  store_name: text('store_name').notNull().default('THE GIRLS COLLECTIONS'),
+  legal_name: text('legal_name'),
+  gstin: text('gstin'),
+  address: text('address'),
+  city: text('city'),
+  state: text('state'),
+  state_code: text('state_code'),
+  pincode: text('pincode'),
+  phone: text('phone'),
+  email: text('email'),
+  invoice_prefix: text('invoice_prefix').notNull().default('TGC'),
+  current_fy: text('current_fy').notNull().default('2025-26'),
+  current_sequence: integer('current_sequence').notNull().default(1000),
+  terms_footer: text('terms_footer'),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 6. Contact Messages Table
+export const contactMessages = pgTable('contact_messages', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  message: text('message').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 7. Product Images Table
+export const productImages = pgTable('product_images', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  product_id: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  image_url: text('image_url').notNull(),
+  sort_order: integer('sort_order').notNull().default(0),
+  alt_text: text('alt_text'),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 8. Push Subscriptions Table
+export const pushSubscriptions = pgTable('push_subscriptions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  endpoint: text('endpoint').unique().notNull(),
+  p256dh: text('p256dh').notNull(),
+  auth: text('auth').notNull(),
+  product_id: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  notified_at: timestamp('notified_at', { withTimezone: true }),
+});
+
+// 9. Notification Logs Table
+export const notificationLogs = pgTable('notification_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  body: text('body').notNull(),
+  url: text('url'),
+  audience_type: text('audience_type').$type<'general' | 'product'>().notNull(),
+  product_id: uuid('product_id').references(() => products.id, { onDelete: 'set null' }),
+  sent_count: integer('sent_count').notNull().default(0),
+  failed_count: integer('failed_count').notNull().default(0),
+  sent_at: timestamp('sent_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 10. Auth Provider Enum
+export const authProviderEnum = pgEnum('auth_provider_enum', ['phone', 'google']);
+
+// 11. Users Table
+export const users = pgTable('users', {
+  id: text('id').primaryKey(), // Clerk ID or custom generated ID
+  phone: text('phone').unique(),
+  phone_verified: boolean('phone_verified').notNull().default(false),
+  email: text('email').unique(),
+  email_verified: boolean('email_verified').notNull().default(false),
+  name: text('name').notNull(),
+  notifications_opt_in: boolean('notifications_opt_in').notNull().default(true),
+  terms_accepted_at: timestamp('terms_accepted_at', { withTimezone: true }),
+  auth_provider: authProviderEnum('auth_provider').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  last_active_at: timestamp('last_active_at', { withTimezone: true }),
+  last_wishlist_email_sent_at: timestamp('last_wishlist_email_sent_at', { withTimezone: true }),
+});
+
+// 12. Wishlist Table (Lightweight, scalable, single row per item, zero duplicated product data)
+export const wishlist = pgTable('wishlist', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: text('user_id').notNull(), // Clerk User ID
+  product_id: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  last_reminder_sent_at: timestamp('last_reminder_sent_at', { withTimezone: true }),
+  reminder_count: integer('reminder_count').notNull().default(0),
+}, (t) => [
+  unique('wishlist_user_product_unique').on(t.user_id, t.product_id),
+  index('wishlist_user_id_idx').on(t.user_id),
+  index('wishlist_product_id_idx').on(t.product_id),
+]);
+
+// 13. Wishlist Campaigns Log Table (Admin Campaign Tracking)
+export const wishlistCampaigns = pgTable('wishlist_campaigns', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  campaign_name: text('campaign_name').notNull(),
+  email_type: text('email_type').notNull(),
+  recipient_count: integer('recipient_count').notNull().default(0),
+  subject: text('subject').notNull(),
+  sent_at: timestamp('sent_at', { withTimezone: true }).notNull().defaultNow(),
+  created_by: text('created_by'),
+});
+
+// 14. Payments Table
+export const payments = pgTable('payments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  order_id: uuid('order_id').notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  razorpay_order_id: text('razorpay_order_id'),
+  razorpay_payment_id: text('razorpay_payment_id').unique(),
+  razorpay_signature: text('razorpay_signature'),
+  amount: integer('amount').notNull(), // in paise
+  status: text('status').$type<'pending' | 'captured' | 'failed' | 'refunded'>().notNull().default('pending'),
+  payment_type: text('payment_type').$type<'prepaid' | 'cod_booking'>().notNull(),
+  is_booking_payment: boolean('is_booking_payment').notNull().default(false),
+  raw_payload: jsonb('raw_payload'),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('payments_order_id_idx').on(t.order_id),
+  index('payments_razorpay_payment_id_idx').on(t.razorpay_payment_id),
+]);
+
+// 15. Durable Shipping Jobs Table
+export const shippingJobs = pgTable('shipping_jobs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  order_id: uuid('order_id').notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  run_after: timestamp('run_after', { withTimezone: true }).notNull(),
+  status: text('status').$type<'PENDING' | 'LOCKED' | 'PROCESSING' | 'COMPLETED' | 'FAILED'>().notNull().default('PENDING'),
+  attempts: integer('attempts').notNull().default(0),
+  locked_at: timestamp('locked_at', { withTimezone: true }),
+  worker_id: text('worker_id'),
+  last_error: text('last_error'),
+  qstash_message_id: text('qstash_message_id'),       // Upstash QStash message ID after successful publish
+  qstash_published_at: timestamp('qstash_published_at', { withTimezone: true }), // When QStash message was published
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('shipping_jobs_status_run_after_idx').on(t.status, t.run_after),
+  index('shipping_jobs_order_id_idx').on(t.order_id),
+]);
+
+// 16. Dead Shipping Jobs Table (DLQ)
+export const deadShippingJobs = pgTable('dead_shipping_jobs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  job_id: uuid('job_id').notNull(),
+  order_id: uuid('order_id').notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  reason: text('reason').notNull(),
+  failed_at: timestamp('failed_at', { withTimezone: true }).notNull().defaultNow(),
+  last_error: text('last_error'),
+  attempts: integer('attempts').notNull().default(5),
+  payload: jsonb('payload'),
+}, (t) => [
+  index('dead_shipping_jobs_order_id_idx').on(t.order_id),
+]);
+
+// 17. Fraud Scores Table
+export const fraudScores = pgTable('fraud_scores', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: text('user_id'),
+  phone: text('phone'),
+  email: text('email'),
+  ip_address: text('ip_address'),
+  device_fingerprint: text('device_fingerprint'),
+  spam_score: integer('spam_score').notNull().default(0),
+  fraud_score: integer('fraud_score').notNull().default(0),
+  is_cod_disabled: boolean('is_cod_disabled').notNull().default(false),
+  reason: text('reason'),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('fraud_scores_phone_idx').on(t.phone),
+  index('fraud_scores_user_id_idx').on(t.user_id),
+  index('fraud_scores_email_idx').on(t.email),
+]);
+
+// 18. Webhook Events Table (Idempotency log)
+export const webhookEvents = pgTable('webhook_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  provider: text('provider').$type<'razorpay' | 'shiprocket' | 'borzo'>().notNull(),
+  event_type: text('event_type').notNull(),
+  event_id: text('event_id').notNull(),
+  payload: jsonb('payload').notNull(),
+  processed: boolean('processed').notNull().default(false),
+  processed_at: timestamp('processed_at', { withTimezone: true }),
+  error: text('error'),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  unique('webhook_events_provider_event_id_unique').on(t.provider, t.event_id),
+]);
+
+// 19. Shipment Events Table
+export const shipmentEvents = pgTable('shipment_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  order_id: uuid('order_id').notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  status: text('status').notNull(),
+  courier: text('courier'),
+  location: text('location'),
+  description: text('description'),
+  event_timestamp: timestamp('event_timestamp', { withTimezone: true }).notNull().defaultNow(),
+  raw_data: jsonb('raw_data'),
+}, (t) => [
+  index('shipment_events_order_id_idx').on(t.order_id),
+]);
+
+// 20. Audit Logs Table
+export const auditLogs = pgTable('audit_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  order_id: uuid('order_id'),
+  correlation_id: text('correlation_id').notNull(),
+  action: text('action').notNull(), // Payment, Shipment, Retry, Webhook, Cancellation, Refund, Courier Assignment, Admin Actions
+  worker_id: text('worker_id'),
+  details: jsonb('details'),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('audit_logs_order_id_idx').on(t.order_id),
+  index('audit_logs_correlation_id_idx').on(t.correlation_id),
+]);
+
+// 21. Drift Mode Settings Table
+export const driftModeSettings = pgTable("drift_mode_settings", {
+  id: serial("id").primaryKey(),
+  is_active: boolean("is_active").notNull().default(false),
+  discount_percent: integer("discount_percent").notNull().default(20),
+  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// 22. Drift Mode Coupons Table
+export const driftModeCoupons = pgTable("drift_mode_coupons", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  user_id: text("user_id").notNull().unique(),
+  code: text("code").notNull().unique(),
+  discount_percent: integer("discount_percent").notNull(),
+  used: boolean("used").notNull().default(false),
+  used_at: timestamp("used_at", { withTimezone: true }),
+  order_id: uuid("order_id"),
+  popup_shown_count: integer("popup_shown_count").notNull().default(0),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('drift_mode_coupons_user_id_idx').on(t.user_id),
+  index('drift_mode_coupons_code_idx').on(t.code),
+]);
+
+// 23. Unique Visitors Table
+export const uniqueVisitors = pgTable("unique_visitors", {
+  visitor_id: text("visitor_id").primaryKey(),
+  first_seen_at: timestamp("first_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  last_seen_at: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  created_month: text("created_month").notNull(), // format 'YYYY-MM'
+}, (t) => [
+  index('unique_visitors_created_month_idx').on(t.created_month),
+  index('unique_visitors_last_seen_at_idx').on(t.last_seen_at),
+]);
+
+// 24. System Roles Table (Admin & Staff Email Allow-List)
+export const systemRoles = pgTable('system_roles', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email').unique().notNull(),
+  role: text('role').$type<'admin' | 'staff'>().notNull(),
+  name: text('name'),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('system_roles_email_idx').on(t.email),
+]);
+
+// 25. Master Sizes Table (Women & Kids unified master data)
+export const masterSizes = pgTable('master_sizes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  division: text('division').$type<'women' | 'kids'>().notNull(),
+  code: text('code').unique().notNull(), // 'XS', 'S', '0-3M', '1-2Y', etc.
+  label: text('label').notNull(), // '0-3 Months (000)', 'XS (32")'
+  numeric_size: text('numeric_size'), // '000', '16', '32'
+  age_range: text('age_range'), // '0-3M', '1-2Y'
+  sort_order: integer('sort_order').notNull().default(0),
+  measurements: jsonb('measurements').$type<{
+    chest_in?: string;
+    waist_in?: string;
+    hip_in?: string;
+    length_in?: string;
+    shoulder_in?: string;
+    chest_cm?: string;
+    waist_cm?: string;
+    hip_cm?: string;
+    length_cm?: string;
+  }>(),
+  is_active: boolean('is_active').notNull().default(true),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('master_sizes_division_idx').on(t.division),
+  index('master_sizes_code_idx').on(t.code),
+  index('master_sizes_sort_order_idx').on(t.sort_order),
+]);
+
+// 26. Size Charts Table (Category-group based measurement tables)
+export const sizeCharts = pgTable('size_charts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  slug: text('slug').unique().notNull(),
+  division: text('division').$type<'women' | 'kids'>().notNull(),
+  category_group: text('category_group').notNull(), // 'kurta-sets', 'lehengas', 'frocks', 'gowns'
+  columns: jsonb('columns').$type<string[]>().notNull(),
+  rows: jsonb('rows').$type<Array<Record<string, string>>>().notNull(),
+  how_to_measure: text('how_to_measure'),
+  is_active: boolean('is_active').notNull().default(true),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('size_charts_division_idx').on(t.division),
+  index('size_charts_category_group_idx').on(t.category_group),
+]);
+
+// 27. Master Filter Attributes Table (Occasions, Fabrics, Styles, Work types, Sleeves, Necklines, Colours)
+export const masterAttributes = pgTable('master_attributes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  type: text('type').$type<'occasion' | 'fabric' | 'style' | 'work_type' | 'sleeve' | 'neckline' | 'length' | 'set_type' | 'colour'>().notNull(),
+  name: text('name').notNull(),
+  slug: text('slug').notNull(),
+  hex_code: text('hex_code'), // for colour swatches e.g. #3B1230
+  sort_order: integer('sort_order').notNull().default(0),
+  is_active: boolean('is_active').notNull().default(true),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  unique('master_attributes_type_slug_unique').on(t.type, t.slug),
+  index('master_attributes_type_idx').on(t.type),
+]);
+
+// 28. Product Attribute Links Table
+export const productAttributeValues = pgTable('product_attribute_values', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  product_id: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  attribute_id: uuid('attribute_id').references(() => masterAttributes.id, { onDelete: 'cascade' }),
+  attribute_type: text('attribute_type').notNull(),
+  attribute_value: text('attribute_value').notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('product_attr_product_id_idx').on(t.product_id),
+  index('product_attr_type_val_idx').on(t.attribute_type, t.attribute_value),
+]);
+
+
+
