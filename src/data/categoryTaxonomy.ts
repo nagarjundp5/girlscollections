@@ -64,6 +64,17 @@ export const WOMEN_CATEGORIES: CategoryItem[] = [
   { id: 'plus-size-only-kurta', slug: 'plus-size-only-kurta', name: 'Plus Size Only Kurta', group: 'women', image: null, featured: false, description: 'Comfort-crafted plus size standalone kurtas' },
   { id: 'plus-size-short-kurta', slug: 'plus-size-short-kurta', name: 'Plus Size Short Kurta', group: 'women', image: null, featured: false, description: 'Versatile plus size short kurtis & tops' },
   { id: 'lehenga-blouse-or-pattu-pavadai', slug: 'lehenga-blouse-or-pattu-pavadai', name: 'Lehenga Blouse or Pattu Pavadai', group: 'women', image: null, featured: false, description: 'Traditional silk lehenga skirts & blouse drapes' },
+  {
+    id: 'single-kurti-top',
+    slug: 'single-kurti-top',
+    name: 'Single Kurti Top',
+    displayLabel: 'KURTI TOPS',
+    group: 'women',
+    image: '/categories/single-kurti-top.webp',
+    featured: true,
+    featuredOrder: 5,
+    description: 'Chic standalone kurtis and tops for effortless daily and festive styling'
+  },
 ];
 
 // Exact Client-Supplied Kids Categories (22 items) — Full names strictly preserved
