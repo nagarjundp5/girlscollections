@@ -47,8 +47,50 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
   });
 
   // Per-size pricing state (new)
-  const [sizeRows, setSizeRows] = useState<SizeRow[]>([]);
-  const [priceGroups, setPriceGroups] = useState<PriceGroup[]>([]);
+  const [sizeRows, setSizeRows] = useState<SizeRow[]>(() => {
+    if ((initialData as any)?.product_sizes && Array.isArray((initialData as any).product_sizes) && (initialData as any).product_sizes.length > 0) {
+      return (initialData as any).product_sizes.map((s: any, i: number) => ({
+        size_key: s.size_key,
+        label: s.size_key,
+        price: s.price ? (s.price / 100).toString() : '',
+        mrp: s.mrp ? (s.mrp / 100).toString() : '',
+        stock: s.stock !== undefined && s.stock !== null ? s.stock.toString() : '1',
+        price_group_id: s.price_group_id || null,
+        group_name: s.group_name || null,
+        is_active: s.is_active !== false,
+        sort: s.sort ?? i,
+      }));
+    }
+    if (initialData?.sizes && Array.isArray(initialData.sizes) && initialData.sizes.length > 0) {
+      const p = initialData.price ? (initialData.price / 100).toString() : '';
+      const m = initialData.compare_price ? (initialData.compare_price / 100).toString() : '';
+      return initialData.sizes.map((sk: string, i: number) => ({
+        size_key: sk,
+        label: sk,
+        price: p,
+        mrp: m,
+        stock: (initialData.stock_quantity?.[sk] ?? 1).toString(),
+        price_group_id: null,
+        group_name: null,
+        is_active: true,
+        sort: i,
+      }));
+    }
+    return [];
+  });
+
+  const [priceGroups, setPriceGroups] = useState<PriceGroup[]>(() => {
+    if ((initialData as any)?.price_groups && Array.isArray((initialData as any).price_groups) && (initialData as any).price_groups.length > 0) {
+      return (initialData as any).price_groups.map((g: any) => ({
+        id: g.id,
+        name: g.name,
+        price: g.price ? (g.price / 100).toString() : '',
+        mrp: g.mrp ? (g.mrp / 100).toString() : '',
+      }));
+    }
+    return [];
+  });
+
   const handleSizePricingChange = (rows: SizeRow[], groups: PriceGroup[]) => {
     setSizeRows(rows);
     setPriceGroups(groups);
@@ -325,7 +367,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
           label: s.size_key,
           price: s.price ? (s.price / 100).toString() : '',
           mrp: s.mrp ? (s.mrp / 100).toString() : '',
-          stock: s.stock?.toString() ?? '0',
+          stock: s.stock !== undefined && s.stock !== null ? s.stock.toString() : '1',
           price_group_id: s.price_group_id || null,
           group_name: s.group_name || null,
           is_active: s.is_active !== false,
@@ -1630,6 +1672,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
               </span>
             </div>
             <SizesPricingPanel
+              key={initialData?.id || 'new'}
               division={gender === 'kids' ? 'kids' : gender === 'both' ? 'both' : 'women'}
               initialRows={sizeRows.length > 0 ? sizeRows : undefined}
               initialGroups={priceGroups.length > 0 ? priceGroups : undefined}

@@ -63,7 +63,7 @@ function buildRows(): SizeRow[] {
     division: 'women',
     price: '',
     mrp: '',
-    stock: '10',
+    stock: '1',
     price_group_id: null,
     group_name: null,
     is_active: false,
@@ -76,7 +76,7 @@ function buildRows(): SizeRow[] {
     division: 'kids',
     price: '',
     mrp: '',
-    stock: '10',
+    stock: '1',
     price_group_id: null,
     group_name: null,
     is_active: false,
@@ -89,26 +89,58 @@ function buildRows(): SizeRow[] {
 let _gid = 1;
 function newGroupId() { return `g-${Date.now()}-${_gid++}`; }
 
+function mergeWithMaster(incoming?: SizeRow[]): SizeRow[] {
+  const master = buildRows();
+  if (!incoming || incoming.length === 0) return master;
+
+  const map = new Map<string, SizeRow>();
+  for (const r of incoming) {
+    if (r && r.size_key) {
+      map.set(r.size_key.trim().toLowerCase(), r);
+    }
+  }
+
+  return master.map((m) => {
+    const key = m.size_key.trim().toLowerCase();
+    const inc = map.get(key);
+    if (!inc) return m;
+
+    return {
+      ...m,
+      price: inc.price !== undefined && inc.price !== null && inc.price !== '' ? String(inc.price) : '',
+      mrp: inc.mrp !== undefined && inc.mrp !== null && inc.mrp !== '' ? String(inc.mrp) : '',
+      stock: inc.stock !== undefined && inc.stock !== '' ? String(inc.stock) : '1',
+      price_group_id: inc.price_group_id || null,
+      group_name: inc.group_name || null,
+      is_active: inc.is_active !== false,
+    };
+  });
+}
+
 export default function SizesPricingPanel({
   division,
   initialRows,
   initialGroups,
   onChange,
 }: SizesPricingPanelProps) {
-  // Store all rows
-  const [rows, setRows] = useState<SizeRow[]>(() => {
-    if (initialRows && initialRows.length > 0) {
-      // Ensure division is tagged
-      return initialRows.map(r => ({
-        ...r,
-        division: r.size_key.startsWith('k') ? 'kids' : 'women',
-        label: r.size_key.startsWith('k') ? formatKidsLabel(r.size_key, r.label) : r.label,
-      }));
-    }
-    return buildRows();
-  });
+  // Store all rows merged with master chart
+  const [rows, setRows] = useState<SizeRow[]>(() => mergeWithMaster(initialRows));
 
   const [groups, setGroups] = useState<PriceGroup[]>(initialGroups || []);
+  
+  // Sync when initialRows changes (e.g. async fetch completes)
+  useEffect(() => {
+    if (initialRows && initialRows.length > 0) {
+      setRows(mergeWithMaster(initialRows));
+    }
+  }, [initialRows]);
+
+  // Sync when initialGroups changes
+  useEffect(() => {
+    if (initialGroups && initialGroups.length > 0) {
+      setGroups(initialGroups);
+    }
+  }, [initialGroups]);
   
   // Filter tab if division === 'both'
   const [activeTab, setActiveTab] = useState<'women' | 'kids'>(division === 'kids' ? 'kids' : 'women');
@@ -118,9 +150,10 @@ export default function SizesPricingPanel({
     else if (division === 'women') setActiveTab('women');
   }, [division]);
 
-  // Bulk Price states
+  // Bulk Price & Stock states (initial stock = 1)
   const [quickPrice, setQuickPrice] = useState('');
   const [quickMrp, setQuickMrp] = useState('');
+  const [quickStock, setQuickStock] = useState('1');
   const [linkAsGroup, setLinkAsGroup] = useState(true);
 
   const notify = useCallback((r: SizeRow[], g: PriceGroup[]) => {
@@ -140,7 +173,7 @@ export default function SizesPricingPanel({
     return rows.filter(r => r.division === activeTab);
   }, [rows, division, activeTab]);
 
-  // Toggle selection on the left checkbox — checking activates & enables size directly!
+  // Toggle selection on the left checkbox — checking activates & enables size directly with stock=1
   const toggleSizeSelection = (key: string) => {
     const next = rows.map((r) => {
       if (r.size_key !== key) return r;
@@ -150,6 +183,7 @@ export default function SizesPricingPanel({
         is_active: willBeActive,
         price: willBeActive && !r.price && quickPrice ? quickPrice : r.price,
         mrp: willBeActive && !r.mrp && quickMrp ? quickMrp : r.mrp,
+        stock: willBeActive && (!r.stock || r.stock === '0') ? (quickStock || '1') : (r.stock || '1'),
       };
     });
     update(next);
@@ -164,6 +198,7 @@ export default function SizesPricingPanel({
         is_active: enable,
         price: enable && !r.price && quickPrice ? quickPrice : r.price,
         mrp: enable && !r.mrp && quickMrp ? quickMrp : r.mrp,
+        stock: enable && (!r.stock || r.stock === '0') ? (quickStock || '1') : (r.stock || '1'),
       };
     });
     update(next);
@@ -179,14 +214,17 @@ export default function SizesPricingPanel({
         is_active: willBeActive,
         price: willBeActive && !r.price && quickPrice ? quickPrice : r.price,
         mrp: willBeActive && !r.mrp && quickMrp ? quickMrp : r.mrp,
+        stock: willBeActive && (!r.stock || r.stock === '0') ? (quickStock || '1') : (r.stock || '1'),
       };
     });
     update(next);
   };
 
-  // Apply price to all currently checked/active sizes in visible view
-  const applyPriceToSelected = () => {
-    if (!quickPrice || isNaN(Number(quickPrice))) return;
+  // Apply price and/or stock to all currently checked/active sizes in visible view
+  const applyPriceAndStock = () => {
+    const hasPrice = quickPrice && !isNaN(Number(quickPrice)) && Number(quickPrice) > 0;
+    const hasStock = quickStock !== '' && !isNaN(Number(quickStock));
+    if (!hasPrice && !hasStock) return;
 
     let newGroups = [...groups];
     let groupId: string | null = null;
@@ -195,7 +233,7 @@ export default function SizesPricingPanel({
     const targetKeys = new Set(visibleRows.filter(r => r.is_active).map(r => r.size_key));
     if (targetKeys.size === 0) return;
 
-    if (linkAsGroup) {
+    if (hasPrice && linkAsGroup) {
       const gid = newGroupId();
       const gName = `Group ${String.fromCharCode(65 + newGroups.length)}`;
       newGroups.push({ id: gid, name: gName, price: quickPrice, mrp: quickMrp });
@@ -205,19 +243,23 @@ export default function SizesPricingPanel({
 
     const next = rows.map((r) => {
       if (!targetKeys.has(r.size_key)) return r;
-      return {
-        ...r,
-        price: quickPrice,
-        mrp: quickMrp,
-        price_group_id: groupId,
-        group_name: groupName,
-      };
+      const updatedRow: SizeRow = { ...r };
+      if (hasPrice) {
+        updatedRow.price = quickPrice;
+        updatedRow.mrp = quickMrp;
+        updatedRow.price_group_id = groupId;
+        updatedRow.group_name = groupName;
+      }
+      if (hasStock) {
+        updatedRow.stock = quickStock;
+      }
+      return updatedRow;
     });
 
     update(next, newGroups);
   };
 
-  // Apply stock to all active
+  // Apply stock to all active sizes
   const applyStockToSelected = (qty: string) => {
     const targetKeys = new Set(visibleRows.filter(r => r.is_active).map(r => r.size_key));
     const next = rows.map((r) => (targetKeys.has(r.size_key) ? { ...r, stock: qty } : r));
@@ -422,7 +464,7 @@ export default function SizesPricingPanel({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs uppercase tracking-wider font-bold text-zinc-700 flex items-center gap-1.5">
             <Layers className="w-3.5 h-3.5 text-zinc-500" />
-            Set Price For Selected ({activeVisibleCount} sizes selected)
+            Set Price &amp; Stock For Selected ({activeVisibleCount} sizes selected)
           </span>
           <label className="flex items-center gap-1.5 text-xs font-medium text-zinc-600 cursor-pointer">
             <input
@@ -435,41 +477,57 @@ export default function SizesPricingPanel({
           </label>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Price input */}
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">₹</span>
+            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">₹</span>
             <input
               type="number"
               placeholder="Price (₹)"
               value={quickPrice}
               onChange={(e) => setQuickPrice(e.target.value)}
-              className="pl-6 pr-2 py-1.5 w-32 text-xs font-mono font-bold bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
+              className="pl-6 pr-2 py-1.5 w-28 text-xs font-mono font-bold bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
             />
           </div>
 
+          {/* MRP input */}
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">₹</span>
+            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">₹</span>
             <input
               type="number"
               placeholder="MRP (₹ opt)"
               value={quickMrp}
               onChange={(e) => setQuickMrp(e.target.value)}
-              className="pl-6 pr-2 py-1.5 w-32 text-xs font-mono bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
+              className="pl-6 pr-2 py-1.5 w-28 text-xs font-mono bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
             />
           </div>
 
+          {/* Direct Stock input */}
+          <div className="flex items-center gap-1 bg-white border border-zinc-300 rounded-md px-2 py-1">
+            <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-tight">Stock:</span>
+            <input
+              type="number"
+              min="0"
+              placeholder="1"
+              value={quickStock}
+              onChange={(e) => setQuickStock(e.target.value)}
+              className="w-14 text-xs font-mono font-bold text-zinc-900 focus:outline-none"
+            />
+          </div>
+
+          {/* Apply button */}
           <button
             type="button"
-            onClick={applyPriceToSelected}
-            disabled={!quickPrice || activeVisibleCount === 0}
-            className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-md transition-colors cursor-pointer shadow-xs"
+            onClick={applyPriceAndStock}
+            disabled={(!quickPrice && quickStock === '') || activeVisibleCount === 0}
+            className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-md transition-colors cursor-pointer shadow-xs whitespace-nowrap"
           >
             Apply to Selected ({activeVisibleCount})
           </button>
 
           {/* Quick price presets */}
           <div className="flex items-center gap-1">
-            <span className="text-[11px] text-zinc-400 font-medium">Quick:</span>
+            <span className="text-[11px] text-zinc-400 font-medium">Quick ₹:</span>
             {[799, 999, 1299, 1499, 1999].map((p) => (
               <button
                 key={p}
@@ -482,18 +540,22 @@ export default function SizesPricingPanel({
             ))}
           </div>
 
-          {/* Bulk stock */}
-          <div className="flex items-center gap-1 ml-auto">
+          {/* Quick stock presets */}
+          <div className="flex items-center gap-1 sm:ml-auto">
             <span className="text-[11px] text-zinc-400 font-medium">Stock:</span>
-            {[0, 5, 10, 20].map((s) => (
+            {[1, 2, 5, 10, 0].map((s) => (
               <button
                 key={s}
                 type="button"
-                onClick={() => applyStockToSelected(s.toString())}
+                onClick={() => {
+                  setQuickStock(s.toString());
+                  applyStockToSelected(s.toString());
+                }}
                 disabled={activeVisibleCount === 0}
                 className="px-2 py-0.5 text-[11px] font-mono bg-white hover:bg-zinc-100 disabled:opacity-40 text-zinc-700 border border-zinc-200 rounded cursor-pointer"
+                title={s === 0 ? 'Mark sold out (0)' : `Set stock to ${s}`}
               >
-                {s}
+                {s === 0 ? '0 (Out)' : s}
               </button>
             ))}
           </div>
@@ -543,11 +605,11 @@ export default function SizesPricingPanel({
       )}
 
       {/* ── Laptop Proper Full-Width Table View ── */}
-      <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xs">
-        <table className="w-full text-left border-collapse table-auto">
+      <div className="w-full overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-xs">
+        <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
             <tr className="bg-zinc-100/90 border-b border-zinc-200 text-zinc-700 text-xs uppercase tracking-wider font-bold">
-              <th className="py-3 px-4 w-12 text-center">
+              <th className="py-2.5 px-3 w-10 text-center">
                 <input
                   type="checkbox"
                   checked={activeVisibleCount === visibleRows.length && visibleRows.length > 0}
@@ -556,12 +618,12 @@ export default function SizesPricingPanel({
                   title="Select All Sizes"
                 />
               </th>
-              <th className="py-3 px-4 min-w-[200px]">Size / Age Group</th>
-              <th className="py-3 px-4 w-44">Price (₹)</th>
-              <th className="py-3 px-4 w-36">MRP (₹)</th>
-              <th className="py-3 px-4 w-28 text-center">Discount</th>
-              <th className="py-3 px-4 w-28">Stock</th>
-              <th className="py-3 px-4 min-w-[140px]">Group Link</th>
+              <th className="py-2.5 px-3 min-w-[160px]">Size / Age Group</th>
+              <th className="py-2.5 px-2 w-32">Price (₹)</th>
+              <th className="py-2.5 px-2 w-28">MRP (₹)</th>
+              <th className="py-2.5 px-2 w-20 text-center">Discount</th>
+              <th className="py-2.5 px-2 w-24">Stock</th>
+              <th className="py-2.5 px-3 min-w-[120px]">Group Link</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 text-xs">
@@ -583,7 +645,7 @@ export default function SizesPricingPanel({
                   }`}
                 >
                   {/* Left Checkbox to Select Size */}
-                  <td className="py-3 px-4 text-center">
+                  <td className="py-2 px-3 text-center">
                     <input
                       type="checkbox"
                       checked={isEnabled}
@@ -595,12 +657,12 @@ export default function SizesPricingPanel({
                   {/* Size Label (clicking anywhere toggles selection) */}
                   <td
                     onClick={() => toggleSizeSelection(row.size_key)}
-                    className="py-3 px-4 font-bold text-zinc-900 cursor-pointer select-none"
+                    className="py-2 px-3 font-bold text-zinc-900 cursor-pointer select-none"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm">{row.label}</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-mono text-xs sm:text-sm">{row.label}</span>
                       {isEnabled ? (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           Selected
                         </span>
                       ) : (
@@ -612,18 +674,18 @@ export default function SizesPricingPanel({
                   </td>
 
                   {/* Price (₹) Input */}
-                  <td className="py-3 px-4">
+                  <td className="py-2 px-2">
                     {isEnabled ? (
                       isGrouped ? (
-                        <div className="flex items-center gap-1.5 text-zinc-800">
-                          <span className="font-mono font-bold text-sm">
+                        <div className="flex items-center gap-1 text-zinc-800">
+                          <span className="font-mono font-bold text-xs sm:text-sm">
                             ₹{row.price ? Number(row.price).toLocaleString('en-IN') : '0'}
                           </span>
-                          <span className="text-[10px] text-zinc-400 font-medium">(group)</span>
+                          <span className="text-[9px] text-zinc-400 font-medium">(group)</span>
                         </div>
                       ) : (
                         <div className="relative">
-                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">
+                          <span className="absolute left-2 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">
                             ₹
                           </span>
                           <input
@@ -631,7 +693,7 @@ export default function SizesPricingPanel({
                             value={row.price}
                             onChange={(e) => updateRowField(row.size_key, { price: e.target.value })}
                             placeholder="Price"
-                            className="w-full pl-6 pr-2 py-1.5 text-xs font-mono font-bold bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
+                            className="w-full pl-5 pr-1.5 py-1 text-xs font-mono font-bold bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
                             min="0"
                           />
                         </div>
@@ -642,7 +704,7 @@ export default function SizesPricingPanel({
                   </td>
 
                   {/* MRP (₹) Input */}
-                  <td className="py-3 px-4">
+                  <td className="py-2 px-2">
                     {isEnabled ? (
                       isGrouped ? (
                         <div className="text-zinc-500 font-mono text-xs">
@@ -650,7 +712,7 @@ export default function SizesPricingPanel({
                         </div>
                       ) : (
                         <div className="relative">
-                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">
+                          <span className="absolute left-2 top-1/2 -translate-y-1/2 font-mono font-bold text-zinc-400 text-xs">
                             ₹
                           </span>
                           <input
@@ -658,7 +720,7 @@ export default function SizesPricingPanel({
                             value={row.mrp}
                             onChange={(e) => updateRowField(row.size_key, { mrp: e.target.value })}
                             placeholder="MRP"
-                            className="w-full pl-6 pr-2 py-1.5 text-xs font-mono bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
+                            className="w-full pl-5 pr-1.5 py-1 text-xs font-mono bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
                             min="0"
                           />
                         </div>
@@ -669,9 +731,9 @@ export default function SizesPricingPanel({
                   </td>
 
                   {/* Discount */}
-                  <td className="py-3 px-4 text-center">
+                  <td className="py-2 px-2 text-center">
                     {disc !== null ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                         {disc}% OFF
                       </span>
                     ) : (
@@ -680,13 +742,13 @@ export default function SizesPricingPanel({
                   </td>
 
                   {/* Stock Input */}
-                  <td className="py-3 px-4">
+                  <td className="py-2 px-2">
                     {isEnabled ? (
                       <input
                         type="number"
                         value={row.stock}
                         onChange={(e) => updateRowField(row.size_key, { stock: e.target.value })}
-                        className="w-20 px-2 py-1.5 text-xs font-mono bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900"
+                        className="w-16 px-2 py-1 text-xs font-mono font-bold bg-white border border-zinc-300 rounded-md focus:outline-none focus:border-zinc-900 text-center"
                         min="0"
                       />
                     ) : (
@@ -695,23 +757,23 @@ export default function SizesPricingPanel({
                   </td>
 
                   {/* Group Link Badge */}
-                  <td className="py-3 px-4">
+                  <td className="py-2 px-3">
                     {isEnabled && row.group_name ? (
                       <div className="flex items-center gap-1.5">
-                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${groupColour(gIdx)}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border truncate max-w-[100px] ${groupColour(gIdx)}`}>
                           {row.group_name}
                         </span>
                         <button
                           type="button"
                           onClick={() => unlinkSize(row.size_key)}
                           title="Unlink from group"
-                          className="text-zinc-400 hover:text-red-600 transition-colors cursor-pointer p-0.5"
+                          className="text-zinc-400 hover:text-red-600 transition-colors cursor-pointer p-0.5 shrink-0"
                         >
-                          <Unlink className="w-3.5 h-3.5" />
+                          <Unlink className="w-3 h-3" />
                         </button>
                       </div>
                     ) : isEnabled ? (
-                      <span className="text-[11px] text-zinc-400">Independent</span>
+                      <span className="text-[10px] text-zinc-400">Independent</span>
                     ) : (
                       <span className="text-zinc-300 font-mono">—</span>
                     )}
