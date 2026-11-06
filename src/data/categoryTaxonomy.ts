@@ -52,6 +52,7 @@ export const WOMEN_CATEGORIES: CategoryItem[] = [
   { id: 'skirt-and-top', slug: 'skirt-and-top', name: 'Skirt and Top', displayLabel: 'SKIRT & TOP', group: 'women', image: '/categories/skirt-and-top.webp', featured: true, featuredOrder: 4, description: 'Twirl-worthy skirts paired with embroidered cropped tops' },
   { id: 'straight-cut-kurta-suit-sets', slug: 'straight-cut-kurta-suit-sets', name: 'Straight Cut Kurta Suit Sets', group: 'women', image: null, featured: false, description: 'Sleek geometric straight-fit celebratory kurtas' },
   { id: 'palazzo-kurta-suit-sets', slug: 'palazzo-kurta-suit-sets', name: 'Palazzo Kurta Suit Sets', group: 'women', image: null, featured: false, description: 'Flowy wide-leg palazzo pants with tailored kurtis' },
+  { id: 'a-line-kurta', slug: 'a-line-kurta', name: 'A-Line Kurta', displayLabel: 'A-LINE KURTA', group: 'women', image: null, featured: false, description: 'Flared A-line silhouette kurtas for elegant styling' },
   { id: 'a-line-kurta-sets', slug: 'a-line-kurta-sets', name: 'A-Line Kurta Sets', group: 'women', image: null, featured: false, description: 'Gracefully flared A-line cuts for versatile occasions' },
   { id: 'bottom-wear', slug: 'bottom-wear', name: 'Bottom Wear', group: 'women', image: null, featured: false, description: 'Pants, salwars, churidars & tailored festive trousers' },
   { id: '2-pc-kurta-set', slug: '2-pc-kurta-set', name: '2-Pc Kurta Set', group: 'women', image: null, featured: false, description: 'Curated 2-piece kurta and bottom pairings' },
@@ -89,6 +90,7 @@ export const KIDS_CATEGORIES: CategoryItem[] = [
   { id: 'denim-dresses-for-kids', slug: 'denim-dresses-for-kids', name: 'Denim Dresses for Kids', group: 'kids', image: null, featured: false, description: 'Durable denim pinafores & shirt dresses' },
   { id: 'kids-western-skirt-and-top', slug: 'kids-western-skirt-and-top', name: 'Western Skirt and Top', group: 'kids', image: null, featured: false, description: 'Contemporary western skirt and blouse duos' },
   { id: 'casual-palazzo-set', slug: 'casual-palazzo-set', name: 'Casual Palazzo Set', group: 'kids', image: null, featured: false, description: 'Relaxed everyday palazzo top pairings' },
+  { id: 'children-saree', slug: 'children-saree', name: 'Children Saree', displayLabel: 'CHILDREN SAREE', group: 'kids', image: null, featured: false, description: 'Pre-pleated, ready-to-wear and traditional festive sarees for children' },
 ];
 
 export const ALL_CATEGORIES: CategoryItem[] = [

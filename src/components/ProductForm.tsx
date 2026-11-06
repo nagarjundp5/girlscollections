@@ -95,7 +95,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     setSizeRows(rows);
     setPriceGroups(groups);
     // Keep activeSizes + stock in sync for backward-compat payload
-    const active = rows.filter(r => r.is_active);
+    const active = rows.filter(r => (r.price && Number(r.price) > 0 && !isNaN(Number(r.price))) || r.is_active);
     setActiveSizes(active.map(r => r.size_key));
     const stockMap: Record<string, number> = {};
     active.forEach(r => { stockMap[r.size_key] = parseInt(r.stock) || 0; });
@@ -1308,7 +1308,9 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     if (!weight || isNaN(Number(weight)) || Number(weight) <= 0) return addToast('Product weight is required and must be greater than 0', 'error');
 
     // Validate sizeRows: at least one active size with price > 0
-    const activeSizeRows = sizeRows.length > 0 ? sizeRows.filter(r => r.is_active) : activeSizes.map(s => ({ size_key: s, label: s, price: price, mrp: comparePrice, stock: (stock[s] ?? 0).toString(), price_group_id: null, group_name: null, is_active: true, sort: 0 }));
+    const activeSizeRows = sizeRows.length > 0 
+      ? sizeRows.filter(r => (r.price && Number(r.price) > 0 && !isNaN(Number(r.price))) || r.is_active) 
+      : activeSizes.map(s => ({ size_key: s, label: s, price: price, mrp: comparePrice, stock: (stock[s] ?? 0).toString(), price_group_id: null, group_name: null, is_active: true, sort: 0 }));
     if (activeSizeRows.length === 0) return addToast('Please enable at least one size', 'error');
     const invalidPriceRow = activeSizeRows.find(r => !r.price || isNaN(Number(r.price)) || Number(r.price) <= 0);
     if (invalidPriceRow) return addToast(`Size "${invalidPriceRow.label}" needs a price > 0`, 'error');
