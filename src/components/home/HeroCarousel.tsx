@@ -27,82 +27,90 @@ export interface Slide {
 }
 
 const HERO_SLIDES: Slide[] = [
-  // DESKTOP: hero-new-1 (2172×724 landscape) | MOBILE: hero-new-4 (1122×1402 portrait)
+  // SLIDE 1: Festive Elegance / Courtyard Duo (Women)
+  // Desktop: 2172×724 landscape | Mobile: Sunlit Courtyard 1122×1402 portrait
   {
     id: 1,
-    group: 'women',
-    image: '/hero/hero-new-1.png',
-    mobileImage: '/hero/hero-new-4.png',
-    objectPosition: 'center',
-    mobileObjectPosition: 'center top',
-    ctaLink: '/shop?target=women',
-  },
-  // DESKTOP: hero-new-3 (2172×724 landscape) | MOBILE: hero-new-8 (1122×1402 portrait)
-  {
-    id: 2,
     group: 'women',
     image: '/hero/hero-new-3.png',
     mobileImage: '/hero/hero-new-8.png',
     objectPosition: 'center',
-    mobileObjectPosition: 'center',
+    mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=women',
   },
-  // DESKTOP: hero-new-7 (2172×724 landscape) | MOBILE: hero-new-10 (1408×1760 portrait)
+  // SLIDE 2: Diwali Sale Celebration (Family / Festive)
+  // Desktop: 2400×960 landscape | Mobile: Diwali Diyas Celebration 819×1024 portrait
+  {
+    id: 2,
+    group: 'women',
+    image: '/hero/hero-new-2.webp',
+    mobileImage: '/hero/diwali-mobile.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center top',
+    ctaLink: '/shop?target=women',
+  },
+  // SLIDE 3: Courtyard Laughter & Bridal Celebration (Women)
+  // Desktop: 2172×724 landscape | Mobile: Golden Courtyard 1122×1402 portrait
   {
     id: 3,
     group: 'women',
-    image: '/hero/hero-new-7.png',
-    mobileImage: '/hero/hero-new-10.jpg',
+    image: '/hero/hero-new-1.png',
+    mobileImage: '/hero/hero-new-4.png',
     objectPosition: 'center top',
     mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=women',
   },
-  // DESKTOP: hero-new-2 (2400×960 landscape) | MOBILE: hero-new-12 (1408×1760 portrait)
+  // SLIDE 4: Haldi Edit & Mother-Daughter Festive (Women & Kids)
+  // Desktop: 2400×960 landscape | Mobile: Mother & Child 819×1024 portrait
   {
     id: 4,
     group: 'women',
-    image: '/hero/hero-new-2.webp',
-    mobileImage: '/hero/hero-new-12.jpg',
+    image: '/hero/hero-new-5.webp',
+    mobileImage: '/hero/mother-daughter-mobile.jpg',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=women',
   },
-  // DESKTOP: hero-new-5 (2400×960 landscape) | MOBILE: hero-new-14 (1408×1760 portrait)
+  // SLIDE 5: Joyful Sisters / Festive Girls (Kids / Festive)
+  // Desktop: 2172×724 landscape | Mobile: Joyful Girls 1122×1402 portrait
   {
     id: 5,
-    group: 'women',
-    image: '/hero/hero-new-5.webp',
-    mobileImage: '/hero/hero-new-14.jpg',
-    objectPosition: 'center',
-    mobileObjectPosition: 'center top',
-    ctaLink: '/shop?target=women',
-  },
-  // DESKTOP: hero-new-9 (2736×912 landscape) | MOBILE: hero-new-6 (1122×1402 portrait, kids)
-  {
-    id: 6,
     group: 'kids',
-    image: '/hero/hero-new-9.jpg',
+    image: '/hero/hero-new-7.png',
     mobileImage: '/hero/hero-new-6.png',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=kids',
   },
-  // DESKTOP: hero-new-11 (2736×912 landscape) | MOBILE: hero-new-4 (reuse portrait)
+  // SLIDE 6: Kids Traditional Attire (Kids)
+  // Desktop: 2736×912 landscape | Mobile: Three Kids Couch 819×1024 portrait
+  {
+    id: 6,
+    group: 'kids',
+    image: '/hero/hero-new-9.jpg',
+    mobileImage: '/hero/three-kids-mobile.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center top',
+    ctaLink: '/shop?target=kids',
+  },
+  // SLIDE 7: Elegant Silk & Contemporary Edit (Women)
+  // Desktop: 2736×912 landscape | Mobile: Matching Portrait 1408×1760
   {
     id: 7,
     group: 'women',
     image: '/hero/hero-new-11.jpg',
-    mobileImage: '/hero/hero-new-8.png',
+    mobileImage: '/hero/hero-new-12.jpg',
     objectPosition: 'center',
-    mobileObjectPosition: 'center',
+    mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=women',
   },
-  // DESKTOP: hero-new-13 (2736×912 landscape) | MOBILE: hero-new-10 (reuse portrait)
+  // SLIDE 8: Regal Heritage Collection (Women)
+  // Desktop: 2736×912 landscape | Mobile: Matching Portrait 1408×1760
   {
     id: 8,
     group: 'women',
     image: '/hero/hero-new-13.jpg',
-    mobileImage: '/hero/hero-new-10.jpg',
+    mobileImage: '/hero/hero-new-14.jpg',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=women',

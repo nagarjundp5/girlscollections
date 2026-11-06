@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, boolean, timestamp, jsonb, pgEnum, unique, index, serial } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, boolean, timestamp, jsonb, pgEnum, unique, uniqueIndex, index, serial } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // 0. Order Status Enum
@@ -106,6 +106,40 @@ export const productVariants = pgTable('product_variants', {
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// 2c. Product Price Groups Table
+export const productPriceGroups = pgTable('product_price_groups', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  product_id: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(), // e.g. "Group A", "Sizes 12-20", "XS-XXL"
+  price: integer('price').notNull(), // in paise
+  mrp: integer('mrp'), // in paise, nullable
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('product_price_groups_product_id_idx').on(t.product_id),
+]);
+
+// 2d. Product Sizes Table
+export const productSizes = pgTable('product_sizes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  product_id: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  size_key: text('size_key').notNull(), // e.g. 'k12', 'k22', 'XS', 'S', 'FREE SIZE'
+  price: integer('price').notNull(), // in paise
+  mrp: integer('mrp'), // in paise, nullable
+  stock: integer('stock').notNull().default(0),
+  sku: text('sku'),
+  price_group_id: uuid('price_group_id').references((): any => productPriceGroups.id, { onDelete: 'set null' }),
+  is_active: boolean('is_active').notNull().default(true),
+  sort: integer('sort').notNull().default(0),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  uniqueIndex('product_sizes_product_id_size_key_unique').on(t.product_id, t.size_key),
+  index('product_sizes_product_id_idx').on(t.product_id),
+  index('product_sizes_size_key_idx').on(t.size_key),
+  index('product_sizes_price_group_id_idx').on(t.price_group_id),
+]);
 
 // 3. Orders Table
 export const orders = pgTable('orders', {

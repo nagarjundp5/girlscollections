@@ -17,6 +17,7 @@ import { Plus, Minus, Star, ShieldCheck, RefreshCw, Video } from 'lucide-react';
 import { SizeChartModal } from './SizeChartModal';
 import { ProductAccordions } from './ProductAccordions';
 import OfferCard from '@/components/ui/OfferCard';
+import { getSizeLabel } from '@/data/masterSizes';
 
 interface ProductInfoProps {
   product: Product;
@@ -48,8 +49,13 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     setTimeout(() => setAddedNotice(false), 1200);
   };
 
-  const discountPercent = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+  const currentSizeObj = product.sizes.find((s) => s.size === selectedSize) as any;
+  const activePrice = currentSizeObj?.price ?? product.price;
+  const activeOriginalPrice = currentSizeObj?.originalPrice ?? product.originalPrice;
+  const hasMultiplePrices = (product as any).has_different_prices || product.sizes.some((s: any) => s.price && s.price !== (product.sizes[0] as any)?.price);
+
+  const discountPercent = activeOriginalPrice && activeOriginalPrice > activePrice
+    ? Math.round(((activeOriginalPrice - activePrice) / activeOriginalPrice) * 100)
     : 0;
 
   // Calculate estimated delivery date (4 business days from today)
@@ -63,7 +69,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     });
   }, []);
 
-  const emiMonthly = Math.round(product.price / 3);
+  const emiMonthly = Math.round(activePrice / 3);
 
   return (
     <div className="space-y-6 text-navy font-sans select-none">
@@ -95,12 +101,12 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       <div className="space-y-3 border-b border-roseGold/20 pb-5">
         <div className="flex items-baseline space-x-3">
           <span className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-navy font-tnum">
-            ₹{product.price.toLocaleString('en-IN')}
+            {!selectedSize && hasMultiplePrices ? 'From ' : ''}₹{activePrice.toLocaleString('en-IN')}
           </span>
-          {product.originalPrice && (
+          {activeOriginalPrice && activeOriginalPrice > activePrice && (
             <>
               <span className="text-base text-navy/40 line-through font-tnum">
-                ₹{product.originalPrice.toLocaleString('en-IN')}
+                ₹{activeOriginalPrice.toLocaleString('en-IN')}
               </span>
               <span className="px-2.5 py-0.5 rounded-full bg-oxblood text-white text-[10px] font-bold uppercase tracking-wider animate-pulse">
                 Save {discountPercent}%
@@ -193,7 +199,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                     : 'bg-ivory text-navy border-roseGold/30 hover:border-roseGold hover:bg-sand/20'
                 }`}
               >
-                {s.size}
+                {getSizeLabel(s.size)}
               </button>
             );
           })}

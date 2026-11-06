@@ -9,6 +9,7 @@ import { db } from '@/lib/db';
 import { RGBA, getDominantColor, renderCompositeOnCanvas, rgbToHsl } from '@/lib/imageProcessor';
 import { CategoryCombobox } from '@/components/admin/CategoryCombobox';
 import { WOMEN_MASTER_SIZES, KIDS_MASTER_SIZES, NUMERIC_MASTER_SIZES, ALL_MASTER_SIZES, MASTER_ATTRIBUTES_SEED, type MasterSizeDefinition } from '@/data/masterSizes';
+import SizesPricingPanel, { type SizeRow, type PriceGroup } from '@/components/admin/SizesPricingPanel';
 
 interface ProductFormProps {
   initialData?: Product | null;
@@ -44,6 +45,23 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     M: 10,
     L: 10,
   });
+
+  // Per-size pricing state (new)
+  const [sizeRows, setSizeRows] = useState<SizeRow[]>([]);
+  const [priceGroups, setPriceGroups] = useState<PriceGroup[]>([]);
+  const handleSizePricingChange = (rows: SizeRow[], groups: PriceGroup[]) => {
+    setSizeRows(rows);
+    setPriceGroups(groups);
+    // Keep activeSizes + stock in sync for backward-compat payload
+    const active = rows.filter(r => r.is_active);
+    setActiveSizes(active.map(r => r.size_key));
+    const stockMap: Record<string, number> = {};
+    active.forEach(r => { stockMap[r.size_key] = parseInt(r.stock) || 0; });
+    setStock(stockMap);
+    // Derive min price for the sidebar preview
+    const prices = active.map(r => Number(r.price)).filter(p => p > 0);
+    if (prices.length > 0) setPrice(Math.min(...prices).toString());
+  };
   const [isFeatured, setIsFeatured] = useState(false);
   const [isTrending, setIsTrending] = useState(false);
   const [isBestSeller, setIsBestSeller] = useState(false);
@@ -298,6 +316,50 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         });
       }
       setStock(initialStock);
+
+      // Build sizeRows from product_sizes if available, else from activeSizes + stock
+      if ((initialData as any).product_sizes && Array.isArray((initialData as any).product_sizes) && (initialData as any).product_sizes.length > 0) {
+        const ps = (initialData as any).product_sizes;
+        const initRows: SizeRow[] = ps.map((s: any, i: number) => ({
+          size_key: s.size_key,
+          label: s.size_key,
+          price: s.price ? (s.price / 100).toString() : '',
+          mrp: s.mrp ? (s.mrp / 100).toString() : '',
+          stock: s.stock?.toString() ?? '0',
+          price_group_id: s.price_group_id || null,
+          group_name: s.group_name || null,
+          is_active: s.is_active !== false,
+          sort: s.sort ?? i,
+        }));
+        setSizeRows(initRows);
+        if ((initialData as any).price_groups) {
+          const pg = (initialData as any).price_groups;
+          setPriceGroups(pg.map((g: any) => ({
+            id: g.id,
+            name: g.name,
+            price: g.price ? (g.price / 100).toString() : '',
+            mrp: g.mrp ? (g.mrp / 100).toString() : '',
+          })));
+        }
+      } else {
+        // Legacy: build from activeSizes/stock/price
+        const legacySizes = initialData.sizes || [];
+        const legacyPrice = (initialData.price / 100).toString();
+        const legacyMrp = initialData.compare_price ? (initialData.compare_price / 100).toString() : '';
+        const legacyStock = initialData.stock_quantity || {};
+        const legacyRows: SizeRow[] = legacySizes.map((sk: string, i: number) => ({
+          size_key: sk,
+          label: sk,
+          price: legacyPrice,
+          mrp: legacyMrp,
+          stock: (legacyStock[sk] ?? 5).toString(),
+          price_group_id: null,
+          group_name: null,
+          is_active: true,
+          sort: i,
+        }));
+        setSizeRows(legacyRows);
+      }
       setIsFeatured(Boolean(initialData.is_featured));
       setIsTrending(Boolean(initialData.is_trending));
       setIsBestSeller(Boolean(initialData.is_best_seller));
@@ -1201,15 +1263,19 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     if (!description.trim()) return addToast('Product description is required', 'error');
     if (!category.trim()) return addToast('Category is required', 'error');
     if (!gender.trim()) return addToast('Age Group is required', 'error');
-    if (!price || isNaN(Number(price))) return addToast('Valid product price is required', 'error');
     if (!weight || isNaN(Number(weight)) || Number(weight) <= 0) return addToast('Product weight is required and must be greater than 0', 'error');
-    if (activeSizes.length === 0) return addToast('Please select at least one active size', 'error');
 
-    // Build stock record based on active sizes only
+    // Validate sizeRows: at least one active size with price > 0
+    const activeSizeRows = sizeRows.length > 0 ? sizeRows.filter(r => r.is_active) : activeSizes.map(s => ({ size_key: s, label: s, price: price, mrp: comparePrice, stock: (stock[s] ?? 0).toString(), price_group_id: null, group_name: null, is_active: true, sort: 0 }));
+    if (activeSizeRows.length === 0) return addToast('Please enable at least one size', 'error');
+    const invalidPriceRow = activeSizeRows.find(r => !r.price || isNaN(Number(r.price)) || Number(r.price) <= 0);
+    if (invalidPriceRow) return addToast(`Size "${invalidPriceRow.label}" needs a price > 0`, 'error');
+    const invalidMrpRow = activeSizeRows.find(r => r.mrp && !isNaN(Number(r.mrp)) && Number(r.mrp) > 0 && Number(r.mrp) < Number(r.price));
+    if (invalidMrpRow) return addToast(`MRP for "${invalidMrpRow.label}" must be ≥ its price`, 'error');
+
+    // Build stock record from sizeRows
     const finalStock: Record<string, number> = {};
-    activeSizes.forEach((size) => {
-      finalStock[size] = stock[size] || 0;
-    });
+    activeSizeRows.forEach((r) => { finalStock[r.size_key] = parseInt(r.stock) || 0; });
 
     const totalStock = Object.values(finalStock).reduce((acc, curr) => acc + curr, 0);
     if (totalStock === 0) {
@@ -1218,6 +1284,38 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
       );
       if (!confirmZeroStock) return;
     }
+
+    // Build product_sizes payload (convert to paise)
+    const productSizesPayload = activeSizeRows.map((r) => ({
+      size_key: r.size_key,
+      price: Math.round(Number(r.price) * 100),
+      mrp: r.mrp && Number(r.mrp) > 0 ? Math.round(Number(r.mrp) * 100) : null,
+      stock: parseInt(r.stock) || 0,
+      price_group_id: r.price_group_id,
+      is_active: true,
+      sort: r.sort,
+    }));
+
+    // Build price_groups payload (convert to paise)
+    const priceGroupsPayload = priceGroups
+      .filter(g => g.price && Number(g.price) > 0)
+      .map(g => ({
+        id: g.id,
+        name: g.name,
+        price: Math.round(Number(g.price) * 100),
+        mrp: g.mrp && Number(g.mrp) > 0 ? Math.round(Number(g.mrp) * 100) : null,
+      }));
+
+    // Derived min price for products.price
+    const activePrices = activeSizeRows.map(r => Number(r.price)).filter(p => p > 0);
+    const minPrice = activePrices.length > 0 ? Math.min(...activePrices) : 0;
+    const parsedPrice = Math.round(minPrice * 100);
+
+    // Min MRP at the cheapest size
+    const cheapestRow = activeSizeRows.find(r => Number(r.price) === minPrice);
+    const parsedCompare = cheapestRow?.mrp && Number(cheapestRow.mrp) > 0
+      ? Math.round(Number(cheapestRow.mrp) * 100)
+      : (comparePrice && Number(comparePrice) > 0 ? Math.round(Number(comparePrice) * 100) : null);
 
     setIsSaving(true);
 
@@ -1272,7 +1370,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         gender,
         fit_type: fitType,
         images,
-        sizes: activeSizes,
+        sizes: activeSizeRows.map(r => r.size_key),
         stock_quantity: finalStock,
         is_featured: isFeatured,
         is_trending: isTrending,
@@ -1286,6 +1384,9 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         height_cm: parsedHeight,
         variants: formattedVariants,
         aiGenerated: aiGeneratedMeta || undefined,
+        // Per-size pricing (new)
+        product_sizes: productSizesPayload,
+        price_groups: priceGroupsPayload,
         // Master attributes
         occasion: occasion || null,
         fabric: fabric || null,
@@ -1512,250 +1613,28 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
             </div>
           </div>
 
-          {/* Sizing & Stock */}
+          {/* Sizes & Pricing (new per-size pricing panel) */}
           <div className="bg-white border border-zinc-200/80 shadow-sm p-6 md:p-8 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-zinc-200/60 pb-4">
               <div>
                 <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-widest flex items-center gap-2">
-                  <span>Sizes &amp; Inventory Levels</span>
-                  <span className="text-[10px] lowercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-medium">Bangalore / Indian Standard</span>
+                  <span>Sizes &amp; Pricing</span>
+                  <span className="text-[10px] lowercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-medium">per-size prices</span>
                 </h2>
                 <p className="text-[11px] text-zinc-500 mt-1">
-                  Standard sizing (Newborn 0–3M to 15Y kids, XS to 6XL plus size for women, and Free Size).
+                  Enable sizes, set individual prices, group them, and manage stock. The lowest active price auto-fills the product card.
                 </p>
               </div>
-              <div className="flex items-center gap-2 self-start sm:self-auto">
-                <span className="text-[11px] uppercase tracking-wider font-bold px-2.5 py-1 bg-zinc-900 text-white rounded">
-                  {activeSizes.length} active sizes
-                </span>
-              </div>
-            </div>
-
-            {/* Division / Size Chart Group Tabs */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-wider text-zinc-600 font-bold">
-                  1. Size Category View
-                </span>
-                <span className="text-[10px] text-zinc-400">
-                  Switch view or pick from any category below
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-1.5 p-1 bg-zinc-100 rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setSizeGroupTab('women')}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    sizeGroupTab === 'women'
-                      ? 'bg-white text-zinc-900 shadow-xs'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  Women&apos;s (XS–6XL &amp; Plus)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSizeGroupTab('kids')}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    sizeGroupTab === 'kids'
-                      ? 'bg-white text-zinc-900 shadow-xs'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  Kids (0-3M to 14-15Y)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSizeGroupTab('numeric')}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    sizeGroupTab === 'numeric'
-                      ? 'bg-white text-zinc-900 shadow-xs'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  Numeric (12–40 Even)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSizeGroupTab('all')}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    sizeGroupTab === 'all'
-                      ? 'bg-white text-zinc-900 shadow-xs'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  All Master Sizing ({ALL_MASTER_SIZES.length})
-                </button>
-              </div>
-            </div>
-
-            {/* Quick-Select Presets */}
-            <div className="space-y-2 p-3.5 bg-zinc-50 border border-zinc-200/70 rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] uppercase tracking-wider text-zinc-700 font-bold">
-                  Quick Select Presets
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleSelectAllSizes}
-                    className="text-[11px] font-sans font-bold uppercase tracking-wider text-zinc-900 hover:text-zinc-600 underline cursor-pointer"
-                  >
-                    Select All in View
-                  </button>
-                  <span className="text-zinc-300">|</span>
-                  <button
-                    type="button"
-                    onClick={handleClearAllSizes}
-                    className="text-[11px] font-sans font-medium uppercase tracking-wider text-zinc-400 hover:text-zinc-700 cursor-pointer"
-                  >
-                    Clear All
-                  </button>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['XS', 'S', 'M', 'L', 'XL', 'XXL'])}
-                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
-                >
-                  Women Standard (XS–XXL)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL'])}
-                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
-                >
-                  Women + Plus (XS–6XL)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['4XL', '5XL', '6XL'])}
-                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
-                >
-                  Plus Sizes (4XL–6XL)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['0-3M', '3-6M', '6-12M', '1-2Y', '2-3Y', '3-4Y'])}
-                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
-                >
-                  Kids Infant &amp; Toddler (0-3M to 3-4Y)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['0-3M', '3-6M', '6-12M', '1-2Y', '2-3Y', '3-4Y', '4-6Y', '6-8Y', '8-10Y', '10-12Y', '12-14Y', '14-15Y'])}
-                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
-                >
-                  Kids Full Run (0-3M to 14-15Y)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['FREE SIZE'])}
-                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
-                >
-                  Free Size Only
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applySizePreset(['12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38', '40'])}
-                  className="px-2.5 py-1 bg-amber-50 border border-amber-300 hover:border-amber-700 text-[11px] font-bold text-amber-900 rounded transition-colors cursor-pointer"
-                >
-                  Numeric Sizes (12–40 Even)
-                </button>
-              </div>
-            </div>
-
-            {/* Size Selectors Grid */}
-            <div className="space-y-2">
-              <span className="text-xs uppercase tracking-wider text-zinc-600 font-bold block">
-                2. Toggle Active Sizes ({availableSizes.length} available in this tab)
+              <span className="text-[11px] uppercase tracking-wider font-bold px-2.5 py-1 bg-zinc-900 text-white rounded self-start sm:self-auto">
+                {activeSizes.length} active
               </span>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {availableSizes.map((sizeDef) => {
-                  const isActiveSize = activeSizes.includes(sizeDef.code);
-                  return (
-                    <button
-                      key={sizeDef.code}
-                      type="button"
-                      onClick={() => toggleSize(sizeDef.code)}
-                      title={sizeDef.label}
-                      className={`min-h-[52px] p-2 font-mono text-[10px] border rounded transition-all flex flex-col items-start justify-center cursor-pointer text-left ${
-                        isActiveSize
-                          ? 'bg-zinc-900 text-white border-zinc-900 ring-2 ring-zinc-900/20'
-                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 hover:text-zinc-900'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="text-xs font-bold font-sans">{sizeDef.code}</span>
-                        {isActiveSize && <span className="text-[10px] text-emerald-400">✓</span>}
-                      </div>
-                      {sizeDef.measurements?.chest_in && (
-                        <span className={`text-[9px] leading-tight mt-0.5 truncate max-w-full ${isActiveSize ? 'text-zinc-300' : 'text-zinc-400'}`}>
-                          {sizeDef.measurements.chest_in}&quot; chest
-                        </span>
-                      )}
-                      {sizeDef.measurements?.height_cm && (
-                        <span className={`text-[8px] leading-tight truncate max-w-full ${isActiveSize ? 'text-zinc-400' : 'text-zinc-400'}`}>
-                          {sizeDef.measurements.height_cm}cm
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
             </div>
-
-            {/* Inventory Quantities */}
-            {activeSizes.length > 0 && (
-              <div className="space-y-4 pt-4 border-t border-zinc-200/60">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <span className="text-xs uppercase tracking-wider text-zinc-600 font-bold block">
-                    3. Quantities in Stock ({activeSizes.length} sizes active)
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-zinc-400 uppercase font-semibold">Bulk Set:</span>
-                    {[0, 5, 10, 25, 50].map((qty) => (
-                      <button
-                        key={qty}
-                        type="button"
-                        onClick={() => handleBulkSetStock(qty)}
-                        className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded border border-zinc-200 transition-colors"
-                      >
-                        {qty}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {activeSizes.map((size) => (
-                    <div key={size} className="p-2.5 bg-zinc-50 border border-zinc-200 rounded-md space-y-1">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[11px] uppercase font-bold text-zinc-800 font-mono">
-                          Size {size}
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => toggleSize(size)}
-                          title="Remove size"
-                          className="text-[10px] text-zinc-400 hover:text-brand-red font-mono"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                      <input
-                        type="number"
-                        value={stock[size] ?? 0}
-                        onChange={(e) => handleStockChange(size, parseInt(e.target.value) || 0)}
-                        className="w-full bg-white border border-zinc-300 text-zinc-900 px-3 py-1.5 text-sm focus:outline-none focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all font-mono rounded"
-                        min="0"
-                        required
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <SizesPricingPanel
+              division={gender === 'kids' ? 'kids' : gender === 'both' ? 'both' : 'women'}
+              initialRows={sizeRows.length > 0 ? sizeRows : undefined}
+              initialGroups={priceGroups.length > 0 ? priceGroups : undefined}
+              onChange={handleSizePricingChange}
+            />
           </div>
 
           {/* Master Attributes Section */}
@@ -2635,24 +2514,26 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
               Pricing Details
             </h2>
 
+            {/* Starting price — derived from Sizes & Pricing panel */}
             <div className="space-y-2">
-              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block font-mono">Retail Price (₹)</label>
+              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block font-mono">Starting Price (₹) — Auto</label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold font-mono text-zinc-400 text-sm">₹</span>
                 <input
                   type="number"
-                  placeholder="e.g. 1299"
+                  readOnly
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="w-full bg-zinc-50 border border-zinc-200 text-zinc-900 pl-9 pr-4 py-3 text-sm focus:outline-none focus:bg-white focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all font-mono"
-                  required
-                  min="1"
+                  className="w-full bg-zinc-100 border border-zinc-200 text-zinc-500 pl-9 pr-4 py-3 text-sm font-mono cursor-not-allowed"
+                  tabIndex={-1}
                 />
               </div>
+              <p className="text-[10px] text-zinc-400 leading-normal">
+                Auto-filled from lowest active size price above. Set prices in the Sizes &amp; Pricing panel.
+              </p>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block font-mono">Compare Price (₹ MRP)</label>
+              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block font-mono">Compare Price (₹ MRP) — Override</label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold font-mono text-zinc-400 text-sm">₹</span>
                 <input
@@ -2665,7 +2546,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                 />
               </div>
               <p className="text-[10px] text-zinc-500 leading-normal">
-                Strikethrough price. Leave blank if the product is not on discount.
+                Global MRP override. Per-size MRP set in the Sizes &amp; Pricing panel takes priority.
               </p>
             </div>
           </div>

@@ -66,43 +66,81 @@ export const NUMERIC_MASTER_SIZES: MasterSizeDefinition[] = [
 ];
 
 /**
- * Standard Indian Kids Size Chart (Bangalore / Commercial St / Traditional Ethnic Wear)
- * Scaled from Newborn (0-3M, 16" Chest) through Teens (14-15Y, 34" Chest).
+ * Updated Master Kids Size Chart
+ * Stable keys: k12, k14, k16, k18, k20, k22, k24, k26, k28, k30, k32, k34, k36, k38, k40.
+ * Rendered everywhere as "Size 22 (4 years)".
  */
 export const KIDS_MASTER_SIZES: MasterSizeDefinition[] = [
-  // Newborn & Infant Sizing
-  { division: 'kids', code: '0-3M', label: '0–3 Months (16–17" Chest, 55–61 cm)', numeric_size: '000', age_range: '0-3M', sort_order: 20, measurements: { chest_in: '16-17', height_cm: '55-61', weight_kg: '3.5-5.5', length_in: '14', chest_cm: '41-43' } },
-  { division: 'kids', code: '3-6M', label: '3–6 Months (17–18" Chest, 61–67 cm)', numeric_size: '00', age_range: '3-6M', sort_order: 21, measurements: { chest_in: '17-18', height_cm: '61-67', weight_kg: '5.5-7.5', length_in: '15', chest_cm: '43-46' } },
-  { division: 'kids', code: '6-12M', label: '6–12 Months (18–19" Chest, 67–75 cm)', numeric_size: '1', age_range: '6-12M', sort_order: 22, measurements: { chest_in: '18-19', height_cm: '67-75', weight_kg: '7.5-9.5', length_in: '17', chest_cm: '46-48' } },
-  
-  // Toddler Sizing
-  { division: 'kids', code: '1-2Y', label: '1–2 Years (19–20" Chest, 75–86 cm)', numeric_size: '16', age_range: '1-2Y', sort_order: 23, measurements: { chest_in: '19-20', height_cm: '75-86', weight_kg: '9.5-12', length_in: '20', chest_cm: '48-51' } },
-  { division: 'kids', code: '2-3Y', label: '2–3 Years (20–21" Chest, 86–96 cm)', numeric_size: '18', age_range: '2-3Y', sort_order: 24, measurements: { chest_in: '20-21', height_cm: '86-96', weight_kg: '12-14.5', length_in: '22', chest_cm: '51-53' } },
-  { division: 'kids', code: '3-4Y', label: '3–4 Years (21–22" Chest, 96–104 cm)', numeric_size: '20', age_range: '3-4Y', sort_order: 25, measurements: { chest_in: '21-22', height_cm: '96-104', weight_kg: '14.5-17', length_in: '24', chest_cm: '53-56' } },
-  
-  // Young Children Sizing (Combined & Granular)
-  { division: 'kids', code: '4-6Y', label: '4–6 Years (22–24" Chest, 104–116 cm)', numeric_size: '24', age_range: '4-6Y', sort_order: 26, measurements: { chest_in: '22-24', height_cm: '104-116', weight_kg: '17-21', length_in: '27', chest_cm: '56-61' } },
-  { division: 'kids', code: '6-8Y', label: '6–8 Years (24–26" Chest, 116–128 cm)', numeric_size: '28', age_range: '6-8Y', sort_order: 27, measurements: { chest_in: '24-26', height_cm: '116-128', weight_kg: '21-26', length_in: '31', chest_cm: '61-66' } },
-  { division: 'kids', code: '8-10Y', label: '8–10 Years (26–28" Chest, 128–140 cm)', numeric_size: '30', age_range: '8-10Y', sort_order: 28, measurements: { chest_in: '26-28', height_cm: '128-140', weight_kg: '26-33', length_in: '35', chest_cm: '66-71' } },
-  
-  // Pre-Teens & Teens Sizing
-  { division: 'kids', code: '10-12Y', label: '10–12 Years (28–30" Chest, 140–152 cm)', numeric_size: '34', age_range: '10-12Y', sort_order: 29, measurements: { chest_in: '28-30', height_cm: '140-152', weight_kg: '33-42', length_in: '39', chest_cm: '71-76' } },
-  { division: 'kids', code: '12-14Y', label: '12–14 Years (30–32" Chest, 152–162 cm)', numeric_size: '38', age_range: '12-14Y', sort_order: 30, measurements: { chest_in: '30-32', height_cm: '152-162', weight_kg: '42-50', length_in: '43', chest_cm: '76-81' } },
-  { division: 'kids', code: '14-15Y', label: '14–15 Years (32–34" Chest, 162–170 cm)', numeric_size: '42', age_range: '14-15Y', sort_order: 31, measurements: { chest_in: '32-34', height_cm: '162-170', weight_kg: '50-58', length_in: '46', chest_cm: '81-86' } },
-
-  // Supplementary Granular Single-Year Tags (for exact inventory tracking)
-  { division: 'kids', code: '4-5Y', label: '4–5 Years (Size 22)', numeric_size: '22', age_range: '4-5Y', sort_order: 32, measurements: { chest_in: '22-23', height_cm: '104-110', weight_kg: '16-18', length_in: '26' } },
-  { division: 'kids', code: '5-6Y', label: '5–6 Years (Size 24)', numeric_size: '24', age_range: '5-6Y', sort_order: 33, measurements: { chest_in: '23-24', height_cm: '110-116', weight_kg: '18-21', length_in: '28' } },
-  { division: 'kids', code: '6-7Y', label: '6–7 Years (Size 26)', numeric_size: '26', age_range: '6-7Y', sort_order: 34, measurements: { chest_in: '24-25', height_cm: '116-122', weight_kg: '21-23', length_in: '30' } },
-  { division: 'kids', code: '7-8Y', label: '7–8 Years (Size 28)', numeric_size: '28', age_range: '7-8Y', sort_order: 35, measurements: { chest_in: '25-26', height_cm: '122-128', weight_kg: '23-26', length_in: '32' } },
-  { division: 'kids', code: '8-9Y', label: '8–9 Years (Size 30)', numeric_size: '30', age_range: '8-9Y', sort_order: 36, measurements: { chest_in: '26-27', height_cm: '128-134', weight_kg: '26-29', length_in: '34' } },
-  { division: 'kids', code: '9-10Y', label: '9–10 Years (Size 32)', numeric_size: '32', age_range: '9-10Y', sort_order: 37, measurements: { chest_in: '27-28', height_cm: '134-140', weight_kg: '29-33', length_in: '36' } },
-  { division: 'kids', code: '10-11Y', label: '10–11 Years (Size 34)', numeric_size: '34', age_range: '10-11Y', sort_order: 38, measurements: { chest_in: '28-29', height_cm: '140-146', weight_kg: '33-37', length_in: '38' } },
-  { division: 'kids', code: '11-12Y', label: '11–12 Years (Size 36)', numeric_size: '36', age_range: '11-12Y', sort_order: 39, measurements: { chest_in: '29-30', height_cm: '146-152', weight_kg: '37-42', length_in: '40' } },
-  { division: 'kids', code: '12-13Y', label: '12–13 Years (Size 38)', numeric_size: '38', age_range: '12-13Y', sort_order: 40, measurements: { chest_in: '30-31', height_cm: '152-158', weight_kg: '42-46', length_in: '42' } },
-  { division: 'kids', code: '13-14Y', label: '13–14 Years (Size 40)', numeric_size: '40', age_range: '13-14Y', sort_order: 41, measurements: { chest_in: '31-32', height_cm: '158-164', weight_kg: '46-50', length_in: '44' } },
-  { division: 'kids', code: '15-16Y', label: '15–16 Years (Size 44)', numeric_size: '44', age_range: '15-16Y', sort_order: 42, measurements: { chest_in: '34-35', height_cm: '168-175', weight_kg: '55-62', length_in: '48' } },
+  { division: 'kids', code: 'k12', label: 'Size 12 (3-9 months)', numeric_size: '12', age_range: '3-9 months', sort_order: 10, measurements: { chest_in: '16-17', length_in: '14' } },
+  { division: 'kids', code: 'k14', label: 'Size 14 (1 year)', numeric_size: '14', age_range: '1 year', sort_order: 11, measurements: { chest_in: '18-19', length_in: '16' } },
+  { division: 'kids', code: 'k16', label: 'Size 16 (1.5 years)', numeric_size: '16', age_range: '1.5 years', sort_order: 12, measurements: { chest_in: '19-20', length_in: '18' } },
+  { division: 'kids', code: 'k18', label: 'Size 18 (2 years)', numeric_size: '18', age_range: '2 years', sort_order: 13, measurements: { chest_in: '20-21', length_in: '20' } },
+  { division: 'kids', code: 'k20', label: 'Size 20 (3 years)', numeric_size: '20', age_range: '3 years', sort_order: 14, measurements: { chest_in: '21-22', length_in: '22' } },
+  { division: 'kids', code: 'k22', label: 'Size 22 (4 years)', numeric_size: '22', age_range: '4 years', sort_order: 15, measurements: { chest_in: '22-23', length_in: '24' } },
+  { division: 'kids', code: 'k24', label: 'Size 24 (5 years)', numeric_size: '24', age_range: '5 years', sort_order: 16, measurements: { chest_in: '23-24', length_in: '26' } },
+  { division: 'kids', code: 'k26', label: 'Size 26 (6 years)', numeric_size: '26', age_range: '6 years', sort_order: 17, measurements: { chest_in: '24-25', length_in: '28' } },
+  { division: 'kids', code: 'k28', label: 'Size 28 (7 years)', numeric_size: '28', age_range: '7 years', sort_order: 18, measurements: { chest_in: '25-26', length_in: '30' } },
+  { division: 'kids', code: 'k30', label: 'Size 30 (8 years)', numeric_size: '30', age_range: '8 years', sort_order: 19, measurements: { chest_in: '26-27', length_in: '32' } },
+  { division: 'kids', code: 'k32', label: 'Size 32 (9 years)', numeric_size: '32', age_range: '9 years', sort_order: 20, measurements: { chest_in: '27-28', length_in: '34' } },
+  { division: 'kids', code: 'k34', label: 'Size 34 (10 years)', numeric_size: '34', age_range: '10 years', sort_order: 21, measurements: { chest_in: '28-29', length_in: '36' } },
+  { division: 'kids', code: 'k36', label: 'Size 36 (11 years)', numeric_size: '36', age_range: '11 years', sort_order: 22, measurements: { chest_in: '29-30', length_in: '38' } },
+  { division: 'kids', code: 'k38', label: 'Size 38 (13-14 years)', numeric_size: '38', age_range: '13-14 years', sort_order: 23, measurements: { chest_in: '30-32', length_in: '42' } },
+  { division: 'kids', code: 'k40', label: 'Size 40 (15-17 years)', numeric_size: '40', age_range: '15-17 years', sort_order: 24, measurements: { chest_in: '32-34', length_in: '46' } },
 ];
+
+export const LEGACY_KIDS_SIZE_MAP: Record<string, string> = {
+  '0-3M': 'k12',
+  '3-6M': 'k12',
+  '6-12M': 'k14',
+  '1-2Y': 'k16',
+  '2-3Y': 'k18',
+  '3-4Y': 'k20',
+  '4-5Y': 'k22',
+  '5-6Y': 'k24',
+  '6-7Y': 'k26',
+  '7-8Y': 'k28',
+  '8-9Y': 'k30',
+  '8-10Y': 'k30',
+  '9-10Y': 'k32',
+  '10-11Y': 'k34',
+  '10-12Y': 'k34',
+  '11-12Y': 'k36',
+  '12-13Y': 'k38',
+  '12-14Y': 'k38',
+  '13-14Y': 'k38',
+  '14-15Y': 'k38',
+  '15-16Y': 'k40',
+  '12': 'k12',
+  '14': 'k14',
+  '16': 'k16',
+  '18': 'k18',
+  '20': 'k20',
+  '22': 'k22',
+  '24': 'k24',
+  '26': 'k26',
+  '28': 'k28',
+  '30': 'k30',
+  '32': 'k32',
+  '34': 'k34',
+  '36': 'k36',
+  '38': 'k38',
+  '40': 'k40',
+};
+
+export function mapLegacyKidsSize(legacyCode: string): string {
+  return LEGACY_KIDS_SIZE_MAP[legacyCode] || legacyCode;
+}
+
+export function getSizeLabel(code: string): string {
+  if (!code) return '';
+  const kidsMatch = KIDS_MASTER_SIZES.find((s) => s.code === code);
+  if (kidsMatch) return kidsMatch.label;
+  const womenMatch = WOMEN_MASTER_SIZES.find((s) => s.code === code);
+  if (womenMatch) return womenMatch.label;
+  const numMatch = NUMERIC_MASTER_SIZES.find((s) => s.code === code);
+  if (numMatch) return numMatch.label;
+  return code;
+}
 
 export const ALL_MASTER_SIZES: MasterSizeDefinition[] = [
   ...WOMEN_MASTER_SIZES,

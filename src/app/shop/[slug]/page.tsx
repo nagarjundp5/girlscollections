@@ -25,7 +25,20 @@ function formatDbProductToShopProduct(p: any): Product {
     : undefined;
 
   let sizesList: any[] = [];
-  if (Array.isArray(p.sizes)) {
+  if (p.product_sizes && Array.isArray(p.product_sizes) && p.product_sizes.length > 0) {
+    sizesList = p.product_sizes
+      .filter((s: any) => s.is_active !== false)
+      .map((s: any) => {
+        const pRup = s.price > 10000 ? Math.round(s.price / 100) : s.price;
+        const mrpRup = s.mrp ? (s.mrp > 10000 ? Math.round(s.mrp / 100) : s.mrp) : undefined;
+        return {
+          size: s.size_key,
+          price: pRup,
+          originalPrice: mrpRup,
+          inStock: Number(s.stock ?? 0) > 0,
+        };
+      });
+  } else if (Array.isArray(p.sizes)) {
     sizesList = p.sizes.map((s: any) =>
       typeof s === 'string' ? { size: s, inStock: true } : s
     );

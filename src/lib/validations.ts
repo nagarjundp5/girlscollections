@@ -157,6 +157,24 @@ const weightInt = z.preprocess(
 );
 
 // Admin Product Create/Update Schema
+export const productSizeSchema = z.object({
+  size_key: z.string().min(1),
+  price: z.number().int().positive('Price must be greater than 0'),
+  mrp: z.number().int().positive().nullable().optional(),
+  stock: z.number().int().nonnegative().default(0),
+  sku: z.string().nullable().optional(),
+  price_group_id: z.string().nullable().optional(),
+  is_active: z.boolean().default(true),
+  sort: z.number().int().default(0),
+});
+
+export const productPriceGroupSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1),
+  price: z.number().int().positive(),
+  mrp: z.number().int().positive().nullable().optional(),
+});
+
 export const adminProductSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(150),
   slug: z.string().min(2).max(150).transform((val) => val.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-')),
@@ -182,6 +200,8 @@ export const adminProductSchema = z.object({
   breadth_cm: optionalInt,
   height_cm: optionalInt,
   variants: z.array(productVariantSchema).optional(),
+  product_sizes: z.array(productSizeSchema).optional(),
+  price_groups: z.array(productPriceGroupSchema).optional(),
   age_ranges: z.array(z.string()).optional().default([]),
   colours: z.array(z.string()).optional().default([]),
   fabric: optionalString,

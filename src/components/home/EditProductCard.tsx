@@ -78,7 +78,7 @@ export default function EditProductCard({
         </h3>
         <div className="flex items-baseline font-mono pt-0.5">
           <span className="text-sm font-black text-white tracking-tight">
-            ₹{(product.price / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+            {(product as any).has_different_prices ? 'From ' : ''}₹{(product.price / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
           </span>
         </div>
       </div>

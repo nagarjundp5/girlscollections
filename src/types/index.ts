@@ -31,6 +31,31 @@ export interface ProductImageItem extends CloudinaryAsset {
   altText?: string;
 }
 
+export interface ProductPriceGroup {
+  id: string;
+  product_id?: string;
+  name: string;
+  price: number; // in paise
+  mrp?: number | null; // in paise
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ProductSizeItem {
+  id?: string;
+  product_id?: string;
+  size_key: string;
+  label?: string;
+  price: number; // in paise
+  mrp?: number | null; // in paise
+  stock: number;
+  sku?: string | null;
+  price_group_id?: string | null;
+  price_group_name?: string | null;
+  is_active: boolean;
+  sort?: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -78,6 +103,11 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   variants?: ProductVariant[];
+  product_sizes?: ProductSizeItem[];
+  price_groups?: ProductPriceGroup[];
+  has_different_prices?: boolean;
+  min_price?: number;
+  max_price?: number;
 }
 
 export interface MasterSize {
@@ -245,6 +275,8 @@ export interface CartItem {
   compare_price?: number;
   image: string;
   size: string;
+  size_key?: string;
+  size_label?: string;
   quantity: number;
   stock_quantity?: Record<string, number>; // per-size stock caps for client-side clamping
 }

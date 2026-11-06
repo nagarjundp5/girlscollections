@@ -345,6 +345,47 @@ export const dbService = {
         .where(inArray(schema.productVariants.product_id, productIds))
         .orderBy(asc(schema.productVariants.created_at));
 
+      const allSizes = await dbHttp
+        .select()
+        .from(schema.productSizes)
+        .where(inArray(schema.productSizes.product_id, productIds))
+        .orderBy(asc(schema.productSizes.sort));
+
+      const allPriceGroups = await dbHttp
+        .select()
+        .from(schema.productPriceGroups)
+        .where(inArray(schema.productPriceGroups.product_id, productIds));
+
+      const priceGroupsById = allPriceGroups.reduce((acc: Record<string, any>, g: any) => {
+        acc[g.id] = g;
+        return acc;
+      }, {} as Record<string, any>);
+
+      const priceGroupsByProductId = allPriceGroups.reduce((acc: Record<string, any[]>, g: any) => {
+        if (!acc[g.product_id]) acc[g.product_id] = [];
+        acc[g.product_id].push(g);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      const sizesByProductId = allSizes.reduce((acc: Record<string, any[]>, s: any) => {
+        if (!acc[s.product_id]) acc[s.product_id] = [];
+        const linkedGroup = s.price_group_id ? priceGroupsById[s.price_group_id] : null;
+        acc[s.product_id].push({
+          id: s.id,
+          product_id: s.product_id,
+          size_key: s.size_key,
+          price: linkedGroup ? linkedGroup.price : s.price,
+          mrp: linkedGroup ? (linkedGroup.mrp || s.mrp) : s.mrp,
+          stock: s.stock,
+          sku: s.sku,
+          price_group_id: s.price_group_id,
+          group_name: linkedGroup ? linkedGroup.name : null,
+          is_active: s.is_active,
+          sort: s.sort,
+        });
+        return acc;
+      }, {} as Record<string, any[]>);
+
       const variantsByProductId = allVariants.reduce((acc: Record<string, any[]>, v: any) => {
         if (!acc[v.product_id]) acc[v.product_id] = [];
         acc[v.product_id].push({
@@ -413,6 +454,21 @@ export const dbService = {
           units_sold: r.units_sold ?? 0,
           created_at: r.created_at.toISOString(),
           variants: prodVariants,
+          product_sizes: sizesByProductId[r.id] || [],
+          price_groups: priceGroupsByProductId[r.id] || [],
+          has_different_prices: (() => {
+            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
+            if (szs.length <= 1) return false;
+            return szs.some((s: any) => s.price !== szs[0].price);
+          })(),
+          min_price: (() => {
+            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
+            return szs.length > 0 ? Math.min(...szs.map((s: any) => s.price)) : r.price;
+          })(),
+          max_price: (() => {
+            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
+            return szs.length > 0 ? Math.max(...szs.map((s: any) => s.price)) : r.price;
+          })(),
         };
       });
 
@@ -452,6 +508,47 @@ export const dbService = {
         .from(schema.productVariants)
         .where(inArray(schema.productVariants.product_id, productIds))
         .orderBy(asc(schema.productVariants.created_at));
+
+      const allSizes = await db
+        .select()
+        .from(schema.productSizes)
+        .where(inArray(schema.productSizes.product_id, productIds))
+        .orderBy(asc(schema.productSizes.sort));
+
+      const allPriceGroups = await db
+        .select()
+        .from(schema.productPriceGroups)
+        .where(inArray(schema.productPriceGroups.product_id, productIds));
+
+      const priceGroupsById = allPriceGroups.reduce((acc: Record<string, any>, g: any) => {
+        acc[g.id] = g;
+        return acc;
+      }, {} as Record<string, any>);
+
+      const priceGroupsByProductId = allPriceGroups.reduce((acc: Record<string, any[]>, g: any) => {
+        if (!acc[g.product_id]) acc[g.product_id] = [];
+        acc[g.product_id].push(g);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      const sizesByProductId = allSizes.reduce((acc: Record<string, any[]>, s: any) => {
+        if (!acc[s.product_id]) acc[s.product_id] = [];
+        const linkedGroup = s.price_group_id ? priceGroupsById[s.price_group_id] : null;
+        acc[s.product_id].push({
+          id: s.id,
+          product_id: s.product_id,
+          size_key: s.size_key,
+          price: linkedGroup ? linkedGroup.price : s.price,
+          mrp: linkedGroup ? (linkedGroup.mrp || s.mrp) : s.mrp,
+          stock: s.stock,
+          sku: s.sku,
+          price_group_id: s.price_group_id,
+          group_name: linkedGroup ? linkedGroup.name : null,
+          is_active: s.is_active,
+          sort: s.sort,
+        });
+        return acc;
+      }, {} as Record<string, any[]>);
 
       const variantsByProductId = allVariants.reduce((acc: Record<string, any[]>, v: any) => {
         if (!acc[v.product_id]) acc[v.product_id] = [];
@@ -535,6 +632,21 @@ export const dbService = {
           seo_description: r.seo_description || undefined,
           created_at: r.created_at.toISOString(),
           variants: prodVariants,
+          product_sizes: sizesByProductId[r.id] || [],
+          price_groups: priceGroupsByProductId[r.id] || [],
+          has_different_prices: (() => {
+            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
+            if (szs.length <= 1) return false;
+            return szs.some((s: any) => s.price !== szs[0].price);
+          })(),
+          min_price: (() => {
+            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
+            return szs.length > 0 ? Math.min(...szs.map((s: any) => s.price)) : r.price;
+          })(),
+          max_price: (() => {
+            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
+            return szs.length > 0 ? Math.max(...szs.map((s: any) => s.price)) : r.price;
+          })(),
         };
       });
     } else {
@@ -562,8 +674,8 @@ export const dbService = {
       
       if (!prod) return null;
 
-      // Parallelize image and variant fetches using stateless HTTP neon() connection
-      const [productImgs, rawVariants] = await Promise.all([
+      // Parallelize image, variant, sizes, and price groups fetches using stateless HTTP neon() connection
+      const [productImgs, rawVariants, rawSizes, rawPriceGroups] = await Promise.all([
         dbHttp
           .select()
           .from(schema.productImages)
@@ -574,7 +686,38 @@ export const dbService = {
           .from(schema.productVariants)
           .where(eq(schema.productVariants.product_id, prod.id))
           .orderBy(asc(schema.productVariants.created_at)),
+        dbHttp
+          .select()
+          .from(schema.productSizes)
+          .where(eq(schema.productSizes.product_id, prod.id))
+          .orderBy(asc(schema.productSizes.sort)),
+        dbHttp
+          .select()
+          .from(schema.productPriceGroups)
+          .where(eq(schema.productPriceGroups.product_id, prod.id)),
       ]);
+
+      const priceGroupsById = rawPriceGroups.reduce((acc: Record<string, any>, g: any) => {
+        acc[g.id] = g;
+        return acc;
+      }, {} as Record<string, any>);
+
+      const productSizes = rawSizes.map((s: any) => {
+        const linkedGroup = s.price_group_id ? priceGroupsById[s.price_group_id] : null;
+        return {
+          id: s.id,
+          product_id: s.product_id,
+          size_key: s.size_key,
+          price: linkedGroup ? linkedGroup.price : s.price,
+          mrp: linkedGroup ? (linkedGroup.mrp || s.mrp) : s.mrp,
+          stock: s.stock,
+          sku: s.sku,
+          price_group_id: s.price_group_id,
+          group_name: linkedGroup ? linkedGroup.name : null,
+          is_active: s.is_active,
+          sort: s.sort,
+        };
+      });
 
       const variants = rawVariants.map((v: any) => ({
         id: v.id,
@@ -645,6 +788,21 @@ export const dbService = {
         seo_description: prod.seo_description || undefined,
         created_at: prod.created_at.toISOString(),
         variants,
+        product_sizes: productSizes,
+        price_groups: rawPriceGroups,
+        has_different_prices: (() => {
+          const szs = productSizes.filter((s: any) => s.is_active && s.price > 0);
+          if (szs.length <= 1) return false;
+          return szs.some((s: any) => s.price !== szs[0].price);
+        })(),
+        min_price: (() => {
+          const szs = productSizes.filter((s: any) => s.is_active && s.price > 0);
+          return szs.length > 0 ? Math.min(...szs.map((s: any) => s.price)) : prod.price;
+        })(),
+        max_price: (() => {
+          const szs = productSizes.filter((s: any) => s.is_active && s.price > 0);
+          return szs.length > 0 ? Math.max(...szs.map((s: any) => s.price)) : prod.price;
+        })(),
       };
     } else {
       const res = await fetch(`/api/products?slug=${slug}`);
@@ -1028,6 +1186,45 @@ export const dbService = {
         });
       }
 
+      // Insert product_price_groups & product_sizes if provided
+      const groupIdMap: Record<string, string> = {};
+      if ((prod as any).price_groups && Array.isArray((prod as any).price_groups)) {
+        for (const pg of (prod as any).price_groups) {
+          const [pgRow] = await db
+            .insert(schema.productPriceGroups)
+            .values({
+              product_id: inserted.id,
+              name: pg.name,
+              price: pg.price,
+              mrp: pg.mrp || null,
+            })
+            .returning();
+          if (pg.id) {
+            groupIdMap[pg.id] = pgRow.id;
+          }
+        }
+      }
+
+      if ((prod as any).product_sizes && Array.isArray((prod as any).product_sizes) && (prod as any).product_sizes.length > 0) {
+        for (const ps of (prod as any).product_sizes) {
+          const realGroupId = ps.price_group_id ? (groupIdMap[ps.price_group_id] || ps.price_group_id) : null;
+          const isValidUuid = realGroupId && /^[0-9a-fA-F-]{36}$/.test(realGroupId);
+          await db
+            .insert(schema.productSizes)
+            .values({
+              product_id: inserted.id,
+              size_key: ps.size_key,
+              price: ps.price,
+              mrp: ps.mrp || null,
+              stock: ps.stock ?? 0,
+              sku: ps.sku || null,
+              price_group_id: isValidUuid ? realGroupId : null,
+              is_active: ps.is_active !== false,
+              sort: ps.sort ?? 0,
+            });
+        }
+      }
+
       // Seed Redis stock gate keys
       try {
         const { redis } = await import('@/lib/redis');
@@ -1171,6 +1368,59 @@ export const dbService = {
             price_override: v.price_override ? Number(v.price_override) : null,
             is_active: v.is_active !== undefined ? v.is_active : true,
           });
+        }
+      }
+
+      // Sync product_price_groups & product_sizes if provided
+      if ((updates as any).product_sizes && Array.isArray((updates as any).product_sizes)) {
+        await db.delete(schema.productSizes).where(eq(schema.productSizes.product_id, id));
+        await db.delete(schema.productPriceGroups).where(eq(schema.productPriceGroups.product_id, id));
+
+        const groupIdMap: Record<string, string> = {};
+        if ((updates as any).price_groups && Array.isArray((updates as any).price_groups)) {
+          for (const pg of (updates as any).price_groups) {
+            const [pgRow] = await db
+              .insert(schema.productPriceGroups)
+              .values({
+                product_id: id,
+                name: pg.name,
+                price: pg.price,
+                mrp: pg.mrp || null,
+              })
+              .returning();
+            if (pg.id) {
+              groupIdMap[pg.id] = pgRow.id;
+            }
+          }
+        }
+
+        for (const ps of (updates as any).product_sizes) {
+          const realGroupId = ps.price_group_id ? (groupIdMap[ps.price_group_id] || ps.price_group_id) : null;
+          const isValidUuid = realGroupId && /^[0-9a-fA-F-]{36}$/.test(realGroupId);
+          await db
+            .insert(schema.productSizes)
+            .values({
+              product_id: id,
+              size_key: ps.size_key,
+              price: ps.price,
+              mrp: ps.mrp || null,
+              stock: ps.stock ?? 0,
+              sku: ps.sku || null,
+              price_group_id: isValidUuid ? realGroupId : null,
+              is_active: ps.is_active !== false,
+              sort: ps.sort ?? 0,
+            });
+        }
+
+        // Recompute derived min price on products table
+        const activeSizes = (updates as any).product_sizes.filter((s: any) => s.is_active !== false && s.price > 0);
+        if (activeSizes.length > 0) {
+          const minP = Math.min(...activeSizes.map((s: any) => s.price));
+          await db
+            .update(schema.products)
+            .set({ price: minP, updated_at: new Date() })
+            .where(eq(schema.products.id, id));
+          updated.price = minP;
         }
       }
 

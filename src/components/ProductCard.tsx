@@ -199,7 +199,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Pricing */}
         <div className="mt-1.5 flex items-baseline gap-2.5">
           <span className="text-base sm:text-[19px] font-sans font-extrabold text-zariGold font-tnum">
-            ₹{product.price.toLocaleString('en-IN')}
+            {(product as any).has_different_prices ? 'From ' : ''}₹{product.price.toLocaleString('en-IN')}
           </span>
           {product.originalPrice && (
             <span className="text-xs sm:text-sm font-sans text-inkNavy/40 line-through font-normal font-tnum">
