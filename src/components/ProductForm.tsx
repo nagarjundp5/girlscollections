@@ -28,8 +28,15 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
   const [comparePrice, setComparePrice] = useState(''); // in Rupees
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
-  const [gender, setGender] = useState<typeof GENDERS[number]>('women');
-  const [fitType, setFitType] = useState<'regular' | 'plus_size'>('regular');
+  const [isForWomen, setIsForWomen] = useState(true);
+  const [isForKids, setIsForKids] = useState(false);
+  const [fitType] = useState<'regular' | 'plus_size'>('regular');
+
+  const gender = useMemo<'women' | 'kids' | 'both'>(() => {
+    if (isForWomen && isForKids) return 'both';
+    if (isForKids) return 'kids';
+    return 'women';
+  }, [isForWomen, isForKids]);
   const [images, setImages] = useState<string[]>([]);
   const [activeSizes, setActiveSizes] = useState<string[]>(['S', 'M', 'L']);
   const [stock, setStock] = useState<Record<string, number>>({
@@ -168,8 +175,18 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         if (!isCategoryDirty && suggestedCategory) {
           setCategory(suggestedCategory);
         }
-        if (genderTargeting && ['women', 'unisex', 'men', 'kids'].includes(genderTargeting.toLowerCase())) {
-          setGender(genderTargeting.toLowerCase() as any);
+        if (genderTargeting) {
+          const lower = genderTargeting.toLowerCase();
+          if (lower === 'kids') {
+            setIsForWomen(false);
+            setIsForKids(true);
+          } else if (lower === 'unisex' || lower === 'both') {
+            setIsForWomen(true);
+            setIsForKids(true);
+          } else {
+            setIsForWomen(true);
+            setIsForKids(false);
+          }
         }
         setAiGeneratedMeta({
           usedAI: true,
@@ -259,8 +276,17 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
       setComparePrice(initialData.compare_price ? (initialData.compare_price / 100).toString() : '');
       setCategory(initialData.category || '');
       setSubcategory(initialData.subcategory || '');
-      setGender((initialData.gender as any) || 'women');
-      setFitType(initialData.fit_type || 'regular');
+      const initGender = (initialData.gender || 'women').toLowerCase();
+      if (initGender === 'both' || initGender === 'unisex') {
+        setIsForWomen(true);
+        setIsForKids(true);
+      } else if (initGender === 'kids') {
+        setIsForWomen(false);
+        setIsForKids(true);
+      } else {
+        setIsForWomen(true);
+        setIsForKids(false);
+      }
       setImages(initialData.images || []);
       setActiveSizes(initialData.sizes || []);
       
@@ -2716,7 +2742,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
           {/* Classification */}
           <div className="bg-white border border-zinc-200/80 shadow-sm p-6 md:p-8 space-y-6">
             <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-widest border-b border-zinc-200/60 pb-3">
-              Classification & Fit
+              Classification &amp; Audience
             </h2>
 
             {/* Category Searchable Combobox */}
@@ -2734,55 +2760,117 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                   setSubcategory('');
                   if (selectedCat) {
                     if (selectedCat.age_group === 'ladies') {
-                      setGender('women');
+                      setIsForWomen(true);
+                      setIsForKids(false);
                     } else if (selectedCat.age_group === 'kids') {
-                      setGender('kids');
+                      setIsForWomen(false);
+                      setIsForKids(true);
                     }
                   }
                 }}
               />
               <p className="text-[10px] text-zinc-400">
-                Type to filter categories by Ladies/Kids & Parent Group. Manage categories in <a href="/admin/categories" target="_blank" className="underline text-zinc-700 hover:text-black">Categories Manager</a>.
+                Type to filter categories by Ladies/Kids &amp; Parent Group. Manage categories in <a href="/admin/categories" target="_blank" className="underline text-zinc-700 hover:text-black">Categories Manager</a>.
               </p>
             </div>
 
-            {/* Fit Type Selector */}
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">
-                Fit Type <span className="text-brand-red">*</span>
-              </label>
-              <select
-                value={fitType}
-                onChange={(e) => setFitType(e.target.value as 'regular' | 'plus_size')}
-                className="w-full bg-zinc-50 border border-zinc-200 text-zinc-900 px-4 py-3 text-sm focus:outline-none focus:bg-white focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all uppercase tracking-wider font-bold"
-                required
-              >
-                <option value="regular">Regular Fit</option>
-                <option value="plus_size">Plus Size</option>
-              </select>
-              <p className="text-[10px] text-zinc-400">
-                Independent sizing facet (Regular / Plus Size). Used across Kurta Sets, Kurtis & Tops.
-              </p>
-            </div>
+            {/* Target Audience (Women / Kids / Both) */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">
+                  Target Audience <span className="text-brand-red">*</span>
+                </label>
+                <span className="text-[10px] text-zinc-400">
+                  Select one or tick both for joint collections
+                </span>
+              </div>
 
-            {/* Age Group / Target Audience */}
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">
-                Age Group / Target Audience <span className="text-brand-red">*</span>
-              </label>
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value as any)}
-                className="w-full bg-zinc-50 border border-zinc-200 text-zinc-900 px-4 py-3 text-sm focus:outline-none focus:bg-white focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all uppercase tracking-wider font-bold"
-                required
-              >
-                <option value="women">Women</option>
-                <option value="kids">Kids</option>
-                <option value="unisex">Unisex</option>
-              </select>
-              <p className="text-[10px] text-zinc-400">
-                Auto-syncs when selecting a category, or can be adjusted manually for unisex items.
-              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Women Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isForWomen && !isForKids) {
+                      setIsForWomen(false);
+                      setIsForKids(true);
+                    } else {
+                      setIsForWomen(!isForWomen);
+                    }
+                  }}
+                  className={`flex items-center justify-between p-3.5 border rounded-lg transition-all cursor-pointer ${
+                    isForWomen
+                      ? 'bg-zinc-900 text-white border-zinc-900 shadow-sm'
+                      : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                      isForWomen ? 'bg-white border-white text-zinc-900' : 'border-zinc-400 bg-white'
+                    }`}>
+                      {isForWomen && <span className="text-xs font-bold leading-none">✓</span>}
+                    </div>
+                    <span className="text-xs uppercase font-extrabold tracking-wider">Women</span>
+                  </div>
+                  <span className={`text-[10px] uppercase font-bold tracking-wider ${isForWomen ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                    Ladies
+                  </span>
+                </button>
+
+                {/* Kids Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isForKids && !isForWomen) {
+                      setIsForKids(false);
+                      setIsForWomen(true);
+                    } else {
+                      setIsForKids(!isForKids);
+                    }
+                  }}
+                  className={`flex items-center justify-between p-3.5 border rounded-lg transition-all cursor-pointer ${
+                    isForKids
+                      ? 'bg-zinc-900 text-white border-zinc-900 shadow-sm'
+                      : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                      isForKids ? 'bg-white border-white text-zinc-900' : 'border-zinc-400 bg-white'
+                    }`}>
+                      {isForKids && <span className="text-xs font-bold leading-none">✓</span>}
+                    </div>
+                    <span className="text-xs uppercase font-extrabold tracking-wider">Kids</span>
+                  </div>
+                  <span className={`text-[10px] uppercase font-bold tracking-wider ${isForKids ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                    Children
+                  </span>
+                </button>
+              </div>
+
+              {/* Status pill & quick toggle for Both */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-[11px] text-zinc-500 font-medium">
+                  {isForWomen && isForKids
+                    ? '✨ Piece is configured for BOTH Women & Kids'
+                    : isForWomen
+                    ? 'Configured for Women'
+                    : 'Configured for Kids'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsForWomen(true);
+                    setIsForKids(true);
+                  }}
+                  className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded border transition-colors cursor-pointer ${
+                    isForWomen && isForKids
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                      : 'bg-white text-zinc-600 border-zinc-300 hover:bg-zinc-100'
+                  }`}
+                >
+                  {isForWomen && isForKids ? '✓ Both Selected' : '+ Select Both (Women & Kids)'}
+                </button>
+              </div>
             </div>
           </div>
 

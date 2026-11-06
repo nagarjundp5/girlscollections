@@ -85,8 +85,9 @@ export async function buildHomepageSnapshot(): Promise<HomepageSnapshot> {
       cat.includes('frock') ||
       cat.includes('pattu') ||
       p.gender === 'kids' ||
+      p.gender === 'both' ||
       p.gender === 'unisex';
-    return p.gender === 'women' || !isKids;
+    return p.gender === 'women' || p.gender === 'both' || !isKids;
   });
 
   const kidsValid = validProducts.filter((p: Product) => {
@@ -98,8 +99,9 @@ export async function buildHomepageSnapshot(): Promise<HomepageSnapshot> {
       cat.includes('frock') ||
       cat.includes('pattu') ||
       p.gender === 'kids' ||
+      p.gender === 'both' ||
       p.gender === 'unisex';
-    return isKids && p.gender !== 'women';
+    return isKids || (p.gender as string) === 'both';
   });
 
   const womenTrending = [

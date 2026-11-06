@@ -42,6 +42,7 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
 
     if (filter === 'women') {
       list = list.filter((p) => {
+        if (p.gender === 'both') return true;
         const cat = (p.category || '').toLowerCase();
         const sub = (p.subcategory || '').toLowerCase();
         const isKids =
@@ -54,6 +55,7 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
       });
     } else if (filter === 'kids') {
       list = list.filter((p) => {
+        if (p.gender === 'both') return true;
         const cat = (p.category || '').toLowerCase();
         const sub = (p.subcategory || '').toLowerCase();
         return (

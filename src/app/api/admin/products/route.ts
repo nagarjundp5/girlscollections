@@ -206,7 +206,7 @@ export async function PATCH(request: Request) {
       if (typeof body.category === 'string' && body.category.trim() !== '') {
         updateData.category = body.category.trim();
       }
-      if (typeof body.gender === 'string' && ['women', 'kids', 'unisex'].includes(body.gender)) {
+      if (typeof body.gender === 'string' && ['women', 'kids', 'unisex', 'both'].includes(body.gender)) {
         updateData.gender = body.gender;
       }
 

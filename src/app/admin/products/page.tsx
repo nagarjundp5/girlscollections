@@ -108,8 +108,11 @@ export default function AdminProducts() {
       }
 
       // 3. Age Group filter
-      if (selectedAgeGroup !== 'all' && p.gender !== selectedAgeGroup) {
-        return false;
+      if (selectedAgeGroup !== 'all') {
+        const pGender = (p.gender || 'women').toLowerCase();
+        if (selectedAgeGroup === 'women' && pGender !== 'women' && pGender !== 'both' && pGender !== 'unisex') return false;
+        if (selectedAgeGroup === 'kids' && pGender !== 'kids' && pGender !== 'both' && pGender !== 'unisex') return false;
+        if (selectedAgeGroup === 'both' && pGender !== 'both' && pGender !== 'unisex') return false;
       }
 
       // 4. Status filter
@@ -441,10 +444,10 @@ export default function AdminProducts() {
               onChange={(e) => setSelectedAgeGroup(e.target.value)}
               className="w-full bg-zinc-50 border border-zinc-200 text-zinc-800 px-3 py-2 text-xs font-semibold rounded-lg focus:outline-none focus:border-zinc-900 transition-colors uppercase tracking-wider"
             >
-              <option value="all">All Age Groups</option>
+              <option value="all">All Target Audiences</option>
               <option value="women">Women</option>
               <option value="kids">Kids</option>
-              <option value="unisex">Unisex</option>
+              <option value="both">Both (Women &amp; Kids)</option>
             </select>
           </div>
 
@@ -628,7 +631,9 @@ export default function AdminProducts() {
                             <p className="text-xs text-zinc-400 uppercase tracking-wider mt-1 font-semibold flex items-center gap-1.5 flex-wrap">
                               <span className="text-zinc-800 font-bold">{categoryDisplayName}</span>
                               <span>•</span>
-                              <span className="capitalize text-zinc-600">{product.gender || 'Women'}</span>
+                              <span className="capitalize text-zinc-600">
+                                {product.gender === 'both' || product.gender === 'unisex' ? 'Women & Kids' : (product.gender || 'Women')}
+                              </span>
                               {product.weight_grams ? (
                                 <>
                                   <span>•</span>
@@ -788,7 +793,7 @@ export default function AdminProducts() {
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-bold text-zinc-900 truncate">{product.name}</h3>
                           <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-0.5">
-                            {categoryNameMap[product.category] || product.category} • {product.gender || 'Women'}
+                            {categoryNameMap[product.category] || product.category} • {product.gender === 'both' || product.gender === 'unisex' ? 'Women & Kids' : (product.gender || 'Women')}
                           </p>
                           <div className="mt-1.5 flex items-baseline gap-2">
                             <span className="text-sm font-mono font-bold text-zinc-900">
