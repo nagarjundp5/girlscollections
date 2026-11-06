@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { db } from '@/lib/db';
 import { RGBA, getDominantColor, renderCompositeOnCanvas, rgbToHsl } from '@/lib/imageProcessor';
 import { CategoryCombobox } from '@/components/admin/CategoryCombobox';
-import { WOMEN_MASTER_SIZES, KIDS_MASTER_SIZES, ALL_MASTER_SIZES, MASTER_ATTRIBUTES_SEED, type MasterSizeDefinition } from '@/data/masterSizes';
+import { WOMEN_MASTER_SIZES, KIDS_MASTER_SIZES, NUMERIC_MASTER_SIZES, ALL_MASTER_SIZES, MASTER_ATTRIBUTES_SEED, type MasterSizeDefinition } from '@/data/masterSizes';
 
 interface ProductFormProps {
   initialData?: Product | null;
@@ -67,8 +67,8 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
   const [seoTitle, setSeoTitle] = useState('');
   const [seoDescription, setSeoDescription] = useState('');
 
-  // Dynamic sizes based on sizeGroupTab ('women' | 'kids' | 'all')
-  const [sizeGroupTab, setSizeGroupTab] = useState<'all' | 'women' | 'kids'>('women');
+  // Dynamic sizes based on sizeGroupTab ('women' | 'kids' | 'numeric' | 'all')
+  const [sizeGroupTab, setSizeGroupTab] = useState<'all' | 'women' | 'kids' | 'numeric'>('women');
 
   useEffect(() => {
     if (gender === 'kids') {
@@ -79,8 +79,9 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
   }, [gender]);
 
   const availableSizes: MasterSizeDefinition[] = useMemo(() => {
-    if (sizeGroupTab === 'women') return WOMEN_MASTER_SIZES;
-    if (sizeGroupTab === 'kids') return KIDS_MASTER_SIZES;
+    if (sizeGroupTab === 'women') return [...WOMEN_MASTER_SIZES, ...NUMERIC_MASTER_SIZES];
+    if (sizeGroupTab === 'kids') return [...KIDS_MASTER_SIZES, ...NUMERIC_MASTER_SIZES];
+    if (sizeGroupTab === 'numeric') return NUMERIC_MASTER_SIZES;
     return ALL_MASTER_SIZES;
   }, [sizeGroupTab]);
 
@@ -1539,6 +1540,17 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                 </button>
                 <button
                   type="button"
+                  onClick={() => setSizeGroupTab('numeric')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                    sizeGroupTab === 'numeric'
+                      ? 'bg-white text-zinc-900 shadow-xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  Numeric (12–40 Even)
+                </button>
+                <button
+                  type="button"
                   onClick={() => setSizeGroupTab('all')}
                   className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
                     sizeGroupTab === 'all'
@@ -1617,6 +1629,13 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                   className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
                 >
                   Free Size Only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38', '40'])}
+                  className="px-2.5 py-1 bg-amber-50 border border-amber-300 hover:border-amber-700 text-[11px] font-bold text-amber-900 rounded transition-colors cursor-pointer"
+                >
+                  Numeric Sizes (12–40 Even)
                 </button>
               </div>
             </div>

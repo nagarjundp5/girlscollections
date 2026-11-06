@@ -43,6 +43,29 @@ export const WOMEN_MASTER_SIZES: MasterSizeDefinition[] = [
 ];
 
 /**
+ * Numeric Indian Garment Sizes (Even numbers 12 to 40)
+ * Standard even sizing (12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40)
+ * Widely used for ready-made kurtis, ethnic sets, frocks, lehengas & blouses.
+ */
+export const NUMERIC_MASTER_SIZES: MasterSizeDefinition[] = [
+  { division: 'kids', code: '12', label: 'Size 12', numeric_size: '12', sort_order: 50, measurements: { chest_in: '12' } },
+  { division: 'kids', code: '14', label: 'Size 14', numeric_size: '14', sort_order: 51, measurements: { chest_in: '14' } },
+  { division: 'kids', code: '16', label: 'Size 16', numeric_size: '16', sort_order: 52, measurements: { chest_in: '16' } },
+  { division: 'kids', code: '18', label: 'Size 18', numeric_size: '18', sort_order: 53, measurements: { chest_in: '18' } },
+  { division: 'kids', code: '20', label: 'Size 20', numeric_size: '20', sort_order: 54, measurements: { chest_in: '20' } },
+  { division: 'kids', code: '22', label: 'Size 22', numeric_size: '22', sort_order: 55, measurements: { chest_in: '22' } },
+  { division: 'kids', code: '24', label: 'Size 24', numeric_size: '24', sort_order: 56, measurements: { chest_in: '24' } },
+  { division: 'kids', code: '26', label: 'Size 26', numeric_size: '26', sort_order: 57, measurements: { chest_in: '26' } },
+  { division: 'women', code: '28', label: 'Size 28', numeric_size: '28', sort_order: 58, measurements: { chest_in: '28' } },
+  { division: 'women', code: '30', label: 'Size 30', numeric_size: '30', sort_order: 59, measurements: { chest_in: '30' } },
+  { division: 'women', code: '32', label: 'Size 32', numeric_size: '32', sort_order: 60, measurements: { chest_in: '32' } },
+  { division: 'women', code: '34', label: 'Size 34', numeric_size: '34', sort_order: 61, measurements: { chest_in: '34' } },
+  { division: 'women', code: '36', label: 'Size 36', numeric_size: '36', sort_order: 62, measurements: { chest_in: '36' } },
+  { division: 'women', code: '38', label: 'Size 38', numeric_size: '38', sort_order: 63, measurements: { chest_in: '38' } },
+  { division: 'women', code: '40', label: 'Size 40', numeric_size: '40', sort_order: 64, measurements: { chest_in: '40' } },
+];
+
+/**
  * Standard Indian Kids Size Chart (Bangalore / Commercial St / Traditional Ethnic Wear)
  * Scaled from Newborn (0-3M, 16" Chest) through Teens (14-15Y, 34" Chest).
  */
@@ -84,6 +107,7 @@ export const KIDS_MASTER_SIZES: MasterSizeDefinition[] = [
 export const ALL_MASTER_SIZES: MasterSizeDefinition[] = [
   ...WOMEN_MASTER_SIZES,
   ...KIDS_MASTER_SIZES,
+  ...NUMERIC_MASTER_SIZES,
 ];
 
 export const MASTER_ATTRIBUTES_SEED: Array<{ type: string; name: string; slug: string; sort_order: number; hex_code?: string }> = [
