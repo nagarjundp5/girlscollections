@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq, inArray, asc } from 'drizzle-orm';
@@ -9,6 +11,12 @@ import { WishlistEmailItem } from '@/components/WishlistReminderEmail';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const body = await request.json();
     const { userIds, action = 'send_reminder' } = body;

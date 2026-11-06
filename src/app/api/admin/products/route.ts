@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { dbService } from '@/lib/db';
 import { adminProductSchema } from '@/lib/validations';
 import { requireStaffOrAdmin, requireAdmin } from '@/lib/auth/admin';
@@ -9,13 +9,17 @@ import { requireStaffOrAdmin, requireAdmin } from '@/lib/auth/admin';
  * Always revalidate 'products-all', 'featured-products', and 'trending-products'.
  */
 function bustProductCacheTags(category?: string) {
+  revalidatePath('/');
+  revalidatePath('/shop');
   revalidateTag('products-all');
+  revalidateTag('products');
   revalidateTag('featured-products');
   revalidateTag('trending-products');
+  revalidateTag('new-drops');
   if (category) {
     revalidateTag(`products-${category}`);
   }
-  console.log(`[revalidateTag] products-all, featured-products, trending-products${category ? `, products-${category}` : ''}`);
+  console.log(`[revalidateTag] homepage & products busted${category ? `, products-${category}` : ''}`);
 }
 
 /**
@@ -50,9 +54,11 @@ async function cleanupCloudinaryAssets(images: any[]) {
   if (!Array.isArray(images) || images.length === 0) return;
   try {
     const { v2: cloudinary } = await import('cloudinary');
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dtj01pdog';
-    const apiKey = process.env.CLOUDINARY_API_KEY || '388993459747447';
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || '1IHqRKjnjPKzu7ACR-JbGML7Xts';
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) return;
 
     cloudinary.config({
       cloud_name: cloudName,

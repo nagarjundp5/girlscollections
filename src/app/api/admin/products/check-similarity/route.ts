@@ -2,14 +2,13 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { dbService } from '@/lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { requireStaffOrAdmin } from '@/lib/auth/admin';
 
 export async function GET(request: Request) {
+  const authRes = await requireStaffOrAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const { searchParams } = new URL(request.url);
     const name = searchParams.get('name');

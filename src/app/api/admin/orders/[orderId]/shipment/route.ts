@@ -5,7 +5,8 @@ export const runtime = 'nodejs';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { getAuth, clerkClient } from '@clerk/nextjs/server';
+import { requireStaffOrAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 import { callShiprocketApi } from '@/lib/orchestration/providers/shiprocket-logger';
 
 const MAKE_WHATSAPP_WEBHOOK = process.env.MAKE_WEBHOOK_URL || '';
@@ -14,21 +15,15 @@ export async function POST(
   request: Request,
   { params }: { params: { orderId: string } }
 ) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireStaffOrAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   const { orderId } = params;
 
   try {
-    const session = getAuth(request as any);
-    if (!session.userId) {
-      return NextResponse.json({ error: 'Unauthorized: Admins only' }, { status: 401 });
-    }
-
-    const client = await clerkClient();
-    const clerkUser = await client.users.getUser(session.userId);
-    const role = (clerkUser.publicMetadata as any)?.role;
-
-    if (role === 'intern') {
-      return NextResponse.json({ error: 'Forbidden: Interns cannot perform shipment actions' }, { status: 403 });
-    }
 
     const body = await request.json();
     const { trackingNumber, courierPartner } = body;

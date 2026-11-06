@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { dbService } from '@/lib/db';
+import { toPublicProductDTO, toPublicProductDTOList } from '@/lib/dto/product';
 
 // Cache products for 60s at the CDN/edge — products don't change on every request.
 // Admin mutations should call revalidatePath('/') / revalidateTag to bust this.
@@ -14,26 +15,26 @@ export async function GET(request: Request) {
 
     if (slug) {
       const product = await dbService.getProductBySlug(slug);
-      if (!product) {
+      if (!product || product.is_active === false) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 });
       }
       return NextResponse.json(
-        { product },
+        { product: toPublicProductDTO(product) },
         {
           headers: {
-            // Cache individual product responses for 60s, stale-while-revalidate for 5min
             'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
           },
         }
       );
     }
 
-    const products = await dbService.getProducts();
+    const rawProducts = await dbService.getProducts();
+    const products = toPublicProductDTOList(rawProducts);
+
     return NextResponse.json(
       { products },
       {
         headers: {
-          // Cache product list for 60s, serve stale for up to 1h while revalidating
           'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=3600',
         },
       }

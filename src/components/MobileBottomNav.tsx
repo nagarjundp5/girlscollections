@@ -160,13 +160,13 @@ export default function MobileBottomNav() {
                 <div className="relative z-10 p-1 flex items-center justify-center">
                   <Icon
                     className={`w-5 h-5 stroke-[1.5] transition-colors duration-200 ${
-                      active ? 'text-[#3B1230] stroke-[1.8]' : 'text-[#8A7F82]'
+                      active ? 'text-[#1C1417] stroke-[1.8]' : 'text-[#6B6B7B]'
                     }`}
                   />
 
-                  {/* Badge Counter (16px circle, Wine #3B1230, White 10px text) */}
+                  {/* Badge Counter (16px circle, Dark #1C1417, White 10px text) */}
                   {!!tab.badge && tab.badge > 0 && (
-                    <span className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-[#3B1230] text-white text-[10px] font-bold flex items-center justify-center shadow-xs font-sans">
+                    <span className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-[#1C1417] text-white text-[10px] font-bold flex items-center justify-center shadow-xs font-sans">
                       {tab.badge}
                     </span>
                   )}
@@ -176,7 +176,7 @@ export default function MobileBottomNav() {
               {/* Label (Always visible, Sentence Case, 11px, Jost/DM Sans 500) */}
               <span
                 className={`text-[11px] font-medium tracking-[0.01em] transition-colors duration-200 leading-tight ${
-                  active ? 'text-[#1C1417]' : 'text-[#8A7F82]'
+                  active ? 'text-[#1C1417]' : 'text-[#6B6B7B]'
                 }`}
               >
                 {tab.label}

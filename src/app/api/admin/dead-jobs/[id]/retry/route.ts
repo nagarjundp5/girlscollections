@@ -4,18 +4,21 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { auth } from '@clerk/nextjs/server';
+import { requireAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 import { writeAuditLog } from '@/lib/orchestration/audit-service';
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
-    const { userId } = await auth();
-    if (process.env.NODE_ENV === 'production' && !userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const deadJobId = params.id;
     if (!deadJobId) {
@@ -54,7 +57,7 @@ export async function POST(
       await writeAuditLog({
         orderId: deadJob.order_id,
         action: 'ADMIN_RETRYS_DEAD_LETTER_JOB',
-        workerId: userId || 'admin',
+        workerId: authRes.userId || 'admin',
         details: { oldJobId: deadJob.job_id, newJobId: newJob.id },
         clientTx: tx,
       });

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>girls_import4 &mdash; 5-Image Product Arrangement Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0B0F19;
+    color: #E2E8F0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 20px 80px;
+    line-height: 1.5;
+  }
+  .top-header {
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+    background: rgba(17, 24, 39, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid #1F2937;
+    border-radius: 14px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .title-group h1 {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #F9FAFB;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .title-group p {
+    font-size: 12px;
+    color: #9CA3AF;
+    margin-top: 2px;
+  }
+  .stats-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    background: #1F2937;
+    border: 1px solid #374151;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #D1D5DB;
+  }
+  .stat-pill strong {
+    color: #F59E0B;
+    font-weight: 700;
+  }
+  .filter-btns {
+    display: flex;
+    gap: 6px;
+    background: #111827;
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid #374151;
+  }
+  .filter-btn {
+    background: transparent;
+    border: none;
+    color: #9CA3AF;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-btn:hover { color: #FFF; }
+  .filter-btn.active {
+    background: #3B82F6;
+    color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(59,130,246,0.3);
+  }
+
+  .content-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-col: column;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .product-row {
+    background: #111827;
+    border: 1px solid #1F2937;
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .product-row:hover {
+    border-color: #374151;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+  .product-row.has-anomaly {
+    border-color: #EF4444;
+    background: rgba(239,68,68,0.04);
+  }
+
+  .product-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1F2937;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .product-num {
+    background: #1F2937;
+    color: #F3F4F6;
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #374151;
+  }
+  .product-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #F9FAFB;
+  }
+  .range-tag {
+    font-size: 12px;
+    color: #9CA3AF;
+    background: #1F2937;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-success {
+    background: rgba(16,185,129,0.15);
+    color: #34D399;
+    border: 1px solid rgba(16,185,129,0.3);
+  }
+  .badge-warning {
+    background: rgba(239,68,68,0.15);
+    color: #F87171;
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+
+  .anomaly-banner {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #FCA5A5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .images-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+  }
+  @media (max-width: 1024px) {
+    .images-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 640px) {
+    .images-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .img-card {
+    background: #0B0F19;
+    border: 1px solid #1F2937;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .img-card:hover {
+    transform: translateY(-3px);
+    border-color: #3B82F6;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+  }
+
+  .thumb-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.25s ease;
+  }
+  .img-card:hover .thumb-box img {
+    transform: scale(1.04);
+  }
+
+  .thumb-box.empty {
+    background: #111827;
+    border: 2px dashed #374151;
+  }
+  .empty-icon {
+    font-size: 28px;
+    color: #4B5563;
+  }
+
+  .role-pill {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(6px);
+  }
+  .role-primary {
+    background: rgba(16,185,129,0.9);
+    color: #FFF;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .role-secondary {
+    background: rgba(59,130,246,0.9);
+    color: #FFF;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .role-gallery {
+    background: rgba(17,24,39,0.85);
+    color: #D1D5DB;
+    border: 1px solid #374151;
+  }
+  .role-empty {
+    background: rgba(239,68,68,0.85);
+    color: #FFF;
+  }
+
+  .seq-tag {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 800;
+    background: rgba(0,0,0,0.7);
+    color: #F59E0B;
+    border: 1px solid rgba(245,158,11,0.4);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  .img-meta {
+    padding: 8px 10px;
+    background: #111827;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .filename {
+    font-size: 11px;
+    font-family: monospace;
+    color: #E5E7EB;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sub-info {
+    font-size: 10px;
+    color: #9CA3AF;
+  }
+  .text-muted { color: #6B7280; font-style: italic; }
+
+  /* Modal Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.92);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  }
+  .lightbox-caption {
+    margin-top: 14px;
+    color: #E2E8F0;
+    font-size: 13px;
+    font-family: monospace;
+    text-align: center;
+    max-width: 800px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: #1F2937;
+    border: 1px solid #374151;
+    color: #FFF;
+    font-size: 20px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-header">
+  <div class="title-group">
+    <h1>📂 girls_import4 &mdash; 5-Image Preview Dashboard</h1>
+    <p>8 Products &bull; 5 Images Each (40 Total Photos) &bull; Verified 100% Complete</p>
+  </div>
+  <div class="stats-strip">
+    <div class="stat-pill">Total: <strong>8 Products</strong></div>
+    <div class="stat-pill">Complete: <strong style="color: #34D399">8</strong></div>
+    <div class="stat-pill">Flagged: <strong style="color: #9CA3AF">0</strong></div>
+    <div class="filter-btns">
+      <button class="filter-btn active" onclick="filterView('all', this)">All (8)</button>
+      <button class="filter-btn" onclick="filterView('complete', this)">Complete (8)</button>
+      <button class="filter-btn" onclick="filterView('flagged', this)">Flagged (0)</button>
+    </div>
+  </div>
+</div>
+
+<div class="content-container">
+  
+        <div class="product-row " id="prod-01" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#01</span>
+              <span class="product-title">Product 01</span>
+              <span class="range-tag">Image IDs: 170..174</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.12-170.jpeg', '1 Primary (Cover) - #170 - WhatsApp Image 2026-11-04 at 22.13.12-170.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#170</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.12-170.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.12-170.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.12-170.jpeg">WhatsApp Image 2026-11-04 at 22.13.12-170.jpeg</div>
+                <div class="sub-info">365.0 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.14-171.jpeg', '2 Secondary (Hover) - #171 - WhatsApp Image 2026-11-04 at 22.13.14-171.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#171</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.14-171.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.14-171.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.14-171.jpeg">WhatsApp Image 2026-11-04 at 22.13.14-171.jpeg</div>
+                <div class="sub-info">423.3 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.16-172.jpeg', '3 Gallery - #172 - WhatsApp Image 2026-11-04 at 22.13.16-172.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#172</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.16-172.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.16-172.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.16-172.jpeg">WhatsApp Image 2026-11-04 at 22.13.16-172.jpeg</div>
+                <div class="sub-info">395.1 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.16 (1)-173.jpeg', '4 Gallery - #173 - WhatsApp Image 2026-11-04 at 22.13.16 (1)-173.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#173</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.16 (1)-173.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.16 (1)-173.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.16 (1)-173.jpeg">WhatsApp Image 2026-11-04 at 22.13.16 (1)-173.jpeg</div>
+                <div class="sub-info">380.4 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.17-174.jpeg', '5 Gallery - #174 - WhatsApp Image 2026-11-04 at 22.13.17-174.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#174</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.17-174.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.17-174.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.17-174.jpeg">WhatsApp Image 2026-11-04 at 22.13.17-174.jpeg</div>
+                <div class="sub-info">388.9 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-02" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#02</span>
+              <span class="product-title">Product 02</span>
+              <span class="range-tag">Image IDs: 178..182</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.29-178.jpeg', '1 Primary (Cover) - #178 - WhatsApp Image 2026-11-04 at 22.13.29-178.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#178</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.29-178.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.29-178.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.29-178.jpeg">WhatsApp Image 2026-11-04 at 22.13.29-178.jpeg</div>
+                <div class="sub-info">394.5 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.29 (1)-179.jpeg', '2 Secondary (Hover) - #179 - WhatsApp Image 2026-11-04 at 22.13.29 (1)-179.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#179</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.29 (1)-179.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.29 (1)-179.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.29 (1)-179.jpeg">WhatsApp Image 2026-11-04 at 22.13.29 (1)-179.jpeg</div>
+                <div class="sub-info">400.7 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.29 (2)-180.jpeg', '3 Gallery - #180 - WhatsApp Image 2026-11-04 at 22.13.29 (2)-180.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#180</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.29 (2)-180.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.29 (2)-180.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.29 (2)-180.jpeg">WhatsApp Image 2026-11-04 at 22.13.29 (2)-180.jpeg</div>
+                <div class="sub-info">341.6 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.29 (3)-181.jpeg', '4 Gallery - #181 - WhatsApp Image 2026-11-04 at 22.13.29 (3)-181.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#181</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.29 (3)-181.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.29 (3)-181.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.29 (3)-181.jpeg">WhatsApp Image 2026-11-04 at 22.13.29 (3)-181.jpeg</div>
+                <div class="sub-info">350.4 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.30-182.jpeg', '5 Gallery - #182 - WhatsApp Image 2026-11-04 at 22.13.30-182.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#182</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.30-182.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.30-182.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.30-182.jpeg">WhatsApp Image 2026-11-04 at 22.13.30-182.jpeg</div>
+                <div class="sub-info">356.6 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-03" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#03</span>
+              <span class="product-title">Product 03</span>
+              <span class="range-tag">Image IDs: 183..187</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.31-183.jpeg', '1 Primary (Cover) - #183 - WhatsApp Image 2026-11-04 at 22.13.31-183.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#183</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.31-183.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.31-183.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.31-183.jpeg">WhatsApp Image 2026-11-04 at 22.13.31-183.jpeg</div>
+                <div class="sub-info">367.7 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.32-184.jpeg', '2 Secondary (Hover) - #184 - WhatsApp Image 2026-11-04 at 22.13.32-184.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#184</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.32-184.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.32-184.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.32-184.jpeg">WhatsApp Image 2026-11-04 at 22.13.32-184.jpeg</div>
+                <div class="sub-info">362.7 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.34-185.jpeg', '3 Gallery - #185 - WhatsApp Image 2026-11-04 at 22.13.34-185.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#185</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.34-185.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.34-185.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.34-185.jpeg">WhatsApp Image 2026-11-04 at 22.13.34-185.jpeg</div>
+                <div class="sub-info">388.2 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.34 (1)-186.jpeg', '4 Gallery - #186 - WhatsApp Image 2026-11-04 at 22.13.34 (1)-186.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#186</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.34 (1)-186.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.34 (1)-186.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.34 (1)-186.jpeg">WhatsApp Image 2026-11-04 at 22.13.34 (1)-186.jpeg</div>
+                <div class="sub-info">351.2 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.34 (2)-187.jpeg', '5 Gallery - #187 - WhatsApp Image 2026-11-04 at 22.13.34 (2)-187.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#187</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.34 (2)-187.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.34 (2)-187.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.34 (2)-187.jpeg">WhatsApp Image 2026-11-04 at 22.13.34 (2)-187.jpeg</div>
+                <div class="sub-info">350.2 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-04" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#04</span>
+              <span class="product-title">Product 04</span>
+              <span class="range-tag">Image IDs: 194..198</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (1)-194.jpeg', '1 Primary (Cover) - #194 - WhatsApp Image 2026-11-04 at 22.13.39 (1)-194.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#194</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (1)-194.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (1)-194.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (1)-194.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (1)-194.jpeg</div>
+                <div class="sub-info">362.3 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (2)-195.jpeg', '2 Secondary (Hover) - #195 - WhatsApp Image 2026-11-04 at 22.13.39 (2)-195.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#195</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (2)-195.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (2)-195.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (2)-195.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (2)-195.jpeg</div>
+                <div class="sub-info">389.0 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (3)-196.jpeg', '3 Gallery - #196 - WhatsApp Image 2026-11-04 at 22.13.39 (3)-196.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#196</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (3)-196.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (3)-196.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (3)-196.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (3)-196.jpeg</div>
+                <div class="sub-info">384.0 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (4)-197.jpeg', '4 Gallery - #197 - WhatsApp Image 2026-11-04 at 22.13.39 (4)-197.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#197</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (4)-197.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (4)-197.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (4)-197.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (4)-197.jpeg</div>
+                <div class="sub-info">359.0 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (6)-198.jpeg', '5 Gallery - #198 - WhatsApp Image 2026-11-04 at 22.13.39 (6)-198.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#198</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (6)-198.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (6)-198.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (6)-198.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (6)-198.jpeg</div>
+                <div class="sub-info">354.5 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-05" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#05</span>
+              <span class="product-title">Product 05</span>
+              <span class="range-tag">Image IDs: 199..203</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (7)-199.jpeg', '1 Primary (Cover) - #199 - WhatsApp Image 2026-11-04 at 22.13.39 (7)-199.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#199</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (7)-199.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (7)-199.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (7)-199.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (7)-199.jpeg</div>
+                <div class="sub-info">368.7 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (8)-200.jpeg', '2 Secondary (Hover) - #200 - WhatsApp Image 2026-11-04 at 22.13.39 (8)-200.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#200</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (8)-200.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (8)-200.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (8)-200.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (8)-200.jpeg</div>
+                <div class="sub-info">339.9 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (9)-201.jpeg', '3 Gallery - #201 - WhatsApp Image 2026-11-04 at 22.13.39 (9)-201.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#201</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.39 (9)-201.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.39 (9)-201.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.39 (9)-201.jpeg">WhatsApp Image 2026-11-04 at 22.13.39 (9)-201.jpeg</div>
+                <div class="sub-info">351.1 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.40-202.jpeg', '4 Gallery - #202 - WhatsApp Image 2026-11-04 at 22.13.40-202.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#202</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.40-202.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.40-202.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.40-202.jpeg">WhatsApp Image 2026-11-04 at 22.13.40-202.jpeg</div>
+                <div class="sub-info">360.8 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.40 (1)-203.jpeg', '5 Gallery - #203 - WhatsApp Image 2026-11-04 at 22.13.40 (1)-203.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#203</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.40 (1)-203.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.40 (1)-203.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.40 (1)-203.jpeg">WhatsApp Image 2026-11-04 at 22.13.40 (1)-203.jpeg</div>
+                <div class="sub-info">343.0 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-06" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#06</span>
+              <span class="product-title">Product 06</span>
+              <span class="range-tag">Image IDs: 204..208</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.40 (2)-204.jpeg', '1 Primary (Cover) - #204 - WhatsApp Image 2026-11-04 at 22.13.40 (2)-204.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#204</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.40 (2)-204.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.40 (2)-204.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.40 (2)-204.jpeg">WhatsApp Image 2026-11-04 at 22.13.40 (2)-204.jpeg</div>
+                <div class="sub-info">353.3 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41-205.jpeg', '2 Secondary (Hover) - #205 - WhatsApp Image 2026-11-04 at 22.13.41-205.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#205</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41-205.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41-205.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41-205.jpeg">WhatsApp Image 2026-11-04 at 22.13.41-205.jpeg</div>
+                <div class="sub-info">391.6 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (1)-206.jpeg', '3 Gallery - #206 - WhatsApp Image 2026-11-04 at 22.13.41 (1)-206.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#206</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (1)-206.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (1)-206.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (1)-206.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (1)-206.jpeg</div>
+                <div class="sub-info">362.5 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (2)-207.jpeg', '4 Gallery - #207 - WhatsApp Image 2026-11-04 at 22.13.41 (2)-207.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#207</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (2)-207.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (2)-207.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (2)-207.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (2)-207.jpeg</div>
+                <div class="sub-info">378.7 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (3)-208.jpeg', '5 Gallery - #208 - WhatsApp Image 2026-11-04 at 22.13.41 (3)-208.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#208</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (3)-208.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (3)-208.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (3)-208.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (3)-208.jpeg</div>
+                <div class="sub-info">350.3 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-07" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#07</span>
+              <span class="product-title">Product 07</span>
+              <span class="range-tag">Image IDs: 209..213</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (4)-209.jpeg', '1 Primary (Cover) - #209 - WhatsApp Image 2026-11-04 at 22.13.41 (4)-209.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#209</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (4)-209.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (4)-209.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (4)-209.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (4)-209.jpeg</div>
+                <div class="sub-info">406.9 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (5)-210.jpeg', '2 Secondary (Hover) - #210 - WhatsApp Image 2026-11-04 at 22.13.41 (5)-210.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#210</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (5)-210.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (5)-210.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (5)-210.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (5)-210.jpeg</div>
+                <div class="sub-info">434.8 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (6)-211.jpeg', '3 Gallery - #211 - WhatsApp Image 2026-11-04 at 22.13.41 (6)-211.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#211</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (6)-211.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (6)-211.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (6)-211.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (6)-211.jpeg</div>
+                <div class="sub-info">456.7 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (7)-212.jpeg', '4 Gallery - #212 - WhatsApp Image 2026-11-04 at 22.13.41 (7)-212.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#212</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.41 (7)-212.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.41 (7)-212.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.41 (7)-212.jpeg">WhatsApp Image 2026-11-04 at 22.13.41 (7)-212.jpeg</div>
+                <div class="sub-info">401.0 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.42-213.jpeg', '5 Gallery - #213 - WhatsApp Image 2026-11-04 at 22.13.42-213.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#213</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.42-213.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.42-213.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.42-213.jpeg">WhatsApp Image 2026-11-04 at 22.13.42-213.jpeg</div>
+                <div class="sub-info">390.8 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="product-row " id="prod-08" data-complete="true">
+          <div class="product-header">
+            <div class="header-left">
+              <span class="product-num">#08</span>
+              <span class="product-title">Product 08</span>
+              <span class="range-tag">Image IDs: 215..219</span>
+            </div>
+            <div class="header-right">
+              <span class="badge badge-success">✓ 5 Photos Complete</span>
+            </div>
+          </div>
+          
+          <div class="images-grid">
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (2)-215.jpeg', '1 Primary (Cover) - #215 - WhatsApp Image 2026-11-04 at 22.13.42 (2)-215.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-primary">1 Primary (Cover)</span>
+                <span class="seq-tag">#215</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (2)-215.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.42 (2)-215.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.42 (2)-215.jpeg">WhatsApp Image 2026-11-04 at 22.13.42 (2)-215.jpeg</div>
+                <div class="sub-info">308.2 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (3)-216.jpeg', '2 Secondary (Hover) - #216 - WhatsApp Image 2026-11-04 at 22.13.42 (3)-216.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-secondary">2 Secondary (Hover)</span>
+                <span class="seq-tag">#216</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (3)-216.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.42 (3)-216.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.42 (3)-216.jpeg">WhatsApp Image 2026-11-04 at 22.13.42 (3)-216.jpeg</div>
+                <div class="sub-info">331.6 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (4)-217.jpeg', '3 Gallery - #217 - WhatsApp Image 2026-11-04 at 22.13.42 (4)-217.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">3 Gallery</span>
+                <span class="seq-tag">#217</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (4)-217.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.42 (4)-217.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.42 (4)-217.jpeg">WhatsApp Image 2026-11-04 at 22.13.42 (4)-217.jpeg</div>
+                <div class="sub-info">323.6 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (5)-218.jpeg', '4 Gallery - #218 - WhatsApp Image 2026-11-04 at 22.13.42 (5)-218.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">4 Gallery</span>
+                <span class="seq-tag">#218</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (5)-218.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.42 (5)-218.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.42 (5)-218.jpeg">WhatsApp Image 2026-11-04 at 22.13.42 (5)-218.jpeg</div>
+                <div class="sub-info">303.2 KB</div>
+              </div>
+            </div>
+            
+            <div class="img-card" onclick="openLightbox('girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (6)-219.jpeg', '5 Gallery - #219 - WhatsApp Image 2026-11-04 at 22.13.42 (6)-219.jpeg')">
+              <div class="thumb-box">
+                <span class="role-pill role-gallery">5 Gallery</span>
+                <span class="seq-tag">#219</span>
+                <img src="girls_import4/WhatsApp Image 2026-11-04 at 22.13.42 (6)-219.jpeg" alt="WhatsApp Image 2026-11-04 at 22.13.42 (6)-219.jpeg" loading="lazy" />
+              </div>
+              <div class="img-meta">
+                <div class="filename" title="WhatsApp Image 2026-11-04 at 22.13.42 (6)-219.jpeg">WhatsApp Image 2026-11-04 at 22.13.42 (6)-219.jpeg</div>
+                <div class="sub-info">317.8 KB</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="preview" onclick="event.stopPropagation()" />
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>
+function filterView(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const rows = document.querySelectorAll('.product-row');
+  rows.forEach(r => {
+    const isComp = r.getAttribute('data-complete') === 'true';
+    if (type === 'all') r.style.display = 'block';
+    else if (type === 'complete') r.style.display = isComp ? 'block' : 'none';
+    else if (type === 'flagged') r.style.display = !isComp ? 'block' : 'none';
+  });
+}
+
+function openLightbox(src, caption) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox-caption').innerText = caption;
+  lb.classList.add('active');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
+</body>
+</html>

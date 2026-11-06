@@ -1,4 +1,8 @@
-const secret = process.env.ADMIN_JWT_SECRET || 'tgc_default_jwt_secret_key_2026_fallback';
+const _rawSecret = process.env.ADMIN_JWT_SECRET;
+if (!_rawSecret && process.env.NODE_ENV === 'production') {
+  throw new Error('[SECURITY] ADMIN_JWT_SECRET environment variable is required in production but is not set.');
+}
+const secret = _rawSecret || 'tgc_dev_only_jwt_secret_NOT_FOR_PRODUCTION';
 
 function base64UrlEncode(str: string): string {
   return Buffer.from(str, 'utf-8').toString('base64url');
@@ -41,6 +45,11 @@ export async function signToken(payload: { userId: string }): Promise<string> {
 /** 15-minute temp token that encodes a verified phone for profile completion step. */
 export async function signTempToken(payload: { phone: string; isTemp: true }): Promise<string> {
   return buildToken(payload, 15 * 60);
+}
+
+/** 7-day cryptographically signed admin session token */
+export async function signAdminToken(payload: { email: string; role: 'admin' | 'staff'; isAdminSession: true; userId?: string }): Promise<string> {
+  return buildToken(payload, 7 * 24 * 60 * 60);
 }
 
 export async function verifyToken(token: string): Promise<Record<string, unknown> | null> {

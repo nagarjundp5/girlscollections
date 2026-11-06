@@ -1,0 +1,5672 @@
+[
+  {
+    "group_index": 1,
+    "product_no": "001",
+    "product_id": "product_batch2_001",
+    "product_name": "New Product 001",
+    "slug": "new-product-001",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.11.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.11.jpeg",
+        "size_bytes": 392957,
+        "timestamp": "2026-11-02 22:04:11",
+        "color_rgb": "rgb(37,56,56)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.27.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.27.jpeg",
+        "size_bytes": 391306,
+        "timestamp": "2026-11-02 22:04:27",
+        "color_rgb": "rgb(37,56,56)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.27 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.27 (1).jpeg",
+        "size_bytes": 356688,
+        "timestamp": "2026-11-02 22:04:27",
+        "color_rgb": "rgb(41,58,57)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.27 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.27 (2).jpeg",
+        "size_bytes": 316585,
+        "timestamp": "2026-11-02 22:04:27",
+        "color_rgb": "rgb(37,61,70)"
+      }
+    ]
+  },
+  {
+    "group_index": 2,
+    "product_no": "002",
+    "product_id": "product_batch2_002",
+    "product_name": "New Product 002",
+    "slug": "new-product-002",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.38.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.38.jpeg",
+        "size_bytes": 422432,
+        "timestamp": "2026-11-02 22:04:38",
+        "color_rgb": "rgb(35,61,71)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.38 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.38 (1).jpeg",
+        "size_bytes": 330553,
+        "timestamp": "2026-11-02 22:04:38",
+        "color_rgb": "rgb(39,65,74)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.39.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.39.jpeg",
+        "size_bytes": 354238,
+        "timestamp": "2026-11-02 22:04:39",
+        "color_rgb": "rgb(34,57,66)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.39 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.39 (1).jpeg",
+        "size_bytes": 325746,
+        "timestamp": "2026-11-02 22:04:39",
+        "color_rgb": "rgb(147,49,49)"
+      }
+    ]
+  },
+  {
+    "group_index": 3,
+    "product_no": "003",
+    "product_id": "product_batch2_003",
+    "product_name": "New Product 003",
+    "slug": "new-product-003",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.39 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.39 (2).jpeg",
+        "size_bytes": 340795,
+        "timestamp": "2026-11-02 22:04:39",
+        "color_rgb": "rgb(153,54,52)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.47.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.47.jpeg",
+        "size_bytes": 411896,
+        "timestamp": "2026-11-02 22:04:47",
+        "color_rgb": "rgb(148,66,64)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.47 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.47 (1).jpeg",
+        "size_bytes": 325650,
+        "timestamp": "2026-11-02 22:04:47",
+        "color_rgb": "rgb(151,41,43)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.47 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.47 (2).jpeg",
+        "size_bytes": 374625,
+        "timestamp": "2026-11-02 22:04:47",
+        "color_rgb": "rgb(116,78,72)"
+      }
+    ]
+  },
+  {
+    "group_index": 4,
+    "product_no": "004",
+    "product_id": "product_batch2_004",
+    "product_name": "New Product 004",
+    "slug": "new-product-004",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49.jpeg",
+        "size_bytes": 410227,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(113,74,67)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (1).jpeg",
+        "size_bytes": 412437,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(101,63,60)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (2).jpeg",
+        "size_bytes": 386605,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(111,71,64)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (3).jpeg",
+        "size_bytes": 281186,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(84,44,64)"
+      }
+    ]
+  },
+  {
+    "group_index": 5,
+    "product_no": "005",
+    "product_id": "product_batch2_005",
+    "product_name": "New Product 005",
+    "slug": "new-product-005",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (4).jpeg",
+        "size_bytes": 291483,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(99,57,75)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (5).jpeg",
+        "size_bytes": 273315,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(88,46,69)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (6).jpeg",
+        "size_bytes": 274757,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(93,50,70)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.49 (7).jpeg",
+        "size_bytes": 420925,
+        "timestamp": "2026-11-02 22:04:49",
+        "color_rgb": "rgb(79,56,44)"
+      }
+    ]
+  },
+  {
+    "group_index": 6,
+    "product_no": "006",
+    "product_id": "product_batch2_006",
+    "product_name": "New Product 006",
+    "slug": "new-product-006",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50.jpeg",
+        "size_bytes": 352310,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(78,54,45)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (1).jpeg",
+        "size_bytes": 432292,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(88,64,51)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (2).jpeg",
+        "size_bytes": 339455,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(83,59,47)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (3).jpeg",
+        "size_bytes": 361956,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(115,50,49)"
+      }
+    ]
+  },
+  {
+    "group_index": 7,
+    "product_no": "007",
+    "product_id": "product_batch2_007",
+    "product_name": "New Product 007",
+    "slug": "new-product-007",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (4).jpeg",
+        "size_bytes": 417195,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(106,31,37)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (5).jpeg",
+        "size_bytes": 388383,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(117,39,41)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (6).jpeg",
+        "size_bytes": 398817,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(114,41,43)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (7).jpeg",
+        "size_bytes": 294696,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(141,93,75)"
+      }
+    ]
+  },
+  {
+    "group_index": 8,
+    "product_no": "008",
+    "product_id": "product_batch2_008",
+    "product_name": "New Product 008",
+    "slug": "new-product-008",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (8).jpeg",
+        "size_bytes": 393114,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(150,103,83)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (9).jpeg",
+        "size_bytes": 268558,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(119,71,55)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (10).jpeg",
+        "size_bytes": 321363,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(139,92,71)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (11).jpeg",
+        "size_bytes": 353740,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(53,52,56)"
+      }
+    ]
+  },
+  {
+    "group_index": 9,
+    "product_no": "009",
+    "product_id": "product_batch2_009",
+    "product_name": "New Product 009",
+    "slug": "new-product-009",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (12).jpeg",
+        "size_bytes": 321871,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(59,51,48)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (13).jpeg",
+        "size_bytes": 303553,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(42,43,52)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (14).jpeg",
+        "size_bytes": 311961,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(51,50,55)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (15).jpeg",
+        "size_bytes": 318202,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(176,168,157)"
+      }
+    ]
+  },
+  {
+    "group_index": 10,
+    "product_no": "010",
+    "product_id": "product_batch2_010",
+    "product_name": "New Product 010",
+    "slug": "new-product-010",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (16).jpeg",
+        "size_bytes": 254863,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(183,172,161)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (17).jpeg",
+        "size_bytes": 261718,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(184,173,161)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (18).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (18).jpeg",
+        "size_bytes": 292911,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(185,175,165)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (19).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (19).jpeg",
+        "size_bytes": 333955,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(140,103,44)"
+      }
+    ]
+  },
+  {
+    "group_index": 11,
+    "product_no": "011",
+    "product_id": "product_batch2_011",
+    "product_name": "New Product 011",
+    "slug": "new-product-011",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (20).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (20).jpeg",
+        "size_bytes": 325813,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(151,113,60)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (21).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (21).jpeg",
+        "size_bytes": 329721,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(123,93,33)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (22).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (22).jpeg",
+        "size_bytes": 322132,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(142,106,48)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (23).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (23).jpeg",
+        "size_bytes": 358357,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(172,124,104)"
+      }
+    ]
+  },
+  {
+    "group_index": 12,
+    "product_no": "012",
+    "product_id": "product_batch2_012",
+    "product_name": "New Product 012",
+    "slug": "new-product-012",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (24).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (24).jpeg",
+        "size_bytes": 302534,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(170,120,104)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (25).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (25).jpeg",
+        "size_bytes": 273737,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(166,119,100)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (26).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (26).jpeg",
+        "size_bytes": 253263,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(155,115,105)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (27).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (27).jpeg",
+        "size_bytes": 284820,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(176,160,86)"
+      }
+    ]
+  },
+  {
+    "group_index": 13,
+    "product_no": "013",
+    "product_id": "product_batch2_013",
+    "product_name": "New Product 013",
+    "slug": "new-product-013",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (28).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (28).jpeg",
+        "size_bytes": 331639,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(168,153,76)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (29).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (29).jpeg",
+        "size_bytes": 279980,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(171,155,72)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (30).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (30).jpeg",
+        "size_bytes": 251131,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(165,151,66)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (31).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (31).jpeg",
+        "size_bytes": 344547,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(70,53,83)"
+      }
+    ]
+  },
+  {
+    "group_index": 14,
+    "product_no": "014",
+    "product_id": "product_batch2_014",
+    "product_name": "New Product 014",
+    "slug": "new-product-014",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (32).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (32).jpeg",
+        "size_bytes": 342298,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(57,44,73)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (33).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (33).jpeg",
+        "size_bytes": 327518,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(68,52,81)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (34).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.50 (34).jpeg",
+        "size_bytes": 296187,
+        "timestamp": "2026-11-02 22:04:50",
+        "color_rgb": "rgb(56,42,78)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51.jpeg",
+        "size_bytes": 309216,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(158,90,71)"
+      }
+    ]
+  },
+  {
+    "group_index": 15,
+    "product_no": "015",
+    "product_id": "product_batch2_015",
+    "product_name": "New Product 015",
+    "slug": "new-product-015",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (1).jpeg",
+        "size_bytes": 376299,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(147,63,45)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (2).jpeg",
+        "size_bytes": 300520,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(151,74,56)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (3).jpeg",
+        "size_bytes": 279204,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(145,59,39)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (4).jpeg",
+        "size_bytes": 261173,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(184,162,136)"
+      }
+    ]
+  },
+  {
+    "group_index": 16,
+    "product_no": "016",
+    "product_id": "product_batch2_016",
+    "product_name": "New Product 016",
+    "slug": "new-product-016",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (5).jpeg",
+        "size_bytes": 259848,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(182,157,129)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (6).jpeg",
+        "size_bytes": 251023,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(179,157,130)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (7).jpeg",
+        "size_bytes": 256775,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(187,166,138)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (8).jpeg",
+        "size_bytes": 313091,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(134,103,36)"
+      }
+    ]
+  },
+  {
+    "group_index": 17,
+    "product_no": "017",
+    "product_id": "product_batch2_017",
+    "product_name": "New Product 017",
+    "slug": "new-product-017",
+    "session_index": 1,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (9).jpeg",
+        "size_bytes": 286360,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(134,102,43)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (10).jpeg",
+        "size_bytes": 302500,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(133,102,32)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (11).jpeg",
+        "size_bytes": 281558,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(136,106,24)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (12).jpeg",
+        "size_bytes": 246635,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(49,47,51)"
+      }
+    ]
+  },
+  {
+    "group_index": 18,
+    "product_no": "018",
+    "product_id": "product_batch2_018",
+    "product_name": "New Product 018",
+    "slug": "new-product-018",
+    "session_index": 1,
+    "is_complete": false,
+    "anomaly_note": "Session 1 remainder: only 3 photo(s) available in this export batch",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (13).jpeg",
+        "size_bytes": 274462,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(37,39,48)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (14).jpeg",
+        "size_bytes": 270796,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(42,42,52)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 22.04.51 (15).jpeg",
+        "size_bytes": 241894,
+        "timestamp": "2026-11-02 22:04:51",
+        "color_rgb": "rgb(32,37,54)"
+      }
+    ]
+  },
+  {
+    "group_index": 19,
+    "product_no": "019",
+    "product_id": "product_batch2_019",
+    "product_name": "New Product 019",
+    "slug": "new-product-019",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.02.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.02.jpeg",
+        "size_bytes": 286627,
+        "timestamp": "2026-11-02 23:03:02",
+        "color_rgb": "rgb(163,170,161)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.02 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.02 (1).jpeg",
+        "size_bytes": 190392,
+        "timestamp": "2026-11-02 23:03:02",
+        "color_rgb": "rgb(149,153,144)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.04.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.04.jpeg",
+        "size_bytes": 231121,
+        "timestamp": "2026-11-02 23:03:04",
+        "color_rgb": "rgb(138,145,137)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.06.jpeg",
+        "size_bytes": 239589,
+        "timestamp": "2026-11-02 23:03:06",
+        "color_rgb": "rgb(146,152,143)"
+      }
+    ]
+  },
+  {
+    "group_index": 20,
+    "product_no": "020",
+    "product_id": "product_batch2_020",
+    "product_name": "New Product 020",
+    "slug": "new-product-020",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.06 (1).jpeg",
+        "size_bytes": 257273,
+        "timestamp": "2026-11-02 23:03:06",
+        "color_rgb": "rgb(154,130,133)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.06 (2).jpeg",
+        "size_bytes": 223354,
+        "timestamp": "2026-11-02 23:03:06",
+        "color_rgb": "rgb(165,146,152)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.06 (3).jpeg",
+        "size_bytes": 243316,
+        "timestamp": "2026-11-02 23:03:06",
+        "color_rgb": "rgb(146,126,133)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07.jpeg",
+        "size_bytes": 240157,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(170,150,155)"
+      }
+    ]
+  },
+  {
+    "group_index": 21,
+    "product_no": "021",
+    "product_id": "product_batch2_021",
+    "product_name": "New Product 021",
+    "slug": "new-product-021",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (1).jpeg",
+        "size_bytes": 232384,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(157,138,122)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (2).jpeg",
+        "size_bytes": 199729,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(176,160,145)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (3).jpeg",
+        "size_bytes": 222622,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(151,132,117)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (4).jpeg",
+        "size_bytes": 229693,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(113,69,86)"
+      }
+    ]
+  },
+  {
+    "group_index": 22,
+    "product_no": "022",
+    "product_id": "product_batch2_022",
+    "product_name": "New Product 022",
+    "slug": "new-product-022",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (5).jpeg",
+        "size_bytes": 259121,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(113,75,88)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (6).jpeg",
+        "size_bytes": 210828,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(85,43,62)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (7).jpeg",
+        "size_bytes": 232558,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(94,48,69)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (8).jpeg",
+        "size_bytes": 245467,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(183,156,148)"
+      }
+    ]
+  },
+  {
+    "group_index": 23,
+    "product_no": "023",
+    "product_id": "product_batch2_023",
+    "product_name": "New Product 023",
+    "slug": "new-product-023",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.07 (9).jpeg",
+        "size_bytes": 223676,
+        "timestamp": "2026-11-02 23:03:07",
+        "color_rgb": "rgb(190,171,165)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.08.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.08.jpeg",
+        "size_bytes": 254579,
+        "timestamp": "2026-11-02 23:03:08",
+        "color_rgb": "rgb(176,149,144)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.09.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.09.jpeg",
+        "size_bytes": 246670,
+        "timestamp": "2026-11-02 23:03:09",
+        "color_rgb": "rgb(186,160,154)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.09 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.09 (1).jpeg",
+        "size_bytes": 246159,
+        "timestamp": "2026-11-02 23:03:09",
+        "color_rgb": "rgb(201,187,153)"
+      }
+    ]
+  },
+  {
+    "group_index": 24,
+    "product_no": "024",
+    "product_id": "product_batch2_024",
+    "product_name": "New Product 024",
+    "slug": "new-product-024",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10.jpeg",
+        "size_bytes": 297564,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(204,188,157)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (1).jpeg",
+        "size_bytes": 276354,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(198,183,149)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (2).jpeg",
+        "size_bytes": 275166,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(204,188,151)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (3).jpeg",
+        "size_bytes": 237543,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(130,101,99)"
+      }
+    ]
+  },
+  {
+    "group_index": 25,
+    "product_no": "025",
+    "product_id": "product_batch2_025",
+    "product_name": "New Product 025",
+    "slug": "new-product-025",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (4).jpeg",
+        "size_bytes": 278738,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(129,94,89)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (5).jpeg",
+        "size_bytes": 212647,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(72,31,37)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (6).jpeg",
+        "size_bytes": 191439,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(84,39,43)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.10 (7).jpeg",
+        "size_bytes": 228940,
+        "timestamp": "2026-11-02 23:03:10",
+        "color_rgb": "rgb(161,129,155)"
+      }
+    ]
+  },
+  {
+    "group_index": 26,
+    "product_no": "026",
+    "product_id": "product_batch2_026",
+    "product_name": "New Product 026",
+    "slug": "new-product-026",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11.jpeg",
+        "size_bytes": 332969,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(155,125,160)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (1).jpeg",
+        "size_bytes": 217965,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(150,114,146)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (2).jpeg",
+        "size_bytes": 280849,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(154,116,146)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (3).jpeg",
+        "size_bytes": 202814,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(106,80,79)"
+      }
+    ]
+  },
+  {
+    "group_index": 27,
+    "product_no": "027",
+    "product_id": "product_batch2_027",
+    "product_name": "New Product 027",
+    "slug": "new-product-027",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (4).jpeg",
+        "size_bytes": 202572,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(73,61,75)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (5).jpeg",
+        "size_bytes": 217366,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(58,44,59)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (6).jpeg",
+        "size_bytes": 258249,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(187,144,153)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (7).jpeg",
+        "size_bytes": 248769,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(185,142,145)"
+      }
+    ]
+  },
+  {
+    "group_index": 28,
+    "product_no": "028",
+    "product_id": "product_batch2_028",
+    "product_name": "New Product 028",
+    "slug": "new-product-028",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (8).jpeg",
+        "size_bytes": 247942,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(175,135,144)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (9).jpeg",
+        "size_bytes": 267762,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(170,121,130)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (10).jpeg",
+        "size_bytes": 311259,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(93,109,100)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (11).jpeg",
+        "size_bytes": 345694,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(89,103,95)"
+      }
+    ]
+  },
+  {
+    "group_index": 29,
+    "product_no": "029",
+    "product_id": "product_batch2_029",
+    "product_name": "New Product 029",
+    "slug": "new-product-029",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (12).jpeg",
+        "size_bytes": 315653,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(84,103,97)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (13).jpeg",
+        "size_bytes": 302494,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(98,115,108)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (14).jpeg",
+        "size_bytes": 234576,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(213,189,135)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (15).jpeg",
+        "size_bytes": 194401,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(208,186,136)"
+      }
+    ]
+  },
+  {
+    "group_index": 30,
+    "product_no": "030",
+    "product_id": "product_batch2_030",
+    "product_name": "New Product 030",
+    "slug": "new-product-030",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (16).jpeg",
+        "size_bytes": 178696,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(215,196,141)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (17).jpeg",
+        "size_bytes": 183900,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(214,193,137)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (18).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.11 (18).jpeg",
+        "size_bytes": 264238,
+        "timestamp": "2026-11-02 23:03:11",
+        "color_rgb": "rgb(175,108,112)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12.jpeg",
+        "size_bytes": 299121,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(179,101,110)"
+      }
+    ]
+  },
+  {
+    "group_index": 31,
+    "product_no": "031",
+    "product_id": "product_batch2_031",
+    "product_name": "New Product 031",
+    "slug": "new-product-031",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (1).jpeg",
+        "size_bytes": 280239,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(196,139,136)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (2).jpeg",
+        "size_bytes": 294228,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(195,144,136)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (3).jpeg",
+        "size_bytes": 283681,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(195,140,135)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (4).jpeg",
+        "size_bytes": 264059,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(196,139,135)"
+      }
+    ]
+  },
+  {
+    "group_index": 32,
+    "product_no": "032",
+    "product_id": "product_batch2_032",
+    "product_name": "New Product 032",
+    "slug": "new-product-032",
+    "session_index": 2,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (5).jpeg",
+        "size_bytes": 154781,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(207,196,182)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (6).jpeg",
+        "size_bytes": 180655,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(214,202,188)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (7).jpeg",
+        "size_bytes": 167320,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(199,186,174)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (8).jpeg",
+        "size_bytes": 172114,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(205,192,178)"
+      }
+    ]
+  },
+  {
+    "group_index": 33,
+    "product_no": "033",
+    "product_id": "product_batch2_033",
+    "product_name": "New Product 033",
+    "slug": "new-product-033",
+    "session_index": 2,
+    "is_complete": false,
+    "anomaly_note": "Session 2 remainder: only 2 photo(s) available in this export batch",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (9).jpeg",
+        "size_bytes": 370565,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(49,69,65)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-02 at 23.03.12 (10).jpeg",
+        "size_bytes": 377937,
+        "timestamp": "2026-11-02 23:03:12",
+        "color_rgb": "rgb(47,65,62)"
+      }
+    ]
+  },
+  {
+    "group_index": 34,
+    "product_no": "034",
+    "product_id": "product_batch2_034",
+    "product_name": "New Product 034",
+    "slug": "new-product-034",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.55.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.55.jpeg",
+        "size_bytes": 379421,
+        "timestamp": "2026-11-03 13:39:55",
+        "color_rgb": "rgb(85,104,106)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.55 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.55 (1).jpeg",
+        "size_bytes": 448767,
+        "timestamp": "2026-11-03 13:39:55",
+        "color_rgb": "rgb(64,106,114)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.56.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.56.jpeg",
+        "size_bytes": 427172,
+        "timestamp": "2026-11-03 13:39:56",
+        "color_rgb": "rgb(64,104,112)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.57.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.57.jpeg",
+        "size_bytes": 424656,
+        "timestamp": "2026-11-03 13:39:57",
+        "color_rgb": "rgb(65,106,114)"
+      }
+    ]
+  },
+  {
+    "group_index": 35,
+    "product_no": "035",
+    "product_id": "product_batch2_035",
+    "product_name": "New Product 035",
+    "slug": "new-product-035",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58.jpeg",
+        "size_bytes": 367287,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(160,71,81)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (1).jpeg",
+        "size_bytes": 322827,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(173,126,112)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (2).jpeg",
+        "size_bytes": 370626,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(161,79,86)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (3).jpeg",
+        "size_bytes": 352431,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(165,74,84)"
+      }
+    ]
+  },
+  {
+    "group_index": 36,
+    "product_no": "036",
+    "product_id": "product_batch2_036",
+    "product_name": "New Product 036",
+    "slug": "new-product-036",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (4).jpeg",
+        "size_bytes": 391269,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(184,171,157)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (5).jpeg",
+        "size_bytes": 394175,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(182,169,155)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (6).jpeg",
+        "size_bytes": 383107,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(181,168,153)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.58 (7).jpeg",
+        "size_bytes": 374883,
+        "timestamp": "2026-11-03 13:39:58",
+        "color_rgb": "rgb(184,171,156)"
+      }
+    ]
+  },
+  {
+    "group_index": 37,
+    "product_no": "037",
+    "product_id": "product_batch2_037",
+    "product_name": "New Product 037",
+    "slug": "new-product-037",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59.jpeg",
+        "size_bytes": 429590,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(159,122,70)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (1).jpeg",
+        "size_bytes": 390322,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(158,125,87)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (2).jpeg",
+        "size_bytes": 425977,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(163,128,76)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (3).jpeg",
+        "size_bytes": 419709,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(161,123,68)"
+      }
+    ]
+  },
+  {
+    "group_index": 38,
+    "product_no": "038",
+    "product_id": "product_batch2_038",
+    "product_name": "New Product 038",
+    "slug": "new-product-038",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (4).jpeg",
+        "size_bytes": 334869,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(161,137,99)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (5).jpeg",
+        "size_bytes": 349498,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(189,166,117)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (6).jpeg",
+        "size_bytes": 391295,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(185,157,110)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (7).jpeg",
+        "size_bytes": 379847,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(183,153,107)"
+      }
+    ]
+  },
+  {
+    "group_index": 39,
+    "product_no": "039",
+    "product_id": "product_batch2_039",
+    "product_name": "New Product 039",
+    "slug": "new-product-039",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (8).jpeg",
+        "size_bytes": 419665,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(58,58,59)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (9).jpeg",
+        "size_bytes": 363919,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(74,69,66)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (10).jpeg",
+        "size_bytes": 410692,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(57,55,56)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (11).jpeg",
+        "size_bytes": 407833,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(58,56,57)"
+      }
+    ]
+  },
+  {
+    "group_index": 40,
+    "product_no": "040",
+    "product_id": "product_batch2_040",
+    "product_name": "New Product 040",
+    "slug": "new-product-040",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (12).jpeg",
+        "size_bytes": 308418,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(88,78,72)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (13).jpeg",
+        "size_bytes": 244982,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(50,46,46)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (14).jpeg",
+        "size_bytes": 275951,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(44,40,39)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (15).jpeg",
+        "size_bytes": 335181,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(62,57,55)"
+      }
+    ]
+  },
+  {
+    "group_index": 41,
+    "product_no": "041",
+    "product_id": "product_batch2_041",
+    "product_name": "New Product 041",
+    "slug": "new-product-041",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (16).jpeg",
+        "size_bytes": 360347,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(64,61,50)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.39.59 (17).jpeg",
+        "size_bytes": 339872,
+        "timestamp": "2026-11-03 13:39:59",
+        "color_rgb": "rgb(31,46,40)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00.jpeg",
+        "size_bytes": 320363,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(31,42,35)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (1).jpeg",
+        "size_bytes": 333464,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(42,49,41)"
+      }
+    ]
+  },
+  {
+    "group_index": 42,
+    "product_no": "042",
+    "product_id": "product_batch2_042",
+    "product_name": "New Product 042",
+    "slug": "new-product-042",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (2).jpeg",
+        "size_bytes": 285679,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(165,127,117)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (3).jpeg",
+        "size_bytes": 304542,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(195,153,150)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (4).jpeg",
+        "size_bytes": 322663,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(184,140,135)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (5).jpeg",
+        "size_bytes": 316886,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(183,139,134)"
+      }
+    ]
+  },
+  {
+    "group_index": 43,
+    "product_no": "043",
+    "product_id": "product_batch2_043",
+    "product_name": "New Product 043",
+    "slug": "new-product-043",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (6).jpeg",
+        "size_bytes": 425817,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(145,141,131)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (7).jpeg",
+        "size_bytes": 415009,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(156,160,156)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (8).jpeg",
+        "size_bytes": 365757,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(54,74,85)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (9).jpeg",
+        "size_bytes": 388603,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(46,72,90)"
+      }
+    ]
+  },
+  {
+    "group_index": 44,
+    "product_no": "044",
+    "product_id": "product_batch2_044",
+    "product_name": "New Product 044",
+    "slug": "new-product-044",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (10).jpeg",
+        "size_bytes": 350636,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(58,75,85)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (11).jpeg",
+        "size_bytes": 346768,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(62,77,87)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (12).jpeg",
+        "size_bytes": 369258,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(194,178,162)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (13).jpeg",
+        "size_bytes": 340698,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(164,146,130)"
+      }
+    ]
+  },
+  {
+    "group_index": 45,
+    "product_no": "045",
+    "product_id": "product_batch2_045",
+    "product_name": "New Product 045",
+    "slug": "new-product-045",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (14).jpeg",
+        "size_bytes": 372623,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(180,162,144)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (15).jpeg",
+        "size_bytes": 366903,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(181,162,144)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (16).jpeg",
+        "size_bytes": 329774,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(123,66,78)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.00 (17).jpeg",
+        "size_bytes": 318907,
+        "timestamp": "2026-11-03 13:40:00",
+        "color_rgb": "rgb(106,34,57)"
+      }
+    ]
+  },
+  {
+    "group_index": 46,
+    "product_no": "046",
+    "product_id": "product_batch2_046",
+    "product_name": "New Product 046",
+    "slug": "new-product-046",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01.jpeg",
+        "size_bytes": 327429,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(113,54,67)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (1).jpeg",
+        "size_bytes": 319798,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(115,55,67)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (2).jpeg",
+        "size_bytes": 362941,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(130,107,61)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (3).jpeg",
+        "size_bytes": 377190,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(148,124,55)"
+      }
+    ]
+  },
+  {
+    "group_index": 47,
+    "product_no": "047",
+    "product_id": "product_batch2_047",
+    "product_name": "New Product 047",
+    "slug": "new-product-047",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (4).jpeg",
+        "size_bytes": 385932,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(135,111,51)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (5).jpeg",
+        "size_bytes": 380463,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(134,110,51)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (6).jpeg",
+        "size_bytes": 245890,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(181,32,75)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (7).jpeg",
+        "size_bytes": 290865,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(177,40,77)"
+      }
+    ]
+  },
+  {
+    "group_index": 48,
+    "product_no": "048",
+    "product_id": "product_batch2_048",
+    "product_name": "New Product 048",
+    "slug": "new-product-048",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (8).jpeg",
+        "size_bytes": 318186,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(183,32,75)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (9).jpeg",
+        "size_bytes": 313551,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(188,35,75)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (10).jpeg",
+        "size_bytes": 297245,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(84,87,90)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (11).jpeg",
+        "size_bytes": 340708,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(84,90,94)"
+      }
+    ]
+  },
+  {
+    "group_index": 49,
+    "product_no": "049",
+    "product_id": "product_batch2_049",
+    "product_name": "New Product 049",
+    "slug": "new-product-049",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (12).jpeg",
+        "size_bytes": 355271,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(87,95,102)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (13).jpeg",
+        "size_bytes": 349098,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(89,95,100)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (14).jpeg",
+        "size_bytes": 289178,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(155,44,48)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (15).jpeg",
+        "size_bytes": 245477,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(162,34,43)"
+      }
+    ]
+  },
+  {
+    "group_index": 50,
+    "product_no": "050",
+    "product_id": "product_batch2_050",
+    "product_name": "New Product 050",
+    "slug": "new-product-050",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (16).jpeg",
+        "size_bytes": 314524,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(160,39,39)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (17).jpeg",
+        "size_bytes": 319206,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(165,44,43)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (18).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.01 (18).jpeg",
+        "size_bytes": 264028,
+        "timestamp": "2026-11-03 13:40:01",
+        "color_rgb": "rgb(163,117,49)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02.jpeg",
+        "size_bytes": 228878,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(147,103,32)"
+      }
+    ]
+  },
+  {
+    "group_index": 51,
+    "product_no": "051",
+    "product_id": "product_batch2_051",
+    "product_name": "New Product 051",
+    "slug": "new-product-051",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (1).jpeg",
+        "size_bytes": 306145,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(154,105,40)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (2).jpeg",
+        "size_bytes": 304777,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(162,111,40)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (3).jpeg",
+        "size_bytes": 301101,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(65,68,59)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (4).jpeg",
+        "size_bytes": 418291,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(64,63,53)"
+      }
+    ]
+  },
+  {
+    "group_index": 52,
+    "product_no": "052",
+    "product_id": "product_batch2_052",
+    "product_name": "New Product 052",
+    "slug": "new-product-052",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (5).jpeg",
+        "size_bytes": 390071,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(52,51,43)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (6).jpeg",
+        "size_bytes": 371986,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(54,56,47)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (7).jpeg",
+        "size_bytes": 270299,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(155,157,162)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (8).jpeg",
+        "size_bytes": 219458,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(163,174,188)"
+      }
+    ]
+  },
+  {
+    "group_index": 53,
+    "product_no": "053",
+    "product_id": "product_batch2_053",
+    "product_name": "New Product 053",
+    "slug": "new-product-053",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (9).jpeg",
+        "size_bytes": 263289,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(137,142,151)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (10).jpeg",
+        "size_bytes": 259760,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(146,153,163)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (11).jpeg",
+        "size_bytes": 327987,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(144,99,101)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (12).jpeg",
+        "size_bytes": 347084,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(142,98,103)"
+      }
+    ]
+  },
+  {
+    "group_index": 54,
+    "product_no": "054",
+    "product_id": "product_batch2_054",
+    "product_name": "New Product 054",
+    "slug": "new-product-054",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (13).jpeg",
+        "size_bytes": 355633,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(139,97,99)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (14).jpeg",
+        "size_bytes": 345479,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(143,99,101)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (15).jpeg",
+        "size_bytes": 403100,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(61,132,135)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (16).jpeg",
+        "size_bytes": 214930,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(43,112,116)"
+      }
+    ]
+  },
+  {
+    "group_index": 55,
+    "product_no": "055",
+    "product_id": "product_batch2_055",
+    "product_name": "New Product 055",
+    "slug": "new-product-055",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (17).jpeg",
+        "size_bytes": 297137,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(58,44,35)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (18).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.02 (18).jpeg",
+        "size_bytes": 307407,
+        "timestamp": "2026-11-03 13:40:02",
+        "color_rgb": "rgb(74,55,45)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03.jpeg",
+        "size_bytes": 287143,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(57,43,35)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (1).jpeg",
+        "size_bytes": 277670,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(61,45,37)"
+      }
+    ]
+  },
+  {
+    "group_index": 56,
+    "product_no": "056",
+    "product_id": "product_batch2_056",
+    "product_name": "New Product 056",
+    "slug": "new-product-056",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (2).jpeg",
+        "size_bytes": 447709,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(136,84,95)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (3).jpeg",
+        "size_bytes": 317517,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(97,45,55)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (4).jpeg",
+        "size_bytes": 250612,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(86,28,32)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (5).jpeg",
+        "size_bytes": 358113,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(98,42,46)"
+      }
+    ]
+  },
+  {
+    "group_index": 57,
+    "product_no": "057",
+    "product_id": "product_batch2_057",
+    "product_name": "New Product 057",
+    "slug": "new-product-057",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (6).jpeg",
+        "size_bytes": 465165,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(78,72,74)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (7).jpeg",
+        "size_bytes": 454351,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(93,84,85)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (8).jpeg",
+        "size_bytes": 503477,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(90,82,82)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (9).jpeg",
+        "size_bytes": 481337,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(90,82,81)"
+      }
+    ]
+  },
+  {
+    "group_index": 58,
+    "product_no": "058",
+    "product_id": "product_batch2_058",
+    "product_name": "New Product 058",
+    "slug": "new-product-058",
+    "session_index": 3,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (10).jpeg",
+        "size_bytes": 456337,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(90,85,57)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (11).jpeg",
+        "size_bytes": 439704,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(91,85,58)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (12).jpeg",
+        "size_bytes": 479460,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(84,81,53)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.40.03 (13).jpeg",
+        "size_bytes": 457049,
+        "timestamp": "2026-11-03 13:40:03",
+        "color_rgb": "rgb(89,85,56)"
+      }
+    ]
+  },
+  {
+    "group_index": 59,
+    "product_no": "059",
+    "product_id": "product_batch2_059",
+    "product_name": "New Product 059",
+    "slug": "new-product-059",
+    "session_index": 3,
+    "is_complete": false,
+    "anomaly_note": "Session 3 remainder: only 2 photo(s) available in this export batch",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.43.51.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.43.51.jpeg",
+        "size_bytes": 292005,
+        "timestamp": "2026-11-03 13:43:51",
+        "color_rgb": "rgb(65,118,117)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 13.43.51 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 13.43.51 (1).jpeg",
+        "size_bytes": 292685,
+        "timestamp": "2026-11-03 13:43:51",
+        "color_rgb": "rgb(66,119,118)"
+      }
+    ]
+  },
+  {
+    "group_index": 60,
+    "product_no": "060",
+    "product_id": "product_batch2_060",
+    "product_name": "New Product 060",
+    "slug": "new-product-060",
+    "session_index": 4,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.01.jpeg",
+        "size_bytes": 423777,
+        "timestamp": "2026-11-03 21:30:01",
+        "color_rgb": "rgb(122,118,104)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.01 (1).jpeg",
+        "size_bytes": 426416,
+        "timestamp": "2026-11-03 21:30:01",
+        "color_rgb": "rgb(119,112,100)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.01 (2).jpeg",
+        "size_bytes": 434368,
+        "timestamp": "2026-11-03 21:30:01",
+        "color_rgb": "rgb(130,126,117)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.01 (3).jpeg",
+        "size_bytes": 416853,
+        "timestamp": "2026-11-03 21:30:01",
+        "color_rgb": "rgb(134,127,117)"
+      }
+    ]
+  },
+  {
+    "group_index": 61,
+    "product_no": "061",
+    "product_id": "product_batch2_061",
+    "product_name": "New Product 061",
+    "slug": "new-product-061",
+    "session_index": 4,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.02.jpeg",
+        "size_bytes": 377243,
+        "timestamp": "2026-11-03 21:30:02",
+        "color_rgb": "rgb(110,102,82)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.02 (1).jpeg",
+        "size_bytes": 387304,
+        "timestamp": "2026-11-03 21:30:02",
+        "color_rgb": "rgb(110,108,88)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.02 (2).jpeg",
+        "size_bytes": 387027,
+        "timestamp": "2026-11-03 21:30:02",
+        "color_rgb": "rgb(113,111,93)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.02 (3).jpeg",
+        "size_bytes": 382682,
+        "timestamp": "2026-11-03 21:30:02",
+        "color_rgb": "rgb(120,119,101)"
+      }
+    ]
+  },
+  {
+    "group_index": 62,
+    "product_no": "062",
+    "product_id": "product_batch2_062",
+    "product_name": "New Product 062",
+    "slug": "new-product-062",
+    "session_index": 4,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.02 (4).jpeg",
+        "size_bytes": 474472,
+        "timestamp": "2026-11-03 21:30:02",
+        "color_rgb": "rgb(120,98,66)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.02 (5).jpeg",
+        "size_bytes": 489919,
+        "timestamp": "2026-11-03 21:30:02",
+        "color_rgb": "rgb(130,107,72)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.03.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.03.jpeg",
+        "size_bytes": 476499,
+        "timestamp": "2026-11-03 21:30:03",
+        "color_rgb": "rgb(124,101,68)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.03 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.30.03 (1).jpeg",
+        "size_bytes": 460825,
+        "timestamp": "2026-11-03 21:30:03",
+        "color_rgb": "rgb(128,104,69)"
+      }
+    ]
+  },
+  {
+    "group_index": 63,
+    "product_no": "063",
+    "product_id": "product_batch2_063",
+    "product_name": "New Product 063",
+    "slug": "new-product-063",
+    "session_index": 4,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.51.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.51.jpeg",
+        "size_bytes": 496408,
+        "timestamp": "2026-11-03 21:32:51",
+        "color_rgb": "rgb(130,119,101)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.51 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.51 (1).jpeg",
+        "size_bytes": 476454,
+        "timestamp": "2026-11-03 21:32:51",
+        "color_rgb": "rgb(125,113,92)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.52.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.52.jpeg",
+        "size_bytes": 496973,
+        "timestamp": "2026-11-03 21:32:52",
+        "color_rgb": "rgb(125,113,94)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.52 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.52 (1).jpeg",
+        "size_bytes": 480009,
+        "timestamp": "2026-11-03 21:32:52",
+        "color_rgb": "rgb(133,120,102)"
+      }
+    ]
+  },
+  {
+    "group_index": 64,
+    "product_no": "064",
+    "product_id": "product_batch2_064",
+    "product_name": "New Product 064",
+    "slug": "new-product-064",
+    "session_index": 4,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.53.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.53.jpeg",
+        "size_bytes": 540878,
+        "timestamp": "2026-11-03 21:32:53",
+        "color_rgb": "rgb(127,121,112)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54.jpeg",
+        "size_bytes": 547097,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(115,110,100)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54 (1).jpeg",
+        "size_bytes": 528580,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(118,109,97)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54 (2).jpeg",
+        "size_bytes": 550733,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(124,119,110)"
+      }
+    ]
+  },
+  {
+    "group_index": 65,
+    "product_no": "065",
+    "product_id": "product_batch2_065",
+    "product_name": "New Product 065",
+    "slug": "new-product-065",
+    "session_index": 4,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54 (3).jpeg",
+        "size_bytes": 454214,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(94,85,71)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54 (4).jpeg",
+        "size_bytes": 474898,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(97,89,76)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54 (5).jpeg",
+        "size_bytes": 450513,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(94,85,69)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-03 at 21.32.54 (6).jpeg",
+        "size_bytes": 430191,
+        "timestamp": "2026-11-03 21:32:54",
+        "color_rgb": "rgb(95,85,71)"
+      }
+    ]
+  },
+  {
+    "group_index": 66,
+    "product_no": "066",
+    "product_id": "product_batch2_066",
+    "product_name": "New Product 066",
+    "slug": "new-product-066",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.29.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.07.29.jpeg",
+        "size_bytes": 440417,
+        "timestamp": "2026-11-04 20:07:29",
+        "color_rgb": "rgb(146,86,72)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.29 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.07.29 (1).jpeg",
+        "size_bytes": 419640,
+        "timestamp": "2026-11-04 20:07:29",
+        "color_rgb": "rgb(157,83,70)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.50.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.07.50.jpeg",
+        "size_bytes": 378439,
+        "timestamp": "2026-11-04 20:07:50",
+        "color_rgb": "rgb(150,85,75)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.55.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.07.55.jpeg",
+        "size_bytes": 403724,
+        "timestamp": "2026-11-04 20:07:55",
+        "color_rgb": "rgb(148,81,65)"
+      }
+    ]
+  },
+  {
+    "group_index": 67,
+    "product_no": "067",
+    "product_id": "product_batch2_067",
+    "product_name": "New Product 067",
+    "slug": "new-product-067",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.02.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.02.jpeg",
+        "size_bytes": 471498,
+        "timestamp": "2026-11-04 20:08:02",
+        "color_rgb": "rgb(141,76,76)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14.jpeg",
+        "size_bytes": 495201,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(148,82,85)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14 (1).jpeg",
+        "size_bytes": 405750,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(154,68,81)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14 (2).jpeg",
+        "size_bytes": 466323,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(139,84,80)"
+      }
+    ]
+  },
+  {
+    "group_index": 68,
+    "product_no": "068",
+    "product_id": "product_batch2_068",
+    "product_name": "New Product 068",
+    "slug": "new-product-068",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14 (3).jpeg",
+        "size_bytes": 454076,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(159,146,124)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14 (4).jpeg",
+        "size_bytes": 364798,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(163,155,136)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14 (5).jpeg",
+        "size_bytes": 412057,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(136,126,104)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.14 (6).jpeg",
+        "size_bytes": 368103,
+        "timestamp": "2026-11-04 20:08:14",
+        "color_rgb": "rgb(148,134,111)"
+      }
+    ]
+  },
+  {
+    "group_index": 69,
+    "product_no": "069",
+    "product_id": "product_batch2_069",
+    "product_name": "New Product 069",
+    "slug": "new-product-069",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.15.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.15.jpeg",
+        "size_bytes": 482255,
+        "timestamp": "2026-11-04 20:08:15",
+        "color_rgb": "rgb(114,85,56)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.15 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.15 (1).jpeg",
+        "size_bytes": 466811,
+        "timestamp": "2026-11-04 20:08:15",
+        "color_rgb": "rgb(114,84,55)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.15 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.15 (2).jpeg",
+        "size_bytes": 375960,
+        "timestamp": "2026-11-04 20:08:15",
+        "color_rgb": "rgb(117,88,63)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.20.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.20.jpeg",
+        "size_bytes": 461243,
+        "timestamp": "2026-11-04 20:08:20",
+        "color_rgb": "rgb(115,85,57)"
+      }
+    ]
+  },
+  {
+    "group_index": 70,
+    "product_no": "070",
+    "product_id": "product_batch2_070",
+    "product_name": "New Product 070",
+    "slug": "new-product-070",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.20 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.20 (1).jpeg",
+        "size_bytes": 424856,
+        "timestamp": "2026-11-04 20:08:20",
+        "color_rgb": "rgb(141,91,58)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21.jpeg",
+        "size_bytes": 415962,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(148,107,70)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (1).jpeg",
+        "size_bytes": 398200,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(69,83,89)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (2).jpeg",
+        "size_bytes": 406575,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(79,85,84)"
+      }
+    ]
+  },
+  {
+    "group_index": 71,
+    "product_no": "071",
+    "product_id": "product_batch2_071",
+    "product_name": "New Product 071",
+    "slug": "new-product-071",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (3).jpeg",
+        "size_bytes": 427278,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(144,100,66)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (4).jpeg",
+        "size_bytes": 405381,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(152,101,70)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (5).jpeg",
+        "size_bytes": 386225,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(79,87,88)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (6).jpeg",
+        "size_bytes": 418213,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(185,107,97)"
+      }
+    ]
+  },
+  {
+    "group_index": 72,
+    "product_no": "072",
+    "product_id": "product_batch2_072",
+    "product_name": "New Product 072",
+    "slug": "new-product-072",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (7).jpeg",
+        "size_bytes": 368614,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(173,101,91)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (8).jpeg",
+        "size_bytes": 385507,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(78,83,84)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (9).jpeg",
+        "size_bytes": 374069,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(173,91,85)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (10).jpeg",
+        "size_bytes": 360309,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(177,97,89)"
+      }
+    ]
+  },
+  {
+    "group_index": 73,
+    "product_no": "073",
+    "product_id": "product_batch2_073",
+    "product_name": "New Product 073",
+    "slug": "new-product-073",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (11).jpeg",
+        "size_bytes": 371961,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(119,100,112)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.21 (12).jpeg",
+        "size_bytes": 467075,
+        "timestamp": "2026-11-04 20:08:21",
+        "color_rgb": "rgb(116,105,114)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.22.jpeg",
+        "size_bytes": 442514,
+        "timestamp": "2026-11-04 20:08:22",
+        "color_rgb": "rgb(116,96,102)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.22 (1).jpeg",
+        "size_bytes": 365191,
+        "timestamp": "2026-11-04 20:08:22",
+        "color_rgb": "rgb(120,94,112)"
+      }
+    ]
+  },
+  {
+    "group_index": 74,
+    "product_no": "074",
+    "product_id": "product_batch2_074",
+    "product_name": "New Product 074",
+    "slug": "new-product-074",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.22 (2).jpeg",
+        "size_bytes": 400941,
+        "timestamp": "2026-11-04 20:08:22",
+        "color_rgb": "rgb(113,73,72)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.22 (3).jpeg",
+        "size_bytes": 436332,
+        "timestamp": "2026-11-04 20:08:22",
+        "color_rgb": "rgb(127,86,73)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.22 (4).jpeg",
+        "size_bytes": 389704,
+        "timestamp": "2026-11-04 20:08:22",
+        "color_rgb": "rgb(127,80,72)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.22 (5).jpeg",
+        "size_bytes": 413628,
+        "timestamp": "2026-11-04 20:08:22",
+        "color_rgb": "rgb(148,100,80)"
+      }
+    ]
+  },
+  {
+    "group_index": 75,
+    "product_no": "075",
+    "product_id": "product_batch2_075",
+    "product_name": "New Product 075",
+    "slug": "new-product-075",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.26.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.26.jpeg",
+        "size_bytes": 442420,
+        "timestamp": "2026-11-04 20:08:26",
+        "color_rgb": "rgb(173,125,104)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.31.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.31.jpeg",
+        "size_bytes": 441209,
+        "timestamp": "2026-11-04 20:08:31",
+        "color_rgb": "rgb(153,108,85)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47.jpeg",
+        "size_bytes": 414876,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(163,109,88)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47 (1).jpeg",
+        "size_bytes": 382089,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(126,81,74)"
+      }
+    ]
+  },
+  {
+    "group_index": 76,
+    "product_no": "076",
+    "product_id": "product_batch2_076",
+    "product_name": "New Product 076",
+    "slug": "new-product-076",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47 (2).jpeg",
+        "size_bytes": 483495,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(107,92,100)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47 (3).jpeg",
+        "size_bytes": 468375,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(115,99,104)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47 (4).jpeg",
+        "size_bytes": 456158,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(138,114,105)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47 (5).jpeg",
+        "size_bytes": 363010,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(165,113,78)"
+      }
+    ]
+  },
+  {
+    "group_index": 77,
+    "product_no": "077",
+    "product_id": "product_batch2_077",
+    "product_name": "New Product 077",
+    "slug": "new-product-077",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.47 (6).jpeg",
+        "size_bytes": 370558,
+        "timestamp": "2026-11-04 20:08:47",
+        "color_rgb": "rgb(183,133,95)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48.jpeg",
+        "size_bytes": 363704,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(172,119,81)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (1).jpeg",
+        "size_bytes": 355102,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(171,116,79)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (2).jpeg",
+        "size_bytes": 444174,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(119,96,89)"
+      }
+    ]
+  },
+  {
+    "group_index": 78,
+    "product_no": "078",
+    "product_id": "product_batch2_078",
+    "product_name": "New Product 078",
+    "slug": "new-product-078",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (3).jpeg",
+        "size_bytes": 454011,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(127,84,60)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (4).jpeg",
+        "size_bytes": 410191,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(138,79,61)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (5).jpeg",
+        "size_bytes": 454317,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(117,89,99)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (6).jpeg",
+        "size_bytes": 413511,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(137,77,61)"
+      }
+    ]
+  },
+  {
+    "group_index": 79,
+    "product_no": "079",
+    "product_id": "product_batch2_079",
+    "product_name": "New Product 079",
+    "slug": "new-product-079",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (7).jpeg",
+        "size_bytes": 466607,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(121,93,108)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (8).jpeg",
+        "size_bytes": 433492,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(113,83,87)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (9).jpeg",
+        "size_bytes": 401000,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(150,87,67)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (10).jpeg",
+        "size_bytes": 439018,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(121,91,103)"
+      }
+    ]
+  },
+  {
+    "group_index": 80,
+    "product_no": "080",
+    "product_id": "product_batch2_080",
+    "product_name": "New Product 080",
+    "slug": "new-product-080",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (11).jpeg",
+        "size_bytes": 434418,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(115,59,63)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (12).jpeg",
+        "size_bytes": 418243,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(122,74,72)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (13).jpeg",
+        "size_bytes": 451362,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(127,67,74)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (14).jpeg",
+        "size_bytes": 420073,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(127,78,75)"
+      }
+    ]
+  },
+  {
+    "group_index": 81,
+    "product_no": "081",
+    "product_id": "product_batch2_081",
+    "product_name": "New Product 081",
+    "slug": "new-product-081",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (15).jpeg",
+        "size_bytes": 359451,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(149,94,56)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (16).jpeg",
+        "size_bytes": 371724,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(151,81,48)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (17).jpeg",
+        "size_bytes": 340169,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(131,111,96)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (18).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (18).jpeg",
+        "size_bytes": 420169,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(121,98,84)"
+      }
+    ]
+  },
+  {
+    "group_index": 82,
+    "product_no": "082",
+    "product_id": "product_batch2_082",
+    "product_name": "New Product 082",
+    "slug": "new-product-082",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (19).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (19).jpeg",
+        "size_bytes": 375567,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(131,110,97)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (20).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (20).jpeg",
+        "size_bytes": 359751,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(133,108,93)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (21).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (21).jpeg",
+        "size_bytes": 389333,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(165,86,45)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (22).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (22).jpeg",
+        "size_bytes": 373784,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(176,101,56)"
+      }
+    ]
+  },
+  {
+    "group_index": 83,
+    "product_no": "083",
+    "product_id": "product_batch2_083",
+    "product_name": "New Product 083",
+    "slug": "new-product-083",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (23).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (23).jpeg",
+        "size_bytes": 375633,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(150,101,45)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (24).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (24).jpeg",
+        "size_bytes": 378207,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(163,112,47)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (25).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (25).jpeg",
+        "size_bytes": 494978,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(126,100,84)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (26).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (26).jpeg",
+        "size_bytes": 493682,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(132,107,92)"
+      }
+    ]
+  },
+  {
+    "group_index": 84,
+    "product_no": "084",
+    "product_id": "product_batch2_084",
+    "product_name": "New Product 084",
+    "slug": "new-product-084",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (27).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.48 (27).jpeg",
+        "size_bytes": 363123,
+        "timestamp": "2026-11-04 20:08:48",
+        "color_rgb": "rgb(145,98,49)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49.jpeg",
+        "size_bytes": 353100,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(147,99,49)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (1).jpeg",
+        "size_bytes": 485064,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(127,97,83)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (2).jpeg",
+        "size_bytes": 506868,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(135,105,91)"
+      }
+    ]
+  },
+  {
+    "group_index": 85,
+    "product_no": "085",
+    "product_id": "product_batch2_085",
+    "product_name": "New Product 085",
+    "slug": "new-product-085",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (3).jpeg",
+        "size_bytes": 452933,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(144,111,77)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (4).jpeg",
+        "size_bytes": 490747,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(148,117,79)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (5).jpeg",
+        "size_bytes": 471352,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(152,119,82)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (6).jpeg",
+        "size_bytes": 482365,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(158,125,88)"
+      }
+    ]
+  },
+  {
+    "group_index": 86,
+    "product_no": "086",
+    "product_id": "product_batch2_086",
+    "product_name": "New Product 086",
+    "slug": "new-product-086",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (7).jpeg",
+        "size_bytes": 463119,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(123,108,98)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (8).jpeg",
+        "size_bytes": 438113,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(109,91,77)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (9).jpeg",
+        "size_bytes": 447615,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(120,104,94)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (10).jpeg",
+        "size_bytes": 458061,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(117,98,88)"
+      }
+    ]
+  },
+  {
+    "group_index": 87,
+    "product_no": "087",
+    "product_id": "product_batch2_087",
+    "product_name": "New Product 087",
+    "slug": "new-product-087",
+    "session_index": 5,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (11).jpeg",
+        "size_bytes": 344838,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(132,119,101)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (12).jpeg",
+        "size_bytes": 291778,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(131,121,107)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (13).jpeg",
+        "size_bytes": 289231,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(109,101,90)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 20.08.49 (14).jpeg",
+        "size_bytes": 296731,
+        "timestamp": "2026-11-04 20:08:49",
+        "color_rgb": "rgb(118,107,94)"
+      }
+    ]
+  },
+  {
+    "group_index": 88,
+    "product_no": "088",
+    "product_id": "product_batch2_088",
+    "product_name": "New Product 088",
+    "slug": "new-product-088",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.12.58.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.12.58.jpeg",
+        "size_bytes": 342299,
+        "timestamp": "2026-11-04 21:12:58",
+        "color_rgb": "rgb(133,76,91)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.46.jpeg",
+        "size_bytes": 338133,
+        "timestamp": "2026-11-04 21:13:46",
+        "color_rgb": "rgb(118,61,77)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.46 (1).jpeg",
+        "size_bytes": 331581,
+        "timestamp": "2026-11-04 21:13:46",
+        "color_rgb": "rgb(112,57,85)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.46 (2).jpeg",
+        "size_bytes": 327600,
+        "timestamp": "2026-11-04 21:13:46",
+        "color_rgb": "rgb(134,73,88)"
+      }
+    ]
+  },
+  {
+    "group_index": 89,
+    "product_no": "089",
+    "product_id": "product_batch2_089",
+    "product_name": "New Product 089",
+    "slug": "new-product-089",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.46 (3).jpeg",
+        "size_bytes": 397559,
+        "timestamp": "2026-11-04 21:13:46",
+        "color_rgb": "rgb(148,76,61)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47.jpeg",
+        "size_bytes": 375324,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(148,77,57)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (1).jpeg",
+        "size_bytes": 376967,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(149,83,69)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (2).jpeg",
+        "size_bytes": 375246,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(150,86,66)"
+      }
+    ]
+  },
+  {
+    "group_index": 90,
+    "product_no": "090",
+    "product_id": "product_batch2_090",
+    "product_name": "New Product 090",
+    "slug": "new-product-090",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (3).jpeg",
+        "size_bytes": 342183,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(96,50,63)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (4).jpeg",
+        "size_bytes": 341901,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(112,65,69)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (5).jpeg",
+        "size_bytes": 338521,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(100,47,54)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (6).jpeg",
+        "size_bytes": 333197,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(105,61,69)"
+      }
+    ]
+  },
+  {
+    "group_index": 91,
+    "product_no": "091",
+    "product_id": "product_batch2_091",
+    "product_name": "New Product 091",
+    "slug": "new-product-091",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (7).jpeg",
+        "size_bytes": 330258,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(117,63,33)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (8).jpeg",
+        "size_bytes": 272069,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(122,59,38)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (9).jpeg",
+        "size_bytes": 337397,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(135,72,37)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (10).jpeg",
+        "size_bytes": 319857,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(137,74,39)"
+      }
+    ]
+  },
+  {
+    "group_index": 92,
+    "product_no": "092",
+    "product_id": "product_batch2_092",
+    "product_name": "New Product 092",
+    "slug": "new-product-092",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (11).jpeg",
+        "size_bytes": 346543,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(121,97,85)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (12).jpeg",
+        "size_bytes": 335673,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(110,80,62)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (13).jpeg",
+        "size_bytes": 331838,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(124,98,86)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (14).jpeg",
+        "size_bytes": 326368,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(108,86,73)"
+      }
+    ]
+  },
+  {
+    "group_index": 93,
+    "product_no": "093",
+    "product_id": "product_batch2_093",
+    "product_name": "New Product 093",
+    "slug": "new-product-093",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (15).jpeg",
+        "size_bytes": 340807,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(137,84,68)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (16).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (16).jpeg",
+        "size_bytes": 346651,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(146,94,77)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (17).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (17).jpeg",
+        "size_bytes": 360283,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(168,109,100)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (18).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (18).jpeg",
+        "size_bytes": 336552,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(168,112,96)"
+      }
+    ]
+  },
+  {
+    "group_index": 94,
+    "product_no": "094",
+    "product_id": "product_batch2_094",
+    "product_name": "New Product 094",
+    "slug": "new-product-094",
+    "session_index": 6,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (19).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (19).jpeg",
+        "size_bytes": 360020,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(197,142,83)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (20).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (20).jpeg",
+        "size_bytes": 408481,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(222,146,74)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (21).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (21).jpeg",
+        "size_bytes": 457961,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(207,136,74)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (22).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 21.13.47 (22).jpeg",
+        "size_bytes": 425417,
+        "timestamp": "2026-11-04 21:13:47",
+        "color_rgb": "rgb(220,145,75)"
+      }
+    ]
+  },
+  {
+    "group_index": 95,
+    "product_no": "095",
+    "product_id": "product_batch2_095",
+    "product_name": "New Product 095",
+    "slug": "new-product-095",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.12.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.12.jpeg",
+        "size_bytes": 373758,
+        "timestamp": "2026-11-04 22:13:12",
+        "color_rgb": "rgb(87,105,110)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.14.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.14.jpeg",
+        "size_bytes": 433476,
+        "timestamp": "2026-11-04 22:13:14",
+        "color_rgb": "rgb(97,118,119)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.16.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.16.jpeg",
+        "size_bytes": 404597,
+        "timestamp": "2026-11-04 22:13:16",
+        "color_rgb": "rgb(87,123,128)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.16 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.16 (1).jpeg",
+        "size_bytes": 389547,
+        "timestamp": "2026-11-04 22:13:16",
+        "color_rgb": "rgb(84,90,96)"
+      }
+    ]
+  },
+  {
+    "group_index": 96,
+    "product_no": "096",
+    "product_id": "product_batch2_096",
+    "product_name": "New Product 096",
+    "slug": "new-product-096",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.17.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.17.jpeg",
+        "size_bytes": 398273,
+        "timestamp": "2026-11-04 22:13:17",
+        "color_rgb": "rgb(96,80,86)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.22.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.22.jpeg",
+        "size_bytes": 415818,
+        "timestamp": "2026-11-04 22:13:22",
+        "color_rgb": "rgb(88,60,54)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.22 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.22 (1).jpeg",
+        "size_bytes": 422224,
+        "timestamp": "2026-11-04 22:13:22",
+        "color_rgb": "rgb(93,61,51)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.22 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.22 (2).jpeg",
+        "size_bytes": 419652,
+        "timestamp": "2026-11-04 22:13:22",
+        "color_rgb": "rgb(98,65,52)"
+      }
+    ]
+  },
+  {
+    "group_index": 97,
+    "product_no": "097",
+    "product_id": "product_batch2_097",
+    "product_name": "New Product 097",
+    "slug": "new-product-097",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.29.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.29.jpeg",
+        "size_bytes": 403937,
+        "timestamp": "2026-11-04 22:13:29",
+        "color_rgb": "rgb(136,46,80)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.29 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.29 (1).jpeg",
+        "size_bytes": 410269,
+        "timestamp": "2026-11-04 22:13:29",
+        "color_rgb": "rgb(152,46,88)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.29 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.29 (2).jpeg",
+        "size_bytes": 349778,
+        "timestamp": "2026-11-04 22:13:29",
+        "color_rgb": "rgb(141,50,83)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.29 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.29 (3).jpeg",
+        "size_bytes": 358788,
+        "timestamp": "2026-11-04 22:13:29",
+        "color_rgb": "rgb(103,73,113)"
+      }
+    ]
+  },
+  {
+    "group_index": 98,
+    "product_no": "098",
+    "product_id": "product_batch2_098",
+    "product_name": "New Product 098",
+    "slug": "new-product-098",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.30.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.30.jpeg",
+        "size_bytes": 365167,
+        "timestamp": "2026-11-04 22:13:30",
+        "color_rgb": "rgb(135,59,90)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.31.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.31.jpeg",
+        "size_bytes": 376475,
+        "timestamp": "2026-11-04 22:13:31",
+        "color_rgb": "rgb(79,58,55)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.32.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.32.jpeg",
+        "size_bytes": 371406,
+        "timestamp": "2026-11-04 22:13:32",
+        "color_rgb": "rgb(57,58,60)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.34.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.34.jpeg",
+        "size_bytes": 397509,
+        "timestamp": "2026-11-04 22:13:34",
+        "color_rgb": "rgb(64,61,61)"
+      }
+    ]
+  },
+  {
+    "group_index": 99,
+    "product_no": "099",
+    "product_id": "product_batch2_099",
+    "product_name": "New Product 099",
+    "slug": "new-product-099",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.34 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.34 (1).jpeg",
+        "size_bytes": 359671,
+        "timestamp": "2026-11-04 22:13:34",
+        "color_rgb": "rgb(86,42,41)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.34 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.34 (2).jpeg",
+        "size_bytes": 358621,
+        "timestamp": "2026-11-04 22:13:34",
+        "color_rgb": "rgb(76,52,50)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.35.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.35.jpeg",
+        "size_bytes": 388015,
+        "timestamp": "2026-11-04 22:13:35",
+        "color_rgb": "rgb(134,77,111)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.38.jpeg",
+        "size_bytes": 399629,
+        "timestamp": "2026-11-04 22:13:38",
+        "color_rgb": "rgb(144,62,104)"
+      }
+    ]
+  },
+  {
+    "group_index": 100,
+    "product_no": "100",
+    "product_id": "product_batch2_100",
+    "product_name": "New Product 100",
+    "slug": "new-product-100",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.38 (1).jpeg",
+        "size_bytes": 360112,
+        "timestamp": "2026-11-04 22:13:38",
+        "color_rgb": "rgb(142,67,100)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.38 (2).jpeg",
+        "size_bytes": 353541,
+        "timestamp": "2026-11-04 22:13:38",
+        "color_rgb": "rgb(111,86,118)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.38 (3).jpeg",
+        "size_bytes": 353921,
+        "timestamp": "2026-11-04 22:13:38",
+        "color_rgb": "rgb(131,76,105)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39.jpeg",
+        "size_bytes": 417769,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(100,98,77)"
+      }
+    ]
+  },
+  {
+    "group_index": 101,
+    "product_no": "101",
+    "product_id": "product_batch2_101",
+    "product_name": "New Product 101",
+    "slug": "new-product-101",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (1).jpeg",
+        "size_bytes": 370965,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(105,108,78)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (2).jpeg",
+        "size_bytes": 398321,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(87,84,76)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (3).jpeg",
+        "size_bytes": 393169,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(87,88,79)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (4).jpeg",
+        "size_bytes": 367624,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(73,66,68)"
+      }
+    ]
+  },
+  {
+    "group_index": 102,
+    "product_no": "102",
+    "product_id": "product_batch2_102",
+    "product_name": "New Product 102",
+    "slug": "new-product-102",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (5).jpeg",
+        "size_bytes": 384066,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(85,82,73)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (6).jpeg",
+        "size_bytes": 362990,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(86,82,72)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (7).jpeg",
+        "size_bytes": 377552,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(95,93,82)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (8).jpeg",
+        "size_bytes": 348043,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(146,132,115)"
+      }
+    ]
+  },
+  {
+    "group_index": 103,
+    "product_no": "103",
+    "product_id": "product_batch2_103",
+    "product_name": "New Product 103",
+    "slug": "new-product-103",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.39 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.39 (9).jpeg",
+        "size_bytes": 359564,
+        "timestamp": "2026-11-04 22:13:39",
+        "color_rgb": "rgb(138,124,108)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.40.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.40.jpeg",
+        "size_bytes": 369416,
+        "timestamp": "2026-11-04 22:13:40",
+        "color_rgb": "rgb(97,91,77)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.40 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.40 (1).jpeg",
+        "size_bytes": 351276,
+        "timestamp": "2026-11-04 22:13:40",
+        "color_rgb": "rgb(95,93,80)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.40 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.40 (2).jpeg",
+        "size_bytes": 361809,
+        "timestamp": "2026-11-04 22:13:40",
+        "color_rgb": "rgb(98,100,83)"
+      }
+    ]
+  },
+  {
+    "group_index": 104,
+    "product_no": "104",
+    "product_id": "product_batch2_104",
+    "product_name": "New Product 104",
+    "slug": "new-product-104",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41.jpeg",
+        "size_bytes": 400951,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(118,115,99)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (1).jpeg",
+        "size_bytes": 371154,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(91,84,71)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (2).jpeg",
+        "size_bytes": 387752,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(101,97,82)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (3).jpeg",
+        "size_bytes": 358693,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(117,114,98)"
+      }
+    ]
+  },
+  {
+    "group_index": 105,
+    "product_no": "105",
+    "product_id": "product_batch2_105",
+    "product_name": "New Product 105",
+    "slug": "new-product-105",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (4).jpeg",
+        "size_bytes": 416712,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(90,80,46)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (5).jpeg",
+        "size_bytes": 445220,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(89,77,50)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (6).jpeg",
+        "size_bytes": 467651,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(88,73,49)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.41 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.41 (7).jpeg",
+        "size_bytes": 410616,
+        "timestamp": "2026-11-04 22:13:41",
+        "color_rgb": "rgb(85,78,43)"
+      }
+    ]
+  },
+  {
+    "group_index": 106,
+    "product_no": "106",
+    "product_id": "product_batch2_106",
+    "product_name": "New Product 106",
+    "slug": "new-product-106",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42.jpeg",
+        "size_bytes": 400161,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(93,82,46)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42 (1).jpeg",
+        "size_bytes": 334229,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(123,91,82)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42 (2).jpeg",
+        "size_bytes": 315551,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(165,138,122)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42 (3).jpeg",
+        "size_bytes": 339561,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(160,130,116)"
+      }
+    ]
+  },
+  {
+    "group_index": 107,
+    "product_no": "107",
+    "product_id": "product_batch2_107",
+    "product_name": "New Product 107",
+    "slug": "new-product-107",
+    "session_index": 7,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42 (4).jpeg",
+        "size_bytes": 331394,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(111,78,71)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42 (5).jpeg",
+        "size_bytes": 310518,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(125,99,99)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.42 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.13.42 (6).jpeg",
+        "size_bytes": 325455,
+        "timestamp": "2026-11-04 22:13:42",
+        "color_rgb": "rgb(138,106,96)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.15.54.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.15.54.jpeg",
+        "size_bytes": 350524,
+        "timestamp": "2026-11-04 22:15:54",
+        "color_rgb": "rgb(58,42,60)"
+      }
+    ]
+  },
+  {
+    "group_index": 108,
+    "product_no": "108",
+    "product_id": "product_batch2_108",
+    "product_name": "New Product 108",
+    "slug": "new-product-108",
+    "session_index": 7,
+    "is_complete": false,
+    "anomaly_note": "Session 7 remainder: only 1 photo(s) available in this export batch",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 22.15.54 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 22.15.54 (1).jpeg",
+        "size_bytes": 385046,
+        "timestamp": "2026-11-04 22:15:54",
+        "color_rgb": "rgb(82,56,55)"
+      }
+    ]
+  },
+  {
+    "group_index": 109,
+    "product_no": "109",
+    "product_id": "product_batch2_109",
+    "product_name": "New Product 109",
+    "slug": "new-product-109",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.19.jpeg",
+        "size_bytes": 369946,
+        "timestamp": "2026-11-04 23:04:19",
+        "color_rgb": "rgb(127,107,109)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.19 (1).jpeg",
+        "size_bytes": 346983,
+        "timestamp": "2026-11-04 23:04:19",
+        "color_rgb": "rgb(138,112,111)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.19 (2).jpeg",
+        "size_bytes": 360732,
+        "timestamp": "2026-11-04 23:04:19",
+        "color_rgb": "rgb(123,95,94)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.19 (3).jpeg",
+        "size_bytes": 368695,
+        "timestamp": "2026-11-04 23:04:19",
+        "color_rgb": "rgb(126,107,111)"
+      }
+    ]
+  },
+  {
+    "group_index": 110,
+    "product_no": "110",
+    "product_id": "product_batch2_110",
+    "product_name": "New Product 110",
+    "slug": "new-product-110",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.19 (4).jpeg",
+        "size_bytes": 353629,
+        "timestamp": "2026-11-04 23:04:19",
+        "color_rgb": "rgb(109,105,102)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.20.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.20.jpeg",
+        "size_bytes": 353650,
+        "timestamp": "2026-11-04 23:04:20",
+        "color_rgb": "rgb(118,97,92)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.22.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.22.jpeg",
+        "size_bytes": 348399,
+        "timestamp": "2026-11-04 23:04:22",
+        "color_rgb": "rgb(103,89,92)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.22 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.22 (1).jpeg",
+        "size_bytes": 366354,
+        "timestamp": "2026-11-04 23:04:22",
+        "color_rgb": "rgb(113,101,96)"
+      }
+    ]
+  },
+  {
+    "group_index": 111,
+    "product_no": "111",
+    "product_id": "product_batch2_111",
+    "product_name": "New Product 111",
+    "slug": "new-product-111",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.23.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.23.jpeg",
+        "size_bytes": 378861,
+        "timestamp": "2026-11-04 23:04:23",
+        "color_rgb": "rgb(97,80,80)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.23 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.23 (1).jpeg",
+        "size_bytes": 365842,
+        "timestamp": "2026-11-04 23:04:23",
+        "color_rgb": "rgb(94,83,89)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.25.jpeg",
+        "size_bytes": 371445,
+        "timestamp": "2026-11-04 23:04:25",
+        "color_rgb": "rgb(97,102,115)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.25 (1).jpeg",
+        "size_bytes": 389145,
+        "timestamp": "2026-11-04 23:04:25",
+        "color_rgb": "rgb(105,95,104)"
+      }
+    ]
+  },
+  {
+    "group_index": 112,
+    "product_no": "112",
+    "product_id": "product_batch2_112",
+    "product_name": "New Product 112",
+    "slug": "new-product-112",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.25 (2).jpeg",
+        "size_bytes": 349064,
+        "timestamp": "2026-11-04 23:04:25",
+        "color_rgb": "rgb(83,80,77)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.25 (3).jpeg",
+        "size_bytes": 356977,
+        "timestamp": "2026-11-04 23:04:25",
+        "color_rgb": "rgb(76,77,78)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26.jpeg",
+        "size_bytes": 303472,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(85,88,91)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (1).jpeg",
+        "size_bytes": 264975,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(20,55,78)"
+      }
+    ]
+  },
+  {
+    "group_index": 113,
+    "product_no": "113",
+    "product_id": "product_batch2_113",
+    "product_name": "New Product 113",
+    "slug": "new-product-113",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (2).jpeg",
+        "size_bytes": 342901,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(80,89,96)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (3).jpeg",
+        "size_bytes": 358322,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(142,106,98)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (4).jpeg",
+        "size_bytes": 372024,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(140,109,103)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (5).jpeg",
+        "size_bytes": 334834,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(138,115,119)"
+      }
+    ]
+  },
+  {
+    "group_index": 114,
+    "product_no": "114",
+    "product_id": "product_batch2_114",
+    "product_name": "New Product 114",
+    "slug": "new-product-114",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (6).jpeg",
+        "size_bytes": 394266,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(156,125,120)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (7).jpeg",
+        "size_bytes": 394902,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(129,98,108)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.26 (8).jpeg",
+        "size_bytes": 421243,
+        "timestamp": "2026-11-04 23:04:26",
+        "color_rgb": "rgb(107,89,75)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.27.jpeg",
+        "size_bytes": 426424,
+        "timestamp": "2026-11-04 23:04:27",
+        "color_rgb": "rgb(115,105,93)"
+      }
+    ]
+  },
+  {
+    "group_index": 115,
+    "product_no": "115",
+    "product_id": "product_batch2_115",
+    "product_name": "New Product 115",
+    "slug": "new-product-115",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.27 (1).jpeg",
+        "size_bytes": 388419,
+        "timestamp": "2026-11-04 23:04:27",
+        "color_rgb": "rgb(91,82,82)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.27 (2).jpeg",
+        "size_bytes": 371905,
+        "timestamp": "2026-11-04 23:04:27",
+        "color_rgb": "rgb(98,87,92)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.27 (3).jpeg",
+        "size_bytes": 384875,
+        "timestamp": "2026-11-04 23:04:27",
+        "color_rgb": "rgb(93,73,82)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.28.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.28.jpeg",
+        "size_bytes": 376333,
+        "timestamp": "2026-11-04 23:04:28",
+        "color_rgb": "rgb(99,80,76)"
+      }
+    ]
+  },
+  {
+    "group_index": 116,
+    "product_no": "116",
+    "product_id": "product_batch2_116",
+    "product_name": "New Product 116",
+    "slug": "new-product-116",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.28 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.28 (1).jpeg",
+        "size_bytes": 387448,
+        "timestamp": "2026-11-04 23:04:28",
+        "color_rgb": "rgb(122,71,86)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.28 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.28 (2).jpeg",
+        "size_bytes": 378683,
+        "timestamp": "2026-11-04 23:04:28",
+        "color_rgb": "rgb(125,80,87)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29.jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29.jpeg",
+        "size_bytes": 425985,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(160,116,115)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (1).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (1).jpeg",
+        "size_bytes": 417998,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(167,119,123)"
+      }
+    ]
+  },
+  {
+    "group_index": 117,
+    "product_no": "117",
+    "product_id": "product_batch2_117",
+    "product_name": "New Product 117",
+    "slug": "new-product-117",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (2).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (2).jpeg",
+        "size_bytes": 411173,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(164,102,112)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (3).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (3).jpeg",
+        "size_bytes": 407759,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(169,111,115)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (4).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (4).jpeg",
+        "size_bytes": 376915,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(116,85,98)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (5).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (5).jpeg",
+        "size_bytes": 407305,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(132,100,109)"
+      }
+    ]
+  },
+  {
+    "group_index": 118,
+    "product_no": "118",
+    "product_id": "product_batch2_118",
+    "product_name": "New Product 118",
+    "slug": "new-product-118",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (6).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (6).jpeg",
+        "size_bytes": 386280,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(113,86,106)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (7).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (7).jpeg",
+        "size_bytes": 376642,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(123,94,110)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (8).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (8).jpeg",
+        "size_bytes": 356216,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(95,60,103)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (9).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (9).jpeg",
+        "size_bytes": 369330,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(84,63,103)"
+      }
+    ]
+  },
+  {
+    "group_index": 119,
+    "product_no": "119",
+    "product_id": "product_batch2_119",
+    "product_name": "New Product 119",
+    "slug": "new-product-119",
+    "session_index": 8,
+    "is_complete": true,
+    "anomaly_note": "",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (10).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (10).jpeg",
+        "size_bytes": 370687,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(97,51,97)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (11).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (11).jpeg",
+        "size_bytes": 361125,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(108,58,101)"
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (12).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (12).jpeg",
+        "size_bytes": 333460,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(182,116,90)"
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (13).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (13).jpeg",
+        "size_bytes": 337612,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(170,118,95)"
+      }
+    ]
+  },
+  {
+    "group_index": 120,
+    "product_no": "120",
+    "product_id": "product_batch2_120",
+    "product_name": "New Product 120",
+    "slug": "new-product-120",
+    "session_index": 8,
+    "is_complete": false,
+    "anomaly_note": "Session 8 remainder: only 2 photo(s) available in this export batch",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (14).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (14).jpeg",
+        "size_bytes": 341732,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(178,100,89)"
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (15).jpeg",
+        "filepath": "girls-collections-import2/WhatsApp Image 2026-11-04 at 23.04.29 (15).jpeg",
+        "size_bytes": 326364,
+        "timestamp": "2026-11-04 23:04:29",
+        "color_rgb": "rgb(181,99,89)"
+      }
+    ]
+  }
+]

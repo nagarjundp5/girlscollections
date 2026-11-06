@@ -6,8 +6,23 @@
    DESIGN TOKENS — The Girls Collections
    ═══════════════════════════════════════════════════════ */
 :root {
+  /* ── Header Heights ──────────────────────────────── */
+  --announcement-h: 36px;
+  --nav-h: 68px;
+  --header-h: calc(var(--announcement-h) + var(--nav-h));
+
+  /* ── First-screen height math (mobile) ───────────── */
+  /* Bottom nav: 64px + safe-area on mobile, 0 on desktop (overridden below) */
+  --bottomnav-h: calc(64px + env(safe-area-inset-bottom, 0px));
+  /* Strip: 88px circle + ~18px head overhang + 36px label + 34px top/bottom padding */
+  --strip-h: 176px;
+  /* Hero fills the rest of 100svh, clamped to min 300px */
+  --hero-h: clamp(300px, calc(100svh - var(--announcement-h) - var(--nav-h) - var(--bottomnav-h) - var(--strip-h)), 9999px);
+
   /* ── Colour Palette ─────────────────────────────── */
-  --header-bg:   #3B1230;
+  --header-bg:   #FBF7F1;
+  --header-text: #1C1417;
+  --header-border: #EFE7E2;
   --navy:        #1A1E3A;
   --navy-deep:   #14183A;
   --near-black:  #0D0E1A;
@@ -52,6 +67,29 @@
   --duration-slow: 300ms;
 }
 
+@media (min-width: 768px) {
+  :root {
+    --nav-h: 80px;
+    --header-h: calc(var(--announcement-h) + var(--nav-h));
+    /* Desktop: no bottom nav */
+    --bottomnav-h: 0px;
+    /* Strip: 150px circle + ~28px head overhang + 44px label + 28px padding */
+    --strip-h: 250px;
+    /* Hero clamped: min 360px, max 640px on desktop */
+    --hero-h: clamp(360px, calc(100svh - var(--announcement-h) - var(--nav-h) - var(--bottomnav-h) - var(--strip-h)), 640px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   PREFERENCE SYSTEM VISIBILITY RULES
+   ═══════════════════════════════════════════════════════ */
+html[data-pref="women"] [data-division="kids"] {
+  display: none !important;
+}
+html[data-pref="kids"] [data-division="women"] {
+  display: none !important;
+}
+
 /* ═══════════════════════════════════════════════════════
    BASE LAYER
    ═══════════════════════════════════════════════════════ */
@@ -62,7 +100,7 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: var(--ivory);
+    background-color: #FBF7F1;
     color: var(--deep);
     font-family: var(--font-jost), 'Jost', system-ui, sans-serif;
     font-size: 16px;
@@ -71,14 +109,16 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
-    max-width: 100vw;
+    max-width: 100%;
+    width: 100%;
   }
 
   body {
     background-color: var(--ivory);
     color: var(--deep);
     overflow-x: clip;
-    max-width: 100vw;
+    max-width: 100%;
+    width: 100%;
   }
 
   /* Display / heading typography — elegant light/regular serif */
@@ -267,4 +307,15 @@
 
 .animate-marquee {
   animation: marqueeScroll 35s linear infinite;
+}
+
+/* Drawer Keyframes (GPU transform & opacity only) */
+@keyframes drawerOverlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes drawerSlideIn {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
 }

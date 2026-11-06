@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { db } from '@/lib/db';
 import { RGBA, getDominantColor, renderCompositeOnCanvas, rgbToHsl } from '@/lib/imageProcessor';
 import { CategoryCombobox } from '@/components/admin/CategoryCombobox';
-import { WOMEN_MASTER_SIZES, KIDS_MASTER_SIZES, MASTER_ATTRIBUTES_SEED, type MasterSizeDefinition } from '@/data/masterSizes';
+import { WOMEN_MASTER_SIZES, KIDS_MASTER_SIZES, ALL_MASTER_SIZES, MASTER_ATTRIBUTES_SEED, type MasterSizeDefinition } from '@/data/masterSizes';
 
 interface ProductFormProps {
   initialData?: Product | null;
@@ -38,6 +38,9 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     L: 10,
   });
   const [isFeatured, setIsFeatured] = useState(false);
+  const [isTrending, setIsTrending] = useState(false);
+  const [isBestSeller, setIsBestSeller] = useState(false);
+  const [isNewArrival, setIsNewArrival] = useState(false);
   const [pairedWith, setPairedWith] = useState<string>('');
   const [isActive, setIsActive] = useState(true);
 
@@ -64,11 +67,22 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
   const [seoTitle, setSeoTitle] = useState('');
   const [seoDescription, setSeoDescription] = useState('');
 
-  // Dynamic sizes based on gender
-  const availableSizes: MasterSizeDefinition[] = useMemo(() => {
-    if (gender === 'kids') return KIDS_MASTER_SIZES;
-    return WOMEN_MASTER_SIZES;
+  // Dynamic sizes based on sizeGroupTab ('women' | 'kids' | 'all')
+  const [sizeGroupTab, setSizeGroupTab] = useState<'all' | 'women' | 'kids'>('women');
+
+  useEffect(() => {
+    if (gender === 'kids') {
+      setSizeGroupTab('kids');
+    } else {
+      setSizeGroupTab('women');
+    }
   }, [gender]);
+
+  const availableSizes: MasterSizeDefinition[] = useMemo(() => {
+    if (sizeGroupTab === 'women') return WOMEN_MASTER_SIZES;
+    if (sizeGroupTab === 'kids') return KIDS_MASTER_SIZES;
+    return ALL_MASTER_SIZES;
+  }, [sizeGroupTab]);
 
   // Filter attributes from seed
   const occasionOptions = useMemo(() => MASTER_ATTRIBUTES_SEED.filter(a => a.type === 'occasion'), []);
@@ -257,7 +271,10 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         });
       }
       setStock(initialStock);
-      setIsFeatured(initialData.is_featured);
+      setIsFeatured(Boolean(initialData.is_featured));
+      setIsTrending(Boolean(initialData.is_trending));
+      setIsBestSeller(Boolean(initialData.is_best_seller));
+      setIsNewArrival(Boolean(initialData.is_new_arrival));
       setPairedWith(initialData.paired_with || '');
       setIsActive(initialData.is_active);
 
@@ -360,6 +377,45 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     setActiveSizes((prev) =>
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
     );
+  };
+
+  const handleSelectAllSizes = () => {
+    const allCodes = availableSizes.map((s) => s.code);
+    setActiveSizes(allCodes);
+    setStock((prev) => {
+      const nextStock = { ...prev };
+      allCodes.forEach((c) => {
+        if (nextStock[c] === undefined || nextStock[c] === 0) nextStock[c] = 10;
+      });
+      return nextStock;
+    });
+  };
+
+  const handleClearAllSizes = () => {
+    setActiveSizes([]);
+  };
+
+  const applySizePreset = (presetSizes: string[]) => {
+    setActiveSizes(presetSizes);
+    setStock((prev) => {
+      const nextStock = { ...prev };
+      presetSizes.forEach((sz) => {
+        if (nextStock[sz] === undefined || nextStock[sz] === 0) {
+          nextStock[sz] = 10;
+        }
+      });
+      return nextStock;
+    });
+  };
+
+  const handleBulkSetStock = (qty: number) => {
+    setStock((prev) => {
+      const next = { ...prev };
+      activeSizes.forEach((sz) => {
+        next[sz] = qty;
+      });
+      return next;
+    });
   };
 
   const handleStockChange = (size: string, value: number) => {
@@ -1192,6 +1248,9 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         sizes: activeSizes,
         stock_quantity: finalStock,
         is_featured: isFeatured,
+        is_trending: isTrending,
+        is_best_seller: isBestSeller,
+        is_new_arrival: isNewArrival,
         paired_with: validPairedWith,
         is_active: isActive,
         weight_grams: parsedWeight,
@@ -1428,72 +1487,230 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
 
           {/* Sizing & Stock */}
           <div className="bg-white border border-zinc-200/80 shadow-sm p-6 md:p-8 space-y-6">
-            <div className="flex items-start justify-between border-b border-zinc-200/60 pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-zinc-200/60 pb-4">
               <div>
-                <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">
-                  Sizes &amp; Inventory Levels
+                <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-widest flex items-center gap-2">
+                  <span>Sizes &amp; Inventory Levels</span>
+                  <span className="text-[10px] lowercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-medium">Bangalore / Indian Standard</span>
                 </h2>
-                <p className="text-[10px] text-zinc-400 mt-0.5">
-                  Showing {gender === 'kids' ? "Kids" : "Women's"} master sizes. Switch Age Group to change.
+                <p className="text-[11px] text-zinc-500 mt-1">
+                  Standard sizing (Newborn 0–3M to 15Y kids, XS to 6XL plus size for women, and Free Size).
                 </p>
               </div>
-              <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 bg-zinc-100 text-zinc-500 border border-zinc-200">
-                {activeSizes.length} selected
-              </span>
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                <span className="text-[11px] uppercase tracking-wider font-bold px-2.5 py-1 bg-zinc-900 text-white rounded">
+                  {activeSizes.length} active sizes
+                </span>
+              </div>
             </div>
- 
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <span className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Select Active Sizes</span>
-                <div className="flex flex-wrap gap-2">
-                  {availableSizes.map((sizeDef) => {
-                    const isActiveSize = activeSizes.includes(sizeDef.code);
-                    return (
-                      <button
-                        key={sizeDef.code}
-                        type="button"
-                        onClick={() => toggleSize(sizeDef.code)}
-                        title={sizeDef.label}
-                        className={`min-w-[48px] h-12 px-2 font-mono font-bold text-[10px] border uppercase tracking-wider flex flex-col items-center justify-center gap-0.5 transition-all ${
-                          isActiveSize
-                            ? 'bg-zinc-900 text-white border-zinc-900'
-                            : 'bg-white border-zinc-200 text-zinc-500 hover:border-zinc-400 hover:text-zinc-900'
-                        }`}
-                      >
-                        <span className="text-[11px] font-bold leading-none">{sizeDef.code}</span>
-                        {sizeDef.age_range && (
-                          <span className="text-[8px] leading-none opacity-70">{sizeDef.age_range}</span>
-                        )}
-                        {sizeDef.numeric_size && !sizeDef.age_range && (
-                          <span className="text-[8px] leading-none opacity-70">{sizeDef.numeric_size}&quot;</span>
-                        )}
-                      </button>
-                    );
-                  })}
+
+            {/* Division / Size Chart Group Tabs */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-wider text-zinc-600 font-bold">
+                  1. Size Category View
+                </span>
+                <span className="text-[10px] text-zinc-400">
+                  Switch view or pick from any category below
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 p-1 bg-zinc-100 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setSizeGroupTab('women')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                    sizeGroupTab === 'women'
+                      ? 'bg-white text-zinc-900 shadow-xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  Women&apos;s (XS–6XL &amp; Plus)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSizeGroupTab('kids')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                    sizeGroupTab === 'kids'
+                      ? 'bg-white text-zinc-900 shadow-xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  Kids (0-3M to 14-15Y)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSizeGroupTab('all')}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                    sizeGroupTab === 'all'
+                      ? 'bg-white text-zinc-900 shadow-xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  All Master Sizing ({ALL_MASTER_SIZES.length})
+                </button>
+              </div>
+            </div>
+
+            {/* Quick-Select Presets */}
+            <div className="space-y-2 p-3.5 bg-zinc-50 border border-zinc-200/70 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] uppercase tracking-wider text-zinc-700 font-bold">
+                  Quick Select Presets
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSelectAllSizes}
+                    className="text-[11px] font-sans font-bold uppercase tracking-wider text-zinc-900 hover:text-zinc-600 underline cursor-pointer"
+                  >
+                    Select All in View
+                  </button>
+                  <span className="text-zinc-300">|</span>
+                  <button
+                    type="button"
+                    onClick={handleClearAllSizes}
+                    className="text-[11px] font-sans font-medium uppercase tracking-wider text-zinc-400 hover:text-zinc-700 cursor-pointer"
+                  >
+                    Clear All
+                  </button>
                 </div>
               </div>
- 
-              {activeSizes.length > 0 && (
-                <div className="space-y-4 pt-4 border-t border-zinc-200/60">
-                  <span className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Quantities in Stock</span>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {activeSizes.map((size) => (
-                      <div key={size} className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-zinc-500 font-mono">Size {size} Qty</label>
-                        <input
-                          type="number"
-                          value={stock[size] ?? 0}
-                          onChange={(e) => handleStockChange(size, parseInt(e.target.value) || 0)}
-                          className="w-full bg-zinc-50 border border-zinc-200 text-zinc-900 px-3 py-2 text-sm focus:outline-none focus:bg-white focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all font-mono"
-                          min="0"
-                          required
-                        />
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['XS', 'S', 'M', 'L', 'XL', 'XXL'])}
+                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
+                >
+                  Women Standard (XS–XXL)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL'])}
+                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
+                >
+                  Women + Plus (XS–6XL)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['4XL', '5XL', '6XL'])}
+                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
+                >
+                  Plus Sizes (4XL–6XL)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['0-3M', '3-6M', '6-12M', '1-2Y', '2-3Y', '3-4Y'])}
+                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
+                >
+                  Kids Infant &amp; Toddler (0-3M to 3-4Y)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['0-3M', '3-6M', '6-12M', '1-2Y', '2-3Y', '3-4Y', '4-6Y', '6-8Y', '8-10Y', '10-12Y', '12-14Y', '14-15Y'])}
+                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
+                >
+                  Kids Full Run (0-3M to 14-15Y)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applySizePreset(['FREE SIZE'])}
+                  className="px-2.5 py-1 bg-white border border-zinc-300 hover:border-zinc-800 text-[11px] font-semibold text-zinc-800 rounded transition-colors cursor-pointer"
+                >
+                  Free Size Only
+                </button>
+              </div>
+            </div>
+
+            {/* Size Selectors Grid */}
+            <div className="space-y-2">
+              <span className="text-xs uppercase tracking-wider text-zinc-600 font-bold block">
+                2. Toggle Active Sizes ({availableSizes.length} available in this tab)
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                {availableSizes.map((sizeDef) => {
+                  const isActiveSize = activeSizes.includes(sizeDef.code);
+                  return (
+                    <button
+                      key={sizeDef.code}
+                      type="button"
+                      onClick={() => toggleSize(sizeDef.code)}
+                      title={sizeDef.label}
+                      className={`min-h-[52px] p-2 font-mono text-[10px] border rounded transition-all flex flex-col items-start justify-center cursor-pointer text-left ${
+                        isActiveSize
+                          ? 'bg-zinc-900 text-white border-zinc-900 ring-2 ring-zinc-900/20'
+                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 hover:text-zinc-900'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-xs font-bold font-sans">{sizeDef.code}</span>
+                        {isActiveSize && <span className="text-[10px] text-emerald-400">✓</span>}
                       </div>
+                      {sizeDef.measurements?.chest_in && (
+                        <span className={`text-[9px] leading-tight mt-0.5 truncate max-w-full ${isActiveSize ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                          {sizeDef.measurements.chest_in}&quot; chest
+                        </span>
+                      )}
+                      {sizeDef.measurements?.height_cm && (
+                        <span className={`text-[8px] leading-tight truncate max-w-full ${isActiveSize ? 'text-zinc-400' : 'text-zinc-400'}`}>
+                          {sizeDef.measurements.height_cm}cm
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Inventory Quantities */}
+            {activeSizes.length > 0 && (
+              <div className="space-y-4 pt-4 border-t border-zinc-200/60">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <span className="text-xs uppercase tracking-wider text-zinc-600 font-bold block">
+                    3. Quantities in Stock ({activeSizes.length} sizes active)
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-zinc-400 uppercase font-semibold">Bulk Set:</span>
+                    {[0, 5, 10, 25, 50].map((qty) => (
+                      <button
+                        key={qty}
+                        type="button"
+                        onClick={() => handleBulkSetStock(qty)}
+                        className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded border border-zinc-200 transition-colors"
+                      >
+                        {qty}
+                      </button>
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {activeSizes.map((size) => (
+                    <div key={size} className="p-2.5 bg-zinc-50 border border-zinc-200 rounded-md space-y-1">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] uppercase font-bold text-zinc-800 font-mono">
+                          Size {size}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => toggleSize(size)}
+                          title="Remove size"
+                          className="text-[10px] text-zinc-400 hover:text-brand-red font-mono"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <input
+                        type="number"
+                        value={stock[size] ?? 0}
+                        onChange={(e) => handleStockChange(size, parseInt(e.target.value) || 0)}
+                        className="w-full bg-white border border-zinc-300 text-zinc-900 px-3 py-1.5 text-sm focus:outline-none focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 transition-all font-mono rounded"
+                        min="0"
+                        required
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Master Attributes Section */}
@@ -2565,6 +2782,45 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                 type="checkbox"
                 checked={isFeatured}
                 onChange={(e) => setIsFeatured(e.target.checked)}
+                className="rounded border-zinc-300 bg-white text-zinc-900 focus:ring-zinc-900 w-4 h-4 cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-zinc-200/60">
+              <div className="space-y-0.5">
+                <span className="text-xs uppercase font-bold text-zinc-900">Trending</span>
+                <p className="text-[10px] text-zinc-500">Flag for &quot;Trending This Week&quot; homepage carousel</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={isTrending}
+                onChange={(e) => setIsTrending(e.target.checked)}
+                className="rounded border-zinc-300 bg-white text-zinc-900 focus:ring-zinc-900 w-4 h-4 cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-zinc-200/60">
+              <div className="space-y-0.5">
+                <span className="text-xs uppercase font-bold text-zinc-900">Best Seller</span>
+                <p className="text-[10px] text-zinc-500">Flag as Best Seller (elevates in Trending sections)</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={isBestSeller}
+                onChange={(e) => setIsBestSeller(e.target.checked)}
+                className="rounded border-zinc-300 bg-white text-zinc-900 focus:ring-zinc-900 w-4 h-4 cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-zinc-200/60">
+              <div className="space-y-0.5">
+                <span className="text-xs uppercase font-bold text-zinc-900">New Arrival</span>
+                <p className="text-[10px] text-zinc-500">Flag as New Arrival for &quot;New In&quot; section</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={isNewArrival}
+                onChange={(e) => setIsNewArrival(e.target.checked)}
                 className="rounded border-zinc-300 bg-white text-zinc-900 focus:ring-zinc-900 w-4 h-4 cursor-pointer"
               />
             </div>

@@ -1,0 +1,4946 @@
+[
+  {
+    "group_index": 1,
+    "product_no": "001",
+    "product_id": "proper_prod_001",
+    "product_name": "Product 001",
+    "slug": "product-001",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "001..004",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (15)-463-001.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (15)-463-001.jpeg",
+        "size_bytes": 403100,
+        "seq_index": 1
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.43.51-462-002.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.43.51-462-002.jpeg",
+        "size_bytes": 292005,
+        "seq_index": 2
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (16)-461-003.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (16)-461-003.jpeg",
+        "size_bytes": 214930,
+        "seq_index": 3
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.43.51 (1)-460-004.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.43.51 (1)-460-004.jpeg",
+        "size_bytes": 292685,
+        "seq_index": 4
+      }
+    ]
+  },
+  {
+    "group_index": 2,
+    "product_no": "002",
+    "product_id": "proper_prod_002",
+    "product_name": "Product 002",
+    "slug": "product-002",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "005..008",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (13)-459-005.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (13)-459-005.jpeg",
+        "size_bytes": 457049,
+        "seq_index": 5
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (12)-458-006.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (12)-458-006.jpeg",
+        "size_bytes": 479460,
+        "seq_index": 6
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (11)-457-007.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (11)-457-007.jpeg",
+        "size_bytes": 439704,
+        "seq_index": 7
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (10)-456-008.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (10)-456-008.jpeg",
+        "size_bytes": 456337,
+        "seq_index": 8
+      }
+    ]
+  },
+  {
+    "group_index": 3,
+    "product_no": "003",
+    "product_id": "proper_prod_003",
+    "product_name": "Product 003",
+    "slug": "product-003",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "009..012",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (9)-455-009.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (9)-455-009.jpeg",
+        "size_bytes": 481337,
+        "seq_index": 9
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (8)-454-010.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (8)-454-010.jpeg",
+        "size_bytes": 503477,
+        "seq_index": 10
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (7)-453-011.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (7)-453-011.jpeg",
+        "size_bytes": 454351,
+        "seq_index": 11
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (6)-452-012.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (6)-452-012.jpeg",
+        "size_bytes": 465165,
+        "seq_index": 12
+      }
+    ]
+  },
+  {
+    "group_index": 4,
+    "product_no": "004",
+    "product_id": "proper_prod_004",
+    "product_name": "Product 004",
+    "slug": "product-004",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "013..016",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (5)-451-013.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (5)-451-013.jpeg",
+        "size_bytes": 358113,
+        "seq_index": 13
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (4)-450-014.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (4)-450-014.jpeg",
+        "size_bytes": 250612,
+        "seq_index": 14
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (3)-449-015.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (3)-449-015.jpeg",
+        "size_bytes": 317517,
+        "seq_index": 15
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (2)-448-016.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (2)-448-016.jpeg",
+        "size_bytes": 447709,
+        "seq_index": 16
+      }
+    ]
+  },
+  {
+    "group_index": 5,
+    "product_no": "005",
+    "product_id": "proper_prod_005",
+    "product_name": "Product 005",
+    "slug": "product-005",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "017..020",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03 (1)-447-017.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03 (1)-447-017.jpeg",
+        "size_bytes": 277670,
+        "seq_index": 17
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.03-446-018.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.03-446-018.jpeg",
+        "size_bytes": 287143,
+        "seq_index": 18
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (18)-445-019.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (18)-445-019.jpeg",
+        "size_bytes": 307407,
+        "seq_index": 19
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (17)-444-020.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (17)-444-020.jpeg",
+        "size_bytes": 297137,
+        "seq_index": 20
+      }
+    ]
+  },
+  {
+    "group_index": 6,
+    "product_no": "006",
+    "product_id": "proper_prod_006",
+    "product_name": "Product 006",
+    "slug": "product-006",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "021..024",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (14)-443-021.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (14)-443-021.jpeg",
+        "size_bytes": 345479,
+        "seq_index": 21
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (13)-442-022.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (13)-442-022.jpeg",
+        "size_bytes": 355633,
+        "seq_index": 22
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (12)-441-023.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (12)-441-023.jpeg",
+        "size_bytes": 347084,
+        "seq_index": 23
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (11)-440-024.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (11)-440-024.jpeg",
+        "size_bytes": 327987,
+        "seq_index": 24
+      }
+    ]
+  },
+  {
+    "group_index": 7,
+    "product_no": "007",
+    "product_id": "proper_prod_007",
+    "product_name": "Product 007",
+    "slug": "product-007",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "025..028",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (10)-439-025.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (10)-439-025.jpeg",
+        "size_bytes": 259760,
+        "seq_index": 25
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (9)-438-026.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (9)-438-026.jpeg",
+        "size_bytes": 263289,
+        "seq_index": 26
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (8)-437-027.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (8)-437-027.jpeg",
+        "size_bytes": 219458,
+        "seq_index": 27
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (7)-436-028.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (7)-436-028.jpeg",
+        "size_bytes": 270299,
+        "seq_index": 28
+      }
+    ]
+  },
+  {
+    "group_index": 8,
+    "product_no": "008",
+    "product_id": "proper_prod_008",
+    "product_name": "Product 008",
+    "slug": "product-008",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "029..032",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (6)-435-029.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (6)-435-029.jpeg",
+        "size_bytes": 371986,
+        "seq_index": 29
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (5)-434-030.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (5)-434-030.jpeg",
+        "size_bytes": 390071,
+        "seq_index": 30
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (4)-433-031.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (4)-433-031.jpeg",
+        "size_bytes": 418291,
+        "seq_index": 31
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (3)-432-032.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (3)-432-032.jpeg",
+        "size_bytes": 301101,
+        "seq_index": 32
+      }
+    ]
+  },
+  {
+    "group_index": 9,
+    "product_no": "009",
+    "product_id": "proper_prod_009",
+    "product_name": "Product 009",
+    "slug": "product-009",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "033..036",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (2)-431-033.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (2)-431-033.jpeg",
+        "size_bytes": 304777,
+        "seq_index": 33
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02 (1)-430-034.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02 (1)-430-034.jpeg",
+        "size_bytes": 306145,
+        "seq_index": 34
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.02-429-035.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.02-429-035.jpeg",
+        "size_bytes": 228878,
+        "seq_index": 35
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (18)-428-036.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (18)-428-036.jpeg",
+        "size_bytes": 264028,
+        "seq_index": 36
+      }
+    ]
+  },
+  {
+    "group_index": 10,
+    "product_no": "010",
+    "product_id": "proper_prod_010",
+    "product_name": "Product 010",
+    "slug": "product-010",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "037..040",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (17)-427-037.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (17)-427-037.jpeg",
+        "size_bytes": 319206,
+        "seq_index": 37
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (16)-426-038.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (16)-426-038.jpeg",
+        "size_bytes": 314524,
+        "seq_index": 38
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (15)-425-039.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (15)-425-039.jpeg",
+        "size_bytes": 245477,
+        "seq_index": 39
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (14)-424-040.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (14)-424-040.jpeg",
+        "size_bytes": 289178,
+        "seq_index": 40
+      }
+    ]
+  },
+  {
+    "group_index": 11,
+    "product_no": "011",
+    "product_id": "proper_prod_011",
+    "product_name": "Product 011",
+    "slug": "product-011",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "041..044",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (13)-423-041.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (13)-423-041.jpeg",
+        "size_bytes": 349098,
+        "seq_index": 41
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (12)-422-042.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (12)-422-042.jpeg",
+        "size_bytes": 355271,
+        "seq_index": 42
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (11)-421-043.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (11)-421-043.jpeg",
+        "size_bytes": 340708,
+        "seq_index": 43
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (10)-420-044.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (10)-420-044.jpeg",
+        "size_bytes": 297245,
+        "seq_index": 44
+      }
+    ]
+  },
+  {
+    "group_index": 12,
+    "product_no": "012",
+    "product_id": "proper_prod_012",
+    "product_name": "Product 012",
+    "slug": "product-012",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "045..048",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (9)-419-045.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (9)-419-045.jpeg",
+        "size_bytes": 313551,
+        "seq_index": 45
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (8)-418-046.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (8)-418-046.jpeg",
+        "size_bytes": 318186,
+        "seq_index": 46
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (7)-417-047.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (7)-417-047.jpeg",
+        "size_bytes": 290865,
+        "seq_index": 47
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (6)-416-048.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (6)-416-048.jpeg",
+        "size_bytes": 245890,
+        "seq_index": 48
+      }
+    ]
+  },
+  {
+    "group_index": 13,
+    "product_no": "013",
+    "product_id": "proper_prod_013",
+    "product_name": "Product 013",
+    "slug": "product-013",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "049..052",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (5)-415-049.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (5)-415-049.jpeg",
+        "size_bytes": 380463,
+        "seq_index": 49
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (4)-414-050.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (4)-414-050.jpeg",
+        "size_bytes": 385932,
+        "seq_index": 50
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (3)-413-051.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (3)-413-051.jpeg",
+        "size_bytes": 377190,
+        "seq_index": 51
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (2)-412-052.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (2)-412-052.jpeg",
+        "size_bytes": 362941,
+        "seq_index": 52
+      }
+    ]
+  },
+  {
+    "group_index": 14,
+    "product_no": "014",
+    "product_id": "proper_prod_014",
+    "product_name": "Product 014",
+    "slug": "product-014",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "053..056",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01 (1)-411-053.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01 (1)-411-053.jpeg",
+        "size_bytes": 319798,
+        "seq_index": 53
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.01-410-054.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.01-410-054.jpeg",
+        "size_bytes": 327429,
+        "seq_index": 54
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (17)-409-055.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (17)-409-055.jpeg",
+        "size_bytes": 318907,
+        "seq_index": 55
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (16)-408-056.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (16)-408-056.jpeg",
+        "size_bytes": 329774,
+        "seq_index": 56
+      }
+    ]
+  },
+  {
+    "group_index": 15,
+    "product_no": "015",
+    "product_id": "proper_prod_015",
+    "product_name": "Product 015",
+    "slug": "product-015",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "057..060",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (15)-407-057.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (15)-407-057.jpeg",
+        "size_bytes": 366903,
+        "seq_index": 57
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (14)-406-058.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (14)-406-058.jpeg",
+        "size_bytes": 372623,
+        "seq_index": 58
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (13)-405-059.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (13)-405-059.jpeg",
+        "size_bytes": 340698,
+        "seq_index": 59
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (12)-404-060.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (12)-404-060.jpeg",
+        "size_bytes": 369258,
+        "seq_index": 60
+      }
+    ]
+  },
+  {
+    "group_index": 16,
+    "product_no": "016",
+    "product_id": "proper_prod_016",
+    "product_name": "Product 016",
+    "slug": "product-016",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "061..064",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (11)-403-061.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (11)-403-061.jpeg",
+        "size_bytes": 346768,
+        "seq_index": 61
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (10)-402-062.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (10)-402-062.jpeg",
+        "size_bytes": 350636,
+        "seq_index": 62
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (9)-401-063.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (9)-401-063.jpeg",
+        "size_bytes": 388603,
+        "seq_index": 63
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (8)-400-064.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (8)-400-064.jpeg",
+        "size_bytes": 365757,
+        "seq_index": 64
+      }
+    ]
+  },
+  {
+    "group_index": 17,
+    "product_no": "017",
+    "product_id": "proper_prod_017",
+    "product_name": "Product 017",
+    "slug": "product-017",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "065..068",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (5)-397-065.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (5)-397-065.jpeg",
+        "size_bytes": 316886,
+        "seq_index": 65
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (4)-396-066.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (4)-396-066.jpeg",
+        "size_bytes": 322663,
+        "seq_index": 66
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (3)-395-067.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (3)-395-067.jpeg",
+        "size_bytes": 304542,
+        "seq_index": 67
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (2)-394-068.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (2)-394-068.jpeg",
+        "size_bytes": 285679,
+        "seq_index": 68
+      }
+    ]
+  },
+  {
+    "group_index": 18,
+    "product_no": "018",
+    "product_id": "proper_prod_018",
+    "product_name": "Product 018",
+    "slug": "product-018",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "069..072",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00 (1)-393-069.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00 (1)-393-069.jpeg",
+        "size_bytes": 333464,
+        "seq_index": 69
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.40.00-392-070.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.40.00-392-070.jpeg",
+        "size_bytes": 320363,
+        "seq_index": 70
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (17)-391-071.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (17)-391-071.jpeg",
+        "size_bytes": 339872,
+        "seq_index": 71
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (16)-390-072.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (16)-390-072.jpeg",
+        "size_bytes": 360347,
+        "seq_index": 72
+      }
+    ]
+  },
+  {
+    "group_index": 19,
+    "product_no": "019",
+    "product_id": "proper_prod_019",
+    "product_name": "Product 019",
+    "slug": "product-019",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "073..076",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (15)-389-073.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (15)-389-073.jpeg",
+        "size_bytes": 335181,
+        "seq_index": 73
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (14)-388-074.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (14)-388-074.jpeg",
+        "size_bytes": 275951,
+        "seq_index": 74
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (13)-387-075.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (13)-387-075.jpeg",
+        "size_bytes": 244982,
+        "seq_index": 75
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (12)-386-076.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (12)-386-076.jpeg",
+        "size_bytes": 308418,
+        "seq_index": 76
+      }
+    ]
+  },
+  {
+    "group_index": 20,
+    "product_no": "020",
+    "product_id": "proper_prod_020",
+    "product_name": "Product 020",
+    "slug": "product-020",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "077..080",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (11)-385-077.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (11)-385-077.jpeg",
+        "size_bytes": 407833,
+        "seq_index": 77
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (10)-384-078.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (10)-384-078.jpeg",
+        "size_bytes": 410692,
+        "seq_index": 78
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (9)-383-079.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (9)-383-079.jpeg",
+        "size_bytes": 363919,
+        "seq_index": 79
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (8)-382-080.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (8)-382-080.jpeg",
+        "size_bytes": 419665,
+        "seq_index": 80
+      }
+    ]
+  },
+  {
+    "group_index": 21,
+    "product_no": "021",
+    "product_id": "proper_prod_021",
+    "product_name": "Product 021",
+    "slug": "product-021",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "081..084",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (7)-381-081.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (7)-381-081.jpeg",
+        "size_bytes": 379847,
+        "seq_index": 81
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (6)-380-082.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (6)-380-082.jpeg",
+        "size_bytes": 391295,
+        "seq_index": 82
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (5)-379-083.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (5)-379-083.jpeg",
+        "size_bytes": 349498,
+        "seq_index": 83
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (4)-378-084.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (4)-378-084.jpeg",
+        "size_bytes": 334869,
+        "seq_index": 84
+      }
+    ]
+  },
+  {
+    "group_index": 22,
+    "product_no": "022",
+    "product_id": "proper_prod_022",
+    "product_name": "Product 022",
+    "slug": "product-022",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "085..088",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (3)-377-085.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (3)-377-085.jpeg",
+        "size_bytes": 419709,
+        "seq_index": 85
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (2)-376-086.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (2)-376-086.jpeg",
+        "size_bytes": 425977,
+        "seq_index": 86
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59 (1)-375-087.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59 (1)-375-087.jpeg",
+        "size_bytes": 390322,
+        "seq_index": 87
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.59-374-088.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.59-374-088.jpeg",
+        "size_bytes": 429590,
+        "seq_index": 88
+      }
+    ]
+  },
+  {
+    "group_index": 23,
+    "product_no": "023",
+    "product_id": "proper_prod_023",
+    "product_name": "Product 023",
+    "slug": "product-023",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "089..092",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (7)-373-089.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (7)-373-089.jpeg",
+        "size_bytes": 374883,
+        "seq_index": 89
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (6)-372-090.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (6)-372-090.jpeg",
+        "size_bytes": 383107,
+        "seq_index": 90
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (5)-371-091.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (5)-371-091.jpeg",
+        "size_bytes": 394175,
+        "seq_index": 91
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (4)-370-092.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (4)-370-092.jpeg",
+        "size_bytes": 391269,
+        "seq_index": 92
+      }
+    ]
+  },
+  {
+    "group_index": 24,
+    "product_no": "024",
+    "product_id": "proper_prod_024",
+    "product_name": "Product 024",
+    "slug": "product-024",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "093..096",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (3)-369-093.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (3)-369-093.jpeg",
+        "size_bytes": 352431,
+        "seq_index": 93
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (2)-368-094.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (2)-368-094.jpeg",
+        "size_bytes": 370626,
+        "seq_index": 94
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58 (1)-367-095.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58 (1)-367-095.jpeg",
+        "size_bytes": 322827,
+        "seq_index": 95
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.58-366-096.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.58-366-096.jpeg",
+        "size_bytes": 367287,
+        "seq_index": 96
+      }
+    ]
+  },
+  {
+    "group_index": 25,
+    "product_no": "025",
+    "product_id": "proper_prod_025",
+    "product_name": "Product 025",
+    "slug": "product-025",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "097..100",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.57-365-097.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.57-365-097.jpeg",
+        "size_bytes": 424656,
+        "seq_index": 97
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.56-364-098.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.56-364-098.jpeg",
+        "size_bytes": 427172,
+        "seq_index": 98
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.55 (1)-363-099.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.55 (1)-363-099.jpeg",
+        "size_bytes": 448767,
+        "seq_index": 99
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 13.39.55-362-100.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 13.39.55-362-100.jpeg",
+        "size_bytes": 379421,
+        "seq_index": 100
+      }
+    ]
+  },
+  {
+    "group_index": 26,
+    "product_no": "026",
+    "product_id": "proper_prod_026",
+    "product_name": "Product 026",
+    "slug": "product-026",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "101..104",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (6)-361-101.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54 (6)-361-101.jpeg",
+        "size_bytes": 430191,
+        "seq_index": 101
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (5)-360-102.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54 (5)-360-102.jpeg",
+        "size_bytes": 450513,
+        "seq_index": 102
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (4)-359-103.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54 (4)-359-103.jpeg",
+        "size_bytes": 474898,
+        "seq_index": 103
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (3)-358-104.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54 (3)-358-104.jpeg",
+        "size_bytes": 454214,
+        "seq_index": 104
+      }
+    ]
+  },
+  {
+    "group_index": 27,
+    "product_no": "027",
+    "product_id": "proper_prod_027",
+    "product_name": "Product 027",
+    "slug": "product-027",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "105..108",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (2)-357-105.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54 (2)-357-105.jpeg",
+        "size_bytes": 550733,
+        "seq_index": 105
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54 (1)-356-106.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54 (1)-356-106.jpeg",
+        "size_bytes": 528580,
+        "seq_index": 106
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.54-355-107.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.54-355-107.jpeg",
+        "size_bytes": 547097,
+        "seq_index": 107
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.53-354-108.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.53-354-108.jpeg",
+        "size_bytes": 540878,
+        "seq_index": 108
+      }
+    ]
+  },
+  {
+    "group_index": 28,
+    "product_no": "028",
+    "product_id": "proper_prod_028",
+    "product_name": "Product 028",
+    "slug": "product-028",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "109..112",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.52 (1)-353-109.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.52 (1)-353-109.jpeg",
+        "size_bytes": 480009,
+        "seq_index": 109
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.52-352-110.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.52-352-110.jpeg",
+        "size_bytes": 496973,
+        "seq_index": 110
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.51 (1)-351-111.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.51 (1)-351-111.jpeg",
+        "size_bytes": 476454,
+        "seq_index": 111
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.32.51-350-112.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.32.51-350-112.jpeg",
+        "size_bytes": 496408,
+        "seq_index": 112
+      }
+    ]
+  },
+  {
+    "group_index": 29,
+    "product_no": "029",
+    "product_id": "proper_prod_029",
+    "product_name": "Product 029",
+    "slug": "product-029",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "113..116",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.03 (1)-349-113.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.03 (1)-349-113.jpeg",
+        "size_bytes": 460825,
+        "seq_index": 113
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.03-348-114.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.03-348-114.jpeg",
+        "size_bytes": 476499,
+        "seq_index": 114
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (5)-347-115.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.02 (5)-347-115.jpeg",
+        "size_bytes": 489919,
+        "seq_index": 115
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (4)-346-116.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.02 (4)-346-116.jpeg",
+        "size_bytes": 474472,
+        "seq_index": 116
+      }
+    ]
+  },
+  {
+    "group_index": 30,
+    "product_no": "030",
+    "product_id": "proper_prod_030",
+    "product_name": "Product 030",
+    "slug": "product-030",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "117..120",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (3)-345-117.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.02 (3)-345-117.jpeg",
+        "size_bytes": 382682,
+        "seq_index": 117
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (2)-344-118.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.02 (2)-344-118.jpeg",
+        "size_bytes": 387027,
+        "seq_index": 118
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02 (1)-343-119.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.02 (1)-343-119.jpeg",
+        "size_bytes": 387304,
+        "seq_index": 119
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.02-342-120.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.02-342-120.jpeg",
+        "size_bytes": 377243,
+        "seq_index": 120
+      }
+    ]
+  },
+  {
+    "group_index": 31,
+    "product_no": "031",
+    "product_id": "proper_prod_031",
+    "product_name": "Product 031",
+    "slug": "product-031",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "121..124",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01 (3)-341-121.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.01 (3)-341-121.jpeg",
+        "size_bytes": 416853,
+        "seq_index": 121
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01 (2)-340-122.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.01 (2)-340-122.jpeg",
+        "size_bytes": 434368,
+        "seq_index": 122
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01 (1)-339-123.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.01 (1)-339-123.jpeg",
+        "size_bytes": 426416,
+        "seq_index": 123
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-03 at 21.30.01-338-124.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-03 at 21.30.01-338-124.jpeg",
+        "size_bytes": 423777,
+        "seq_index": 124
+      }
+    ]
+  },
+  {
+    "group_index": 32,
+    "product_no": "032",
+    "product_id": "proper_prod_032",
+    "product_name": "Product 032",
+    "slug": "product-032",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "125..128",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (14)-337-125.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (14)-337-125.jpeg",
+        "size_bytes": 296731,
+        "seq_index": 125
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (13)-336-126.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (13)-336-126.jpeg",
+        "size_bytes": 289231,
+        "seq_index": 126
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (12)-335-127.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (12)-335-127.jpeg",
+        "size_bytes": 291778,
+        "seq_index": 127
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (11)-334-128.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (11)-334-128.jpeg",
+        "size_bytes": 344838,
+        "seq_index": 128
+      }
+    ]
+  },
+  {
+    "group_index": 33,
+    "product_no": "033",
+    "product_id": "proper_prod_033",
+    "product_name": "Product 033",
+    "slug": "product-033",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "129..132",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (10)-333-129.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (10)-333-129.jpeg",
+        "size_bytes": 458061,
+        "seq_index": 129
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (9)-332-130.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (9)-332-130.jpeg",
+        "size_bytes": 447615,
+        "seq_index": 130
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (8)-331-131.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (8)-331-131.jpeg",
+        "size_bytes": 438113,
+        "seq_index": 131
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (7)-330-132.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (7)-330-132.jpeg",
+        "size_bytes": 463119,
+        "seq_index": 132
+      }
+    ]
+  },
+  {
+    "group_index": 34,
+    "product_no": "034",
+    "product_id": "proper_prod_034",
+    "product_name": "Product 034",
+    "slug": "product-034",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "133..136",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (6)-329-133.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (6)-329-133.jpeg",
+        "size_bytes": 482365,
+        "seq_index": 133
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (5)-328-134.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (5)-328-134.jpeg",
+        "size_bytes": 471352,
+        "seq_index": 134
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (4)-327-135.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (4)-327-135.jpeg",
+        "size_bytes": 490747,
+        "seq_index": 135
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (3)-326-136.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (3)-326-136.jpeg",
+        "size_bytes": 452933,
+        "seq_index": 136
+      }
+    ]
+  },
+  {
+    "group_index": 35,
+    "product_no": "035",
+    "product_id": "proper_prod_035",
+    "product_name": "Product 035",
+    "slug": "product-035",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "137..140",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (2)-325-137.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (2)-325-137.jpeg",
+        "size_bytes": 506868,
+        "seq_index": 137
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (26)-324-138.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (26)-324-138.jpeg",
+        "size_bytes": 493682,
+        "seq_index": 138
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49 (1)-323-139.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49 (1)-323-139.jpeg",
+        "size_bytes": 485064,
+        "seq_index": 139
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (25)-322-140.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (25)-322-140.jpeg",
+        "size_bytes": 494978,
+        "seq_index": 140
+      }
+    ]
+  },
+  {
+    "group_index": 36,
+    "product_no": "036",
+    "product_id": "proper_prod_036",
+    "product_name": "Product 036",
+    "slug": "product-036",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "141..144",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.49-321-141.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.49-321-141.jpeg",
+        "size_bytes": 353100,
+        "seq_index": 141
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (27)-320-142.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (27)-320-142.jpeg",
+        "size_bytes": 363123,
+        "seq_index": 142
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (24)-319-143.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (24)-319-143.jpeg",
+        "size_bytes": 378207,
+        "seq_index": 143
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (23)-318-144.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (23)-318-144.jpeg",
+        "size_bytes": 375633,
+        "seq_index": 144
+      }
+    ]
+  },
+  {
+    "group_index": 37,
+    "product_no": "037",
+    "product_id": "proper_prod_037",
+    "product_name": "Product 037",
+    "slug": "product-037",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "145..148",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (15)-317-145.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (15)-317-145.jpeg",
+        "size_bytes": 359451,
+        "seq_index": 145
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (16)-316-146.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (16)-316-146.jpeg",
+        "size_bytes": 371724,
+        "seq_index": 146
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (21)-315-147.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (21)-315-147.jpeg",
+        "size_bytes": 389333,
+        "seq_index": 147
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (22)-314-148.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (22)-314-148.jpeg",
+        "size_bytes": 373784,
+        "seq_index": 148
+      }
+    ]
+  },
+  {
+    "group_index": 38,
+    "product_no": "038",
+    "product_id": "proper_prod_038",
+    "product_name": "Product 038",
+    "slug": "product-038",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "149..152",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (20)-313-149.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (20)-313-149.jpeg",
+        "size_bytes": 359751,
+        "seq_index": 149
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (19)-312-150.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (19)-312-150.jpeg",
+        "size_bytes": 375567,
+        "seq_index": 150
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (18)-311-151.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (18)-311-151.jpeg",
+        "size_bytes": 420169,
+        "seq_index": 151
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (17)-310-152.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (17)-310-152.jpeg",
+        "size_bytes": 340169,
+        "seq_index": 152
+      }
+    ]
+  },
+  {
+    "group_index": 39,
+    "product_no": "039",
+    "product_id": "proper_prod_039",
+    "product_name": "Product 039",
+    "slug": "product-039",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "153..156",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (14)-309-153.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (14)-309-153.jpeg",
+        "size_bytes": 420073,
+        "seq_index": 153
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (13)-308-154.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (13)-308-154.jpeg",
+        "size_bytes": 451362,
+        "seq_index": 154
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (12)-307-155.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (12)-307-155.jpeg",
+        "size_bytes": 418243,
+        "seq_index": 155
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (11)-306-156.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (11)-306-156.jpeg",
+        "size_bytes": 434418,
+        "seq_index": 156
+      }
+    ]
+  },
+  {
+    "group_index": 40,
+    "product_no": "040",
+    "product_id": "proper_prod_040",
+    "product_name": "Product 040",
+    "slug": "product-040",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "157..160",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (8)-305-157.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (8)-305-157.jpeg",
+        "size_bytes": 433492,
+        "seq_index": 157
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (7)-304-158.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (7)-304-158.jpeg",
+        "size_bytes": 466607,
+        "seq_index": 158
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (5)-303-159.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (5)-303-159.jpeg",
+        "size_bytes": 454317,
+        "seq_index": 159
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (10)-302-160.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (10)-302-160.jpeg",
+        "size_bytes": 439018,
+        "seq_index": 160
+      }
+    ]
+  },
+  {
+    "group_index": 41,
+    "product_no": "041",
+    "product_id": "proper_prod_041",
+    "product_name": "Product 041",
+    "slug": "product-041",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "161..164",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (4)-301-161.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (4)-301-161.jpeg",
+        "size_bytes": 410191,
+        "seq_index": 161
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (3)-300-162.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (3)-300-162.jpeg",
+        "size_bytes": 454011,
+        "seq_index": 162
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (6)-299-163.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (6)-299-163.jpeg",
+        "size_bytes": 413511,
+        "seq_index": 163
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (9)-298-164.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (9)-298-164.jpeg",
+        "size_bytes": 401000,
+        "seq_index": 164
+      }
+    ]
+  },
+  {
+    "group_index": 42,
+    "product_no": "042",
+    "product_id": "proper_prod_042",
+    "product_name": "Product 042",
+    "slug": "product-042",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "165..168",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (1)-297-165.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (1)-297-165.jpeg",
+        "size_bytes": 355102,
+        "seq_index": 165
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48-296-166.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48-296-166.jpeg",
+        "size_bytes": 363704,
+        "seq_index": 166
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (6)-295-167.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47 (6)-295-167.jpeg",
+        "size_bytes": 370558,
+        "seq_index": 167
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (5)-294-168.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47 (5)-294-168.jpeg",
+        "size_bytes": 363010,
+        "seq_index": 168
+      }
+    ]
+  },
+  {
+    "group_index": 43,
+    "product_no": "043",
+    "product_id": "proper_prod_043",
+    "product_name": "Product 043",
+    "slug": "product-043",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "169..172",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (4)-293-169.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47 (4)-293-169.jpeg",
+        "size_bytes": 456158,
+        "seq_index": 169
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (3)-292-170.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47 (3)-292-170.jpeg",
+        "size_bytes": 468375,
+        "seq_index": 170
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.48 (2)-291-171.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.48 (2)-291-171.jpeg",
+        "size_bytes": 444174,
+        "seq_index": 171
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (2)-290-172.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47 (2)-290-172.jpeg",
+        "size_bytes": 483495,
+        "seq_index": 172
+      }
+    ]
+  },
+  {
+    "group_index": 44,
+    "product_no": "044",
+    "product_id": "proper_prod_044",
+    "product_name": "Product 044",
+    "slug": "product-044",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "173..176",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47-289-173.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47-289-173.jpeg",
+        "size_bytes": 414876,
+        "seq_index": 173
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.31-288-174.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.31-288-174.jpeg",
+        "size_bytes": 441209,
+        "seq_index": 174
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.26-287-175.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.26-287-175.jpeg",
+        "size_bytes": 442420,
+        "seq_index": 175
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (5)-286-176.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.22 (5)-286-176.jpeg",
+        "size_bytes": 413628,
+        "seq_index": 176
+      }
+    ]
+  },
+  {
+    "group_index": 45,
+    "product_no": "045",
+    "product_id": "proper_prod_045",
+    "product_name": "Product 045",
+    "slug": "product-045",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "177..180",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (3)-285-177.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.22 (3)-285-177.jpeg",
+        "size_bytes": 436332,
+        "seq_index": 177
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (2)-284-178.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.22 (2)-284-178.jpeg",
+        "size_bytes": 400941,
+        "seq_index": 178
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (4)-283-179.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.22 (4)-283-179.jpeg",
+        "size_bytes": 389704,
+        "seq_index": 179
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.47 (1)-282-180.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.47 (1)-282-180.jpeg",
+        "size_bytes": 382089,
+        "seq_index": 180
+      }
+    ]
+  },
+  {
+    "group_index": 46,
+    "product_no": "046",
+    "product_id": "proper_prod_046",
+    "product_name": "Product 046",
+    "slug": "product-046",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "181..184",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22 (1)-281-181.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.22 (1)-281-181.jpeg",
+        "size_bytes": 365191,
+        "seq_index": 181
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.22-280-182.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.22-280-182.jpeg",
+        "size_bytes": 442514,
+        "seq_index": 182
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (12)-279-183.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (12)-279-183.jpeg",
+        "size_bytes": 467075,
+        "seq_index": 183
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (11)-278-184.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (11)-278-184.jpeg",
+        "size_bytes": 371961,
+        "seq_index": 184
+      }
+    ]
+  },
+  {
+    "group_index": 47,
+    "product_no": "047",
+    "product_id": "proper_prod_047",
+    "product_name": "Product 047",
+    "slug": "product-047",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "185..188",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (10)-277-185.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (10)-277-185.jpeg",
+        "size_bytes": 360309,
+        "seq_index": 185
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (9)-276-186.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (9)-276-186.jpeg",
+        "size_bytes": 374069,
+        "seq_index": 186
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (7)-275-187.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (7)-275-187.jpeg",
+        "size_bytes": 368614,
+        "seq_index": 187
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (6)-274-188.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (6)-274-188.jpeg",
+        "size_bytes": 418213,
+        "seq_index": 188
+      }
+    ]
+  },
+  {
+    "group_index": 48,
+    "product_no": "048",
+    "product_id": "proper_prod_048",
+    "product_name": "Product 048",
+    "slug": "product-048",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "189..192",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (5)-273-189.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (5)-273-189.jpeg",
+        "size_bytes": 386225,
+        "seq_index": 189
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (2)-272-190.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (2)-272-190.jpeg",
+        "size_bytes": 406575,
+        "seq_index": 190
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (1)-271-191.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (1)-271-191.jpeg",
+        "size_bytes": 398200,
+        "seq_index": 191
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (8)-270-192.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (8)-270-192.jpeg",
+        "size_bytes": 385507,
+        "seq_index": 192
+      }
+    ]
+  },
+  {
+    "group_index": 49,
+    "product_no": "049",
+    "product_id": "proper_prod_049",
+    "product_name": "Product 049",
+    "slug": "product-049",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "193..196",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (4)-269-193.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (4)-269-193.jpeg",
+        "size_bytes": 405381,
+        "seq_index": 193
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21 (3)-268-194.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21 (3)-268-194.jpeg",
+        "size_bytes": 427278,
+        "seq_index": 194
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.21-267-195.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.21-267-195.jpeg",
+        "size_bytes": 415962,
+        "seq_index": 195
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.20 (1)-266-196.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.20 (1)-266-196.jpeg",
+        "size_bytes": 424856,
+        "seq_index": 196
+      }
+    ]
+  },
+  {
+    "group_index": 50,
+    "product_no": "050",
+    "product_id": "proper_prod_050",
+    "product_name": "Product 050",
+    "slug": "product-050",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "197..200",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.20-265-197.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.20-265-197.jpeg",
+        "size_bytes": 461243,
+        "seq_index": 197
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.15 (2)-264-198.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.15 (2)-264-198.jpeg",
+        "size_bytes": 375960,
+        "seq_index": 198
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.15 (1)-263-199.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.15 (1)-263-199.jpeg",
+        "size_bytes": 466811,
+        "seq_index": 199
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.15-262-200.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.15-262-200.jpeg",
+        "size_bytes": 482255,
+        "seq_index": 200
+      }
+    ]
+  },
+  {
+    "group_index": 51,
+    "product_no": "051",
+    "product_id": "proper_prod_051",
+    "product_name": "Product 051",
+    "slug": "product-051",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "201..204",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (6)-261-201.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14 (6)-261-201.jpeg",
+        "size_bytes": 368103,
+        "seq_index": 201
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (5)-260-202.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14 (5)-260-202.jpeg",
+        "size_bytes": 412057,
+        "seq_index": 202
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (4)-259-203.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14 (4)-259-203.jpeg",
+        "size_bytes": 364798,
+        "seq_index": 203
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (3)-258-204.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14 (3)-258-204.jpeg",
+        "size_bytes": 454076,
+        "seq_index": 204
+      }
+    ]
+  },
+  {
+    "group_index": 52,
+    "product_no": "052",
+    "product_id": "proper_prod_052",
+    "product_name": "Product 052",
+    "slug": "product-052",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "205..208",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (2)-257-205.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14 (2)-257-205.jpeg",
+        "size_bytes": 466323,
+        "seq_index": 205
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14 (1)-256-206.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14 (1)-256-206.jpeg",
+        "size_bytes": 405750,
+        "seq_index": 206
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.14-255-207.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.14-255-207.jpeg",
+        "size_bytes": 495201,
+        "seq_index": 207
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.08.02-254-208.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.08.02-254-208.jpeg",
+        "size_bytes": 471498,
+        "seq_index": 208
+      }
+    ]
+  },
+  {
+    "group_index": 53,
+    "product_no": "053",
+    "product_id": "proper_prod_053",
+    "product_name": "Product 053",
+    "slug": "product-053",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "209..212",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.55-253-209.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.07.55-253-209.jpeg",
+        "size_bytes": 403724,
+        "seq_index": 209
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.50-252-210.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.07.50-252-210.jpeg",
+        "size_bytes": 378439,
+        "seq_index": 210
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.29 (1)-251-211.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.07.29 (1)-251-211.jpeg",
+        "size_bytes": 419640,
+        "seq_index": 211
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 20.07.29-250-212.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 20.07.29-250-212.jpeg",
+        "size_bytes": 440417,
+        "seq_index": 212
+      }
+    ]
+  },
+  {
+    "group_index": 54,
+    "product_no": "054",
+    "product_id": "proper_prod_054",
+    "product_name": "Product 054",
+    "slug": "product-054",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "213..216",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (22)-249-213.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (22)-249-213.jpeg",
+        "size_bytes": 425417,
+        "seq_index": 213
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (21)-248-214.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (21)-248-214.jpeg",
+        "size_bytes": 457961,
+        "seq_index": 214
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (20)-247-215.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (20)-247-215.jpeg",
+        "size_bytes": 408481,
+        "seq_index": 215
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (19)-246-216.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (19)-246-216.jpeg",
+        "size_bytes": 360020,
+        "seq_index": 216
+      }
+    ]
+  },
+  {
+    "group_index": 55,
+    "product_no": "055",
+    "product_id": "proper_prod_055",
+    "product_name": "Product 055",
+    "slug": "product-055",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "217..220",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (18)-245-217.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (18)-245-217.jpeg",
+        "size_bytes": 336552,
+        "seq_index": 217
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (17)-244-218.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (17)-244-218.jpeg",
+        "size_bytes": 360283,
+        "seq_index": 218
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (16)-243-219.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (16)-243-219.jpeg",
+        "size_bytes": 346651,
+        "seq_index": 219
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (15)-242-220.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (15)-242-220.jpeg",
+        "size_bytes": 340807,
+        "seq_index": 220
+      }
+    ]
+  },
+  {
+    "group_index": 56,
+    "product_no": "056",
+    "product_id": "proper_prod_056",
+    "product_name": "Product 056",
+    "slug": "product-056",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "221..224",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (14)-241-221.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (14)-241-221.jpeg",
+        "size_bytes": 326368,
+        "seq_index": 221
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (13)-240-222.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (13)-240-222.jpeg",
+        "size_bytes": 331838,
+        "seq_index": 222
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (12)-239-223.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (12)-239-223.jpeg",
+        "size_bytes": 335673,
+        "seq_index": 223
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (11)-238-224.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (11)-238-224.jpeg",
+        "size_bytes": 346543,
+        "seq_index": 224
+      }
+    ]
+  },
+  {
+    "group_index": 57,
+    "product_no": "057",
+    "product_id": "proper_prod_057",
+    "product_name": "Product 057",
+    "slug": "product-057",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "225..228",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (10)-237-225.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (10)-237-225.jpeg",
+        "size_bytes": 319857,
+        "seq_index": 225
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (9)-236-226.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (9)-236-226.jpeg",
+        "size_bytes": 337397,
+        "seq_index": 226
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (8)-235-227.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (8)-235-227.jpeg",
+        "size_bytes": 272069,
+        "seq_index": 227
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (7)-234-228.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (7)-234-228.jpeg",
+        "size_bytes": 330258,
+        "seq_index": 228
+      }
+    ]
+  },
+  {
+    "group_index": 58,
+    "product_no": "058",
+    "product_id": "proper_prod_058",
+    "product_name": "Product 058",
+    "slug": "product-058",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "229..232",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (6)-233-229.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (6)-233-229.jpeg",
+        "size_bytes": 333197,
+        "seq_index": 229
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (5)-232-230.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (5)-232-230.jpeg",
+        "size_bytes": 338521,
+        "seq_index": 230
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (4)-231-231.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (4)-231-231.jpeg",
+        "size_bytes": 341901,
+        "seq_index": 231
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (3)-230-232.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (3)-230-232.jpeg",
+        "size_bytes": 342183,
+        "seq_index": 232
+      }
+    ]
+  },
+  {
+    "group_index": 59,
+    "product_no": "059",
+    "product_id": "proper_prod_059",
+    "product_name": "Product 059",
+    "slug": "product-059",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "233..236",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (2)-229-233.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (2)-229-233.jpeg",
+        "size_bytes": 375246,
+        "seq_index": 233
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47 (1)-228-234.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47 (1)-228-234.jpeg",
+        "size_bytes": 376967,
+        "seq_index": 234
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.47-227-235.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.47-227-235.jpeg",
+        "size_bytes": 375324,
+        "seq_index": 235
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46 (3)-226-236.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.46 (3)-226-236.jpeg",
+        "size_bytes": 397559,
+        "seq_index": 236
+      }
+    ]
+  },
+  {
+    "group_index": 60,
+    "product_no": "060",
+    "product_id": "proper_prod_060",
+    "product_name": "Product 060",
+    "slug": "product-060",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "237..240",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46 (2)-225-237.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.46 (2)-225-237.jpeg",
+        "size_bytes": 327600,
+        "seq_index": 237
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46 (1)-224-238.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.46 (1)-224-238.jpeg",
+        "size_bytes": 331581,
+        "seq_index": 238
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.13.46-223-239.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.13.46-223-239.jpeg",
+        "size_bytes": 338133,
+        "seq_index": 239
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 21.12.58-222-240.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 21.12.58-222-240.jpeg",
+        "size_bytes": 342299,
+        "seq_index": 240
+      }
+    ]
+  },
+  {
+    "group_index": 61,
+    "product_no": "061",
+    "product_id": "proper_prod_061",
+    "product_name": "Product 061",
+    "slug": "product-061",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "241..244",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38 (2)-191-241.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.38 (2)-191-241.jpeg",
+        "size_bytes": 353541,
+        "seq_index": 241
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38 (1)-190-242.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.38 (1)-190-242.jpeg",
+        "size_bytes": 360112,
+        "seq_index": 242
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.38-189-243.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.38-189-243.jpeg",
+        "size_bytes": 399629,
+        "seq_index": 243
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.35-188-244.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.35-188-244.jpeg",
+        "size_bytes": 388015,
+        "seq_index": 244
+      }
+    ]
+  },
+  {
+    "group_index": 62,
+    "product_no": "062",
+    "product_id": "proper_prod_062",
+    "product_name": "Product 062",
+    "slug": "product-062",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "245..248",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.22 (2)-177-245.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.22 (2)-177-245.jpeg",
+        "size_bytes": 419652,
+        "seq_index": 245
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.22 (1)-176-246.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.22 (1)-176-246.jpeg",
+        "size_bytes": 422224,
+        "seq_index": 246
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 22.13.22-175-247.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 22.13.22-175-247.jpeg",
+        "size_bytes": 415818,
+        "seq_index": 247
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (15)-169-248.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (15)-169-248.jpeg",
+        "size_bytes": 326364,
+        "seq_index": 248
+      }
+    ]
+  },
+  {
+    "group_index": 63,
+    "product_no": "063",
+    "product_id": "proper_prod_063",
+    "product_name": "Product 063",
+    "slug": "product-063",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "249..252",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (14)-168-249.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (14)-168-249.jpeg",
+        "size_bytes": 341732,
+        "seq_index": 249
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (13)-167-250.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (13)-167-250.jpeg",
+        "size_bytes": 337612,
+        "seq_index": 250
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (12)-166-251.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (12)-166-251.jpeg",
+        "size_bytes": 333460,
+        "seq_index": 251
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (11)-165-252.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (11)-165-252.jpeg",
+        "size_bytes": 361125,
+        "seq_index": 252
+      }
+    ]
+  },
+  {
+    "group_index": 64,
+    "product_no": "064",
+    "product_id": "proper_prod_064",
+    "product_name": "Product 064",
+    "slug": "product-064",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "253..256",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (10)-164-253.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (10)-164-253.jpeg",
+        "size_bytes": 370687,
+        "seq_index": 253
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (9)-163-254.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (9)-163-254.jpeg",
+        "size_bytes": 369330,
+        "seq_index": 254
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (8)-162-255.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (8)-162-255.jpeg",
+        "size_bytes": 356216,
+        "seq_index": 255
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (7)-161-256.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (7)-161-256.jpeg",
+        "size_bytes": 376642,
+        "seq_index": 256
+      }
+    ]
+  },
+  {
+    "group_index": 65,
+    "product_no": "065",
+    "product_id": "proper_prod_065",
+    "product_name": "Product 065",
+    "slug": "product-065",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "257..260",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (6)-160-257.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (6)-160-257.jpeg",
+        "size_bytes": 386280,
+        "seq_index": 257
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (5)-159-258.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (5)-159-258.jpeg",
+        "size_bytes": 407305,
+        "seq_index": 258
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (4)-158-259.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (4)-158-259.jpeg",
+        "size_bytes": 376915,
+        "seq_index": 259
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (3)-157-260.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (3)-157-260.jpeg",
+        "size_bytes": 407759,
+        "seq_index": 260
+      }
+    ]
+  },
+  {
+    "group_index": 66,
+    "product_no": "066",
+    "product_id": "proper_prod_066",
+    "product_name": "Product 066",
+    "slug": "product-066",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "261..264",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (2)-156-261.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (2)-156-261.jpeg",
+        "size_bytes": 411173,
+        "seq_index": 261
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29 (1)-155-262.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29 (1)-155-262.jpeg",
+        "size_bytes": 417998,
+        "seq_index": 262
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.29-154-263.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.29-154-263.jpeg",
+        "size_bytes": 425985,
+        "seq_index": 263
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.28 (2)-153-264.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.28 (2)-153-264.jpeg",
+        "size_bytes": 378683,
+        "seq_index": 264
+      }
+    ]
+  },
+  {
+    "group_index": 67,
+    "product_no": "067",
+    "product_id": "proper_prod_067",
+    "product_name": "Product 067",
+    "slug": "product-067",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "265..268",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.28 (1)-152-265.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.28 (1)-152-265.jpeg",
+        "size_bytes": 387448,
+        "seq_index": 265
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.28-151-266.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.28-151-266.jpeg",
+        "size_bytes": 376333,
+        "seq_index": 266
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27 (3)-150-267.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.27 (3)-150-267.jpeg",
+        "size_bytes": 384875,
+        "seq_index": 267
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27 (2)-149-268.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.27 (2)-149-268.jpeg",
+        "size_bytes": 371905,
+        "seq_index": 268
+      }
+    ]
+  },
+  {
+    "group_index": 68,
+    "product_no": "068",
+    "product_id": "proper_prod_068",
+    "product_name": "Product 068",
+    "slug": "product-068",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "269..272",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27 (1)-148-269.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.27 (1)-148-269.jpeg",
+        "size_bytes": 388419,
+        "seq_index": 269
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.27-147-270.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.27-147-270.jpeg",
+        "size_bytes": 426424,
+        "seq_index": 270
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (8)-146-271.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (8)-146-271.jpeg",
+        "size_bytes": 421243,
+        "seq_index": 271
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (7)-145-272.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (7)-145-272.jpeg",
+        "size_bytes": 394902,
+        "seq_index": 272
+      }
+    ]
+  },
+  {
+    "group_index": 69,
+    "product_no": "069",
+    "product_id": "proper_prod_069",
+    "product_name": "Product 069",
+    "slug": "product-069",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "273..276",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (6)-144-273.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (6)-144-273.jpeg",
+        "size_bytes": 394266,
+        "seq_index": 273
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (5)-143-274.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (5)-143-274.jpeg",
+        "size_bytes": 334834,
+        "seq_index": 274
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (4)-142-275.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (4)-142-275.jpeg",
+        "size_bytes": 372024,
+        "seq_index": 275
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (3)-141-276.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (3)-141-276.jpeg",
+        "size_bytes": 358322,
+        "seq_index": 276
+      }
+    ]
+  },
+  {
+    "group_index": 70,
+    "product_no": "070",
+    "product_id": "proper_prod_070",
+    "product_name": "Product 070",
+    "slug": "product-070",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "277..280",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (2)-140-277.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (2)-140-277.jpeg",
+        "size_bytes": 342901,
+        "seq_index": 277
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26 (1)-139-278.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26 (1)-139-278.jpeg",
+        "size_bytes": 264975,
+        "seq_index": 278
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.26-138-279.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.26-138-279.jpeg",
+        "size_bytes": 303472,
+        "seq_index": 279
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25 (3)-137-280.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.25 (3)-137-280.jpeg",
+        "size_bytes": 356977,
+        "seq_index": 280
+      }
+    ]
+  },
+  {
+    "group_index": 71,
+    "product_no": "071",
+    "product_id": "proper_prod_071",
+    "product_name": "Product 071",
+    "slug": "product-071",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "281..284",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25 (1)-135-281.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.25 (1)-135-281.jpeg",
+        "size_bytes": 389145,
+        "seq_index": 281
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.25-134-282.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.25-134-282.jpeg",
+        "size_bytes": 371445,
+        "seq_index": 282
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.23 (1)-133-283.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.23 (1)-133-283.jpeg",
+        "size_bytes": 365842,
+        "seq_index": 283
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.23-132-284.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.23-132-284.jpeg",
+        "size_bytes": 378861,
+        "seq_index": 284
+      }
+    ]
+  },
+  {
+    "group_index": 72,
+    "product_no": "072",
+    "product_id": "proper_prod_072",
+    "product_name": "Product 072",
+    "slug": "product-072",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "285..288",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.22 (1)-131-285.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.22 (1)-131-285.jpeg",
+        "size_bytes": 366354,
+        "seq_index": 285
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.22-130-286.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.22-130-286.jpeg",
+        "size_bytes": 348399,
+        "seq_index": 286
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.20-129-287.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.20-129-287.jpeg",
+        "size_bytes": 353650,
+        "seq_index": 287
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (4)-128-288.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.19 (4)-128-288.jpeg",
+        "size_bytes": 353629,
+        "seq_index": 288
+      }
+    ]
+  },
+  {
+    "group_index": 73,
+    "product_no": "073",
+    "product_id": "proper_prod_073",
+    "product_name": "Product 073",
+    "slug": "product-073",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "289..292",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (3)-127-289.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.19 (3)-127-289.jpeg",
+        "size_bytes": 368695,
+        "seq_index": 289
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (2)-126-290.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.19 (2)-126-290.jpeg",
+        "size_bytes": 360732,
+        "seq_index": 290
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19 (1)-125-291.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.19 (1)-125-291.jpeg",
+        "size_bytes": 346983,
+        "seq_index": 291
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-04 at 23.04.19-124-292.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-04 at 23.04.19-124-292.jpeg",
+        "size_bytes": 369946,
+        "seq_index": 292
+      }
+    ]
+  },
+  {
+    "group_index": 74,
+    "product_no": "074",
+    "product_id": "proper_prod_074",
+    "product_name": "Product 074",
+    "slug": "product-074",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "293..296",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (15)-123-293.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (15)-123-293.jpeg",
+        "size_bytes": 241894,
+        "seq_index": 293
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (14)-122-294.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (14)-122-294.jpeg",
+        "size_bytes": 270796,
+        "seq_index": 294
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (13)-121-295.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (13)-121-295.jpeg",
+        "size_bytes": 274462,
+        "seq_index": 295
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (12)-120-296.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (12)-120-296.jpeg",
+        "size_bytes": 246635,
+        "seq_index": 296
+      }
+    ]
+  },
+  {
+    "group_index": 75,
+    "product_no": "075",
+    "product_id": "proper_prod_075",
+    "product_name": "Product 075",
+    "slug": "product-075",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "297..300",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (11)-119-297.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (11)-119-297.jpeg",
+        "size_bytes": 281558,
+        "seq_index": 297
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (10)-118-298.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (10)-118-298.jpeg",
+        "size_bytes": 302500,
+        "seq_index": 298
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (9)-117-299.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (9)-117-299.jpeg",
+        "size_bytes": 286360,
+        "seq_index": 299
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (8)-116-300.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (8)-116-300.jpeg",
+        "size_bytes": 313091,
+        "seq_index": 300
+      }
+    ]
+  },
+  {
+    "group_index": 76,
+    "product_no": "076",
+    "product_id": "proper_prod_076",
+    "product_name": "Product 076",
+    "slug": "product-076",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "301..304",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (7)-115-301.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (7)-115-301.jpeg",
+        "size_bytes": 256775,
+        "seq_index": 301
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (6)-114-302.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (6)-114-302.jpeg",
+        "size_bytes": 251023,
+        "seq_index": 302
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (5)-113-303.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (5)-113-303.jpeg",
+        "size_bytes": 259848,
+        "seq_index": 303
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (4)-112-304.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (4)-112-304.jpeg",
+        "size_bytes": 261173,
+        "seq_index": 304
+      }
+    ]
+  },
+  {
+    "group_index": 77,
+    "product_no": "077",
+    "product_id": "proper_prod_077",
+    "product_name": "Product 077",
+    "slug": "product-077",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "305..308",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (3)-111-305.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (3)-111-305.jpeg",
+        "size_bytes": 279204,
+        "seq_index": 305
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (2)-110-306.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (2)-110-306.jpeg",
+        "size_bytes": 300520,
+        "seq_index": 306
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51 (1)-109-307.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51 (1)-109-307.jpeg",
+        "size_bytes": 376299,
+        "seq_index": 307
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.51-108-308.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.51-108-308.jpeg",
+        "size_bytes": 309216,
+        "seq_index": 308
+      }
+    ]
+  },
+  {
+    "group_index": 78,
+    "product_no": "078",
+    "product_id": "proper_prod_078",
+    "product_name": "Product 078",
+    "slug": "product-078",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "309..312",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (34)-107-309.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (34)-107-309.jpeg",
+        "size_bytes": 296187,
+        "seq_index": 309
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (33)-106-310.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (33)-106-310.jpeg",
+        "size_bytes": 327518,
+        "seq_index": 310
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (32)-105-311.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (32)-105-311.jpeg",
+        "size_bytes": 342298,
+        "seq_index": 311
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (31)-104-312.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (31)-104-312.jpeg",
+        "size_bytes": 344547,
+        "seq_index": 312
+      }
+    ]
+  },
+  {
+    "group_index": 79,
+    "product_no": "079",
+    "product_id": "proper_prod_079",
+    "product_name": "Product 079",
+    "slug": "product-079",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "313..316",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (30)-103-313.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (30)-103-313.jpeg",
+        "size_bytes": 251131,
+        "seq_index": 313
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (29)-102-314.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (29)-102-314.jpeg",
+        "size_bytes": 279980,
+        "seq_index": 314
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (28)-101-315.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (28)-101-315.jpeg",
+        "size_bytes": 331639,
+        "seq_index": 315
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (27)-100-316.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (27)-100-316.jpeg",
+        "size_bytes": 284820,
+        "seq_index": 316
+      }
+    ]
+  },
+  {
+    "group_index": 80,
+    "product_no": "080",
+    "product_id": "proper_prod_080",
+    "product_name": "Product 080",
+    "slug": "product-080",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "317..320",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (26)-099-317.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (26)-099-317.jpeg",
+        "size_bytes": 253263,
+        "seq_index": 317
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (25)-098-318.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (25)-098-318.jpeg",
+        "size_bytes": 273737,
+        "seq_index": 318
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (24)-097-319.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (24)-097-319.jpeg",
+        "size_bytes": 302534,
+        "seq_index": 319
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (23)-096-320.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (23)-096-320.jpeg",
+        "size_bytes": 358357,
+        "seq_index": 320
+      }
+    ]
+  },
+  {
+    "group_index": 81,
+    "product_no": "081",
+    "product_id": "proper_prod_081",
+    "product_name": "Product 081",
+    "slug": "product-081",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "321..324",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (22)-095-321.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (22)-095-321.jpeg",
+        "size_bytes": 322132,
+        "seq_index": 321
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (21)-094-322.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (21)-094-322.jpeg",
+        "size_bytes": 329721,
+        "seq_index": 322
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (20)-093-323.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (20)-093-323.jpeg",
+        "size_bytes": 325813,
+        "seq_index": 323
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (19)-092-324.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (19)-092-324.jpeg",
+        "size_bytes": 333955,
+        "seq_index": 324
+      }
+    ]
+  },
+  {
+    "group_index": 82,
+    "product_no": "082",
+    "product_id": "proper_prod_082",
+    "product_name": "Product 082",
+    "slug": "product-082",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "325..328",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (18)-091-325.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (18)-091-325.jpeg",
+        "size_bytes": 292911,
+        "seq_index": 325
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (17)-090-326.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (17)-090-326.jpeg",
+        "size_bytes": 261718,
+        "seq_index": 326
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (16)-089-327.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (16)-089-327.jpeg",
+        "size_bytes": 254863,
+        "seq_index": 327
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (15)-088-328.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (15)-088-328.jpeg",
+        "size_bytes": 318202,
+        "seq_index": 328
+      }
+    ]
+  },
+  {
+    "group_index": 83,
+    "product_no": "083",
+    "product_id": "proper_prod_083",
+    "product_name": "Product 083",
+    "slug": "product-083",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "329..332",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (14)-087-329.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (14)-087-329.jpeg",
+        "size_bytes": 311961,
+        "seq_index": 329
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (13)-086-330.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (13)-086-330.jpeg",
+        "size_bytes": 303553,
+        "seq_index": 330
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (12)-085-331.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (12)-085-331.jpeg",
+        "size_bytes": 321871,
+        "seq_index": 331
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (11)-084-332.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (11)-084-332.jpeg",
+        "size_bytes": 353740,
+        "seq_index": 332
+      }
+    ]
+  },
+  {
+    "group_index": 84,
+    "product_no": "084",
+    "product_id": "proper_prod_084",
+    "product_name": "Product 084",
+    "slug": "product-084",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "333..336",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (10)-083-333.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (10)-083-333.jpeg",
+        "size_bytes": 321363,
+        "seq_index": 333
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (9)-082-334.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (9)-082-334.jpeg",
+        "size_bytes": 268558,
+        "seq_index": 334
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (8)-081-335.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (8)-081-335.jpeg",
+        "size_bytes": 393114,
+        "seq_index": 335
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (7)-080-336.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (7)-080-336.jpeg",
+        "size_bytes": 294696,
+        "seq_index": 336
+      }
+    ]
+  },
+  {
+    "group_index": 85,
+    "product_no": "085",
+    "product_id": "proper_prod_085",
+    "product_name": "Product 085",
+    "slug": "product-085",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "337..340",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (6)-079-337.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (6)-079-337.jpeg",
+        "size_bytes": 398817,
+        "seq_index": 337
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (5)-078-338.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (5)-078-338.jpeg",
+        "size_bytes": 388383,
+        "seq_index": 338
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (4)-077-339.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (4)-077-339.jpeg",
+        "size_bytes": 417195,
+        "seq_index": 339
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (3)-076-340.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (3)-076-340.jpeg",
+        "size_bytes": 361956,
+        "seq_index": 340
+      }
+    ]
+  },
+  {
+    "group_index": 86,
+    "product_no": "086",
+    "product_id": "proper_prod_086",
+    "product_name": "Product 086",
+    "slug": "product-086",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "341..344",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (2)-075-341.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (2)-075-341.jpeg",
+        "size_bytes": 339455,
+        "seq_index": 341
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50 (1)-074-342.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50 (1)-074-342.jpeg",
+        "size_bytes": 432292,
+        "seq_index": 342
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.50-073-343.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.50-073-343.jpeg",
+        "size_bytes": 352310,
+        "seq_index": 343
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (7)-072-344.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (7)-072-344.jpeg",
+        "size_bytes": 420925,
+        "seq_index": 344
+      }
+    ]
+  },
+  {
+    "group_index": 87,
+    "product_no": "087",
+    "product_id": "proper_prod_087",
+    "product_name": "Product 087",
+    "slug": "product-087",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "345..348",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (6)-071-345.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (6)-071-345.jpeg",
+        "size_bytes": 274757,
+        "seq_index": 345
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (5)-070-346.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (5)-070-346.jpeg",
+        "size_bytes": 273315,
+        "seq_index": 346
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (4)-069-347.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (4)-069-347.jpeg",
+        "size_bytes": 291483,
+        "seq_index": 347
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (3)-068-348.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (3)-068-348.jpeg",
+        "size_bytes": 281186,
+        "seq_index": 348
+      }
+    ]
+  },
+  {
+    "group_index": 88,
+    "product_no": "088",
+    "product_id": "proper_prod_088",
+    "product_name": "Product 088",
+    "slug": "product-088",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "349..352",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (2)-067-349.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (2)-067-349.jpeg",
+        "size_bytes": 386605,
+        "seq_index": 349
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49 (1)-066-350.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49 (1)-066-350.jpeg",
+        "size_bytes": 412437,
+        "seq_index": 350
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.49-065-351.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.49-065-351.jpeg",
+        "size_bytes": 410227,
+        "seq_index": 351
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.47 (2)-064-352.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.47 (2)-064-352.jpeg",
+        "size_bytes": 374625,
+        "seq_index": 352
+      }
+    ]
+  },
+  {
+    "group_index": 89,
+    "product_no": "089",
+    "product_id": "proper_prod_089",
+    "product_name": "Product 089",
+    "slug": "product-089",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "353..356",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.47 (1)-063-353.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.47 (1)-063-353.jpeg",
+        "size_bytes": 325650,
+        "seq_index": 353
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.47-062-354.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.47-062-354.jpeg",
+        "size_bytes": 411896,
+        "seq_index": 354
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.39 (2)-061-355.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.39 (2)-061-355.jpeg",
+        "size_bytes": 340795,
+        "seq_index": 355
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.39 (1)-060-356.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.39 (1)-060-356.jpeg",
+        "size_bytes": 325746,
+        "seq_index": 356
+      }
+    ]
+  },
+  {
+    "group_index": 90,
+    "product_no": "090",
+    "product_id": "proper_prod_090",
+    "product_name": "Product 090",
+    "slug": "product-090",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "357..360",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.39-059-357.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.39-059-357.jpeg",
+        "size_bytes": 354238,
+        "seq_index": 357
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.38 (1)-058-358.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.38 (1)-058-358.jpeg",
+        "size_bytes": 330553,
+        "seq_index": 358
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.38-057-359.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.38-057-359.jpeg",
+        "size_bytes": 422432,
+        "seq_index": 359
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.27 (2)-056-360.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.27 (2)-056-360.jpeg",
+        "size_bytes": 316585,
+        "seq_index": 360
+      }
+    ]
+  },
+  {
+    "group_index": 91,
+    "product_no": "091",
+    "product_id": "proper_prod_091",
+    "product_name": "Product 091",
+    "slug": "product-091",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "361..364",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.27 (1)-055-361.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.27 (1)-055-361.jpeg",
+        "size_bytes": 356688,
+        "seq_index": 361
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 22.04.27-054-362.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 22.04.27-054-362.jpeg",
+        "size_bytes": 391306,
+        "seq_index": 362
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (10)-052-363.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (10)-052-363.jpeg",
+        "size_bytes": 377937,
+        "seq_index": 363
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (9)-051-364.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (9)-051-364.jpeg",
+        "size_bytes": 370565,
+        "seq_index": 364
+      }
+    ]
+  },
+  {
+    "group_index": 92,
+    "product_no": "092",
+    "product_id": "proper_prod_092",
+    "product_name": "Product 092",
+    "slug": "product-092",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "365..368",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (8)-050-365.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (8)-050-365.jpeg",
+        "size_bytes": 172114,
+        "seq_index": 365
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (7)-049-366.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (7)-049-366.jpeg",
+        "size_bytes": 167320,
+        "seq_index": 366
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (6)-048-367.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (6)-048-367.jpeg",
+        "size_bytes": 180655,
+        "seq_index": 367
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (5)-047-368.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (5)-047-368.jpeg",
+        "size_bytes": 154781,
+        "seq_index": 368
+      }
+    ]
+  },
+  {
+    "group_index": 93,
+    "product_no": "093",
+    "product_id": "proper_prod_093",
+    "product_name": "Product 093",
+    "slug": "product-093",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "369..372",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (4)-046-369.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (4)-046-369.jpeg",
+        "size_bytes": 264059,
+        "seq_index": 369
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (3)-045-370.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (3)-045-370.jpeg",
+        "size_bytes": 283681,
+        "seq_index": 370
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (2)-044-371.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (2)-044-371.jpeg",
+        "size_bytes": 294228,
+        "seq_index": 371
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.12 (1)-043-372.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.12 (1)-043-372.jpeg",
+        "size_bytes": 280239,
+        "seq_index": 372
+      }
+    ]
+  },
+  {
+    "group_index": 94,
+    "product_no": "094",
+    "product_id": "proper_prod_094",
+    "product_name": "Product 094",
+    "slug": "product-094",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "373..376",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (17)-040-373.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (17)-040-373.jpeg",
+        "size_bytes": 183900,
+        "seq_index": 373
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (16)-039-374.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (16)-039-374.jpeg",
+        "size_bytes": 178696,
+        "seq_index": 374
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (15)-038-375.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (15)-038-375.jpeg",
+        "size_bytes": 194401,
+        "seq_index": 375
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (14)-037-376.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (14)-037-376.jpeg",
+        "size_bytes": 234576,
+        "seq_index": 376
+      }
+    ]
+  },
+  {
+    "group_index": 95,
+    "product_no": "095",
+    "product_id": "proper_prod_095",
+    "product_name": "Product 095",
+    "slug": "product-095",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "377..380",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (13)-036-377.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (13)-036-377.jpeg",
+        "size_bytes": 302494,
+        "seq_index": 377
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (12)-035-378.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (12)-035-378.jpeg",
+        "size_bytes": 315653,
+        "seq_index": 378
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (11)-034-379.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (11)-034-379.jpeg",
+        "size_bytes": 345694,
+        "seq_index": 379
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (10)-033-380.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (10)-033-380.jpeg",
+        "size_bytes": 311259,
+        "seq_index": 380
+      }
+    ]
+  },
+  {
+    "group_index": 96,
+    "product_no": "096",
+    "product_id": "proper_prod_096",
+    "product_name": "Product 096",
+    "slug": "product-096",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "381..384",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (9)-032-381.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (9)-032-381.jpeg",
+        "size_bytes": 267762,
+        "seq_index": 381
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (8)-031-382.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (8)-031-382.jpeg",
+        "size_bytes": 247942,
+        "seq_index": 382
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (7)-030-383.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (7)-030-383.jpeg",
+        "size_bytes": 248769,
+        "seq_index": 383
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (6)-029-384.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (6)-029-384.jpeg",
+        "size_bytes": 258249,
+        "seq_index": 384
+      }
+    ]
+  },
+  {
+    "group_index": 97,
+    "product_no": "097",
+    "product_id": "proper_prod_097",
+    "product_name": "Product 097",
+    "slug": "product-097",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "385..388",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (2)-028-385.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (2)-028-385.jpeg",
+        "size_bytes": 280849,
+        "seq_index": 385
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11 (1)-027-386.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11 (1)-027-386.jpeg",
+        "size_bytes": 217965,
+        "seq_index": 386
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.11-026-387.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.11-026-387.jpeg",
+        "size_bytes": 332969,
+        "seq_index": 387
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (7)-025-388.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (7)-025-388.jpeg",
+        "size_bytes": 228940,
+        "seq_index": 388
+      }
+    ]
+  },
+  {
+    "group_index": 98,
+    "product_no": "098",
+    "product_id": "proper_prod_098",
+    "product_name": "Product 098",
+    "slug": "product-098",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "389..392",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (6)-024-389.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (6)-024-389.jpeg",
+        "size_bytes": 191439,
+        "seq_index": 389
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (5)-023-390.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (5)-023-390.jpeg",
+        "size_bytes": 212647,
+        "seq_index": 390
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (4)-022-391.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (4)-022-391.jpeg",
+        "size_bytes": 278738,
+        "seq_index": 391
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (3)-021-392.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (3)-021-392.jpeg",
+        "size_bytes": 237543,
+        "seq_index": 392
+      }
+    ]
+  },
+  {
+    "group_index": 99,
+    "product_no": "099",
+    "product_id": "proper_prod_099",
+    "product_name": "Product 099",
+    "slug": "product-099",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "393..396",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (2)-020-393.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (2)-020-393.jpeg",
+        "size_bytes": 275166,
+        "seq_index": 393
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10 (1)-019-394.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10 (1)-019-394.jpeg",
+        "size_bytes": 276354,
+        "seq_index": 394
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.10-018-395.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.10-018-395.jpeg",
+        "size_bytes": 297564,
+        "seq_index": 395
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.09 (1)-017-396.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.09 (1)-017-396.jpeg",
+        "size_bytes": 246159,
+        "seq_index": 396
+      }
+    ]
+  },
+  {
+    "group_index": 100,
+    "product_no": "100",
+    "product_id": "proper_prod_100",
+    "product_name": "Product 100",
+    "slug": "product-100",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "397..400",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.09-016-397.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.09-016-397.jpeg",
+        "size_bytes": 246670,
+        "seq_index": 397
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.08-015-398.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.08-015-398.jpeg",
+        "size_bytes": 254579,
+        "seq_index": 398
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (9)-014-399.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07 (9)-014-399.jpeg",
+        "size_bytes": 223676,
+        "seq_index": 399
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (8)-013-400.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07 (8)-013-400.jpeg",
+        "size_bytes": 245467,
+        "seq_index": 400
+      }
+    ]
+  },
+  {
+    "group_index": 101,
+    "product_no": "101",
+    "product_id": "proper_prod_101",
+    "product_name": "Product 101",
+    "slug": "product-101",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "401..404",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (7)-012-401.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07 (7)-012-401.jpeg",
+        "size_bytes": 232558,
+        "seq_index": 401
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (6)-011-402.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07 (6)-011-402.jpeg",
+        "size_bytes": 210828,
+        "seq_index": 402
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (5)-010-403.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07 (5)-010-403.jpeg",
+        "size_bytes": 259121,
+        "seq_index": 403
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07 (4)-009-404.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07 (4)-009-404.jpeg",
+        "size_bytes": 229693,
+        "seq_index": 404
+      }
+    ]
+  },
+  {
+    "group_index": 102,
+    "product_no": "102",
+    "product_id": "proper_prod_102",
+    "product_name": "Product 102",
+    "slug": "product-102",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "405..408",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.07-008-405.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.07-008-405.jpeg",
+        "size_bytes": 240157,
+        "seq_index": 405
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06 (3)-007-406.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.06 (3)-007-406.jpeg",
+        "size_bytes": 243316,
+        "seq_index": 406
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06 (2)-006-407.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.06 (2)-006-407.jpeg",
+        "size_bytes": 223354,
+        "seq_index": 407
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06 (1)-005-408.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.06 (1)-005-408.jpeg",
+        "size_bytes": 257273,
+        "seq_index": 408
+      }
+    ]
+  },
+  {
+    "group_index": 103,
+    "product_no": "103",
+    "product_id": "proper_prod_103",
+    "product_name": "Product 103",
+    "slug": "product-103",
+    "is_complete": true,
+    "anomaly_note": "",
+    "image_range": "409..412",
+    "images": [
+      {
+        "order": 1,
+        "role": "primary",
+        "role_label": "1 Primary (Cover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.06-004-409.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.06-004-409.jpeg",
+        "size_bytes": 239589,
+        "seq_index": 409
+      },
+      {
+        "order": 2,
+        "role": "secondary",
+        "role_label": "2 Secondary (Hover)",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.04-003-410.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.04-003-410.jpeg",
+        "size_bytes": 231121,
+        "seq_index": 410
+      },
+      {
+        "order": 3,
+        "role": "secondary",
+        "role_label": "3 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.02 (1)-002-411.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.02 (1)-002-411.jpeg",
+        "size_bytes": 190392,
+        "seq_index": 411
+      },
+      {
+        "order": 4,
+        "role": "secondary",
+        "role_label": "4 Gallery",
+        "filename": "WhatsApp Image 2026-11-02 at 23.03.02-001-412.jpeg",
+        "filepath": "proper_order_prod/WhatsApp Image 2026-11-02 at 23.03.02-001-412.jpeg",
+        "size_bytes": 286627,
+        "seq_index": 412
+      }
+    ]
+  }
+]

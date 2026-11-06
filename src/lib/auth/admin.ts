@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 const DEFAULT_ADMIN_ALLOWLIST = [
   'nagarjundp256@gmail.com',
   'admin@tgc.in',
+  'nnvh2608@gmail.com',
   'nnvg2608@gmail.com',
   'drftnclothing@gmail.com',
   'chethansc47@gmail.com',
@@ -21,16 +22,27 @@ export interface AdminAuthContext {
 export async function getAdminSession(): Promise<AdminAuthContext | null> {
   const cookieStore = cookies();
 
-  // 0. Check direct tgc_admin_session cookie
+  // 0. Check signed tgc_admin_session token
   const adminCookie = cookieStore.get('tgc_admin_session')?.value;
-  if (adminCookie === 'true') {
-    return {
-      userId: 'admin-session-cookie',
-      email: 'admin@tgc.in',
-      role: 'admin',
-      permissions: ['*'],
-      isAdmin: true,
-    };
+  if (adminCookie) {
+    try {
+      const { verifyToken } = await import('@/lib/jwt');
+      const payload = await verifyToken(adminCookie);
+      if (payload && payload.isAdminSession && payload.email) {
+        const cleanEmail = String(payload.email).toLowerCase().trim();
+        if (DEFAULT_ADMIN_ALLOWLIST.includes(cleanEmail)) {
+          return {
+            userId: (payload.userId as string) || 'admin-session-cookie',
+            email: cleanEmail,
+            role: (payload.role as 'admin' | 'staff') || 'admin',
+            permissions: ['*'],
+            isAdmin: true,
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('[AdminAuth] Admin session token verification failed:', err);
+    }
   }
 
   // 1. Check custom JWT session cookie (tgc_session or drftn_session)

@@ -5,25 +5,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingBag, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { useShop } from '@/context/ShopContext';
 import { useAuthSession } from '@/context/AuthContext';
-import SlideInDrawer from './SlideInDrawer';
+
+const SlideInDrawer = dynamic(() => import('./SlideInDrawer'), { ssr: false });
 
 const SmallCircularLogoCrest: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <div className={`relative flex items-center justify-center select-none shrink-0 w-11 h-11 sm:w-12 sm:h-12 ${className}`}>
-    <span
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: 'radial-gradient(circle, #FAF6EE 60%, #E8DCC8 100%)',
-        boxShadow: '0 0 0 1px rgba(184, 146, 74, 0.35), 0 2px 6px rgba(0,0,0,0.2)',
-      }}
-    />
+  <div
+    className={`relative flex items-center justify-center select-none shrink-0 w-[56px] h-[56px] md:w-[64px] md:h-[64px] rounded-full bg-[#FAF6EE] border border-[#B8924A]/25 overflow-hidden shadow-xs ${className}`}
+  >
     <Image
-      src="/logo.png"
+      src="/logo-highres.png"
       alt="The Girls Collections"
-      width={48}
-      height={48}
-      className="relative w-[82%] h-[82%] object-contain hover:scale-105 transition-transform duration-200 z-10 p-0.5"
+      width={128}
+      height={140}
+      className="w-full h-full object-contain p-0.5 hover:scale-105 transition-transform duration-200 z-10"
       priority
     />
   </div>
@@ -112,11 +109,12 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
 
   return (
     <>
-      <header
-        style={{ backgroundColor: 'var(--header-bg, #3B1230)' }}
-        className={`w-full select-none text-white border-b border-white/[0.08] transition-all duration-200 ease-out z-40 sticky top-0 ${
-          isScrolled ? 'h-14 sm:h-16 shadow-md' : 'h-14 sm:h-16'
+      <nav
+        style={{ backgroundColor: '#FBF7F1' }}
+        className={`w-full select-none text-[#1C1417] border-b border-[#EFE7E2] transition-shadow duration-200 ease-out z-40 h-[68px] md:h-[80px] ${
+          isScrolled ? 'shadow-[0_2px_12px_rgba(28,20,23,0.06)]' : 'shadow-[0_1px_4px_rgba(28,20,23,0.03)]'
         }`}
+        aria-label="Main Navigation"
       >
         <div className="max-w-[1440px] mx-auto h-full px-3 xs:px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-2 relative">
           
@@ -124,14 +122,16 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
           <div className="flex items-center gap-2 sm:gap-3 justify-start shrink-0 z-20">
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="w-10 h-10 -ml-1 flex items-center justify-center hover:opacity-75 transition-opacity cursor-pointer focus:outline-none touch-manipulation"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="navigation-drawer"
+              className="w-10 h-10 -ml-1 flex items-center justify-center hover:opacity-75 transition-opacity cursor-pointer focus:outline-none touch-manipulation text-[#1C1417]"
               aria-label="Open Navigation Menu"
               title="Menu"
             >
               <div className="w-5 h-3 flex flex-col justify-between">
-                <span className="w-full h-[1.5px] rounded-full bg-white transition-all" />
-                <span className="w-full h-[1.5px] rounded-full bg-white transition-all" />
-                <span className="w-full h-[1.5px] rounded-full bg-white transition-all" />
+                <span className="w-full h-[1.75px] rounded-full bg-[#1C1417] transition-all" />
+                <span className="w-full h-[1.75px] rounded-full bg-[#1C1417] transition-all" />
+                <span className="w-full h-[1.75px] rounded-full bg-[#1C1417] transition-all" />
               </div>
             </button>
 
@@ -149,7 +149,7 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
             >
               <h1
                 ref={brandTextRef}
-                className="font-serif font-medium text-white text-[clamp(10.5px,3.05vw,14px)] sm:text-[21px] md:text-[23px] tracking-[0.08em] sm:tracking-[0.22em] uppercase whitespace-nowrap transition-colors duration-200 group-hover:text-[#FAF6EE] m-0"
+                className="font-serif font-semibold text-[#1C1417] text-[clamp(11px,3.1vw,15px)] sm:text-[21px] md:text-[23px] tracking-[0.08em] sm:tracking-[0.22em] uppercase whitespace-nowrap transition-colors duration-200 group-hover:text-[#B8924A] m-0"
               >
                 THE GIRLS COLLECTIONS
               </h1>
@@ -157,7 +157,7 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
           </div>
 
           {/* COLUMN 3 (RIGHT): ACCOUNT (DESKTOP ONLY) + SHOPPING BAG */}
-          <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0 z-20">
+          <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0 z-20 text-[#1C1417]">
             
             {/* Account Icon — Hidden on mobile as requested, kept on desktop */}
             <div className="relative hidden md:block">
@@ -269,7 +269,7 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
           </div>
 
         </div>
-      </header>
+      </nav>
 
       {/* Slide-In Navigation Drawer */}
       <SlideInDrawer

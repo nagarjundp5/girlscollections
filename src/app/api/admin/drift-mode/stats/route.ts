@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth/admin';
 import { db } from '@/db';
 import { driftModeSettings, driftModeCoupons } from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
@@ -6,6 +7,9 @@ import { eq, sql } from 'drizzle-orm';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const [settings] = await db
       .select()

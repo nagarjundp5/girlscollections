@@ -80,7 +80,7 @@ function WallCard({ product, index }: WallCardProps) {
     >
       {/* Image area */}
       <div
-        className="relative overflow-hidden rounded-sm bg-zinc-950 aspect-[4/5] w-full border border-white/[0.06] group-hover:border-white/20 transition-colors duration-300"
+        className="relative overflow-hidden rounded-sm bg-[#FAF8F5] aspect-[4/5] w-full border border-zinc-200/60 group-hover:border-zinc-400 transition-colors duration-300"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -90,7 +90,7 @@ function WallCard({ product, index }: WallCardProps) {
           alt={product.name}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
           priority={isAboveFold}
         />
 
@@ -102,7 +102,7 @@ function WallCard({ product, index }: WallCardProps) {
             fill
             sizes="(max-width: 768px) 50vw, 25vw"
             priority={false}
-            className="object-cover absolute inset-0 transition-opacity duration-300 hover-swap-image"
+            className="object-contain absolute inset-0 transition-opacity duration-300 hover-swap-image"
             style={{ opacity: 0 }}
           />
         )}

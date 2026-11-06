@@ -1,0 +1,422 @@
+{
+  "uploadedImages": {
+    "e3cd2188f0db395720df23239dc35dac91bce7aa67b5a7eaaf2586d8f81d4a39": {
+      "public_id": "products/batch-import4-20261105/01/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896135/products/batch-import4-20261105/01/img_4.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 185998,
+      "hash": "e3cd2188f0db395720df23239dc35dac91bce7aa67b5a7eaaf2586d8f81d4a39"
+    },
+    "b7f7c3a85e0bbd7aa3b20b8b3aa4d177a39684a908867c262fcac5dc58a6f2c1": {
+      "public_id": "products/batch-import4-20261105/01/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896135/products/batch-import4-20261105/01/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 208094,
+      "hash": "b7f7c3a85e0bbd7aa3b20b8b3aa4d177a39684a908867c262fcac5dc58a6f2c1"
+    },
+    "a8d821fc053249ed8b302b009e08bcdd7c5144ea001815ea738e255a4bfc66b0": {
+      "public_id": "products/batch-import4-20261105/01/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896135/products/batch-import4-20261105/01/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 172323,
+      "hash": "a8d821fc053249ed8b302b009e08bcdd7c5144ea001815ea738e255a4bfc66b0"
+    },
+    "9f02298901fcf188825d008ca8c8f26c1b73f8f96d7c76f6a877f479fcc84dbb": {
+      "public_id": "products/batch-import4-20261105/01/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896137/products/batch-import4-20261105/01/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 191093,
+      "hash": "9f02298901fcf188825d008ca8c8f26c1b73f8f96d7c76f6a877f479fcc84dbb"
+    },
+    "3e5883e75baa6d18ac41a4256b82935209c351586c728fb0572b8486f54126e1": {
+      "public_id": "products/batch-import4-20261105/02/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896138/products/batch-import4-20261105/02/img_3.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 160765,
+      "hash": "3e5883e75baa6d18ac41a4256b82935209c351586c728fb0572b8486f54126e1"
+    },
+    "dcf36645648f270996d359a2979b36977e9944e0a096d2625191dc8ca2f6c9c5": {
+      "public_id": "products/batch-import4-20261105/01/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896138/products/batch-import4-20261105/01/img_3.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 188044,
+      "hash": "dcf36645648f270996d359a2979b36977e9944e0a096d2625191dc8ca2f6c9c5"
+    },
+    "c1e2c515b76777dd0aad9b715cadcd62c7d6b8d6de7c92fabc10d12c1b37165c": {
+      "public_id": "products/batch-import4-20261105/02/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896138/products/batch-import4-20261105/02/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 191069,
+      "hash": "c1e2c515b76777dd0aad9b715cadcd62c7d6b8d6de7c92fabc10d12c1b37165c"
+    },
+    "7bc38a2e94b14af7f6dc0c74cf9ffb7b20e78521c5f27ef277d3b78ff99022fb": {
+      "public_id": "products/batch-import4-20261105/02/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896139/products/batch-import4-20261105/02/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 193025,
+      "hash": "7bc38a2e94b14af7f6dc0c74cf9ffb7b20e78521c5f27ef277d3b78ff99022fb"
+    },
+    "b14d318b8dac3f4d2f0bb3c8a64bfa37e0d9c1908a658586e321d3c70b10bb17": {
+      "public_id": "products/batch-import4-20261105/02/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896139/products/batch-import4-20261105/02/img_4.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 155557,
+      "hash": "b14d318b8dac3f4d2f0bb3c8a64bfa37e0d9c1908a658586e321d3c70b10bb17"
+    },
+    "9dce7dca22d4820098f4bd5d4c96a8e36b4095d09cb774d64bad6b36da7458b0": {
+      "public_id": "products/batch-import4-20261105/03/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896140/products/batch-import4-20261105/03/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 171485,
+      "hash": "9dce7dca22d4820098f4bd5d4c96a8e36b4095d09cb774d64bad6b36da7458b0"
+    },
+    "a979031323d3719e48ec518024c98917ed7e1f7c106452dd45fe816c526f8303": {
+      "public_id": "products/batch-import4-20261105/03/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896140/products/batch-import4-20261105/03/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 174657,
+      "hash": "a979031323d3719e48ec518024c98917ed7e1f7c106452dd45fe816c526f8303"
+    },
+    "e0ff6de3a99e81040f623e68fd1dd9eefcea102c2bed069ca5bafff83d190e94": {
+      "public_id": "products/batch-import4-20261105/03/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896141/products/batch-import4-20261105/03/img_3.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 203300,
+      "hash": "e0ff6de3a99e81040f623e68fd1dd9eefcea102c2bed069ca5bafff83d190e94"
+    },
+    "af5935a069139d9ecce9fabf298bdaf8a074ccff15fa41014dc72bd54a3fd1c5": {
+      "public_id": "products/batch-import4-20261105/03/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896142/products/batch-import4-20261105/03/img_4.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 165897,
+      "hash": "af5935a069139d9ecce9fabf298bdaf8a074ccff15fa41014dc72bd54a3fd1c5"
+    },
+    "5c087a48e684840d68344bc21515e6ec4ecc500d05c2d8bbb008fb66cb785e4d": {
+      "public_id": "products/batch-import4-20261105/03/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896143/products/batch-import4-20261105/03/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 163228,
+      "hash": "5c087a48e684840d68344bc21515e6ec4ecc500d05c2d8bbb008fb66cb785e4d"
+    },
+    "4d76d126e1c88464905c5ef668e739adfb8a1fce4f3270ce79e03ffa4f2a36b4": {
+      "public_id": "products/batch-import4-20261105/02/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896143/products/batch-import4-20261105/02/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 171672,
+      "hash": "4d76d126e1c88464905c5ef668e739adfb8a1fce4f3270ce79e03ffa4f2a36b4"
+    },
+    "c145ec14091427f258fd24e6e8d25deb86f2f960ca9da5d0db74cdd3edd159fb": {
+      "public_id": "products/batch-import4-20261105/04/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896143/products/batch-import4-20261105/04/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 169599,
+      "hash": "c145ec14091427f258fd24e6e8d25deb86f2f960ca9da5d0db74cdd3edd159fb"
+    },
+    "0cc1f8440ddea9c8145d8de2947202e96b2c8ff1b79aaafefef7249767bf8d38": {
+      "public_id": "products/batch-import4-20261105/04/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896144/products/batch-import4-20261105/04/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 184194,
+      "hash": "0cc1f8440ddea9c8145d8de2947202e96b2c8ff1b79aaafefef7249767bf8d38"
+    },
+    "244ac43fe195a3072722220645eced532ad4d2aaffff9a666e2671979785d7af": {
+      "public_id": "products/batch-import4-20261105/04/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896145/products/batch-import4-20261105/04/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 167288,
+      "hash": "244ac43fe195a3072722220645eced532ad4d2aaffff9a666e2671979785d7af"
+    },
+    "05933c5151c0ae5121f8537c3903964731796a87aef9b8213bb326d530156540": {
+      "public_id": "products/batch-import4-20261105/04/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896145/products/batch-import4-20261105/04/img_3.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 184193,
+      "hash": "05933c5151c0ae5121f8537c3903964731796a87aef9b8213bb326d530156540"
+    },
+    "c4285c3939ec3656d8b35d97500cb2702b05b7972a7af71c812631a456ed7b27": {
+      "public_id": "products/batch-import4-20261105/05/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896147/products/batch-import4-20261105/05/img_3.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 178385,
+      "hash": "c4285c3939ec3656d8b35d97500cb2702b05b7972a7af71c812631a456ed7b27"
+    },
+    "e173daf1ad034d574ecd40dcc53c9fe2c37a8fe80a67c6ac115ad0682a0aed06": {
+      "public_id": "products/batch-import4-20261105/05/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896147/products/batch-import4-20261105/05/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 173821,
+      "hash": "e173daf1ad034d574ecd40dcc53c9fe2c37a8fe80a67c6ac115ad0682a0aed06"
+    },
+    "579afa18e813d4902ba617db7d602d28d4a1ce2edbc8f713ec74d9d6ffec720d": {
+      "public_id": "products/batch-import4-20261105/05/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896146/products/batch-import4-20261105/05/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 189671,
+      "hash": "579afa18e813d4902ba617db7d602d28d4a1ce2edbc8f713ec74d9d6ffec720d"
+    },
+    "a00776c6fb08b21927074b149cfe89a528ba85f369b24df9aa4fbffb58246a3c": {
+      "public_id": "products/batch-import4-20261105/05/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896148/products/batch-import4-20261105/05/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 167295,
+      "hash": "a00776c6fb08b21927074b149cfe89a528ba85f369b24df9aa4fbffb58246a3c"
+    },
+    "f4ed8e382364f849d71b0630abfbdb9c5707150f9b55428dd2c728d799738507": {
+      "public_id": "products/batch-import4-20261105/06/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896149/products/batch-import4-20261105/06/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 165403,
+      "hash": "f4ed8e382364f849d71b0630abfbdb9c5707150f9b55428dd2c728d799738507"
+    },
+    "b97c49b6e857f01a7c629030abe54cc0ad03fc7462863340c653b731986e1b44": {
+      "public_id": "products/batch-import4-20261105/05/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896148/products/batch-import4-20261105/05/img_4.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 175929,
+      "hash": "b97c49b6e857f01a7c629030abe54cc0ad03fc7462863340c653b731986e1b44"
+    },
+    "6c29d4f9d0f72df969f42aaf9ea60709654b2dcada61d1e6ad4e2389cbfe32ad": {
+      "public_id": "products/batch-import4-20261105/04/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896149/products/batch-import4-20261105/04/img_4.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 163468,
+      "hash": "6c29d4f9d0f72df969f42aaf9ea60709654b2dcada61d1e6ad4e2389cbfe32ad"
+    },
+    "e06f2bbd9cfbb113765a256cb18864957163b5816a1a33739e8e64f400b1601d": {
+      "public_id": "products/batch-import4-20261105/06/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896150/products/batch-import4-20261105/06/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 181061,
+      "hash": "e06f2bbd9cfbb113765a256cb18864957163b5816a1a33739e8e64f400b1601d"
+    },
+    "5c4cdf2302004a47dae56e6a1f85b821517165f30e85d45e9e018dc752671318": {
+      "public_id": "products/batch-import4-20261105/06/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896151/products/batch-import4-20261105/06/img_4.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 176043,
+      "hash": "5c4cdf2302004a47dae56e6a1f85b821517165f30e85d45e9e018dc752671318"
+    },
+    "5b9e05bc555ce55ccf100ffa7514fb68be56772fe2a286c593056232af4cb242": {
+      "public_id": "products/batch-import4-20261105/06/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896151/products/batch-import4-20261105/06/img_3.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 167019,
+      "hash": "5b9e05bc555ce55ccf100ffa7514fb68be56772fe2a286c593056232af4cb242"
+    },
+    "2a8f3df4f7cea539b81db110c08e243014cb7f4fb3cde76f55081d93abaff25a": {
+      "public_id": "products/batch-import4-20261105/07/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896151/products/batch-import4-20261105/07/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 195998,
+      "hash": "2a8f3df4f7cea539b81db110c08e243014cb7f4fb3cde76f55081d93abaff25a"
+    },
+    "244a0e208ac51bcea1a30afd2caba5bd884d15fe294ed71e9bfe8a1b8550cb92": {
+      "public_id": "products/batch-import4-20261105/07/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896153/products/batch-import4-20261105/07/img_4.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 187892,
+      "hash": "244a0e208ac51bcea1a30afd2caba5bd884d15fe294ed71e9bfe8a1b8550cb92"
+    },
+    "8b3b10aa94ec55e5acdb313ab8b1b91ba4c5bddd2eb00a4a9ab8c7a2e8836488": {
+      "public_id": "products/batch-import4-20261105/07/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896152/products/batch-import4-20261105/07/img_2.jpg",
+      "width": 1066,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 211820,
+      "hash": "8b3b10aa94ec55e5acdb313ab8b1b91ba4c5bddd2eb00a4a9ab8c7a2e8836488"
+    },
+    "1c2fb60a87d874a081de502a5402e3a977315ea801f0c34e5234e8d8cdc5e9cd": {
+      "public_id": "products/batch-import4-20261105/07/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896153/products/batch-import4-20261105/07/img_3.jpg",
+      "width": 1066,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 213431,
+      "hash": "1c2fb60a87d874a081de502a5402e3a977315ea801f0c34e5234e8d8cdc5e9cd"
+    },
+    "d9479ed845c82f4b5d53ed551e2ff563810b47fb9168cc964b623535399c6c55": {
+      "public_id": "products/batch-import4-20261105/08/img_1",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896154/products/batch-import4-20261105/08/img_1.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 142796,
+      "hash": "d9479ed845c82f4b5d53ed551e2ff563810b47fb9168cc964b623535399c6c55"
+    },
+    "007b1acb8305fdd87397bd6362b37edc52e16a4b776525a6ae0932815e911bca": {
+      "public_id": "products/batch-import4-20261105/07/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896154/products/batch-import4-20261105/07/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 180103,
+      "hash": "007b1acb8305fdd87397bd6362b37edc52e16a4b776525a6ae0932815e911bca"
+    },
+    "bd613abacb3c0a43cdcf0a00c826fd1e43734b6e89cd9740df64f78d0f2e556b": {
+      "public_id": "products/batch-import4-20261105/06/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896155/products/batch-import4-20261105/06/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 164663,
+      "hash": "bd613abacb3c0a43cdcf0a00c826fd1e43734b6e89cd9740df64f78d0f2e556b"
+    },
+    "c88b5d57d30332cf44e7dca6749666dd8df75680c3c967ef2c314b28ef89d758": {
+      "public_id": "products/batch-import4-20261105/08/img_2",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896155/products/batch-import4-20261105/08/img_2.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 157575,
+      "hash": "c88b5d57d30332cf44e7dca6749666dd8df75680c3c967ef2c314b28ef89d758"
+    },
+    "fa3a0aab3f3bda3a69d64d0c5fe2bd910ac9c6548fbfe865fd8fe3b5cde58a28": {
+      "public_id": "products/batch-import4-20261105/08/img_4",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896156/products/batch-import4-20261105/08/img_4.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 134955,
+      "hash": "fa3a0aab3f3bda3a69d64d0c5fe2bd910ac9c6548fbfe865fd8fe3b5cde58a28"
+    },
+    "57482f4636134f23f72ababfbcdf671b1516c26f21ae483deb227a938f9f600e": {
+      "public_id": "products/batch-import4-20261105/08/img_3",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896156/products/batch-import4-20261105/08/img_3.jpg",
+      "width": 903,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 147033,
+      "hash": "57482f4636134f23f72ababfbcdf671b1516c26f21ae483deb227a938f9f600e"
+    },
+    "09e61411853de4acbc8b1100e2cbe2f89cdbe1ecf58592f84373567433690c28": {
+      "public_id": "products/batch-import4-20261105/08/img_5",
+      "secure_url": "https://res.cloudinary.com/lt3ga2by/image/upload/v1793896160/products/batch-import4-20261105/08/img_5.jpg",
+      "width": 900,
+      "height": 1600,
+      "format": "jpg",
+      "bytes": 144708,
+      "hash": "09e61411853de4acbc8b1100e2cbe2f89cdbe1ecf58592f84373567433690c28"
+    }
+  },
+  "createdProducts": {
+    "01": {
+      "productId": "9447c9cf-4504-4282-890e-00bb464e43e6",
+      "importKey": "import_batch-import4-20261105_01",
+      "slug": "import4-product-01",
+      "name": "Product Import4 01",
+      "imageCount": 5
+    },
+    "02": {
+      "productId": "cc55a278-d8a9-4999-8194-ef4b50c609e7",
+      "importKey": "import_batch-import4-20261105_02",
+      "slug": "import4-product-02",
+      "name": "Product Import4 02",
+      "imageCount": 5
+    },
+    "03": {
+      "productId": "6e585e7a-8a9c-46fe-8580-15e1c736f9f4",
+      "importKey": "import_batch-import4-20261105_03",
+      "slug": "import4-product-03",
+      "name": "Product Import4 03",
+      "imageCount": 5
+    },
+    "04": {
+      "productId": "e7a3dbe8-9cc5-4850-9dc4-08c7d7104978",
+      "importKey": "import_batch-import4-20261105_04",
+      "slug": "import4-product-04",
+      "name": "Product Import4 04",
+      "imageCount": 5
+    },
+    "05": {
+      "productId": "f3876828-dd96-474a-adde-0698f30efd0a",
+      "importKey": "import_batch-import4-20261105_05",
+      "slug": "import4-product-05",
+      "name": "Product Import4 05",
+      "imageCount": 5
+    },
+    "06": {
+      "productId": "a5f10124-ec79-45a2-812f-51fb3945971d",
+      "importKey": "import_batch-import4-20261105_06",
+      "slug": "import4-product-06",
+      "name": "Product Import4 06",
+      "imageCount": 5
+    },
+    "07": {
+      "productId": "43d1378d-b9ca-4493-9119-4c5fe74708af",
+      "importKey": "import_batch-import4-20261105_07",
+      "slug": "import4-product-07",
+      "name": "Product Import4 07",
+      "imageCount": 5
+    },
+    "08": {
+      "productId": "69b5460c-a76e-4a30-a090-e1d975111361",
+      "importKey": "import_batch-import4-20261105_08",
+      "slug": "import4-product-08",
+      "name": "Product Import4 08",
+      "imageCount": 5
+    }
+  }
+}

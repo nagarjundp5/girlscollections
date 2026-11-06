@@ -14,7 +14,16 @@ const TGC_SYSTEM_PROMPT = `Analyse the uploaded garment photo and return strictl
 }
 No markdown. No extra text.`;
 
+import { requireStaffOrAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
+
 export async function POST(request: Request) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireStaffOrAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const apiKey = process.env.GEMINI_API_KEY;
 

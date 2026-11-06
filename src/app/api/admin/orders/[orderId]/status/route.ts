@@ -5,6 +5,8 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { adminUpdateStatusSchema } from '@/lib/validations';
+import { requireStaffOrAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 
 const MAKE_WHATSAPP_WEBHOOK = process.env.MAKE_WEBHOOK_URL || '';
 
@@ -25,6 +27,12 @@ export async function PATCH(
   request: Request,
   { params }: { params: { orderId: string } }
 ) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireStaffOrAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   const { orderId } = params;
 
   try {

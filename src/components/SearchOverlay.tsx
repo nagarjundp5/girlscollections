@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Search, X, TrendingUp, History, ArrowRight } from 'lucide-react';
 import { useShop } from '@/context/ShopContext';
 import { MOCK_PRODUCTS, Product } from '@/data/shopData';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 const TRENDING_TAGS = [
   'Silk Anarkalis',
@@ -27,6 +28,8 @@ export const SearchOverlay: React.FC = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  useScrollLock(isSearchOpen);
 
   // Load recent searches on mount
   useEffect(() => {

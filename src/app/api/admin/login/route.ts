@@ -36,15 +36,18 @@ export async function POST(request: Request) {
 
     const secretKey = process.env.ADMIN_SECRET_KEY;
     const isPasswordValid =
-      !secretKey ||
-      secretKey === 'dev' ||
-      password === secretKey ||
-      password === 'dev' ||
-      Boolean(password && password.length >= 3);
+      secretKey ? password === secretKey : (process.env.NODE_ENV !== 'production' && password === 'dev');
 
     if (isEmailAllowed && isPasswordValid) {
+      const { signAdminToken } = await import('@/lib/jwt');
+      const token = await signAdminToken({
+        email: cleanEmail,
+        role: 'admin',
+        isAdminSession: true,
+      });
+
       const cookieStore = cookies();
-      cookieStore.set('tgc_admin_session', 'true', {
+      cookieStore.set('tgc_admin_session', token, {
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

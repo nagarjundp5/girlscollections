@@ -36,3 +36,10 @@ yarn-error.log*
 next-env.d.ts
 .env*
 firebase-debug.log
+
+# catalog import & backups
+girls-collections-import/
+backups/
+preview.html
+girls-collections-groups.json
+girls-collections-upload-state.json

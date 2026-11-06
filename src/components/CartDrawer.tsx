@@ -15,6 +15,7 @@ import {
   CheckIcon,
 } from '@/components/ui/BrandIcons';
 import { Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -29,6 +30,8 @@ export const CartDrawer: React.FC = () => {
     amountNeededForFreeShipping,
     addToCart,
   } = useShop();
+
+  useScrollLock(isCartOpen);
 
   const formatPrice = (priceInPaiseOrRupees: number) => {
     const rupees = priceInPaiseOrRupees > 100000 ? Math.round(priceInPaiseOrRupees / 100) : priceInPaiseOrRupees;

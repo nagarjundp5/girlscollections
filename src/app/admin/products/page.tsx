@@ -41,7 +41,7 @@ export default function AdminProducts() {
   const [selectedStock, setSelectedStock] = useState<string>('all');
 
   // Sort states
-  const [sortBy, setSortBy] = useState<'created_at' | 'price' | 'stock' | 'name'>('created_at');
+  const [sortBy, setSortBy] = useState<'created_at' | 'price' | 'stock' | 'name' | 'is_featured' | 'is_trending' | 'is_best_seller' | 'is_new_arrival'>('created_at');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
 
   // Pagination states
@@ -138,6 +138,14 @@ export default function AdminProducts() {
         comparison = stockA - stockB;
       } else if (sortBy === 'name') {
         comparison = a.name.localeCompare(b.name);
+      } else if (sortBy === 'is_featured') {
+        comparison = (a.is_featured ? 1 : 0) - (b.is_featured ? 1 : 0);
+      } else if (sortBy === 'is_trending') {
+        comparison = ((a.is_trending || (a as any).isTrending) ? 1 : 0) - ((b.is_trending || (b as any).isTrending) ? 1 : 0);
+      } else if (sortBy === 'is_best_seller') {
+        comparison = ((a.is_best_seller || (a as any).isBestSeller) ? 1 : 0) - ((b.is_best_seller || (b as any).isBestSeller) ? 1 : 0);
+      } else if (sortBy === 'is_new_arrival') {
+        comparison = ((a.is_new_arrival || (a as any).isNewArrival) ? 1 : 0) - ((b.is_new_arrival || (b as any).isNewArrival) ? 1 : 0);
       } else {
         // created_at default
         const dateA = new Date(a.created_at || 0).getTime();
@@ -373,6 +381,10 @@ export default function AdminProducts() {
                 className="bg-transparent text-zinc-900 font-bold uppercase tracking-wider focus:outline-none cursor-pointer"
               >
                 <option value="created_at">Date Added</option>
+                <option value="is_new_arrival">New Arrival</option>
+                <option value="is_trending">Trending</option>
+                <option value="is_best_seller">Best Seller</option>
+                <option value="is_featured">Featured</option>
                 <option value="price">Price</option>
                 <option value="stock">Total Stock</option>
                 <option value="name">Name</option>

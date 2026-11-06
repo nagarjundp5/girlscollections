@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { useShop } from '@/context/ShopContext';
+import { cl, clBlur } from '@/lib/cloudinary';
 
 interface EditorialProductFeatureProps {
   product: any;
@@ -36,13 +37,15 @@ export const EditorialProductFeature: React.FC<EditorialProductFeatureProps> = (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center bg-ivory border border-zariGold/30 rounded-2xl p-6 sm:p-10 lg:p-12 shadow-xl">
           
           {/* Spotlight Hero Image */}
-          <div className="md:col-span-6 relative h-[450px] sm:h-[540px] w-full rounded-xl overflow-hidden shadow-md">
+          <div className="md:col-span-6 relative h-[450px] sm:h-[540px] w-full rounded-xl overflow-hidden shadow-md bg-[#FAF8F5]">
             {product.images?.[0] && (
               <Image
-                src={product.images[0]}
+                src={cl(product.images[0], { w: 900, q: 'auto:good' })}
                 alt={product.name}
                 fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
+                placeholder="blur"
+                blurDataURL={clBlur(product.images[0])}
+                className="object-contain hover:scale-105 transition-transform duration-700"
                 sizes="(max-width: 768px) 100vw, 45vw"
               />
             )}

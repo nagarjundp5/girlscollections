@@ -3,116 +3,191 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { DivisionPreference } from '@/lib/preference';
+import PreferencePill from './PreferencePill';
+import { cl, clBlur } from '@/lib/cloudinary';
+
+// For local /hero/* paths, skip Cloudinary transforms and use the path as-is
+const heroSrc = (src: string, _opts?: object) =>
+  src.startsWith('/') ? src : cl(src, _opts as any);
+const heroBlur = (src: string) =>
+  src.startsWith('/') ? 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' : clBlur(src);
 
 export interface Slide {
   id: number;
-  group: 'women' | 'kids';
+  group?: 'women' | 'kids';
   image: string;
   mobileImage: string;
   objectPosition?: string;
   mobileObjectPosition?: string;
-  eyebrow: string;
-  titlePrefix: string;
-  titleAmp?: string;
-  titleSuffix: string;
-  subtitle: string;
-  ctaText: string;
+  headline?: string;
+  ctaText?: string;
   ctaLink: string;
-  watermarkText: string;
 }
 
 const HERO_SLIDES: Slide[] = [
   {
     id: 1,
     group: 'women',
-    image: '/bgimageladies1desktop.webp',
-    mobileImage: '/bgimage1ladies.webp',
-    objectPosition: 'center 28%',
-    mobileObjectPosition: 'center 20%',
-    eyebrow: "ROYAL FESTIVE COUTURE '26",
-    titlePrefix: 'Handcrafted Silk Anarkalis',
-    titleAmp: '&',
-    titleSuffix: 'Royal Suits',
-    subtitle: 'Woven by master artisans in pure silk with rich hand-embroidered gold zari borders.',
-    ctaText: 'EXPLORE WOMEN ETHNIC',
+    image: '/hero/hero-new-3.png',
+    mobileImage: '/hero/hero-new-1.png',
+    objectPosition: 'center top',
+    mobileObjectPosition: 'center top',
     ctaLink: '/shop?target=women',
-    watermarkText: 'THE GIRLS',
   },
   {
     id: 2,
     group: 'women',
-    image: '/bgimageladies1desktop.webp',
-    mobileImage: '/bgimage2ladies.webp',
-    objectPosition: 'center 32%',
-    mobileObjectPosition: 'center 22%',
-    eyebrow: 'HERITAGE COUTURE EDIT',
-    titlePrefix: 'Royal Silk Lehengas',
-    titleAmp: '&',
-    titleSuffix: 'Bridal Weaves',
-    subtitle: 'Statement royal zari motifs woven with pure gold threads for timeless elegance.',
-    ctaText: 'DISCOVER COUTURE',
+    image: '/hero/hero-new-5.webp',
+    mobileImage: '/hero/hero-new-5.webp',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
     ctaLink: '/shop?target=women',
-    watermarkText: 'COUTURE',
   },
   {
     id: 3,
-    group: 'kids',
-    image: '/bgimageladies1desktop.webp',
-    mobileImage: '/bgimage1kids.webp',
-    objectPosition: 'center 35%',
-    mobileObjectPosition: 'center 25%',
-    eyebrow: 'LITTLE ROYALTY COLLECTION',
-    titlePrefix: 'Kids Pattu Langa',
-    titleAmp: '&',
-    titleSuffix: 'Royal Frocks',
-    subtitle: 'Soft cotton-lined pure silk lehengas tailored for itch-free celebratory comfort.',
-    ctaText: 'SHOP KIDS ETHNIC',
-    ctaLink: '/shop?target=kids',
-    watermarkText: 'THE LITTLES',
+    group: 'women',
+    image: '/hero/hero-new-4.png',
+    mobileImage: '/hero/hero-new-4.png',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
   },
   {
     id: 4,
+    group: 'women',
+    image: '/hero/hero-new-7.png',
+    mobileImage: '/hero/hero-new-7.png',
+    objectPosition: 'center top',
+    mobileObjectPosition: 'center top',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 5,
+    group: 'women',
+    image: '/hero/hero-new-8.png',
+    mobileImage: '/hero/hero-new-8.png',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 6,
+    group: 'women',
+    image: '/hero/hero-new-2.webp',
+    mobileImage: '/hero/hero-new-2.webp',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 7,
+    group: 'women',
+    image: '/hero/hero-new-9.jpg',
+    mobileImage: '/hero/hero-new-9.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 8,
+    group: 'women',
+    image: '/hero/hero-new-10.jpg',
+    mobileImage: '/hero/hero-new-10.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 9,
+    group: 'women',
+    image: '/hero/hero-new-11.jpg',
+    mobileImage: '/hero/hero-new-11.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 10,
+    group: 'women',
+    image: '/hero/hero-new-12.jpg',
+    mobileImage: '/hero/hero-new-12.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 11,
+    group: 'women',
+    image: '/hero/hero-new-13.jpg',
+    mobileImage: '/hero/hero-new-13.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 12,
+    group: 'women',
+    image: '/hero/hero-new-14.jpg',
+    mobileImage: '/hero/hero-new-14.jpg',
+    objectPosition: 'center',
+    mobileObjectPosition: 'center',
+    ctaLink: '/shop?target=women',
+  },
+  {
+    id: 13,
     group: 'kids',
-    image: '/bgimageladies1desktop.webp',
-    mobileImage: '/bgimage1kids.webp',
-    objectPosition: 'center 30%',
-    mobileObjectPosition: 'center 20%',
-    eyebrow: 'PARTY WEAR FROCKS',
-    titlePrefix: 'Layered Tulle',
-    titleAmp: '&',
-    titleSuffix: 'Organza Frocks',
-    subtitle: 'Dreamy celebratory frocks designed for birthdays, weddings, and special events.',
-    ctaText: 'EXPLORE FROCKS',
-    ctaLink: '/shop?category=party-wear-frocks&target=kids',
-    watermarkText: 'FROCKS',
+    image: '/hero/hero-new-6.png',
+    mobileImage: '/hero/hero-new-6.png',
+    objectPosition: 'center top',
+    mobileObjectPosition: 'center top',
+    ctaLink: '/shop?target=kids',
   },
 ];
 
 interface HeroCarouselProps {
-  filter?: 'all' | 'women' | 'kids';
+  filter: DivisionPreference;
+  onFilterChange: (pref: DivisionPreference) => void;
 }
 
-export const HeroCarousel: React.FC<HeroCarouselProps> = ({ filter = 'all' }) => {
+export const HeroCarousel: React.FC<HeroCarouselProps> = ({
+  filter,
+  onFilterChange,
+}) => {
+  // Infer division from group or link, only count visible slides
   const activeSlides = useMemo(() => {
     if (filter === 'all') return HERO_SLIDES;
-    return HERO_SLIDES.filter((s) => s.group === filter);
+    return HERO_SLIDES.filter((s) => {
+      const division = s.group || (s.ctaLink.includes('target=women') ? 'women' : s.ctaLink.includes('target=kids') ? 'kids' : undefined);
+      return !division || division === filter;
+    });
   }, [filter]);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
+  // Reset to first slide on filter change
   useEffect(() => {
     setCurrentSlide(0);
   }, [filter]);
 
+  // Tab visibility listener
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsPaused(document.visibilityState === 'hidden');
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  // 5s autoplay, pause on touch, hover, or hidden tab
   useEffect(() => {
     if (isPaused || activeSlides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % activeSlides.length);
-    }, 6000);
+    }, 5000);
     return () => clearInterval(timer);
   }, [isPaused, activeSlides.length]);
 
@@ -136,7 +211,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ filter = 'all' }) =>
     if (touchStartX.current === null) return;
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX.current - touchEndX;
-    if (Math.abs(diff) > 40) {
+    if (Math.abs(diff) > 35) {
       if (diff > 0) handleNext();
       else handlePrev();
     }
@@ -151,177 +226,146 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ filter = 'all' }) =>
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="relative w-full h-[90vh] sm:h-screen sm:h-[100dvh] bg-[#0F0C14] overflow-hidden flex flex-col justify-end select-none p-0 m-0 rounded-none border-none shadow-none contain-paint"
+      aria-label="Featured Showcase"
+      className="relative w-full bg-[#FAF8F5] select-none p-0 m-0"
+      style={{ height: 'var(--hero-h)' }}
     >
-      {/* Background Image Layer (Absolute Full Bleed) */}
+      {/* Full-bleed clickable slide */}
       <Link
         href={slide.ctaLink}
         prefetch={true}
-        className="absolute inset-0 z-0 block cursor-pointer bg-[#0F0C14]"
-        aria-label={slide.titlePrefix}
+        className="absolute inset-0 z-0 block cursor-pointer w-full h-full overflow-hidden"
+        aria-label={slide.headline || 'Explore Collection'}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={slide.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="absolute inset-0 z-0 bg-[#0F0C14]"
-          >
-            {/* Mobile View */}
-            <div className="block sm:hidden absolute inset-0">
-              <Image
-                src={slide.mobileImage}
-                alt={slide.titlePrefix}
-                fill
-                priority={currentSlide === 0}
-                className="object-cover filter brightness-[0.88]"
-                style={{ objectPosition: slide.mobileObjectPosition || 'center 20%' }}
-                sizes="100vw"
-                quality={85}
-              />
+        <div
+          key={slide.id}
+          style={{ transition: 'opacity 300ms ease' }}
+          className="absolute inset-0 w-full h-full"
+        >
+          {/* Mobile View */}
+          <div className="block sm:hidden absolute inset-0 w-full h-full">
+            <Image
+              src={heroSrc(slide.mobileImage || slide.image, { w: 800, q: 'auto:good' })}
+              alt={slide.headline || 'Hero banner'}
+              fill
+              priority={currentSlide === 0}
+              loading={currentSlide === 0 ? 'eager' : 'lazy'}
+              fetchPriority={currentSlide === 0 ? 'high' : 'low'}
+              placeholder="blur"
+              blurDataURL={heroBlur(slide.mobileImage || slide.image)}
+              className="object-cover"
+              style={{ objectPosition: slide.mobileObjectPosition || 'center' }}
+              sizes="100vw"
+            />
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden sm:block absolute inset-0 w-full h-full">
+            <Image
+              src={heroSrc(slide.image, { w: 1920, q: 'auto:good' })}
+              alt={slide.headline || 'Hero banner'}
+              fill
+              priority={currentSlide === 0}
+              loading={currentSlide === 0 ? 'eager' : 'lazy'}
+              fetchPriority={currentSlide === 0 ? 'high' : 'low'}
+              placeholder="blur"
+              blurDataURL={heroBlur(slide.image)}
+              className="object-cover"
+              style={{ objectPosition: slide.objectPosition || 'center' }}
+              sizes="100vw"
+            />
+          </div>
+        </div>
+
+        {/* Optional Overlay Text Block (rendered only if set) */}
+        {(slide.headline || slide.ctaText) && (
+          <div className="absolute bottom-16 inset-x-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pt-12 pb-4 px-6 sm:px-12 pointer-events-none z-10">
+            <div className="max-w-[1440px] mx-auto flex flex-col items-start gap-2">
+              {slide.headline && (
+                <h2 className="text-xl sm:text-3xl font-serif font-semibold text-white tracking-wide">
+                  {slide.headline}
+                </h2>
+              )}
+              {slide.ctaText && (
+                <span className="pointer-events-auto inline-flex items-center justify-center px-5 py-2 bg-white text-[#1C1417] text-xs font-sans font-bold tracking-widest uppercase hover:bg-white/90 transition-colors shadow-sm">
+                  {slide.ctaText}
+                </span>
+              )}
             </div>
-
-            {/* Desktop View */}
-            <div className="hidden sm:block absolute inset-0">
-              <Image
-                src={slide.image}
-                alt={slide.titlePrefix}
-                fill
-                priority={currentSlide === 0}
-                className="object-cover filter brightness-[0.90]"
-                style={{ objectPosition: slide.objectPosition || 'center 28%' }}
-                sizes="100vw"
-                quality={90}
-              />
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* TOP SCRIM: Subtle dark gradient for header text legibility */}
-        <div className="absolute top-0 inset-x-0 h-40 sm:h-52 bg-gradient-to-b from-[#0F0C14]/80 via-[#0F0C14]/25 to-transparent pointer-events-none z-10" />
-
-        {/* BOTTOM SCRIM: Smooth gradient for editorial headline contrast */}
-        <div className="absolute bottom-0 inset-x-0 h-80 sm:h-96 bg-gradient-to-t from-[rgba(28,20,23,0.95)] via-[rgba(28,20,23,0.6)] to-transparent pointer-events-none z-10" />
+          </div>
+        )}
       </Link>
 
-      {/* OVERSIZED SLIDE WATERMARK: Confined to desktop only to avoid mobile clutter */}
-      <div className="hidden md:block absolute bottom-32 inset-x-0 z-10 pointer-events-none overflow-hidden max-h-[30vh] px-14">
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={`watermark-${slide.id}`}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.45 }}
-            className="text-[120px] lg:text-[160px] font-serif font-normal text-white/[0.03] leading-none uppercase tracking-widest block select-none whitespace-nowrap"
-            aria-hidden="true"
+      {/* Prev/Next Navigation Arrows: Available on BOTH Mobile & Desktop */}
+      {activeSlides.length > 1 && (
+        <div className="absolute inset-y-0 left-0 right-0 z-20 pointer-events-none flex items-center justify-between px-3 sm:px-6">
+          {/* Prev Arrow: 36px on mobile (12px from edge), 44px on desktop */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handlePrev();
+            }}
+            className="pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/75 hover:bg-white text-[#1C1417] backdrop-blur-xs shadow-md transition-all flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
+            aria-label="Previous slide"
           >
-            {slide.watermarkText}
-          </motion.span>
-        </AnimatePresence>
-      </div>
+            <ChevronLeft className="w-5 h-5 stroke-[2]" />
+          </button>
 
-      {/* Main Editorial Text Content Block */}
-      <div className="relative z-20 max-w-[1440px] mx-auto w-full px-5 xs:px-6 sm:px-14 lg:px-20 pb-4 sm:pb-6 text-white pointer-events-none max-h-[55vh] overflow-hidden flex flex-col justify-end">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={slide.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-xl lg:max-w-2xl text-left space-y-2.5 sm:space-y-3.5 pointer-events-auto"
+          {/* Next Arrow: 36px on mobile (12px from edge), 44px on desktop */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleNext();
+            }}
+            className="pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/75 hover:bg-white text-[#1C1417] backdrop-blur-xs shadow-md transition-all flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
+            aria-label="Next slide"
           >
-            {/* Eyebrow Label */}
-            <span className="text-[#FAF6EE]/80 text-[10px] sm:text-xs tracking-[0.24em] font-sans font-medium uppercase block">
-              {slide.eyebrow}
-            </span>
-
-            {/* Editorial Headline with Light/Regular Serif */}
-            <div>
-              <h2 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-serif font-normal text-white leading-[1.1] tracking-tight m-0">
-                {slide.titlePrefix}{' '}
-                {slide.titleAmp && (
-                  <span className="font-serif italic font-light text-white/90 px-0.5">
-                    {slide.titleAmp}
-                  </span>
-                )}{' '}
-                {slide.titleSuffix}
-              </h2>
-            </div>
-
-            {/* Subtitle */}
-            <p className="text-xs sm:text-sm md:text-base text-[#FAF6EE]/90 font-sans font-normal leading-relaxed max-w-md sm:max-w-lg line-clamp-2">
-              {slide.subtitle}
-            </p>
-
-            {/* Restrained Luxury Ghost CTA Button */}
-            <div className="pt-1.5 sm:pt-2">
-              <Link
-                href={slide.ctaLink}
-                prefetch={true}
-                className="px-6 py-2.5 sm:px-8 sm:py-3.5 border border-white text-white hover:bg-white hover:text-[#1A1E3A] transition-colors duration-200 text-[10px] sm:text-xs font-sans tracking-[0.2em] font-medium uppercase inline-flex items-center space-x-2.5 group min-h-[44px]"
-              >
-                <span>{slide.ctaText}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-current group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* UNDERSTATED CAROUSEL DOTS */}
-      <div className="relative z-30 max-w-[1440px] mx-auto w-full px-5 xs:px-6 sm:px-14 pb-16 sm:pb-8 flex items-center justify-start pointer-events-auto">
-        <div className="flex items-center space-x-2">
-          {activeSlides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setCurrentSlide(idx);
-              }}
-              className="p-1 cursor-pointer focus:outline-none"
-              aria-label={`Go to slide ${idx + 1}`}
-            >
-              <span
-                className={`h-1 block rounded-full transition-all duration-300 ${
-                  idx === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/70'
-                }`}
-              />
-            </button>
-          ))}
+            <ChevronRight className="w-5 h-5 stroke-[2]" />
+          </button>
         </div>
-      </div>
+      )}
 
-      {/* OUTLINED SIDE ARROWS: HIDDEN ON MOBILE to avoid screen overlap, shown on desktop */}
-      <div className="hidden sm:flex absolute inset-y-0 left-0 right-0 z-30 pointer-events-none items-center justify-between px-4 sm:px-8">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handlePrev();
-          }}
-          className="pointer-events-auto w-10 h-10 rounded-full bg-[#1A1E3A]/40 backdrop-blur-xs text-white/85 hover:text-white border border-white/25 hover:border-white/60 hover:bg-[#1A1E3A]/70 transition-all flex items-center justify-center cursor-pointer focus:outline-none"
-          aria-label="Previous banner"
-        >
-          <ChevronLeft className="w-5 h-5 stroke-[1.5]" />
-        </button>
+      {/* 
+        Slide Dots: Small dots placed at bottom-9 (safely above the floating pill at bottom-0)
+        Never collides with the pill.
+      */}
+      {activeSlides.length > 1 && (
+        <div className="absolute bottom-9 inset-x-0 z-20 flex items-center justify-center pointer-events-auto">
+          <div className="flex items-center space-x-2 bg-black/25 backdrop-blur-xs px-2.5 py-1 rounded-full">
+            {activeSlides.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCurrentSlide(idx);
+                }}
+                className="p-1 cursor-pointer focus:outline-none"
+                aria-label={`Go to slide ${idx + 1}`}
+              >
+                <span
+                  className={`block rounded-full transition-all duration-300 ${
+                    idx === currentSlide
+                      ? 'w-5 h-1.5 bg-white'
+                      : 'w-1.5 h-1.5 bg-white/45 hover:bg-white/80'
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleNext();
-          }}
-          className="pointer-events-auto w-10 h-10 rounded-full bg-[#1A1E3A]/40 backdrop-blur-xs text-white/85 hover:text-white border border-white/25 hover:border-white/60 hover:bg-[#1A1E3A]/70 transition-all flex items-center justify-center cursor-pointer focus:outline-none"
-          aria-label="Next banner"
-        >
-          <ChevronRight className="w-5 h-5 stroke-[1.5]" />
-        </button>
-      </div>
+      {/* Floating Switch Pill: Centred and overlapping bottom edge (half on image, half below) */}
+      <PreferencePill
+        preference={filter}
+        onPreferenceChange={onFilterChange}
+      />
     </section>
   );
 };

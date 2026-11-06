@@ -1,60 +1,47 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, ArrowRight, Flame } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { Product } from '@/types';
-import { LuxuryHeartButton } from '@/components/LuxuryHeartButton';
 import { useShop } from '@/context/ShopContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
 interface ProductCarouselProps {
   title: string;
-  accentWord?: string;
-  eyebrow?: string;
   products: Product[];
-  variant?: 'trending' | 'category' | 'new';
+  variant?: 'trending' | 'new' | 'category';
   viewAllHref?: string;
   viewAllLabel?: string;
   filter?: 'all' | 'women' | 'kids';
+  // Optional backwards-compatibility props (ignored in clean taruni layout)
+  accentWord?: string;
+  eyebrow?: string;
 }
 
 export const ProductCarousel: React.FC<ProductCarouselProps> = ({
-  title: initialTitle,
-  accentWord,
-  eyebrow: initialEyebrow,
+  title,
   products,
-  variant = 'category',
-  viewAllHref,
+  variant = 'trending',
+  viewAllHref = '/shop',
   viewAllLabel = 'VIEW ALL',
   filter = 'all',
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { isInWishlist, toggleWishlist } = useShop();
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const dynamicTitle = useMemo(() => {
-    if (variant === 'trending') {
-      if (filter === 'women') return 'Trending in Women';
-      if (filter === 'kids') return 'Trending in Kids';
-      return 'Trending This Week';
-    }
-    return initialTitle;
-  }, [variant, filter, initialTitle]);
-
-  const dynamicEyebrow = useMemo(() => {
-    if (variant === 'trending') {
-      if (filter === 'women') return "WOMEN'S MOST LOVED";
-      if (filter === 'kids') return "LITTLE ROYALTY MOST LOVED";
-      return 'MOST LOVED RIGHT NOW';
-    }
-    return initialEyebrow;
-  }, [variant, filter, initialEyebrow]);
-
+  // Filter products by homepage active category tab (Women / Kids / All)
   const filteredProducts = useMemo(() => {
-    if (!filter || filter === 'all') return products;
+    if (!products || products.length === 0) return [];
+
+    let list = products.filter(
+      (p) => p && p.is_active !== false && p.price > 0 && p.images && p.images.length > 0
+    );
+
     if (filter === 'women') {
-      return products.filter((p) => {
+      list = list.filter((p) => {
         const cat = (p.category || '').toLowerCase();
         const sub = (p.subcategory || '').toLowerCase();
         const isKids =
@@ -65,9 +52,8 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
           p.gender === 'unisex';
         return !isKids;
       });
-    }
-    if (filter === 'kids') {
-      return products.filter((p) => {
+    } else if (filter === 'kids') {
+      list = list.filter((p) => {
         const cat = (p.category || '').toLowerCase();
         const sub = (p.subcategory || '').toLowerCase();
         return (
@@ -79,14 +65,15 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
         );
       });
     }
-    return products;
+
+    return list;
   }, [products, filter]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
-    const amount = scrollRef.current.clientWidth * 0.8;
+    const scrollAmount = scrollRef.current.clientWidth * 0.8;
     scrollRef.current.scrollBy({
-      left: direction === 'left' ? -amount : amount,
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
       behavior: 'smooth',
     });
   };
@@ -96,149 +83,231 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
     return `₹${rupees.toLocaleString('en-IN')}`;
   };
 
-  if (!filteredProducts || filteredProducts.length === 0) return null;
+  // If no products exist for this section, hide completely (no placeholders)
+  if (!filteredProducts || filteredProducts.length === 0) {
+    return null;
+  }
+
+  const badgeText = variant === 'new' ? 'New In' : 'Trending';
+
+  const targetViewAllHref = viewAllHref
+    ? filter !== 'all'
+      ? viewAllHref.includes('?')
+        ? `${viewAllHref}&target=${filter}`
+        : `${viewAllHref}?target=${filter}`
+      : viewAllHref
+    : '';
 
   return (
-    <section className="w-full py-8 sm:py-14 pb-16 sm:pb-14 bg-ivory border-b border-zariGold/15 overflow-hidden">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <section className="w-full py-10 md:py-16 bg-[#FAF8F5]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* HEADER ROW */}
-        <div className="flex items-end justify-between mb-6 border-b border-zariGold/15 pb-3">
-          <div>
-            {dynamicEyebrow && (
-              <span className="block mb-1 text-[11px] sm:text-xs font-sans font-bold tracking-[0.2em] uppercase text-zariGold">
-                {dynamicEyebrow}
-              </span>
-            )}
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-inkNavy font-bold tracking-tight leading-[1.15]">
-              {dynamicTitle}
-            </h2>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {viewAllHref && (
-              <Link
-                href={viewAllHref}
-                className="group inline-flex items-center gap-1.5 text-xs font-sans font-bold tracking-widest uppercase text-zariGold hover:text-inkNavy transition-colors min-h-[44px]"
-              >
-                <span>{viewAllLabel}</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            )}
-
-            {/* Desktop Controls */}
-            <div className="hidden sm:flex items-center gap-1.5 ml-2">
-              <button
-                onClick={() => scroll('left')}
-                className="w-9 h-9 rounded-full border border-zariGold/30 hover:border-zariGold hover:bg-zariGold/10 flex items-center justify-center text-inkNavy transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-zariGold"
-                aria-label="Previous products"
-              >
-                <ChevronLeft className="w-4 h-4 text-zariGold" />
-              </button>
-              <button
-                onClick={() => scroll('right')}
-                className="w-9 h-9 rounded-full border border-zariGold/30 hover:border-zariGold hover:bg-zariGold/10 flex items-center justify-center text-inkNavy transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-zariGold"
-                aria-label="Next products"
-              >
-                <ChevronRight className="w-4 h-4 text-zariGold" />
-              </button>
-            </div>
-          </div>
+        {/* SECTION TITLE: Centered, Bold 22-28px, tracking 0.06em, #1C1417 (No eyebrow, no underline) */}
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-[22px] md:text-[28px] font-sans font-semibold tracking-[0.06em] text-[#1C1417]">
+            {title}
+          </h2>
         </div>
 
-        {/* CAROUSEL TRACK */}
-        <div
-          ref={scrollRef}
-          className="flex items-stretch gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product, idx) => {
-              const isTop3Trending = variant === 'trending' && idx < 3;
-              const isNewItem = variant === 'new';
+        {/* CAROUSEL WRAPPER WITH SIDE ARROWS ON DESKTOP */}
+        <div className="relative group/track">
+          
+          {/* Left Arrow (Desktop Only, White Circle) */}
+          <button
+            onClick={() => scroll('left')}
+            className="hidden md:flex absolute -left-4 lg:-left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/95 text-[#1C1417] shadow-md items-center justify-center hover:bg-white hover:scale-105 transition-all opacity-0 group-hover/track:opacity-100 focus:opacity-100 focus:outline-none"
+            aria-label="Previous products"
+          >
+            <ChevronLeft className="w-5 h-5 text-[#1C1417]" />
+          </button>
+
+          {/* Right Arrow (Desktop Only, White Circle) */}
+          <button
+            onClick={() => scroll('right')}
+            className="hidden md:flex absolute -right-4 lg:-right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/95 text-[#1C1417] shadow-md items-center justify-center hover:bg-white hover:scale-105 transition-all opacity-0 group-hover/track:opacity-100 focus:opacity-100 focus:outline-none"
+            aria-label="Next products"
+          >
+            <ChevronRight className="w-5 h-5 text-[#1C1417]" />
+          </button>
+
+          {/* CAROUSEL TRACK */}
+          <div
+            ref={scrollRef}
+            className="flex items-stretch gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {filteredProducts.map((product) => {
               const isWishlisted = isInWishlist(product.id);
+              const isHovered = hoveredId === product.id;
+              const hasSecondImage = product.images && product.images.length > 1;
+              const primaryImg = product.images[0];
+              const secondaryImg = hasSecondImage ? product.images[1] : primaryImg;
+
+              const optimizedPrimary = getOptimizedImageUrl(primaryImg, { width: 700, quality: 85 });
+              const optimizedSecondary = getOptimizedImageUrl(secondaryImg, { width: 700, quality: 85 });
+
+              const productSizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['FREE SIZE'];
+              const stockMap = product.stock_quantity || {};
+
+              const price = product.price > 10000 ? Math.round(product.price / 100) : product.price;
+              const comparePrice =
+                product.compare_price && product.compare_price > 10000
+                  ? Math.round(product.compare_price / 100)
+                  : product.compare_price;
+              const hasDiscount = Boolean(comparePrice && comparePrice > price);
+              const discountPercent =
+                hasDiscount && comparePrice
+                  ? Math.round(((comparePrice - price) / comparePrice) * 100)
+                  : 0;
+
+              const targetPref = filter !== 'all' ? filter : (product.gender === 'kids' || product.gender === 'unisex' ? 'kids' : 'women');
+              const productUrl = `/shop/${product.slug}?target=${targetPref}`;
 
               return (
-                <motion.div
+                <div
                   key={product.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  className="group relative flex flex-col shrink-0 snap-start select-none w-[72vw] xs:w-[220px] sm:w-[250px] lg:w-[280px] bg-ivory rounded-xl overflow-hidden border border-zariGold/20 hover:border-zariGold/50 transition-all duration-300 hover:shadow-luxury"
+                  className="shrink-0 snap-start select-none w-[calc(50%-8px)] sm:w-[calc(50%-12px)] md:w-[calc(25%-18px)] min-w-[160px] md:min-w-[280px] max-w-[340px]"
+                  onMouseEnter={() => setHoveredId(product.id)}
+                  onMouseLeave={() => setHoveredId(null)}
                 >
-                  {/* Image Container */}
-                  <div className="relative w-full aspect-[3/4] overflow-hidden bg-ivory-muted">
-                    <Link href={`/shop/${product.slug}`} className="block w-full h-full">
-                      {product.images && product.images[0] ? (
+                  {/* CARD CONTAINER (No border, no shadow, no inner padding) */}
+                  <div className="group relative flex flex-col w-full">
+                    
+                    {/* 3:4 PORTRAIT IMAGE CONTAINER */}
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#FAF8F5] rounded-none">
+                      <Link
+                        href={productUrl}
+                        className="block w-full h-full relative"
+                        aria-label={product.name}
+                      >
+                        {/* Primary Image - uncropped object-contain */}
                         <Image
-                          src={product.images[0]}
+                          src={optimizedPrimary}
                           alt={product.name}
                           fill
-                          sizes="(max-width: 640px) 72vw, (max-width: 1024px) 250px, 280px"
-                          className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
+                          className={`object-contain transition-opacity duration-500 ease-in-out ${
+                            isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
+                          }`}
+                          loading="lazy"
                         />
-                      ) : (
-                        <div className="w-full h-full bg-sand/30 flex items-center justify-center text-zariGold font-serif text-2xl font-bold">
-                          TGC
-                        </div>
-                      )}
-                    </Link>
 
-                    {/* Wishlist Button */}
-                    <div className="absolute top-2.5 right-2.5 z-20">
-                      <LuxuryHeartButton
-                        isLiked={isWishlisted}
-                        onToggle={() => toggleWishlist(product.id)}
-                        size="sm"
-                      />
+                        {/* Secondary Image (Hover Swap on Desktop) - uncropped object-contain */}
+                        {hasSecondImage && (
+                          <Image
+                            src={optimizedSecondary}
+                            alt={`${product.name} alternate view`}
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
+                            className={`object-contain transition-opacity duration-500 ease-in-out ${
+                              isHovered ? 'opacity-100' : 'opacity-0'
+                            }`}
+                            loading="lazy"
+                          />
+                        )}
+                      </Link>
+
+                      {/* Black small tag top-left (11px, white text, square corners) */}
+                      <div className="absolute top-2.5 left-2.5 z-20 pointer-events-none">
+                        <span className="inline-block bg-black text-white text-[10px] md:text-[11px] font-sans font-medium uppercase tracking-[0.08em] px-2 py-0.5 rounded-none">
+                          {badgeText}
+                        </span>
+                      </div>
+
+                      {/* White circular heart top-right */}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleWishlist(product.id);
+                        }}
+                        className="absolute top-2.5 right-2.5 z-20 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#1C1417] hover:bg-white hover:scale-105 transition-all shadow-xs"
+                        aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                      >
+                        <Heart
+                          className={`w-4 h-4 md:w-4.5 md:h-4.5 transition-colors ${
+                            isWishlisted
+                              ? 'fill-[#7A1F2B] text-[#7A1F2B]'
+                              : 'text-[#1C1417]'
+                          }`}
+                        />
+                      </button>
+
+                      {/* Desktop Hover Slide-Up Translucent Sizes Bar */}
+                      <div
+                        className={`hidden md:flex absolute inset-x-0 bottom-0 z-20 bg-white/90 backdrop-blur-md px-2 py-2.5 items-center justify-center gap-1.5 transition-transform duration-300 ease-out ${
+                          isHovered ? 'translate-y-0' : 'translate-y-full'
+                        }`}
+                      >
+                        <span className="text-[10px] uppercase font-bold text-[#1C1417]/60 tracking-wider mr-1">
+                          Sizes:
+                        </span>
+                        <div className="flex flex-wrap items-center justify-center gap-1">
+                          {productSizes.map((size) => {
+                            const isSoldOut = stockMap[size] !== undefined && stockMap[size] <= 0;
+                            return (
+                              <Link
+                                key={size}
+                                href={`/shop/${product.slug}?size=${encodeURIComponent(size)}&target=${targetPref}`}
+                                className={`text-[11px] font-sans px-1.5 py-0.5 rounded-xs transition-colors ${
+                                  isSoldOut
+                                    ? 'line-through text-black/30 cursor-not-allowed pointer-events-none'
+                                    : 'font-medium text-[#1C1417] hover:bg-black hover:text-white'
+                                }`}
+                              >
+                                {size}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Badges — Strictly On-Brand Palette (Deep Navy / Zari Gold / Rose Gold) */}
-                    {isTop3Trending && (
-                      <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#14172E] text-[#F5E4B8] border border-[#C9A24B]/40 text-[9.5px] font-sans font-extrabold uppercase tracking-wider shadow-sm">
-                        <Flame className="w-3.5 h-3.5 text-[#C9A24B] fill-[#C9A24B]/30 stroke-[1.6]" />
-                        <span>#{idx + 1} TRENDING</span>
-                      </div>
-                    )}
-
-                    {isNewItem && (
-                      <div className="absolute top-2.5 left-2.5 z-20 px-2.5 py-1 rounded-md bg-[#B4863C] text-ivory border border-[#D8BC82]/40 text-[9.5px] font-sans font-extrabold uppercase tracking-widest shadow-xs">
-                        NEW
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Product Metadata */}
-                  <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between bg-ivory">
-                    <div>
-                      <span className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-zariGold line-clamp-1">
-                        {product.category}
-                      </span>
-                      <Link href={`/shop/${product.slug}`}>
-                        <h3 className="text-xs sm:text-sm font-sans font-medium text-inkNavy group-hover:text-zariGold transition-colors mt-0.5">
+                    {/* TEXT UNDER IMAGE: Left-aligned, high contrast */}
+                    <div className="pt-3 pb-1 text-left">
+                      <Link href={productUrl} className="block group/title">
+                        {/* Product Name in uppercase 14px, weight 400, dark, max 2 lines */}
+                        <h3 className="text-[13px] md:text-[14px] font-sans font-normal uppercase tracking-[0.04em] text-[#1C1417] line-clamp-2 leading-tight">
                           {product.name}
                         </h3>
                       </Link>
-                    </div>
 
-                    <div className="mt-2.5 flex items-baseline gap-2">
-                      <span className="text-sm font-sans font-bold text-inkNavy font-tnum">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.compare_price && product.compare_price > product.price && (
-                        <span className="text-xs font-sans text-inkNavy/40 line-through font-normal font-tnum">
-                          {formatPrice(product.compare_price)}
+                      {/* Price in bold 15-16px, MRP struck through, discount % in sale colour */}
+                      <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
+                        <span className="text-[15px] md:text-[16px] font-sans font-bold text-[#1C1417]">
+                          {formatPrice(price)}
                         </span>
-                      )}
+
+                        {hasDiscount && comparePrice && (
+                          <>
+                            <span className="text-[12px] md:text-[13px] font-sans text-[#767676] line-through font-normal">
+                              {formatPrice(comparePrice)}
+                            </span>
+                            <span className="text-[12px] md:text-[13px] font-sans font-semibold text-[#B8283B]">
+                              ({discountPercent}% OFF)
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </AnimatePresence>
+          </div>
         </div>
+
+        {/* SOLID "VIEW ALL" BUTTON (Dark colour, white text, 44px high, 180px wide, tracking 0.12em) Centred Below */}
+        {targetViewAllHref && (
+          <div className="mt-8 md:mt-12 text-center">
+            <Link
+              href={targetViewAllHref}
+              className="inline-flex items-center justify-center w-[180px] h-[44px] bg-[#1C1417] hover:bg-black text-white text-[12px] md:text-[13px] font-sans font-medium tracking-[0.12em] uppercase transition-colors"
+            >
+              {viewAllLabel}
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

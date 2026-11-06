@@ -71,6 +71,24 @@ export default function RootLayout({
           <script
             dangerouslySetInnerHTML={{
               __html: `
+                (function() {
+                  try {
+                    var p = localStorage.getItem('tgc_pref') || (document.cookie.match(/(?:^|;\\s*)tgc_pref=([^;]*)/) || [])[1] || 'all';
+                    if (p === 'women' || p === 'kids' || p === 'all') {
+                      document.documentElement.setAttribute('data-pref', p);
+                    } else {
+                      document.documentElement.setAttribute('data-pref', 'all');
+                    }
+                  } catch (e) {
+                    document.documentElement.setAttribute('data-pref', 'all');
+                  }
+                })();
+              `,
+            }}
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
                 window.addEventListener('error', function(e) {
                   if (e && e.message && e.message.indexOf('Clerk') !== -1) {
                     e.stopImmediatePropagation();

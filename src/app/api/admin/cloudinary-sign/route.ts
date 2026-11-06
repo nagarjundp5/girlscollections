@@ -2,16 +2,26 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { requireStaffOrAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 
 export async function POST(request: Request) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authResult = await requireStaffOrAdmin();
+  if (authResult instanceof NextResponse) return authResult;
   try {
     const body = await request.json();
     const { params } = body; // Parameters sent by the frontend (e.g. folder, timestamp)
 
-    const envCloud = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const cloudName = (envCloud && envCloud !== 'j4i7n9ru') ? envCloud : 'dtj01pdog';
-    const apiKey = process.env.CLOUDINARY_API_KEY || '388993459747447';
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || '1IHqRKjnjPKzu7ACR-JbGML7Xts';
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json({ error: 'Cloudinary server credentials not configured' }, { status: 500 });
+    }
 
     if (!params) {
       return NextResponse.json({ error: 'Params to sign are required' }, { status: 400 });

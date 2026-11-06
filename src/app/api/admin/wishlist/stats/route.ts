@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth/admin';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq, desc, gte } from 'drizzle-orm';
@@ -12,6 +13,9 @@ export const dynamic = 'force-dynamic';
  * Computes strictly legitimate live metrics from DB records.
  */
 export async function GET() {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     await dbService.ensureWishlistTableExists();
 

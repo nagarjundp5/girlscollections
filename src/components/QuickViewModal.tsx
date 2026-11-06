@@ -5,10 +5,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useShop } from '@/context/ShopContext';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 export const QuickViewModal: React.FC = () => {
   const { quickViewProduct, setQuickViewProduct, addToCart } = useShop();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
+  useScrollLock(!!quickViewProduct);
 
   if (!quickViewProduct) return null;
 

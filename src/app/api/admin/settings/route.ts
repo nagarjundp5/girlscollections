@@ -9,11 +9,11 @@ const DEFAULT_SETTINGS = {
   store_name: 'The Girls Collections',
   contact_number: '+91 7483848505',
   instagram_handle: '@thegirlscollections',
-  free_shipping_threshold: 99900, // paise (₹999)
+  free_shipping_threshold: 199900, // paise (₹1999)
   default_shipping_charge: 9900,  // paise (₹99)
-  razorpay_key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || 'rzp_test_TZ9alONOVKNDqa',
-  razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET || 'JK6Mbgl4cUYU9lfzbJ8e60Y3',
-  nimbuspost_api_key: process.env.SHIPROCKET_EMAIL || 'shiprocket_placeholder',
+  razorpay_key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || '',
+  razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+  nimbuspost_api_key: process.env.SHIPROCKET_EMAIL || '',
   blr_pincode_ranges: '560001-560300',
   borzo_surcharge: 15000, // ₹150 in paise
   borzo_free_threshold: 149900, // ₹1499 in paise

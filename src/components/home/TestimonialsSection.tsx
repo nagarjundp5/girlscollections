@@ -1,7 +1,4 @@
-'use client';
-
 import React from 'react';
-import { motion } from 'framer-motion';
 
 interface Testimonial {
   id: string;
@@ -41,53 +38,48 @@ const TESTIMONIALS: Testimonial[] = [
 
 export const TestimonialsSection: React.FC = () => {
   return (
-    <section className="w-full py-12 sm:py-20 md:py-24 bg-sand/30 border-b border-zariGold/15 overflow-hidden">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-        {/* Header */}
-        <div className="text-center max-w-xl mx-auto mb-10 sm:mb-14">
-          <span className="eyebrow-text text-zariGold font-semibold text-xs tracking-[0.25em] block mb-1">
-            PATRON STORIES
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-serif font-bold text-inkNavy">
+    <section
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 400px' }}
+      className="w-full py-10 md:py-16 bg-[#FAF8F5] border-t border-[#EFE7E2] overflow-hidden"
+    >
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Unified Section Header */}
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-[22px] md:text-[28px] font-sans font-semibold tracking-[0.06em] text-[#1C1417]">
             Voices of Elegance
           </h2>
-          <div className="w-12 h-[2px] bg-gold-gradient mx-auto mt-3" />
         </div>
 
         {/* 3-Up Desktop Grid / Horizontal Scroll-Snap Rail on Mobile */}
         <div className="flex md:grid md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 overflow-x-auto no-scrollbar md:overflow-visible snap-x snap-mandatory pb-4 px-1 -mx-1">
-          {TESTIMONIALS.map((t, idx) => (
-            <motion.div
+          {TESTIMONIALS.map((t) => (
+            <div
               key={t.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1, ease: 'easeOut' }}
-              className="snap-start shrink-0 w-[85vw] sm:w-[360px] md:w-auto bg-ivory rounded-[2px] p-6 sm:p-8 border border-zariGold/25 shadow-md flex flex-col justify-between space-y-6"
+              className="snap-start shrink-0 w-[85vw] sm:w-[360px] md:w-auto bg-[#FAF6EE] rounded-none p-6 sm:p-8 border border-[#E2D8CC] shadow-xs flex flex-col justify-between space-y-6"
             >
-              {/* Initials Mark - Larger Rose-Gold Filled Circle */}
+              {/* Initials Mark */}
               <div className="flex items-center space-x-3.5">
-                <div className="w-11 h-11 rounded-full bg-gold-gradient text-white flex items-center justify-center font-serif font-bold text-base shadow-md shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#1C1417] text-white flex items-center justify-center font-sans font-semibold text-sm shadow-xs shrink-0">
                   {t.initials}
                 </div>
                 <div>
-                  <h3 className="text-sm font-sans font-bold text-inkNavy">{t.name}</h3>
-                  <p className="text-xs font-sans font-semibold text-inkNavy/60">{t.location}</p>
+                  <h3 className="text-sm font-sans font-semibold text-[#1C1417]">{t.name}</h3>
+                  <p className="text-xs font-sans text-[#6B6B7B]">{t.location}</p>
                 </div>
               </div>
 
-              {/* Display Serif Pull Quote */}
-              <p className="text-base sm:text-lg font-serif italic font-medium text-inkNavy/90 leading-relaxed flex-1">
+              {/* Display Pull Quote */}
+              <p className="text-sm sm:text-base font-serif italic text-[#1C1417]/85 leading-relaxed flex-1">
                 &ldquo;{t.quote}&rdquo;
               </p>
 
-              {/* Thin Gold Divider */}
-              <div className="w-full h-[1px] bg-zariGold/25" />
+              {/* Thin Divider */}
+              <div className="w-full h-[1px] bg-[#E2D8CC]" />
 
-              <p className="text-[11px] font-sans uppercase tracking-[0.18em] text-zariGold font-bold">
+              <p className="text-[11px] font-sans uppercase tracking-[0.14em] text-[#B8924A] font-semibold">
                 Purchased: {t.product}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

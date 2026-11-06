@@ -32,11 +32,27 @@ async function setProductsInRedisCache(data: any): Promise<void> {
 }
 
 export async function clearProductCache(): Promise<void> {
-  try {
-    const { redis } = await import('@/lib/redis');
-    await redis.del(PRODUCT_CACHE_KEY);
-  } catch (err) {
-    console.warn('[ProductCache] Failed to clear Redis cache:', err);
+  if (typeof window === 'undefined') {
+    try {
+      const { redis } = await import('@/lib/redis');
+      await redis.del(PRODUCT_CACHE_KEY);
+      await redis.del('homepage:snapshot:v1');
+    } catch (err) {
+      console.warn('[ProductCache] Failed to clear Redis cache:', err);
+    }
+
+    try {
+      const { revalidatePath, revalidateTag } = await import('next/cache');
+      revalidatePath('/');
+      revalidatePath('/shop');
+      revalidateTag('featured-products');
+      revalidateTag('trending-products');
+      revalidateTag('new-drops');
+      revalidateTag('products');
+      revalidateTag('home');
+    } catch {
+      // Graceful fallback if called outside Next server request context
+    }
   }
 }
 
@@ -385,6 +401,9 @@ export const dbService = {
           sizes: r.sizes,
           stock_quantity: r.stock_quantity,
           is_featured: r.is_featured,
+          is_trending: r.is_trending ?? false,
+          is_best_seller: r.is_best_seller ?? false,
+          is_new_arrival: r.is_new_arrival ?? false,
           paired_with: r.paired_with ?? null,
           is_active: r.is_active,
           weight_grams: r.weight_grams,
@@ -491,6 +510,9 @@ export const dbService = {
           sizes: r.sizes,
           stock_quantity: r.stock_quantity,
           is_featured: r.is_featured,
+          is_trending: r.is_trending ?? false,
+          is_best_seller: r.is_best_seller ?? false,
+          is_new_arrival: r.is_new_arrival ?? false,
           paired_with: r.paired_with ?? null,
           is_active: r.is_active,
           weight_grams: r.weight_grams,
@@ -598,6 +620,9 @@ export const dbService = {
         sizes: prod.sizes,
         stock_quantity: prod.stock_quantity,
         is_featured: prod.is_featured,
+        is_trending: prod.is_trending ?? false,
+        is_best_seller: prod.is_best_seller ?? false,
+        is_new_arrival: prod.is_new_arrival ?? false,
         paired_with: prod.paired_with ?? null,
         is_active: prod.is_active,
         weight_grams: prod.weight_grams,
@@ -921,6 +946,9 @@ export const dbService = {
         sizes: prod.sizes || ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
         stock_quantity: prod.stock_quantity || { XS: 0, S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
         is_featured: prod.is_featured !== undefined ? prod.is_featured : false,
+        is_trending: prod.is_trending !== undefined ? prod.is_trending : false,
+        is_best_seller: prod.is_best_seller !== undefined ? prod.is_best_seller : false,
+        is_new_arrival: prod.is_new_arrival !== undefined ? prod.is_new_arrival : false,
         paired_with: prod.paired_with,
         is_active: prod.is_active !== undefined ? prod.is_active : true,
         weight_grams: prod.weight_grams,
@@ -1028,6 +1056,9 @@ export const dbService = {
         sizes: inserted.sizes,
         stock_quantity: inserted.stock_quantity,
         is_featured: inserted.is_featured,
+        is_trending: inserted.is_trending ?? false,
+        is_best_seller: inserted.is_best_seller ?? false,
+        is_new_arrival: inserted.is_new_arrival ?? false,
         paired_with: inserted.paired_with ?? null,
         is_active: inserted.is_active,
         weight_grams: inserted.weight_grams,
@@ -1247,6 +1278,9 @@ export const dbService = {
         sizes: updated.sizes,
         stock_quantity: updated.stock_quantity,
         is_featured: updated.is_featured,
+        is_trending: updated.is_trending ?? false,
+        is_best_seller: updated.is_best_seller ?? false,
+        is_new_arrival: updated.is_new_arrival ?? false,
         paired_with: updated.paired_with ?? null,
         is_active: updated.is_active,
         weight_grams: updated.weight_grams,
@@ -1957,18 +1991,18 @@ export const dbService = {
       const settingsObj: StoreSettings = {
         store_name: 'The Girls Collections',
         contact_number: '+91 7483848505',
-        instagram_handle: '@drftnclothing',
-        free_shipping_threshold: 99900,
+        instagram_handle: '@thegirlscollections',
+        free_shipping_threshold: 199900,
         default_shipping_charge: 9900,
-        razorpay_key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || 'rzp_test_TZ9alONOVKNDqa',
-        razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET || 'JK6Mbgl4cUYU9lfzbJ8e60Y3',
-        nimbuspost_api_key: process.env.SHIPROCKET_EMAIL || 'shiprocket_placeholder',
+        razorpay_key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || '',
+        razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+        nimbuspost_api_key: process.env.SHIPROCKET_EMAIL || '',
         blr_pincode_ranges: '560001-560300',
         borzo_surcharge: 15000,
         borzo_free_threshold: 149900,
         borzo_cutoff_start: '11:00',
         borzo_cutoff_end: '16:00',
-        borzo_pickup_address: 'DRFTN Store, Yelahanka, Bengaluru',
+        borzo_pickup_address: 'The Girls Collections Atelier, Yelahanka, Bengaluru',
       };
 
       rows.forEach((row: any) => {

@@ -4,6 +4,7 @@ import React from 'react';
 import { X, Check, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FilterSidebar, FilterState } from './FilterSidebar';
+import { useScrollLock } from '@/lib/useScrollLock';
 
 interface MobileFilterSheetProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export const MobileFilterSheet: React.FC<MobileFilterSheetProps> = ({
   resultsCount,
   productCounts,
 }) => {
+  useScrollLock(isOpen);
   return (
     <AnimatePresence>
       {isOpen && (

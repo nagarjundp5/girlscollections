@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Product } from '@/data/shopData';
 import { useShop } from '@/context/ShopContext';
 import { LuxuryHeartButton } from '@/components/LuxuryHeartButton';
+import { cl, clBlur } from '@/lib/cloudinary';
 
 interface ProductCardProps {
   product: Product;
@@ -65,7 +66,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const tagText = product.isNew ? 'NEW IN' : product.isSale ? 'SALE' : null;
   const isSaleTag = product.isSale && !product.isNew;
-  const availableSizes = product.sizes?.filter((s) => s.inStock) || [];
+  
+  const rawSizes = Array.isArray(product.sizes) ? product.sizes : [];
+  const productAny = product as any;
+  const normalizedSizes: Array<{ size: string; inStock: boolean }> = rawSizes.map((s: any) => {
+    if (typeof s === 'string') {
+      const inStock = productAny.stock_quantity ? (Number(productAny.stock_quantity[s]) > 0) : true;
+      return { size: s, inStock };
+    }
+    return { size: s?.size || String(s), inStock: s?.inStock ?? true };
+  });
+  const availableSizes = normalizedSizes.filter((s) => s.inStock);
   const staggerDelay = (index % 6) * 50;
 
   return (
@@ -121,11 +132,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.images[0] ? (
             <>
               <Image
-                src={product.images[0]}
+                src={cl(product.images[0], { w: 600, q: 'auto:good' })}
                 alt={product.name}
                 fill
                 priority={priorityImage}
-                className={`object-cover transition-transform duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
+                placeholder="blur"
+                blurDataURL={clBlur(product.images[0])}
+                className={`object-contain transition-transform duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
                   isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'
                 }`}
                 sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
@@ -134,10 +147,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {/* Hover Crossfade Image */}
               {product.images[1] && (
                 <Image
-                  src={product.images[1]}
+                  src={cl(product.images[1], { w: 600, q: 'auto:good' })}
                   alt={`${product.name} hover view`}
                   fill
-                  className={`object-cover transition-all duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
+                  loading="lazy"
+                  className={`object-contain transition-all duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
                     isHovered ? 'opacity-100' : 'opacity-0'
                   }`}
                   sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"

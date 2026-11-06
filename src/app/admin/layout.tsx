@@ -100,15 +100,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const userEmail = (user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress || '').toLowerCase().trim();
-  const hasAdminCookie = typeof document !== 'undefined' && document.cookie.includes('tgc_admin_session=true');
   const isEmailAllowed = Boolean(userEmail && ADMIN_ALLOWLIST.includes(userEmail));
 
   const role = user?.publicMetadata?.role;
-  const isAdmin = role === 'admin' || isEmailAllowed || hasAdminCookie;
+  const isAdmin = role === 'admin' || isEmailAllowed;
   const isStaff = role === 'staff';
 
   // 2. Unauthenticated User -> Render Clerk Sign In directly
-  if (!userId && !hasAdminCookie) {
+  if (!userId) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4 animate-fade-in">
         <div className="text-center mb-8">

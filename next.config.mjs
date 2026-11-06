@@ -1,3 +1,4 @@
+
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
@@ -13,10 +14,11 @@ if (process.env.NODE_ENV === 'production' && process.env.SKIP_ADMIN_AUTH === 'tr
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: false,
+  experimental: {
+    serverComponentsExternalPackages: ['firebase-admin', '@google-cloud/firestore', '@grpc/grpc-js', 'pg'],
+  },
   images: {
-    unoptimized: false,
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 31536000,
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -39,29 +41,34 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload',
           },
           {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+          },
+          {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Scripts — Clerk JS, Razorpay, CDN, Cloudflare Turnstile (CAPTCHA)
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://clerk.drftn.in https://clerk.drftnclothing.in https://challenges.cloudflare.com",
-              "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://clerk.drftn.in https://clerk.drftnclothing.in https://challenges.cloudflare.com",
+              // Scripts — Clerk JS, Razorpay, CDN, Cloudflare Turnstile
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+              "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
               // Styles
-              "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://clerk.drftnclothing.in https://*.clerk.com",
-              // Images
-              "img-src 'self' data: https: blob:",
-              // Connections (fetch/XHR/WebSocket)
-              "connect-src 'self' https: blob:",
+              "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.com",
+              // Images (Cloudinary CDN, local, data, blob)
+              "img-src 'self' data: https: blob: https://res.cloudinary.com",
+              // Connections (fetch/XHR/WebSocket, Cloudinary upload, Razorpay, Upstash)
+              "connect-src 'self' https: blob: https://api.cloudinary.com https://res.cloudinary.com https://api.razorpay.com",
               // Workers / service workers
               "worker-src blob: 'self'",
               // Frames — Razorpay, Clerk, Cloudflare Turnstile
-              "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.clerk.accounts.dev https://*.clerk.com https://clerk.drftnclothing.in https://challenges.cloudflare.com",
+              "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+              "frame-ancestors 'none'",
               // Fonts
               "font-src 'self' data:",
             ].join('; '),
@@ -70,7 +77,19 @@ const nextConfig = {
       },
     ];
   },
-  webpack(config) {
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+        crypto: false,
+        'util/types': false,
+      };
+    }
+
     // onnxruntime-web exports "./webgpu" with "node: null" — webpack picks up the
     // node condition and rejects it even for client bundles. Alias directly to the
     // physical file to bypass the broken exports field.

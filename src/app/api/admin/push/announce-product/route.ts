@@ -7,8 +7,13 @@ import { eq, count, isNull } from 'drizzle-orm';
 import { sendPushNotification } from '@/lib/push';
 
 import { adminPushAnnouncementSchema } from '@/lib/validations';
+import { requireAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 
 export async function GET(req: Request) {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get('productId');
@@ -30,6 +35,12 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const csrfErr = verifyCsrfOrigin(req);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const bodyData = await req.json();
     const validationResult = adminPushAnnouncementSchema.safeParse(bodyData);

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth/admin';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq, desc, inArray, asc } from 'drizzle-orm';
@@ -8,6 +9,9 @@ import { getOptimizedImageUrl } from '@/lib/cloudinary';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     await dbService.ensureWishlistTableExists();
 

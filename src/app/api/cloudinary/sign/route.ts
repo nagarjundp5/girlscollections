@@ -9,12 +9,12 @@ export async function POST() {
   if (authResult instanceof NextResponse) return authResult;
 
   try {
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'lt3ga2by';
-    const apiKey = process.env.CLOUDINARY_API_KEY || '699839186211678';
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || 'UwSFjYh_GRS6gkURYV0lK9Mf6fU';
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-    if (!apiSecret) {
-      return NextResponse.json({ error: 'Cloudinary API secret is not configured on server' }, { status: 500 });
+    if (!apiSecret || !apiKey || !cloudName) {
+      return NextResponse.json({ error: 'Cloudinary credentials are not properly configured on server' }, { status: 500 });
     }
 
     // Configure Cloudinary server-side

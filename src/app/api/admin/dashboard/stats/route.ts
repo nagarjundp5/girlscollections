@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth/admin';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { desc } from 'drizzle-orm';
@@ -6,6 +7,9 @@ import { desc } from 'drizzle-orm';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     // 1. Fetch all orders and products via Drizzle
     const [orders, products] = await Promise.all([

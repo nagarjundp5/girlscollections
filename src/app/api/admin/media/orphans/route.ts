@@ -23,10 +23,13 @@ export async function GET() {
   if (authRes instanceof NextResponse) return authRes;
 
   try {
-    const envCloud = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const cloudName = envCloud || 'dtj01pdog';
-    const apiKey = process.env.CLOUDINARY_API_KEY || '388993459747447';
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || '1IHqRKjnjPKzu7ACR-JbGML7Xts';
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json({ error: 'Cloudinary server credentials not configured' }, { status: 500 });
+    }
 
     // 1. Fetch referenced image URLs from Neon DB
     const dbProducts = await db.select({ images: schema.products.images }).from(schema.products);
@@ -113,10 +116,13 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Array of publicIds is required' }, { status: 400 });
     }
 
-    const envCloud = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const cloudName = envCloud || 'dtj01pdog';
-    const apiKey = process.env.CLOUDINARY_API_KEY || '388993459747447';
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || '1IHqRKjnjPKzu7ACR-JbGML7Xts';
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json({ error: 'Cloudinary server credentials not configured' }, { status: 500 });
+    }
 
     let deletedCount = 0;
 

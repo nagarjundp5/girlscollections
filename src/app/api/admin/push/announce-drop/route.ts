@@ -7,8 +7,13 @@ import { isNull, count } from 'drizzle-orm';
 import { sendPushNotification } from '@/lib/push';
 
 import { adminPushAnnouncementSchema } from '@/lib/validations';
+import { requireAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 
 export async function GET() {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const [row] = await db
       .select({ count: count() })
@@ -22,6 +27,12 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const csrfErr = verifyCsrfOrigin(req);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
     const bodyData = await req.json();
     const validationResult = adminPushAnnouncementSchema.safeParse(bodyData);

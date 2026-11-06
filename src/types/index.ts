@@ -51,6 +51,9 @@ export interface Product {
   sizes: string[];
   stock_quantity: Record<string, number>;
   is_featured: boolean;
+  is_trending?: boolean;
+  is_best_seller?: boolean;
+  is_new_arrival?: boolean;
   paired_with?: string | null;
   is_active: boolean;
   weight_grams: number;

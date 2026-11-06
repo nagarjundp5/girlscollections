@@ -443,7 +443,7 @@ export default function ProductGallery({
                 sizes="80px"
                 loading="lazy"
                 decoding="async"
-                className="object-cover transform-gpu"
+                className="object-contain transform-gpu bg-[#FAF8F5]"
               />
             </motion.button>
           );
@@ -509,7 +509,7 @@ export default function ProductGallery({
                       quality={85}
                       placeholder="blur"
                       blurDataURL={getBlurPlaceholderUrl(currentImage)}
-                      className="object-cover transform-gpu"
+                      className="object-contain transform-gpu bg-[#FAF8F5]"
                     />
                   </motion.div>
 
@@ -599,7 +599,7 @@ export default function ProductGallery({
                   quality={80}
                   placeholder="blur"
                   blurDataURL={getBlurPlaceholderUrl(imgUrl)}
-                  className="object-cover transform-gpu"
+                  className="object-contain transform-gpu bg-[#FAF8F5]"
                 />
               </div>
             ))}
@@ -637,7 +637,7 @@ export default function ProductGallery({
                   fill
                   sizes="100vw"
                   quality={90}
-                  className="object-cover transform-gpu"
+                  className="object-contain transform-gpu bg-[#FAF8F5]"
                   style={{ transform: 'scale(1.8)', transformOrigin: 'center center' }}
                 />
                 <div className="absolute inset-0 ring-2 ring-white/20 rounded-lg" />

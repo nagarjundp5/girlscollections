@@ -7,10 +7,9 @@ import { v2 as cloudinary } from 'cloudinary';
 export const maxDuration = 60;
 
 function getCloudinaryCredentials() {
-  const envCloud = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const cloudName = (envCloud && envCloud !== 'j4i7n9ru') ? envCloud : 'dtj01pdog';
-  const apiKey = process.env.CLOUDINARY_API_KEY || '388993459747447';
-  const apiSecret = process.env.CLOUDINARY_API_SECRET || '1IHqRKjnjPKzu7ACR-JbGML7Xts';
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
   return { cloudName, apiKey, apiSecret };
 }
 
@@ -21,6 +20,9 @@ export async function POST(request: Request) {
     if (authResult instanceof NextResponse) return authResult;
 
     const { cloudName, apiKey, apiSecret } = getCloudinaryCredentials();
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json({ error: 'Cloudinary server credentials not configured' }, { status: 500 });
+    }
 
     // Dynamically configure Cloudinary SDK with validated credentials
     cloudinary.config({

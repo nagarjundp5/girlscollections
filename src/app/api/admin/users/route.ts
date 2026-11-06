@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAuth, clerkClient } from '@clerk/nextjs/server';
+import { requireAdmin } from '@/lib/auth/admin';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { desc, eq, or, ilike, sql } from 'drizzle-orm';
@@ -7,21 +7,10 @@ import { desc, eq, or, ilike, sql } from 'drizzle-orm';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
-    const session = getAuth(request as any);
-    if (!session.userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Clerk metadata check to exclude interns
-    const client = await clerkClient();
-    const clerkUser = await client.users.getUser(session.userId);
-    const role = (clerkUser.publicMetadata as any)?.role;
-
-    if (role === 'intern') {
-      return NextResponse.json({ error: 'Forbidden: Interns cannot access customer PII' }, { status: 403 });
-    }
-
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
     const page = Math.max(1, Number(searchParams.get('page') || '1'));

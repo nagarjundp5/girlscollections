@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { requireAdmin } from '@/lib/auth/admin';
+import { verifyCsrfOrigin } from '@/lib/csrf';
 import {
   findOrphanedShippingJobs,
   publishQStashShippingJobIdempotent,
@@ -23,16 +24,18 @@ export const dynamic = 'force-dynamic';
  * - Stores resulting messageId on the job row
  * - Writes an audit log entry
  *
- * SECURITY: Clerk Auth guard.
+ * SECURITY: requireAdmin + verifyCsrfOrigin guard.
  * IDEMPOTENCY: Safe to call multiple times — publishQStashShippingJobIdempotent
  * uses atomic test-and-set and ignores already-published jobs.
  */
 export async function POST(request: Request) {
+  const csrfErr = verifyCsrfOrigin(request);
+  if (csrfErr) return csrfErr;
+
+  const authRes = await requireAdmin();
+  if (authRes instanceof NextResponse) return authRes;
+
   try {
-    const { userId } = await auth();
-    if (process.env.NODE_ENV === 'production' && !userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const orphanedJobs = await findOrphanedShippingJobs();
 
