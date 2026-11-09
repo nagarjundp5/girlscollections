@@ -26,6 +26,7 @@ import { auth } from '@clerk/nextjs/server';
 import { verifyToken } from '@/lib/jwt';
 import { cleanupExpiredOrders } from '@/lib/orderCleanup';
 import { getDeliveryEligibilityCacheOnly } from '@/lib/shipping-eligibility';
+import { checkFirstTimeUserEligibility } from '@/lib/checkout-service';
 
 export async function POST(request: Request) {
   const tStart = performance.now();
@@ -340,6 +341,7 @@ export async function POST(request: Request) {
             email: customerInfo.email || null,
             phone: cleanVerified,
             phone_verified: true,
+            phone_verified_at: new Date(),
             auth_provider: 'google',
             created_at: new Date(),
             last_active_at: new Date(),
@@ -349,6 +351,7 @@ export async function POST(request: Request) {
             set: {
               phone: cleanVerified,
               phone_verified: true,
+              phone_verified_at: new Date(),
               last_active_at: new Date(),
             },
           });
@@ -581,6 +584,13 @@ export async function POST(request: Request) {
       // Cap discount amount at subtotal
       discountAmount = Math.min(discountAmount, calculatedSubtotal);
       validatedCode = cleanCode!;
+    } else {
+      // First-time user offer: 10% off + free delivery if no code applied
+      const isEligible = await checkFirstTimeUserEligibility(finalUserId, customerInfo.phone);
+      if (isEligible) {
+        discountAmount = Math.round(calculatedSubtotal * 0.10);
+        validatedCode = 'FIRST10';
+      }
     }
 
     const discountedSubtotal = Math.max(0, calculatedSubtotal - discountAmount);
@@ -606,7 +616,10 @@ export async function POST(request: Request) {
 
     shippingCharge = 0;
     if (!isPickup) {
-      if (shippingProvider === 'express') {
+      if (validatedCode === 'FIRST10') {
+        // Free delivery on first order
+        shippingCharge = 0;
+      } else if (shippingProvider === 'express') {
         if (!isExpressAvailable) {
           return NextResponse.json({ error: 'Express delivery is not available for this pincode.' }, { status: 400 });
         }
@@ -622,6 +635,14 @@ export async function POST(request: Request) {
     }
 
     const finalTotal = discountedSubtotal + shippingCharge;
+
+    // Edge case: if discounted_total <= 200, COD is not allowed; force prepaid
+    if (isCod && finalTotal <= 20000) {
+      return NextResponse.json(
+        { error: 'Cash on Delivery is not available for orders of ₹200 or less. Please choose Prepaid.' },
+        { status: 400 }
+      );
+    }
 
     // 6. Check Razorpay availability
     const isRazorpayConfigured = !!process.env.RAZORPAY_KEY_SECRET && !!razorpay;
@@ -722,6 +743,7 @@ export async function POST(request: Request) {
       remaining_amount: isCod ? finalTotal - 20000 : null,
       deposit_status: isCod ? 'pending' : null,
       verified_phone: verifiedPhone || null,
+      is_first_order: validatedCode === 'FIRST10',
       shippingProvider: shippingProvider || null,
       zone,
       courier_provider: shippingProvider === 'express' ? 'borzo' : (shippingProvider === 'standard' ? 'shiprocket' : null),

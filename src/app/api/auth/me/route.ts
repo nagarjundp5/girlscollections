@@ -17,6 +17,7 @@ function formatUser(u: any) {
     notificationsOptIn: u.notifications_opt_in ?? u.notificationsOptIn ?? true,
     phoneVerified: u.phone_verified ?? u.phoneVerified ?? false,
     emailVerified: u.email_verified ?? u.emailVerified ?? false,
+    onboardingCompleted: u.onboarding_completed ?? u.onboardingCompleted ?? false,
   };
 }
 

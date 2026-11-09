@@ -67,15 +67,22 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('tgc_cart', JSON.stringify(cart));
 
       // Sync to useCartStore so checkout and cart pages read the exact same items
-      const cartStoreItems = cart.map((item) => ({
-        id: item.product.id,
-        name: item.product.name,
-        slug: item.product.slug,
-        price: item.product.price > 10000 ? item.product.price : item.product.price * 100, // ensure price in paise
-        image: item.product.images[0] || '',
-        size: item.selectedSize,
-        quantity: item.quantity,
-      }));
+      const cartStoreItems = cart.map((item) => {
+        const matchingSize = (item.product.sizes || []).find((s: any) => (typeof s === 'string' ? s : s.size) === item.selectedSize) as any;
+        const unitPriceRupees = matchingSize?.price || item.product.price;
+        const availableStock = matchingSize?.inStock !== false ? 10 : 0;
+
+        return {
+          id: item.product.id,
+          name: item.product.name,
+          slug: item.product.slug,
+          price: unitPriceRupees > 10000 ? unitPriceRupees : unitPriceRupees * 100, // ensure price in paise
+          image: item.product.images[0] || '',
+          size: item.selectedSize,
+          quantity: item.quantity,
+          stock_quantity: { [item.selectedSize]: availableStock },
+        };
+      });
 
       useCartStore.setState({ items: cartStoreItems, hasHydrated: true });
     } catch (e) {

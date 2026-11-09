@@ -1,495 +1,384 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useTransition, useCallback, useMemo, useRef } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { SlidersHorizontal, ChevronDown, ChevronRight, X } from 'lucide-react';
-import { MOCK_PRODUCTS, Product } from '@/data/shopData';
-import { FilterSidebar, FilterState } from './FilterSidebar';
-import { MobileFilterSheet } from './MobileFilterSheet';
+import dynamic from 'next/dynamic';
+import { ChevronRight } from 'lucide-react';
+import { Product } from '@/data/shopData';
+import { ShopToolbar } from './ShopToolbar';
+import { ActiveFilterChips } from './ActiveFilterChips';
 import { ProductGrid } from './ProductGrid';
+import { DraftFilters, EMPTY_DRAFT_FILTERS } from './FilterDrawerPortal';
+import { SORT_OPTIONS } from './SortSheetModal';
+import { PlpCacheValue } from '@/lib/plp-cache';
+
+// Dynamic import for drawer & modal only when opened (Part 4 Speed requirement)
+const FilterDrawerPortal = dynamic(
+  () => import('./FilterDrawerPortal').then((m) => m.FilterDrawerPortal),
+  { ssr: false }
+);
+
+const SortSheetModal = dynamic(
+  () => import('./SortSheetModal').then((m) => m.SortSheetModal),
+  { ssr: false }
+);
 
 interface PLPPageContentProps {
   initialCategory?: string;
   initialTarget?: string;
   initialOccasion?: string;
-}
-
-const DEFAULT_FILTERS: FilterState = {
-  category: [],
-  target: [],
-  occasion: [],
-  size: [],
-  age: [],
-  colour: [],
-  fabric: [],
-  style: [],
-  workType: [],
-  sleeve: [],
-  neckline: [],
-  discount: [],
-  priceRange: [500, 30000],
-  inStockOnly: false,
-};
-
-const SORT_OPTIONS = [
-  { value: 'featured', label: 'Featured Couture' },
-  { value: 'newest', label: 'New Arrivals' },
-  { value: 'price-low', label: 'Price: Low to High' },
-  { value: 'price-high', label: 'Price: High to Low' },
-  { value: 'popular', label: 'Best Sellers' },
-  { value: 'discount', label: 'Biggest Discount' },
-];
-
-function formatDbProductToShopProduct(p: any): Product {
-  const priceRupees = p.price > 10000 ? Math.round(p.price / 100) : p.price;
-  const originalPriceRupees = p.compare_price
-    ? (p.compare_price > 10000 ? Math.round(p.compare_price / 100) : p.compare_price)
-    : undefined;
-
-  let sizesList: any[] = [];
-  if (Array.isArray(p.sizes)) {
-    sizesList = p.sizes.map((s: any) =>
-      typeof s === 'string' ? { size: s, inStock: true } : s
-    );
-  } else if (p.stock_quantity && typeof p.stock_quantity === 'object') {
-    sizesList = Object.entries(p.stock_quantity).map(([size, qty]) => ({
-      size,
-      inStock: Number(qty) > 0,
-    }));
-  }
-
-  if (sizesList.length === 0) {
-    sizesList = [
-      { size: 'XS', inStock: true },
-      { size: 'S', inStock: true },
-      { size: 'M', inStock: true },
-      { size: 'L', inStock: true },
-      { size: 'XL', inStock: true },
-    ];
-  }
-
-  const cat = (p.category || '').toLowerCase();
-  const subcat = (p.subcategory || '').toLowerCase();
-  const isKids = p.gender === 'kids' || cat.includes('kids') || cat.includes('children') || cat.includes('frock') || subcat.includes('kids');
-
-  return {
-    id: p.id,
-    slug: p.slug,
-    name: p.name,
-    category: p.category || 'ethnic-wear',
-    target: isKids ? 'kids' : 'women',
-    subcategory: p.subcategory || p.category || '',
-    occasion: p.occasion || 'Festive Wear',
-    price: priceRupees,
-    originalPrice: originalPriceRupees,
-    isNew: true,
-    isBestSeller: !!p.is_featured,
-    isSale: !!originalPriceRupees,
-    images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [],
-    sizes: sizesList,
-    colors: Array.isArray(p.colours) && p.colours.length > 0
-      ? p.colours.map((c: string) => ({ name: c, hex: '#B8924A' }))
-      : [{ name: 'Standard', hex: '#C9A66B' }],
-    fabric: p.fabric || p.description || 'Premium Ethnic Wear',
-    style_silhouette: p.style_silhouette || undefined,
-    work_type: p.work_type || undefined,
-    sleeve: p.sleeve || undefined,
-    neckline: p.neckline || undefined,
-    description: p.description || '',
-    careInstructions: ['Dry Clean Only'],
-    rating: 5.0,
-    reviewsCount: 18,
-  };
+  initialData?: PlpCacheValue;
 }
 
 export const PLPPageContent: React.FC<PLPPageContentProps> = ({
   initialCategory,
   initialTarget,
   initialOccasion,
+  initialData,
 }) => {
-  const [dbProducts, setDbProducts] = useState<Product[]>([]);
-  const [filters, setFilters] = useState<FilterState>({
-    ...DEFAULT_FILTERS,
-    category: initialCategory ? [initialCategory] : [],
-    target: initialTarget ? [initialTarget] : [],
-    occasion: initialOccasion ? [initialOccasion] : [],
-  });
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
-  const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'newest' | 'popular' | 'discount'>('featured');
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(12);
+  // Grid view column toggles
+  const [mobileColumns, setMobileColumns] = useState<1 | 2>(2);
+  const [desktopColumns, setDesktopColumns] = useState<3 | 4>(4);
 
-  // Preserve scroll position when returning from product page
-  useEffect(() => {
-    const savedScroll = sessionStorage.getItem('tgc_plp_scroll');
-    if (savedScroll) {
-      setTimeout(() => {
-        window.scrollTo({ top: Number(savedScroll), behavior: 'smooth' });
-        sessionStorage.removeItem('tgc_plp_scroll');
-      }, 100);
+  // Modal / Drawer open states
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [sortModalOpen, setSortModalOpen] = useState(false);
+
+  // Products state (seeded from server-rendered initialData if available)
+  const [products, setProducts] = useState<Product[]>(initialData?.products || []);
+  const [page, setPage] = useState(initialData?.page || 1);
+  const [totalCount, setTotalCount] = useState(initialData?.total || 0);
+  const [hasMore, setHasMore] = useState(initialData?.hasMore || false);
+  const [isLoading, setIsLoading] = useState(!initialData);
+  const [facetCounts, setFacetCounts] = useState<{
+    categories?: Record<string, number>;
+    sizes?: Record<string, number>;
+    colours?: Record<string, number>;
+    fabrics?: Record<string, number>;
+    occasions?: Record<string, number>;
+  }>(initialData?.facets || {});
+
+  const hasMountedRef = useRef(false);
+
+  // Parse filters from URL
+  const currentFilters: DraftFilters = useMemo(() => {
+    const targetParam = searchParams.get('target');
+    const catParam = searchParams.get('category');
+    const catsParam = searchParams.get('categories');
+    const sizesParam = searchParams.get('sizes');
+    const coloursParam = searchParams.get('colours');
+    const fabricsParam = searchParams.get('fabrics');
+    const occasionsParam = searchParams.get('occasions');
+    const minPriceParam = searchParams.get('minPrice');
+    const maxPriceParam = searchParams.get('maxPrice');
+    const discParam = searchParams.get('discount');
+    const inStockParam = searchParams.get('inStock');
+
+    const categories: string[] = [];
+    if (catParam) categories.push(catParam.toLowerCase());
+    if (catsParam) {
+      catsParam.split(',').forEach((c) => {
+        const clean = c.trim().toLowerCase();
+        if (clean && !categories.includes(clean)) categories.push(clean);
+      });
     }
-  }, []);
 
-  useEffect(() => {
-    async function loadProducts() {
+    const targets: string[] = [];
+    if (targetParam && targetParam !== 'all') {
+      targets.push(targetParam.toLowerCase());
+    }
+
+    const occasions: string[] = [];
+    if (initialOccasion) occasions.push(initialOccasion);
+    if (occasionsParam) {
+      occasionsParam.split(',').forEach((o) => {
+        const clean = o.trim();
+        if (clean && !occasions.includes(clean)) occasions.push(clean);
+      });
+    }
+
+    return {
+      target: targets,
+      categories,
+      minPrice: minPriceParam ? Number(minPriceParam) : 500,
+      maxPrice: maxPriceParam ? Number(maxPriceParam) : 35000,
+      sizes: sizesParam ? sizesParam.split(',').filter(Boolean) : [],
+      colours: coloursParam ? coloursParam.split(',').filter(Boolean) : [],
+      fabrics: fabricsParam ? fabricsParam.split(',').filter(Boolean) : [],
+      occasions,
+      discount: discParam ? Number(discParam) : 0,
+      inStockOnly: inStockParam === 'true',
+    };
+  }, [searchParams, initialOccasion]);
+
+  const currentSort = searchParams.get('sort') || 'featured';
+
+  // Selected Category Name for Title (if any)
+  const selectedCategoryName = useMemo(() => {
+    if (currentFilters.categories.length > 0) {
+      return currentFilters.categories[0].replace(/-/g, ' ');
+    }
+    if (initialCategory) {
+      return initialCategory.replace(/-/g, ' ');
+    }
+    return '';
+  }, [currentFilters.categories, initialCategory]);
+
+  // Fetch products from server API
+  const fetchProducts = useCallback(
+    async (pageToFetch: number, append: boolean = false) => {
+      setIsLoading(true);
       try {
-        const res = await fetch('/api/products');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.products && data.products.length > 0) {
-            const formatted = data.products.map(formatDbProductToShopProduct);
-            setDbProducts(formatted);
-          }
+        const params = new URLSearchParams();
+        if (currentFilters.target.length > 0) params.set('target', currentFilters.target.join(','));
+        if (currentFilters.categories.length > 0) params.set('categories', currentFilters.categories.join(','));
+        if (currentFilters.sizes.length > 0) params.set('sizes', currentFilters.sizes.join(','));
+        if (currentFilters.colours.length > 0) params.set('colours', currentFilters.colours.join(','));
+        if (currentFilters.fabrics.length > 0) params.set('fabrics', currentFilters.fabrics.join(','));
+        if (currentFilters.occasions.length > 0) params.set('occasions', currentFilters.occasions.join(','));
+        if (currentFilters.minPrice > 500) params.set('minPrice', String(currentFilters.minPrice));
+        if (currentFilters.maxPrice < 35000) params.set('maxPrice', String(currentFilters.maxPrice));
+        if (currentFilters.discount > 0) params.set('discount', String(currentFilters.discount));
+        if (currentFilters.inStockOnly) params.set('inStock', 'true');
+        if (currentSort) params.set('sort', currentSort);
+
+        const limit = typeof window !== 'undefined' && window.innerWidth >= 768 ? 24 : 20;
+        params.set('page', String(pageToFetch));
+        params.set('limit', String(limit));
+
+        const res = await fetch(`/api/products/list?${params.toString()}`);
+        if (!res.ok) throw new Error('Failed to fetch catalogue');
+
+        const data = await res.json();
+        const incomingProducts: Product[] = data.products || [];
+
+        setProducts((prev) => (append ? [...prev, ...incomingProducts] : incomingProducts));
+        setTotalCount(data.total || incomingProducts.length);
+        setHasMore(data.hasMore || false);
+        setPage(pageToFetch);
+
+        if (data.facetCounts) {
+          setFacetCounts(data.facetCounts);
         }
       } catch (err) {
-        console.error('Failed to load dynamic products:', err);
+        console.error('[PLP] Fetch error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [currentFilters, currentSort]
+  );
+
+  // Restore scroll position or use server-rendered data
+  useEffect(() => {
+    const savedScroll = sessionStorage.getItem('tgc_plp_scroll');
+    const savedPage = sessionStorage.getItem('tgc_plp_page');
+
+    if (savedScroll && savedPage) {
+      const targetPage = Number(savedPage);
+      fetchProducts(targetPage, false).then(() => {
+        setTimeout(() => {
+          window.scrollTo({ top: Number(savedScroll), behavior: 'smooth' });
+          sessionStorage.removeItem('tgc_plp_scroll');
+          sessionStorage.removeItem('tgc_plp_page');
+        }, 150);
+      });
+      hasMountedRef.current = true;
+      return;
+    }
+
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      // If server already rendered initialData, do not duplicate the fetch
+      if (initialData) {
+        return;
       }
     }
-    loadProducts();
-  }, []);
 
-  const allProductsList = useMemo(() => {
-    return dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
-  }, [dbProducts]);
+    // Subsequent filter or sort URL changes
+    fetchProducts(1, false);
+  }, [fetchProducts, initialData]);
 
-  const resetFilters = () => setFilters(DEFAULT_FILTERS);
+  // Save scroll before navigating to PDP
+  useEffect(() => {
+    const handleSaveScroll = () => {
+      sessionStorage.setItem('tgc_plp_scroll', String(window.scrollY));
+      sessionStorage.setItem('tgc_plp_page', String(page));
+    };
+    window.addEventListener('beforeunload', handleSaveScroll);
+    return () => window.removeEventListener('beforeunload', handleSaveScroll);
+  }, [page]);
 
-  // Compute live counts per attribute for sidebar badges
-  const productCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    allProductsList.forEach((p) => {
-      if (p.occasion) counts[p.occasion] = (counts[p.occasion] || 0) + 1;
-      if (p.fabric) counts[p.fabric] = (counts[p.fabric] || 0) + 1;
-      if (p.style_silhouette) counts[p.style_silhouette] = (counts[p.style_silhouette] || 0) + 1;
-      if (p.work_type) counts[p.work_type] = (counts[p.work_type] || 0) + 1;
-      if (p.sleeve) counts[p.sleeve] = (counts[p.sleeve] || 0) + 1;
-      if (p.neckline) counts[p.neckline] = (counts[p.neckline] || 0) + 1;
-      p.sizes?.forEach((s: any) => {
-        counts[s.size] = (counts[s.size] || 0) + 1;
-      });
-      p.colors?.forEach((c: any) => {
-        counts[c.name] = (counts[c.name] || 0) + 1;
-      });
+  // Apply filters by writing to URL once (inside startTransition)
+  const handleApplyFilters = (newFilters: DraftFilters) => {
+    startTransition(() => {
+      const params = new URLSearchParams();
+
+      if (newFilters.target.length > 0) params.set('target', newFilters.target.join(','));
+      if (newFilters.categories.length > 0) {
+        if (newFilters.categories.length === 1) {
+          params.set('category', newFilters.categories[0]);
+        } else {
+          params.set('categories', newFilters.categories.join(','));
+        }
+      }
+      if (newFilters.sizes.length > 0) params.set('sizes', newFilters.sizes.join(','));
+      if (newFilters.colours.length > 0) params.set('colours', newFilters.colours.join(','));
+      if (newFilters.fabrics.length > 0) params.set('fabrics', newFilters.fabrics.join(','));
+      if (newFilters.occasions.length > 0) params.set('occasions', newFilters.occasions.join(','));
+      if (newFilters.minPrice > 500) params.set('minPrice', String(newFilters.minPrice));
+      if (newFilters.maxPrice < 35000) params.set('maxPrice', String(newFilters.maxPrice));
+      if (newFilters.discount > 0) params.set('discount', String(newFilters.discount));
+      if (newFilters.inStockOnly) params.set('inStock', 'true');
+      if (currentSort) params.set('sort', currentSort);
+
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     });
-    return counts;
-  }, [allProductsList]);
+  };
 
-  // Count active filter selections
+  // Remove individual filter chip
+  const handleRemoveFilter = (key: keyof DraftFilters, value?: string) => {
+    const updated = { ...currentFilters };
+    if (key === 'discount') {
+      updated.discount = 0;
+    } else if (key === 'inStockOnly') {
+      updated.inStockOnly = false;
+    } else if (key === 'minPrice' || key === 'maxPrice') {
+      updated.minPrice = 500;
+      updated.maxPrice = 35000;
+    } else if (value && Array.isArray(updated[key])) {
+      (updated[key] as string[]) = (updated[key] as string[]).filter((x) => x !== value);
+    }
+    handleApplyFilters(updated);
+  };
+
+  // Clear all filters
+  const handleClearAllFilters = () => {
+    handleApplyFilters(EMPTY_DRAFT_FILTERS);
+  };
+
+  // Select Sort
+  const handleSelectSort = (sortVal: string) => {
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('sort', sortVal);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  };
+
+  // Load more / Infinite scroll trigger
+  const handleLoadMore = () => {
+    if (isLoading || !hasMore) return;
+    fetchProducts(page + 1, true);
+  };
+
+  // Active filter count for toolbar badge
   const activeFilterCount = useMemo(() => {
     return (
-      filters.category.length +
-      filters.target.length +
-      filters.occasion.length +
-      filters.size.length +
-      filters.age.length +
-      filters.colour.length +
-      filters.fabric.length +
-      filters.style.length +
-      filters.workType.length +
-      filters.sleeve.length +
-      filters.neckline.length +
-      filters.discount.length +
-      (filters.inStockOnly ? 1 : 0) +
-      (filters.priceRange[0] > 500 || filters.priceRange[1] < 30000 ? 1 : 0)
+      currentFilters.target.length +
+      currentFilters.categories.length +
+      currentFilters.sizes.length +
+      currentFilters.colours.length +
+      currentFilters.fabrics.length +
+      currentFilters.occasions.length +
+      (currentFilters.discount > 0 ? 1 : 0) +
+      (currentFilters.inStockOnly ? 1 : 0) +
+      (currentFilters.minPrice > 500 || currentFilters.maxPrice < 35000 ? 1 : 0)
     );
-  }, [filters]);
+  }, [currentFilters]);
 
-  const filteredProducts = useMemo(() => {
-    return allProductsList.filter((product) => {
-      // Department
-      if (filters.target.length > 0 && !filters.target.includes(product.target)) return false;
-      // Category
-      if (filters.category.length > 0 && !filters.category.includes(product.category) && !filters.category.includes(product.subcategory)) return false;
-      // Price range
-      if (product.price < filters.priceRange[0] || product.price > filters.priceRange[1]) return false;
-      // Occasion
-      if (filters.occasion.length > 0 && !filters.occasion.includes(product.occasion)) return false;
-      // Size
-      if (filters.size.length > 0) {
-        const hasMatchingSize = product.sizes.some((s) => filters.size.includes(s.size) && s.inStock);
-        if (!hasMatchingSize) return false;
-      }
-      // Age (kids)
-      if (filters.age.length > 0) {
-        const hasMatchingAge = product.sizes.some((s) => filters.age.includes(s.size) && s.inStock);
-        if (!hasMatchingAge) return false;
-      }
-      // Colour
-      if (filters.colour.length > 0) {
-        const hasMatchingColor = product.colors.some((c) => filters.colour.includes(c.name));
-        if (!hasMatchingColor) return false;
-      }
-      // Fabric
-      if (filters.fabric.length > 0 && !filters.fabric.some((f) => product.fabric?.toLowerCase().includes(f.toLowerCase()))) return false;
-      // Style / Silhouette
-      if (filters.style.length > 0 && !filters.style.some((s) => product.style_silhouette?.toLowerCase().includes(s.toLowerCase()))) return false;
-      // Work Type / Embroidery
-      if (filters.workType.length > 0 && !filters.workType.some((w) => product.work_type?.toLowerCase().includes(w.toLowerCase()))) return false;
-      // Sleeve
-      if (filters.sleeve.length > 0 && !filters.sleeve.some((sl) => product.sleeve?.toLowerCase().includes(sl.toLowerCase()))) return false;
-      // Neckline
-      if (filters.neckline.length > 0 && !filters.neckline.some((n) => product.neckline?.toLowerCase().includes(n.toLowerCase()))) return false;
-      // Availability
-      if (filters.inStockOnly) {
-        const hasStock = product.sizes.some((s) => s.inStock);
-        if (!hasStock) return false;
-      }
-      // Discount
-      if (filters.discount.length > 0) {
-        const minReqDiscount = Math.min(...filters.discount.map(Number));
-        const disc = product.originalPrice
-          ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-          : 0;
-        if (disc < minReqDiscount) return false;
-      }
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === 'price-low') return a.price - b.price;
-      if (sortBy === 'price-high') return b.price - a.price;
-      if (sortBy === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-      if (sortBy === 'popular') return (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0);
-      if (sortBy === 'discount') {
-        const discA = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
-        const discB = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
-        return discB - discA;
-      }
-      return 0;
-    });
-  }, [allProductsList, filters, sortBy]);
-
-  const visibleProducts = filteredProducts.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredProducts.length;
-
-  const currentSortLabel = SORT_OPTIONS.find((s) => s.value === sortBy)?.label || 'Featured Couture';
+  const currentSortLabel = SORT_OPTIONS.find((s) => s.value === currentSort)?.label;
 
   return (
-    <div className="bg-ivory text-inkNavy min-h-screen pb-28 select-none">
+    <div className="w-full bg-[#FAF8F5] text-[#1C1417] min-h-screen select-none font-sans">
       
-      {/* Top Banner & Breadcrumb Header */}
-      <div className="bg-sand/20 border-b border-zariGold/15 py-6 sm:py-10 px-4 sm:px-8 lg:px-12">
-        <div className="max-w-[1440px] mx-auto space-y-3">
-          
-          <nav className="flex items-center space-x-2 text-xs font-sans">
-            <Link href="/" className="text-inkNavy/60 hover:text-zariGold transition-colors font-medium">Home</Link>
-            <ChevronRight className="w-3.5 h-3.5 text-zariGold" />
-            <Link href="/shop" className="text-inkNavy/60 hover:text-zariGold transition-colors font-medium">Shop</Link>
-            {initialCategory && (
-              <>
-                <ChevronRight className="w-3.5 h-3.5 text-zariGold" />
-                <span className="text-inkNavy font-bold capitalize">{initialCategory}</span>
-              </>
-            )}
-          </nav>
-
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pt-2">
-            <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="font-sans font-extrabold text-[10.5px] sm:text-xs text-zariGold tracking-[0.25em] uppercase">
-                  THE GIRLS COLLECTION CATALOG
-                </span>
-                <div className="h-[1px] w-8 bg-zariGold/40" />
-              </div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-inkNavy tracking-tight leading-none capitalize">
-                {initialCategory
-                  ? `${initialCategory} Collection`
-                  : initialTarget
-                  ? `${initialTarget}'s Collection`
-                  : initialOccasion
-                  ? `${initialOccasion} Wear`
-                  : 'All Couture Collections'}
-              </h1>
-            </div>
-            <p className="text-xs sm:text-sm text-inkNavy/70 font-sans font-medium">
-              Showing {visibleProducts.length} of {filteredProducts.length} handcrafted pieces
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Main Body Layout */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-6 sm:pt-10">
-        
-        {/* REFINED FILTER & SORT CONTROL BAR */}
-        <div className="pb-5 border-b border-zariGold/20 mb-6 sm:mb-8">
-          <div className="flex items-center justify-between gap-3 w-full">
-            
-            {/* Filter Trigger Button (Filled Rose Gold Background Tint + Prominent Count Badge) */}
-            <button
-              onClick={() => setMobileFilterOpen(true)}
-              className="flex-1 lg:flex-initial flex items-center justify-center gap-2.5 h-[48px] px-4 sm:px-6 rounded-xl border border-zariGold/40 bg-roseGold/10 text-xs font-sans font-bold uppercase tracking-[0.14em] text-inkNavy shadow-xs hover:bg-roseGold/20 hover:border-zariGold transition-all duration-200 shrink-0 group active:scale-[0.98] min-w-0 cursor-pointer"
-            >
-              <SlidersHorizontal className="w-4 h-4 text-zariGold group-hover:rotate-45 transition-transform duration-300 shrink-0" />
-              <span className="truncate">FILTER &amp; REFINE</span>
-              {activeFilterCount > 0 && (
-                <span className="ml-1 w-5 h-5 rounded-full bg-[#B4863C] text-white text-[10px] font-extrabold flex items-center justify-center shrink-0 shadow-xs">
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
-
-            {/* Total Piece Count Pill (Desktop) */}
-            <span className="hidden lg:inline-block font-sans font-semibold text-xs text-zariGold tracking-[0.2em] uppercase">
-              {filteredProducts.length} HANDCRAFTED PIECES
+      {/* Small Breadcrumb (Desktop Only) */}
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-1 hidden md:flex items-center space-x-1.5 text-xs text-neutral-500 font-sans">
+        <Link href="/" className="hover:text-black transition-colors">
+          Home
+        </Link>
+        <ChevronRight className="w-3.5 h-3.5 text-neutral-400" />
+        <Link href="/shop" className="hover:text-black transition-colors">
+          Shop
+        </Link>
+        {selectedCategoryName && (
+          <>
+            <ChevronRight className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-[#1C1417] font-medium uppercase">
+              {selectedCategoryName}
             </span>
-
-            {/* Custom Luxury Sort Control Dropdown (Mobile Equal Split) */}
-            <div className="relative flex-1 lg:flex-initial shrink-0 min-w-0">
-              <button
-                onClick={() => setIsSortOpen(!isSortOpen)}
-                className="w-full flex items-center justify-between gap-2 h-[48px] px-4 sm:px-6 rounded-xl border border-zariGold/30 bg-ivory text-xs font-sans font-semibold uppercase tracking-[0.1em] text-inkNavy/90 hover:border-zariGold hover:bg-sand/20 transition-all duration-200 active:scale-[0.98] cursor-pointer"
-              >
-                <span className="hidden sm:inline text-inkNavy/50 uppercase tracking-wider font-normal shrink-0">SORT BY:</span>
-                <span className="truncate">{currentSortLabel}</span>
-                <ChevronDown className={`w-4 h-4 text-zariGold shrink-0 transition-transform duration-300 ${isSortOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Sort Menu Overlay Dropdown */}
-              {isSortOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-20"
-                    onClick={() => setIsSortOpen(false)}
-                  />
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-ivory text-inkNavy border border-zariGold/30 rounded-xl shadow-xl z-30 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="px-4 py-2 border-b border-zariGold/15 text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-zariGold">
-                      SELECT SORT ORDER
-                    </div>
-                    {SORT_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        onClick={() => {
-                          setSortBy(opt.value as any);
-                          setIsSortOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-2.5 text-xs font-sans font-medium transition-colors flex items-center justify-between cursor-pointer ${
-                          sortBy === opt.value
-                            ? 'bg-sand/40 text-inkNavy font-bold'
-                            : 'text-inkNavy/70 hover:bg-sand/20 hover:text-inkNavy'
-                        }`}
-                      >
-                        <span>{opt.label}</span>
-                        {sortBy === opt.value && (
-                          <div className="w-2 h-2 rounded-full bg-zariGold" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-          </div>
-        </div>
-
-        {/* ACTIVE FILTER CHIPS REMOVABLE BAR */}
-        {activeFilterCount > 0 && (
-          <div className="flex items-center gap-2 flex-wrap mb-6 pb-4 border-b border-zariGold/15">
-            <span className="text-[10.5px] font-sans font-extrabold uppercase tracking-widest text-zariGold mr-1">
-              ACTIVE FILTERS:
-            </span>
-            {filters.target.map((t) => (
-              <button
-                key={`t-${t}`}
-                onClick={() => setFilters({ ...filters, target: filters.target.filter((x) => x !== t) })}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-roseGold/15 border border-zariGold/35 text-inkNavy text-xs font-sans font-semibold hover:border-zariGold transition-all cursor-pointer"
-              >
-                <span>Dept: {t}</span>
-                <X className="w-3 h-3 text-zariGold hover:text-inkNavy" />
-              </button>
-            ))}
-            {filters.category.map((c) => (
-              <button
-                key={`c-${c}`}
-                onClick={() => setFilters({ ...filters, category: filters.category.filter((x) => x !== c) })}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-roseGold/15 border border-zariGold/35 text-inkNavy text-xs font-sans font-semibold hover:border-zariGold transition-all cursor-pointer"
-              >
-                <span>Category: {c}</span>
-                <X className="w-3 h-3 text-zariGold hover:text-inkNavy" />
-              </button>
-            ))}
-            {filters.occasion.map((o) => (
-              <button
-                key={`o-${o}`}
-                onClick={() => setFilters({ ...filters, occasion: filters.occasion.filter((x) => x !== o) })}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-roseGold/15 border border-zariGold/35 text-inkNavy text-xs font-sans font-semibold hover:border-zariGold transition-all cursor-pointer"
-              >
-                <span>Occasion: {o}</span>
-                <X className="w-3 h-3 text-zariGold hover:text-inkNavy" />
-              </button>
-            ))}
-            {filters.size.map((s) => (
-              <button
-                key={`s-${s}`}
-                onClick={() => setFilters({ ...filters, size: filters.size.filter((x) => x !== s) })}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-roseGold/15 border border-zariGold/35 text-inkNavy text-xs font-sans font-semibold hover:border-zariGold transition-all cursor-pointer"
-              >
-                <span>Size: {s}</span>
-                <X className="w-3 h-3 text-zariGold hover:text-inkNavy" />
-              </button>
-            ))}
-            {filters.fabric.map((f) => (
-              <button
-                key={`f-${f}`}
-                onClick={() => setFilters({ ...filters, fabric: filters.fabric.filter((x) => x !== f) })}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-roseGold/15 border border-zariGold/35 text-inkNavy text-xs font-sans font-semibold hover:border-zariGold transition-all cursor-pointer"
-              >
-                <span>Fabric: {f}</span>
-                <X className="w-3 h-3 text-zariGold hover:text-inkNavy" />
-              </button>
-            ))}
-            {filters.inStockOnly && (
-              <button
-                onClick={() => setFilters({ ...filters, inStockOnly: false })}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-roseGold/15 border border-zariGold/35 text-inkNavy text-xs font-sans font-semibold hover:border-zariGold transition-all cursor-pointer"
-              >
-                <span>In Stock Only</span>
-                <X className="w-3 h-3 text-zariGold hover:text-inkNavy" />
-              </button>
-            )}
-            <button
-              onClick={resetFilters}
-              className="text-xs font-sans font-bold text-zariGold hover:text-inkNavy uppercase tracking-wider ml-2 transition-colors cursor-pointer"
-            >
-              Clear All
-            </button>
-          </div>
+          </>
         )}
-
-        {/* Content Layout (Desktop Sidebar + Grid) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-          
-          {/* Desktop Persistent Left Filter Sidebar */}
-          <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-28 bg-ivory p-6 rounded-2xl border border-zariGold/25 shadow-xs max-h-[calc(100vh-8rem)] overflow-y-auto no-scrollbar">
-              <FilterSidebar filters={filters} onChange={setFilters} onReset={resetFilters} />
-            </div>
-          </div>
-
-          {/* Product Grid Stage */}
-          <div className="lg:col-span-9">
-            <ProductGrid
-              key={`${JSON.stringify(filters)}-${sortBy}`}
-              products={visibleProducts}
-              hasMore={hasMore}
-              onLoadMore={() => setVisibleCount((prev) => prev + 8)}
-            />
-          </div>
-
-        </div>
-
       </div>
 
-      {/* Mobile Filter Sheet Component */}
-      <MobileFilterSheet
-        isOpen={mobileFilterOpen}
-        onClose={() => setMobileFilterOpen(false)}
-        filters={filters}
-        onChange={setFilters}
-        onReset={resetFilters}
-        resultsCount={filteredProducts.length}
+      {/* Selected Category Small 18px Title Above Toolbar (normal weight, one line) */}
+      {selectedCategoryName && (
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-2">
+          <h1 className="text-[18px] font-normal tracking-[0.04em] uppercase text-[#1C1417] leading-tight truncate">
+            {selectedCategoryName}
+          </h1>
+        </div>
+      )}
+
+      {/* ONE Sticky Toolbar (Height 52px, 1px bottom border, z-index below header) */}
+      <ShopToolbar
+        productCount={totalCount}
+        activeFilterCount={activeFilterCount}
+        onOpenFilter={() => setFilterDrawerOpen(true)}
+        onOpenSort={() => setSortModalOpen(true)}
+        mobileColumns={mobileColumns}
+        setMobileColumns={setMobileColumns}
+        desktopColumns={desktopColumns}
+        setDesktopColumns={setDesktopColumns}
+        currentSortLabel={currentSortLabel}
       />
+
+      {/* Active Filter Removable Chips Row */}
+      <ActiveFilterChips
+        filters={currentFilters}
+        onRemove={handleRemoveFilter}
+        onClearAll={handleClearAllFilters}
+      />
+
+      {/* Product Grid Stage */}
+      <main className="w-full">
+        <ProductGrid
+          products={products}
+          isLoading={isLoading || isPending}
+          hasMore={hasMore}
+          onLoadMore={handleLoadMore}
+          mobileColumns={mobileColumns}
+          desktopColumns={desktopColumns}
+        />
+      </main>
+
+      {/* Lazy Filter Drawer Portal */}
+      {filterDrawerOpen && (
+        <FilterDrawerPortal
+          isOpen={filterDrawerOpen}
+          onClose={() => setFilterDrawerOpen(false)}
+          appliedFilters={currentFilters}
+          onApply={handleApplyFilters}
+          facetCounts={facetCounts}
+          totalCount={totalCount}
+        />
+      )}
+
+      {/* Lazy Sort Modal Portal */}
+      {sortModalOpen && (
+        <SortSheetModal
+          isOpen={sortModalOpen}
+          onClose={() => setSortModalOpen(false)}
+          currentSort={currentSort}
+          onSelectSort={handleSelectSort}
+        />
+      )}
 
     </div>
   );

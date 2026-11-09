@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   try {
     const tokenHeader = request.headers.get('x-shiprocket-token') || request.headers.get('authorization');
-    const expectedToken = process.env.SHIPROCKET_WEBHOOK_TOKEN;
+    const expectedToken = process.env.SHIPROCKET_WEBHOOK_SECRET || process.env.SHIPROCKET_WEBHOOK_TOKEN;
 
     if (expectedToken && tokenHeader !== expectedToken && tokenHeader !== `Bearer ${expectedToken}`) {
       return NextResponse.json({ error: 'Unauthorized Shiprocket Webhook token' }, { status: 401 });
@@ -90,12 +90,20 @@ export async function POST(request: Request) {
     });
 
     // Update order fields
+    const updatedStatus = targetState === 'DELIVERED'
+      ? 'delivered'
+      : (targetState === 'OUT_FOR_DELIVERY'
+        ? 'out_for_delivery'
+        : (targetState === 'IN_TRANSIT' ? 'shipped' : order.status));
+
     await db
       .update(schema.orders)
       .set({
         awb_code: awb || order.awb_code,
         courier_name: courier_name || order.courier_name,
         tracking_number: awb || order.tracking_number,
+        tracking_url: payload.tracking_url || order.tracking_url,
+        status: updatedStatus as any,
         updated_at: new Date(),
       })
       .where(eq(schema.orders.id, order.id));

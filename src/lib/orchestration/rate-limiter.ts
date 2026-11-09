@@ -1,7 +1,7 @@
 import { redis } from '@/lib/redis';
 
 export interface RateLimitRequest {
-  endpoint: 'checkout' | 'verify_payment' | 'track' | 'cancel' | 'cod';
+  endpoint: 'checkout' | 'verify_payment' | 'track' | 'cancel' | 'cod' | 'refund' | 'admin_cancel' | 'dismiss_offer';
   userId?: string | null;
   sessionToken?: string | null;
   ip: string;
@@ -14,6 +14,9 @@ const LIMIT_RULES: Record<string, { max: number; windowSec: number }> = {
   cancel: { max: 5, windowSec: 60 },
   track: { max: 30, windowSec: 60 },
   cod: { max: 5, windowSec: 60 },
+  refund: { max: 10, windowSec: 60 },
+  admin_cancel: { max: 20, windowSec: 60 },
+  dismiss_offer: { max: 5, windowSec: 300 },
 };
 
 export async function checkRateLimit(req: RateLimitRequest): Promise<{ success: boolean; resetSec: number }> {

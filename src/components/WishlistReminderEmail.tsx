@@ -17,6 +17,7 @@ interface WishlistReminderEmailProps {
   customerName?: string;
   items: WishlistEmailItem[];
   siteUrl?: string;
+  offerCode?: string;
 }
 
 function formatEmailPrice(val: number | null | undefined): string | null {
@@ -33,6 +34,7 @@ export const WishlistReminderEmail: React.FC<WishlistReminderEmailProps> = ({
   customerName = 'Valued Customer',
   items,
   siteUrl = 'https://www.thegirlscollections.com',
+  offerCode,
 }) => {
   const isMultiItem = items.length > 1;
   const headline = isMultiItem
@@ -404,6 +406,13 @@ export const WishlistReminderEmail: React.FC<WishlistReminderEmailProps> = ({
                       }}
                     >
                       You received this email because you saved items to your The Girls Collections Wishlist.
+                      <br />
+                      <a
+                        href={`${siteUrl}/unsubscribe`}
+                        style={{ color: '#A1A1AA', textDecoration: 'underline', marginTop: '4px', display: 'inline-block' }}
+                      >
+                        Unsubscribe from Wishlist Alerts
+                      </a>
                       <br />
                       © {new Date().getFullYear()} The Girls Collections. All rights reserved.
                     </div>

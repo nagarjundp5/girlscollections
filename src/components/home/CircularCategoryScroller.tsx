@@ -4,52 +4,220 @@ import React, { useRef, useState, useMemo, useEffect, useCallback } from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import {
-  CategoryItem,
-  WOMEN_CATEGORIES,
-  KIDS_CATEGORIES,
-  getFeaturedCategories,
-  getCategoryHref,
-} from '@/data/categoryTaxonomy';
 
-// ─── Label / image config (original design, unchanged) ───────────────────────
-const MOBILE_CATEGORY_CONFIG: Record<
-  string,
-  { line1: string; line2?: string; objectPos?: string; topOffset?: string }
-> = {
-  'all-kurta-sets': { line1: 'KURTA', line2: 'SETS', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'anarkali-kurta-suit-sets': { line1: 'ANARKALI', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'co-ord-set': { line1: 'CO-ORD', line2: 'SETS', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'skirt-and-top': { line1: 'SKIRT &', line2: 'TOP', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'kids-lehenga-blouse-or-pattu-pavadai': { line1: 'LEHENGA', line2: '& PATTU', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'kids-traditional-gown-1-pc': { line1: 'TRADITIONAL', line2: 'GOWNS', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'party-wear-frocks': { line1: 'PARTY WEAR', line2: 'FROCKS', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-  'children-co-ord-set': { line1: 'KIDS CO-ORD', line2: 'SETS', objectPos: 'object-[center_-2%]', topOffset: '7.7%' },
-};
+export interface CategoryCircleItem {
+  id: string;
+  name: string;
+  slug: string;
+  group: 'women' | 'kids';
+  image: string;
+  line1: string;
+  line2?: string;
+  topOffset?: string;
+}
 
-// ─── Category Circle — ORIGINAL DESIGN (clipped, semi-pop-out) ───────────────
-// Identical to the previous implementation: outer ring p-[2.5px], inner
-// rounded-full overflow-hidden with radial-gradient background, image that
-// pops above the top edge with -top-3/-top-4 and rounded-b-full clip.
-const CategoryCircle: React.FC<{ category: CategoryItem }> = ({ category }) => {
-  const href = getCategoryHref(category);
-  const config = MOBILE_CATEGORY_CONFIG[category.id] || {
-    line1: category.name.toUpperCase(),
+// ─── Curated Category Circles with Cutout Images (Head pops out of circle) ───
+export const WOMEN_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
+  {
+    id: 'a-line-kurta',
+    name: 'A-Line Kurta',
+    slug: 'a-line-kurta',
+    group: 'women',
+    image: '/categories/circles/alinekurtawomen.png',
+    line1: 'A-LINE',
+    line2: 'KURTA',
+    topOffset: '8%',
+  },
+  {
+    id: 'two-peice-kurta-set',
+    name: '2-Piece Kurta Set',
+    slug: 'two-peice-kurta-set',
+    group: 'women',
+    image: '/categories/circles/twopiecekurtasetwomen.png',
+    line1: '2-PIECE',
+    line2: 'KURTA SET',
+    topOffset: '8%',
+  },
+  {
+    id: 'straight-cut-kurta-suit-sets',
+    name: 'Straight Cut Kurta',
+    slug: 'straight-cut-kurta-suit-sets',
+    group: 'women',
+    image: '/categories/circles/straightkurtasetwomen.png',
+    line1: 'STRAIGHT',
+    line2: 'KURTA SET',
+    topOffset: '8%',
+  },
+  {
+    id: 'western-short-kurti-top',
+    name: 'Western Short Kurti',
+    slug: 'western-short-kurti-top',
+    group: 'women',
+    image: '/categories/circles/westernshortkurtiwomen.png',
+    line1: 'WESTERN',
+    line2: 'SHORT KURTI',
+    topOffset: '8%',
+  },
+  {
+    id: 'western-short-tops-or-short-kurtis',
+    name: 'Short Kurti Sets',
+    slug: 'western-short-tops-or-short-kurtis',
+    group: 'women',
+    image: '/categories/circles/shortkurtisetswomen.png',
+    line1: 'SHORT KURTI',
+    line2: 'SETS',
+    topOffset: '8%',
+  },
+  {
+    id: 'lehenga-blouse-pattu-pavadai-women',
+    name: 'Langa Blouse',
+    slug: 'lehenga-blouse-pattu-pavadai',
+    group: 'women',
+    image: '/categories/circles/landablousewomen.png',
+    line1: 'LANGA',
+    line2: 'BLOUSE',
+    topOffset: '8%',
+  },
+  {
+    id: 'all-kurta-sets',
+    name: 'All Kurta Sets',
+    slug: 'all-kurta-sets',
+    group: 'women',
+    image: '/categories/cutouts/all-kurta-sets.webp',
+    line1: 'KURTA',
+    line2: 'SETS',
     topOffset: '7.7%',
-  };
-  const cutoutPath = `/categories/cutouts/${category.slug}.webp`;
-  const topOffset = config.topOffset || '7.7%';
+  },
+  {
+    id: 'anarkali-kurta-suit-sets',
+    name: 'Anarkali Suit Sets',
+    slug: 'anarkali-kurta-suit-sets',
+    group: 'women',
+    image: '/categories/cutouts/anarkali-kurta-suit-sets.webp',
+    line1: 'ANARKALI',
+    line2: 'SUIT SETS',
+    topOffset: '7.7%',
+  },
+  {
+    id: 'co-ord-set',
+    name: 'Co-ord Set',
+    slug: 'co-ord-set',
+    group: 'women',
+    image: '/categories/cutouts/co-ord-set.webp',
+    line1: 'CO-ORD',
+    line2: 'SETS',
+    topOffset: '7.7%',
+  },
+  {
+    id: 'skirt-and-top',
+    name: 'Skirt and Top',
+    slug: 'skirt-and-top',
+    group: 'women',
+    image: '/categories/cutouts/skirt-and-top.webp',
+    line1: 'SKIRT &',
+    line2: 'TOP',
+    topOffset: '7.7%',
+  },
+];
+
+export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
+  {
+    id: 'kids-lehenga-blouse-pattu-pavadai',
+    name: 'Langa Blouse / Pattu Pavadai',
+    slug: 'lehenga-blouse-pattu-pavadai',
+    group: 'kids',
+    image: '/categories/circles/langablousekids.png',
+    line1: 'LEHENGA &',
+    line2: 'PATTU',
+    topOffset: '8%',
+  },
+  {
+    id: 'kids-cotton-daily-frock',
+    name: 'Cotton Daily Frock',
+    slug: 'kids-cotton-daily-frock',
+    group: 'kids',
+    image: '/categories/circles/cottonfrockkids.png',
+    line1: 'COTTON',
+    line2: 'FROCKS',
+    topOffset: '8%',
+  },
+  {
+    id: 'children-saree',
+    name: 'Children Saree',
+    slug: 'children-saree',
+    group: 'kids',
+    image: '/categories/circles/sareechildrenskids.png',
+    line1: 'CHILDREN',
+    line2: 'SAREE',
+    topOffset: '8%',
+  },
+  {
+    id: 'kids-sharara-set',
+    name: 'Sharara Set',
+    slug: 'kids-sharara-set',
+    group: 'kids',
+    image: '/categories/circles/shararasetkids.png',
+    line1: 'SHARARA',
+    line2: 'SET',
+    topOffset: '8%',
+  },
+  {
+    id: 'western-bodycon',
+    name: 'Western Bodycon',
+    slug: 'western-bodycon',
+    group: 'kids',
+    image: '/categories/circles/westernbodyconekids.png',
+    line1: 'WESTERN',
+    line2: 'BODYCON',
+    topOffset: '8%',
+  },
+  {
+    id: 'kids-traditional-gown-1-pc',
+    name: 'Traditional Gowns',
+    slug: 'kids-traditional-gown-1-pc',
+    group: 'kids',
+    image: '/categories/cutouts/kids-traditional-gown-1-pc.webp',
+    line1: 'TRADITIONAL',
+    line2: 'GOWNS',
+    topOffset: '7.7%',
+  },
+  {
+    id: 'party-wear-frocks',
+    name: 'Party Wear Frocks',
+    slug: 'kids-party-wear-frock',
+    group: 'kids',
+    image: '/categories/cutouts/party-wear-frocks.webp',
+    line1: 'PARTY WEAR',
+    line2: 'FROCKS',
+    topOffset: '7.7%',
+  },
+  {
+    id: 'children-co-ord-set',
+    name: 'Children Co-ord Set',
+    slug: 'children-co-ord-set',
+    group: 'kids',
+    image: '/categories/cutouts/children-co-ord-set.webp',
+    line1: 'KIDS CO-ORD',
+    line2: 'SETS',
+    topOffset: '7.7%',
+  },
+];
+
+// ─── Category Circle with 3D Head Pop-Out Effect ─────────────────────────────
+const CategoryCircle: React.FC<{ category: CategoryCircleItem }> = ({ category }) => {
+  const href = `/shop?category=${encodeURIComponent(category.slug)}&target=${category.group}`;
+  const topOffset = category.topOffset || '8%';
 
   return (
     <Link
       href={href}
-      className="group relative flex flex-col items-center shrink-0 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] rounded-full transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] pt-3"
+      className="group relative flex flex-col items-center shrink-0 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] rounded-full transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] pt-4"
       aria-label={`Shop ${category.name}`}
     >
-      {/* ── Outer ring ──────────────────────────────────────────────────── */}
+      {/* ── Outer ring ── */}
       <div className="relative p-[2.5px] rounded-full border border-[#B8924A]/30 group-hover:border-[#B8924A] transition-colors bg-[#FAF6EE] shadow-xs shrink-0">
 
-        {/* ── Inner circle: warm ivory bg, clips the image ──────────────── */}
+        {/* ── Inner circle: warm ivory background ── */}
         <div
           className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[130px] md:h-[130px] rounded-full overflow-hidden flex items-center justify-center shrink-0 border border-[#B8924A]/20"
           style={{
@@ -59,7 +227,7 @@ const CategoryCircle: React.FC<{ category: CategoryItem }> = ({ category }) => {
             transform: 'translateZ(0)',
           }}
         >
-          {/* Subtle concentric accent ring */}
+          {/* Subtle concentric gold accent ring */}
           <div className="absolute inset-0 rounded-full border border-[#B8924A]/10 scale-[0.84] pointer-events-none" />
 
           {!category.image && (
@@ -69,10 +237,10 @@ const CategoryCircle: React.FC<{ category: CategoryItem }> = ({ category }) => {
           )}
         </div>
 
-        {/* ── Pop-out image: head pokes above the circle ────────────────── */}
+        {/* ── Pop-out Cutout: Head sticks out of top, bottom clipped by circle rim ── */}
         {category.image && (
           <div
-            className="absolute -top-3 sm:-top-4 left-[2.5px] right-[2.5px] bottom-[2.5px] overflow-hidden pointer-events-none z-10 rounded-b-full"
+            className="absolute -top-3.5 sm:-top-4.5 left-[2.5px] right-[2.5px] bottom-[2.5px] overflow-hidden pointer-events-none z-10 rounded-b-full"
             style={{
               WebkitMaskImage: '-webkit-radial-gradient(white, black)',
               isolation: 'isolate',
@@ -81,15 +249,15 @@ const CategoryCircle: React.FC<{ category: CategoryItem }> = ({ category }) => {
             aria-hidden="true"
           >
             <div
-              className="absolute left-0 w-full aspect-[339/484]"
-              style={{ top: `calc(12px - ${topOffset})` }}
+              className="absolute left-0 w-full h-[122%]"
+              style={{ top: `calc(8px - ${topOffset})` }}
             >
               <Image
-                src={cutoutPath}
+                src={category.image}
                 alt={category.name}
                 fill
                 sizes="(max-width: 640px) 110px, (max-width: 1024px) 130px, 140px"
-                className="object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.15)] transition-transform duration-300 group-hover:scale-105"
+                className="object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.18)] transition-transform duration-300 group-hover:scale-105"
                 priority={false}
                 loading="lazy"
               />
@@ -98,14 +266,14 @@ const CategoryCircle: React.FC<{ category: CategoryItem }> = ({ category }) => {
         )}
       </div>
 
-      {/* ── Label ─────────────────────────────────────────────────────────── */}
-      <div className="mt-2 flex flex-col items-center justify-start text-center w-[100px] sm:w-[120px] md:w-[130px] min-h-[2.4em] leading-[1.2]">
-        <span className="font-sans text-[11px] sm:text-xs font-medium tracking-[0.08em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors truncate w-full">
-          {config.line1}
+      {/* ── Label below circle ── */}
+      <div className="mt-2.5 flex flex-col items-center justify-start text-center w-[100px] sm:w-[120px] md:w-[130px] min-h-[2.4em] leading-[1.2]">
+        <span className="font-sans text-[11px] sm:text-xs font-semibold tracking-[0.08em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors truncate w-full">
+          {category.line1}
         </span>
-        {config.line2 && (
-          <span className="font-sans text-[11px] sm:text-xs font-medium tracking-[0.08em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors truncate w-full">
-            {config.line2}
+        {category.line2 && (
+          <span className="font-sans text-[11px] sm:text-xs font-semibold tracking-[0.08em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors truncate w-full">
+            {category.line2}
           </span>
         )}
       </div>
@@ -113,8 +281,8 @@ const CategoryCircle: React.FC<{ category: CategoryItem }> = ({ category }) => {
   );
 };
 
-// ─── "Explore All" last circle — ORIGINAL DESIGN ─────────────────────────────
-const ShopMoreCircle: React.FC<{ total: number }> = ({ total }) => {
+// ─── "Explore All" circle ────────────────────────────────────────────────────
+const ShopMoreCircle: React.FC<{ target: 'women' | 'kids' }> = ({ target }) => {
   const handleOpenGroupMenu = () => {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('open-category-menu'));
@@ -124,8 +292,8 @@ const ShopMoreCircle: React.FC<{ total: number }> = ({ total }) => {
   return (
     <button
       onClick={handleOpenGroupMenu}
-      className="group relative flex flex-col items-center shrink-0 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] rounded-full transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] cursor-pointer pt-3 min-h-[44px]"
-      aria-label={`Shop more categories (${total} total)`}
+      className="group relative flex flex-col items-center shrink-0 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] rounded-full transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] cursor-pointer pt-4 min-h-[44px]"
+      aria-label={`Explore all ${target} categories`}
     >
       <div className="relative p-[2.5px] rounded-full border border-[#B8924A]/40 group-hover:border-[#B8924A] transition-colors bg-[#FAF6EE] shadow-xs shrink-0">
         <div
@@ -148,16 +316,16 @@ const ShopMoreCircle: React.FC<{ total: number }> = ({ total }) => {
         </div>
       </div>
 
-      <div className="mt-2 flex flex-col items-center justify-start text-center w-[100px] sm:w-[120px] md:w-[130px] min-h-[2.4em] leading-[1.2]">
-        <span className="font-sans text-[11px] sm:text-xs font-medium tracking-[0.08em] uppercase text-[#B8924A] group-hover:text-[#1A1E3A] transition-colors truncate w-full">
-          SEE ALL ({total})
+      <div className="mt-2.5 flex flex-col items-center justify-start text-center w-[100px] sm:w-[120px] md:w-[130px] min-h-[2.4em] leading-[1.2]">
+        <span className="font-sans text-[11px] sm:text-xs font-semibold tracking-[0.08em] uppercase text-[#B8924A] group-hover:text-[#1A1E3A] transition-colors truncate w-full">
+          SEE ALL
         </span>
       </div>
     </button>
   );
 };
 
-// ─── Main scroller ────────────────────────────────────────────────────────────
+// ─── Main Scroller with Separate Women & Kids Tabs ───────────────────────────
 interface CircularCategoryScrollerProps {
   filter?: 'all' | 'women' | 'kids';
 }
@@ -167,22 +335,14 @@ export const CircularCategoryScroller: React.FC<CircularCategoryScrollerProps> =
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const womenFeatured = useMemo(() => getFeaturedCategories('women'), []);
-  const kidsFeatured = useMemo(() => getFeaturedCategories('kids'), []);
+  // Active division directly driven by filter (or preference)
+  const activeDivision = filter === 'kids' ? 'kids' : 'women';
 
   const displayedCategories = useMemo(() => {
-    if (filter === 'women') return womenFeatured;
-    if (filter === 'kids') return kidsFeatured;
-    return [...womenFeatured, ...kidsFeatured];
-  }, [filter, womenFeatured, kidsFeatured]);
+    return activeDivision === 'kids' ? KIDS_CIRCLE_CATEGORIES : WOMEN_CIRCLE_CATEGORIES;
+  }, [activeDivision]);
 
-  const totalCount = useMemo(() => {
-    if (filter === 'women') return WOMEN_CATEGORIES.length;
-    if (filter === 'kids') return KIDS_CATEGORIES.length;
-    return WOMEN_CATEGORIES.length + KIDS_CATEGORIES.length;
-  }, [filter]);
-
-  // rAF-throttled scroll check for showing/hiding prev-next buttons
+  // Check scroll bounds
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -210,10 +370,10 @@ export const CircularCategoryScroller: React.FC<CircularCategoryScrollerProps> =
     };
   }, [checkScroll, displayedCategories]);
 
-  // Reset scroll position on filter change
+  // Reset scroll on division change
   useEffect(() => {
     scrollRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
-  }, [filter]);
+  }, [activeDivision]);
 
   const scrollPage = (dir: 'left' | 'right') => {
     const el = scrollRef.current;
@@ -221,94 +381,66 @@ export const CircularCategoryScroller: React.FC<CircularCategoryScrollerProps> =
     el.scrollBy({ left: dir === 'left' ? -(el.clientWidth * 0.85) : el.clientWidth * 0.85, behavior: 'smooth' });
   };
 
-  if (!displayedCategories || displayedCategories.length === 0) return null;
-
   return (
-    /*
-      LAYOUT (changed):
-      - No heading / eyebrow / divider / progress bar above the circles.
-      - padding-top reserves room for the pill's lower half (22px) + head overhang (~16px) = 38px min.
-      - overflow: visible on the section so heads protrude upward without clipping.
-      - 1px hairline border-b below; next section (Trending py-10/py-16) handles its own gap.
-    */
     <section
       aria-label="Categories"
       className="relative w-full bg-[#FAF6EE] border-b border-[#1A1E3A]/8 select-none"
       style={{
         paddingTop: 'clamp(38px, 5vw, 52px)',
         paddingBottom: '20px',
-        overflow: 'visible',         /* heads protrude above */
+        overflow: 'visible',
       }}
     >
-      {/* Max-width wrapper — position:relative for floating buttons */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 relative">
-
-        {/*
-          PREV BUTTON (Taruni style):
-          White, 1px border, shadow, 32px mobile / 40px desktop.
-          44px min touch target. Vertically centred on the circle bodies.
-          Hidden when already at start.
-        */}
+        {/* ── Prev Arrow Button ── */}
         <div
-          className={`absolute left-0 z-20 transition-opacity duration-200 ${
+          className={`absolute left-2 sm:left-4 z-20 transition-opacity duration-200 ${
             canScrollLeft ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
-          style={{ top: 'clamp(50px, 60px, 75px)', transform: 'translateY(-50%)' }}
+          style={{ top: '65%', transform: 'translateY(-50%)' }}
         >
           <button
             type="button"
             onClick={() => scrollPage('left')}
-            className="w-8 h-8 lg:w-10 lg:h-10 min-w-[44px] min-h-[44px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
+            className="w-8 h-8 lg:w-10 lg:h-10 min-w-[36px] min-h-[36px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none"
             aria-label="Previous categories"
           >
             <ChevronLeft className="w-4 h-4 lg:w-5 lg:h-5 stroke-[2]" />
           </button>
         </div>
 
-        {/*
-          NEXT BUTTON (Taruni style):
-          Same spec as prev, hidden when at the end.
-        */}
+        {/* ── Next Arrow Button ── */}
         <div
-          className={`absolute right-0 z-20 transition-opacity duration-200 ${
+          className={`absolute right-2 sm:right-4 z-20 transition-opacity duration-200 ${
             canScrollRight ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
-          style={{ top: 'clamp(50px, 60px, 75px)', transform: 'translateY(-50%)' }}
+          style={{ top: '65%', transform: 'translateY(-50%)' }}
         >
           <button
             type="button"
             onClick={() => scrollPage('right')}
-            className="w-8 h-8 lg:w-10 lg:h-10 min-w-[44px] min-h-[44px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
+            className="w-8 h-8 lg:w-10 lg:h-10 min-w-[36px] min-h-[36px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none"
             aria-label="Next categories"
           >
             <ChevronRight className="w-4 h-4 lg:w-5 lg:h-5 stroke-[2]" />
           </button>
         </div>
 
-        {/*
-          SCROLL TRACK:
-          - overflow-x: auto (horizontal scroll), overflow-y: visible (heads protrude upward).
-          - snap-x mandatory, no scrollbar.
-          - Desktop: justify-center so circles are centred when they fit.
-          - Mobile: left-aligned, 3.5 circles visible with snap.
-          - Horizontal padding matches button width so circles don't hide behind buttons.
-        */}
+        {/* ── Scroll Track ── */}
         <div
           ref={scrollRef}
-          className="flex items-start gap-4 sm:gap-6 lg:gap-8 snap-x snap-mandatory no-scrollbar scroll-smooth md:justify-center"
+          className="flex items-start gap-4 sm:gap-6 lg:gap-8 snap-x snap-mandatory no-scrollbar scroll-smooth overflow-x-auto overflow-y-visible"
           style={{
-            overflowX: 'auto',
-            overflowY: 'visible',
             WebkitOverflowScrolling: 'touch',
             scrollSnapType: 'x mandatory',
-            paddingLeft: '44px',
-            paddingRight: '44px',
+            paddingLeft: '32px',
+            paddingRight: '32px',
           }}
         >
-          {displayedCategories.map((cat: CategoryItem) => (
+          {displayedCategories.map((cat: CategoryCircleItem) => (
             <CategoryCircle key={cat.id} category={cat} />
           ))}
-          <ShopMoreCircle total={totalCount} />
+          <ShopMoreCircle target={activeDivision} />
         </div>
       </div>
     </section>

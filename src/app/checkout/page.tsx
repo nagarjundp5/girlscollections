@@ -5,13 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCartStore } from '@/lib/cartStore';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
-import { ChevronLeft, Lock, CheckCircle, Package, ArrowRight, ShieldCheck, MapPin, Truck, RotateCcw, Check, UserCheck, Smartphone } from 'lucide-react';
+import { ChevronLeft, Lock, CheckCircle, Package, ArrowRight, ShieldCheck, MapPin, Truck, RotateCcw, Check, UserCheck, Smartphone, Navigation, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ToastContainer';
 import { useAuthSession } from '@/context/AuthContext';
 import CheckoutCoupon from '@/components/CheckoutCoupon';
 import TermsAndConditionsBox from '@/components/TermsAndConditionsBox';
 import { ButterflyMotif } from '@/components/ui/Motifs';
 import { useRouter } from 'next/navigation';
+import { useLocationAutofill } from '@/hooks/useLocationAutofill';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -81,7 +82,99 @@ export default function CheckoutPage() {
     pincode: '',
   });
 
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isSignedIn && isLoaded) {
+      fetch('/api/user/addresses')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.addresses && data.addresses.length > 0) {
+            setSavedAddresses(data.addresses);
+            const defaultAddr = data.addresses.find((a: any) => a.is_default) || data.addresses[0];
+            if (defaultAddr) {
+              setSelectedAddressId(defaultAddr.id);
+              setFormData((prev) => ({
+                ...prev,
+                name: prev.name || defaultAddr.name,
+                phone: prev.phone || defaultAddr.phone,
+                line1: defaultAddr.line1,
+                line2: defaultAddr.line2 || '',
+                city: defaultAddr.city,
+                state: defaultAddr.state,
+                pincode: defaultAddr.pincode,
+              }));
+            }
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isSignedIn, isLoaded]);
+
+  // Sync cart with Neon DB server-side
+  useEffect(() => {
+    if (isSignedIn && isLoaded && hasHydrated && items.length === 0) {
+      fetch('/api/cart')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.items && data.items.length > 0) {
+            data.items.forEach((item: any) => {
+              useCartStore.getState().addItem(item);
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isSignedIn, isLoaded, hasHydrated, items.length]);
+
+  useEffect(() => {
+    if (isSignedIn && isLoaded && items.length > 0) {
+      fetch('/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      }).catch(() => {});
+    }
+  }, [isSignedIn, isLoaded, items]);
+
   const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
+
+  const { detectLocation, lookupPincode, detecting: detectingLocation } = useLocationAutofill();
+
+  // Consent-based location detection in Checkout
+  const handleCheckoutDetectLocation = async () => {
+    const loc = await detectLocation();
+    if (loc) {
+      setFormData((prev) => ({
+        ...prev,
+        pincode: prev.pincode || loc.pincode,
+        city: prev.city || loc.city,
+        state: prev.state || loc.state,
+        line1: prev.line1 || (loc.area ? `${loc.area}` : ''),
+      }));
+      if (loc.pincode) {
+        triggerCheckoutEligibilityCheck(loc.pincode);
+      }
+    }
+  };
+
+  const handlePincodeChangeWithLookup = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setFormData((prev) => ({ ...prev, pincode: val }));
+
+    if (val.length === 6) {
+      triggerCheckoutEligibilityCheck(val);
+      const res = await lookupPincode(val);
+      if (res) {
+        setFormData((prev) => ({
+          ...prev,
+          city: prev.city || res.city || '',
+          state: prev.state || res.state || '',
+        }));
+      }
+    }
+  };
 
   // Draft Sync to Firestore for incomplete checkout tracking
   const syncDraftCheckout = (stepNum: number = 1, completed: boolean = false) => {
@@ -173,6 +266,12 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (isLoaded && isSignedIn && user) {
+      if (user.onboardingCompleted === false) {
+        sessionStorage.setItem('tgc_auth_return_to', '/checkout');
+        router.replace('/onboarding');
+        return;
+      }
+
       const cleanPhone = normalisePhone(user.phone);
       setFormData((prev) => ({
         ...prev,
@@ -190,33 +289,31 @@ export default function CheckoutPage() {
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
-      if (event.data?.type === 'PHONE_EMAIL_VERIFIED') {
-        const token = event.data.accessToken;
+      const userJsonUrl = event.data?.user_json_url || (event.data?.accessToken ? `https://user.phone.email/user_${event.data.accessToken}.json` : null);
+
+      if ((event.data?.type === 'PHONE_EMAIL_USER_JSON' || event.data?.type === 'PHONE_EMAIL_VERIFIED') && userJsonUrl) {
         setIsVerifyingPhone(true);
         try {
-          const phoneToVerify = formData.phone.trim();
-          const res = await fetch('/api/auth/verify-phone', {
+          const res = await fetch('/api/auth/link-phone', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              phone: phoneToVerify,
-              accessToken: token,
-              notificationsOptIn: true,
-            }),
+            body: JSON.stringify({ user_json_url: userJsonUrl }),
           });
           const data = await res.json();
           if (res.ok && data.success) {
-            setVerifiedPhone(normalisePhone(data.user.phone));
+            const clean = normalisePhone(data.phone);
+            setVerifiedPhone(clean);
             setVerifiedPhoneToken('session_verified_phone');
-            addToast('Mobile number verified successfully! ✓', 'success');
+            setFormData(prev => ({ ...prev, phone: clean }));
+            addToast('Mobile number verified & linked! ✓', 'success');
             await refreshUser();
             syncDraftCheckout(1, false);
           } else {
-            addToast(data.error || 'Failed to verify phone OTP', 'error');
+            addToast(data.error || 'Failed to verify mobile number', 'error');
           }
         } catch (err) {
           console.error('Error verifying phone:', err);
-          addToast('Error verifying phone verification token', 'error');
+          addToast('Error verifying mobile number', 'error');
         } finally {
           setIsVerifyingPhone(false);
         }
@@ -225,7 +322,7 @@ export default function CheckoutPage() {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [formData.phone, addToast, refreshUser]);
+  }, [addToast, refreshUser]);
 
   const startPhoneVerification = () => {
     const phoneToVerify = formData.phone.trim();
@@ -346,6 +443,23 @@ export default function CheckoutPage() {
 
     if (!termsAccepted) {
       return addToast('Please accept the Terms & Conditions to proceed to payment.', 'error');
+    }
+
+    if (isSignedIn && fulfillmentType === 'delivery') {
+      fetch('/api/user/addresses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          phone: formData.phone.trim(),
+          line1: formData.line1.trim(),
+          line2: formData.line2.trim() || undefined,
+          city: formData.city.trim(),
+          state: formData.state.trim(),
+          pincode: formData.pincode.trim(),
+          isDefault: savedAddresses.length === 0,
+        }),
+      }).catch(() => {});
     }
 
     syncDraftCheckout(2, false);
@@ -759,9 +873,91 @@ export default function CheckoutPage() {
               {/* 3. Shipping Address */}
               {fulfillmentType === 'delivery' ? (
                 <section className="bg-white border border-zariGold/30 rounded-2xl p-6 shadow-sm space-y-4">
-                  <h2 className="text-base font-serif font-bold text-navy border-b border-zariGold/20 pb-3">
-                    3. Shipping Address
-                  </h2>
+                  <div className="flex items-center justify-between border-b border-zariGold/20 pb-3">
+                    <h2 className="text-base font-serif font-bold text-navy">
+                      3. Shipping Address
+                    </h2>
+                    {savedAddresses.length > 0 && (
+                      <span className="text-[11px] font-sans text-zariGold font-semibold">
+                        {savedAddresses.length} Saved Address{savedAddresses.length > 1 ? 'es' : ''}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Saved Address Selector */}
+                  {savedAddresses.length > 0 && (
+                    <div className="space-y-2 pb-2">
+                      <label className="text-[11px] font-mono uppercase tracking-wider text-charcoal-muted font-bold block">
+                        Select from Saved Addresses
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {savedAddresses.map((addr) => {
+                          const isSelected = selectedAddressId === addr.id;
+                          return (
+                            <button
+                              key={addr.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedAddressId(addr.id);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  name: addr.name,
+                                  phone: addr.phone,
+                                  line1: addr.line1,
+                                  line2: addr.line2 || '',
+                                  city: addr.city,
+                                  state: addr.state,
+                                  pincode: addr.pincode,
+                                }));
+                              }}
+                              className={`p-3 rounded-xl border text-left transition-all ${
+                                isSelected
+                                  ? 'border-zariGold bg-blush/20 shadow-xs'
+                                  : 'border-zariGold/20 bg-ivory/30 hover:border-zariGold/40'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="font-semibold text-xs text-navy">{addr.name}</span>
+                                {addr.is_default && (
+                                  <span className="text-[10px] bg-zariGold/20 text-navy font-bold px-1.5 py-0.5 rounded">
+                                    Default
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-charcoal-muted mt-1 truncate">{addr.line1}</p>
+                              <p className="text-[11px] text-charcoal-muted">{addr.city}, {addr.pincode}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Consent-based Location Detection */}
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={handleCheckoutDetectLocation}
+                      disabled={detectingLocation}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zariGold/40 bg-sand/20 text-navy text-xs font-semibold hover:bg-sand/40 transition-colors disabled:opacity-50"
+                    >
+                      {detectingLocation ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-zariGold" />
+                          Detecting location…
+                        </>
+                      ) : (
+                        <>
+                          <Navigation className="w-3.5 h-3.5 text-zariGold" />
+                          Use my current location
+                        </>
+                      )}
+                    </button>
+                    <span className="text-[10px] text-charcoal-muted ml-2">
+                      Fills delivery area • No coordinates stored
+                    </span>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans">
                     <div className="space-y-1 md:col-span-2">
                       <label className="text-[11px] font-mono uppercase tracking-wider text-navy font-bold block">Address Line 1 *</label>
@@ -819,7 +1015,7 @@ export default function CheckoutPage() {
                         maxLength={6}
                         placeholder="e.g. 560064"
                         value={formData.pincode}
-                        onChange={handleInputChange}
+                        onChange={handlePincodeChangeWithLookup}
                         className="w-full bg-ivory border border-zariGold/30 text-navy px-4 py-3 text-xs focus:outline-none focus:border-zariGold rounded-xl"
                       />
                     </div>

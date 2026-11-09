@@ -202,6 +202,21 @@ export const orders = pgTable('orders', {
   invoice_number: text('invoice_number'),
   notes: text('notes'),
   needs_manual_refund: boolean('needs_manual_refund').notNull().default(false),
+  // Direct checkout flow columns
+  payment_mode: text('payment_mode').$type<'prepaid' | 'cod'>(),
+  advance_paid: integer('advance_paid').notNull().default(0), // in paise
+  cod_balance: integer('cod_balance').notNull().default(0), // in paise
+  razorpay_payment_id: text('razorpay_payment_id').unique(),
+  status: text('status').$type<'pending_payment' | 'confirmed' | 'shiprocket_created' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'failed'>().notNull().default('pending_payment'),
+  refund_status: text('refund_status').$type<'none' | 'pending' | 'initiated' | 'completed'>().notNull().default('none'),
+  refund_amount: integer('refund_amount').notNull().default(0),
+  refund_note: text('refund_note'),
+  refunded_at: timestamp('refunded_at', { withTimezone: true }),
+  refund_ref: text('refund_ref'),
+  cancelled_at: timestamp('cancelled_at', { withTimezone: true }),
+  cancelled_by: text('cancelled_by').$type<'user' | 'admin'>(),
+  needs_attention: boolean('needs_attention').notNull().default(false),
+  is_first_order: boolean('is_first_order').notNull().default(false),
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
@@ -315,7 +330,49 @@ export const users = pgTable('users', {
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   last_active_at: timestamp('last_active_at', { withTimezone: true }),
   last_wishlist_email_sent_at: timestamp('last_wishlist_email_sent_at', { withTimezone: true }),
+  phone_verified_at: timestamp('phone_verified_at', { withTimezone: true }),
+  first_order_offer_dismissed: boolean('first_order_offer_dismissed').notNull().default(false),
+  onboarding_completed: boolean('onboarding_completed').notNull().default(false),
 });
+
+// 11b. Saved Addresses Table
+export const addresses = pgTable('addresses', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: text('user_id').notNull(),
+  name: text('name').notNull(),
+  phone: text('phone').notNull(),
+  line1: text('line1').notNull(),
+  line2: text('line2'),
+  city: text('city').notNull(),
+  state: text('state').notNull(),
+  pincode: text('pincode').notNull(),
+  area: text('area'),
+  location_source: text('location_source').$type<'geolocation' | 'manual'>().default('manual'),
+  location_updated_at: timestamp('location_updated_at', { withTimezone: true }),
+  is_default: boolean('is_default').notNull().default(false),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('addresses_user_id_idx').on(t.user_id),
+]);
+
+// 11c. User Cart Table (Neon-backed cart)
+export const userCarts = pgTable('user_carts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: text('user_id').notNull().unique(),
+  items: jsonb('items').$type<Array<{
+    productId: string;
+    size: string;
+    quantity: number;
+    price: number;
+    title: string;
+    image: string;
+    slug?: string;
+  }>>().notNull().default(sql`'[]'::jsonb`),
+  updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('user_carts_user_id_idx').on(t.user_id),
+]);
 
 // 12. Wishlist Table (Lightweight, scalable, single row per item, zero duplicated product data)
 export const wishlist = pgTable('wishlist', {

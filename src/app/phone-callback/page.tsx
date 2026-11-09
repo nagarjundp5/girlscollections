@@ -1,138 +1,165 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { AlertCircle, CheckCircle2, Loader2, ArrowLeft } from 'lucide-react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useSignIn, useClerk } from '@clerk/nextjs';
+import { AlertCircle, Loader2, ArrowLeft, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
 function PhoneCallbackContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { signIn, isLoaded: signInLoaded } = useSignIn();
+  const { setActive } = useClerk();
+
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [origin, setOrigin] = useState<string>('');
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
-    const flowOrigin = sessionStorage.getItem('auth_flow_origin') || '';
-    setOrigin(flowOrigin);
+    // 15-second safety timeout so user never spins forever
+    const safetyTimer = setTimeout(() => {
+      if (status === 'verifying') {
+        setStatus('error');
+        setErrorMessage('Verification took longer than expected. Please try again.');
+      }
+    }, 15000);
 
-    const accessToken = searchParams.get('access_token');
-    if (!accessToken) {
+    return () => clearTimeout(safetyTimer);
+  }, [status]);
+
+  useEffect(() => {
+    if (hasTriggeredRef.current || !signInLoaded) return;
+
+    const user_json_url = searchParams.get('user_json_url') || searchParams.get('auth_user_json_url');
+    const access_token = searchParams.get('access_token');
+    const returnTo = sessionStorage.getItem('tgc_auth_return_to') || '/';
+
+    // Resolved URL
+    const resolvedUrl = user_json_url || (access_token ? `https://user.phone.email/user_${access_token}.json` : null);
+
+    if (!resolvedUrl && !access_token) {
       setStatus('error');
-      setErrorMessage('No verification token found. Please try again.');
+      setErrorMessage('No verification credential received. Please try logging in again.');
       return;
     }
 
-    if (window.opener) {
-      // ── Popup flow ──────────────────────────────────────────────────
-      // Send access token back to the parent window, then close ourselves.
+    // Immediately clean up sensitive query parameters from browser URL
+    if (typeof window !== 'undefined') {
+      window.history.replaceState({}, '', '/phone-callback');
+    }
+
+    // Check if this was a popup flow (e.g. Google user linking phone at checkout)
+    const flowOrigin = typeof window !== 'undefined' ? sessionStorage.getItem('auth_flow_origin') : null;
+
+    if (window.opener && flowOrigin === 'checkout') {
       try {
         window.opener.postMessage(
-          { type: 'PHONE_EMAIL_VERIFIED', accessToken },
+          {
+            type: 'PHONE_EMAIL_USER_JSON',
+            user_json_url: resolvedUrl,
+            access_token,
+          },
           window.location.origin
         );
         window.close();
+        return;
       } catch (e) {
-        console.error('Failed to post message to opener:', e);
-        // If postMessage fails, fall through to direct verification below.
-        verifyDirectly(accessToken, flowOrigin);
+        console.error('Failed to postMessage to opener:', e);
       }
-    } else {
-      // ── In-tab flow (popup was blocked or user opened link directly) ─
-      verifyDirectly(accessToken, flowOrigin);
     }
-  }, [searchParams]);
 
-  async function verifyDirectly(accessToken: string, flowOrigin: string) {
-    try {
-      // New flow: just send the access token — server fetches phone from phone.email
-      const res = await fetch('/api/auth/verify-phone', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accessToken }),
-      });
+    // Direct in-tab login exchange
+    hasTriggeredRef.current = true;
 
-      const data = await res.json();
+    async function executeLoginExchange() {
+      try {
+        const res = await fetch('/api/auth/phone-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_json_url: resolvedUrl,
+            access_token,
+            returnTo,
+          }),
+        });
 
-      if (res.ok && data.success) {
-        if (data.isNewUser) {
-          // New user: stash the temp token so the main page can open the profile step
-          sessionStorage.setItem('pending_new_user_temp_token', data.tempToken);
-          sessionStorage.removeItem('auth_flow_origin');
-          setStatus('success');
-          // Redirect — AuthContext on the main page will detect the token and open profile step
-          setTimeout(() => {
-            window.location.href = flowOrigin === 'checkout' ? '/checkout' : '/';
-          }, 1200);
-        } else {
-          // Returning user: session cookie already set by server — just redirect
-          setStatus('success');
-          sessionStorage.removeItem('auth_flow_origin');
-          setTimeout(() => {
-            window.location.href = flowOrigin === 'checkout' ? '/checkout' : '/';
-          }, 1200);
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to complete login');
         }
-      } else {
+
+        if (!signIn) {
+          throw new Error('Authentication client is not available');
+        }
+
+        // Exchange ticket token for session via Clerk ticket strategy
+        const ticketResult = await signIn.create({
+          strategy: 'ticket',
+          ticket: data.token,
+        });
+
+        if (ticketResult.status !== 'complete') {
+          throw new Error('Could not finalize session. Please retry.');
+        }
+
+        await setActive({ session: ticketResult.createdSessionId });
+        setStatus('success');
+
+        // Redirect based on onboarding status
+        if (!data.onboarding_completed) {
+          router.replace('/onboarding');
+        } else {
+          router.replace(data.returnTo || '/');
+        }
+      } catch (err: any) {
+        console.error('Phone login callback failed:', err);
         setStatus('error');
-        setErrorMessage(data.error || 'Phone verification failed. Please try again.');
+        setErrorMessage(err?.message || 'Login failed. Please retry.');
       }
-    } catch (err) {
-      console.error('Direct verification error:', err);
-      setStatus('error');
-      setErrorMessage('An unexpected error occurred. Please try again.');
     }
-  }
+
+    executeLoginExchange();
+  }, [searchParams, signInLoaded, signIn, setActive, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6 text-center select-none">
-      <div className="w-full max-w-md p-8 bg-zinc-950 border border-zinc-800/80 rounded-2xl shadow-2xl relative overflow-hidden backdrop-blur-md">
-        {/* Decorative glows */}
-        <div className="absolute -top-24 -left-24 w-48 h-48 bg-zinc-800 rounded-full blur-3xl opacity-20 pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-zinc-800 rounded-full blur-3xl opacity-20 pointer-events-none" />
-
-        {status === 'verifying' && (
-          <div className="flex flex-col items-center space-y-6 py-6">
-            <Loader2 className="w-12 h-12 text-zinc-400 animate-spin stroke-[1.5]" />
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold tracking-tight text-zinc-100">Verifying Your Phone</h2>
-              <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
-                Confirming OTP with secure servers. Please do not close or reload this page.
-              </p>
-            </div>
+    <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center p-4">
+      <div className="bg-white border border-[#D4AF37]/30 rounded-3xl p-8 max-w-sm w-full text-center shadow-lg">
+        {status === 'verifying' ? (
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-10 h-10 text-[#0F172A] animate-spin" />
+            <h2 className="text-base font-serif font-bold text-[#0F172A]">Connecting Verified Account…</h2>
+            <p className="text-xs text-gray-500">Please wait while we complete your secure login.</p>
           </div>
-        )}
-
-        {status === 'success' && (
-          <div className="flex flex-col items-center space-y-6 py-6">
-            <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center animate-bounce">
-              <CheckCircle2 className="w-8 h-8 stroke-[1.5]" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold tracking-tight text-zinc-100">Verification Successful</h2>
-              <p className="text-sm text-zinc-500">
-                Redirecting you back shortly…
-              </p>
-            </div>
+        ) : status === 'success' ? (
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+            <h2 className="text-base font-serif font-bold text-[#0F172A]">Authenticated!</h2>
+            <p className="text-xs text-gray-500">Redirecting you to your account…</p>
           </div>
-        )}
-
-        {status === 'error' && (
-          <div className="flex flex-col items-center space-y-6 py-4">
-            <div className="w-14 h-14 bg-red-500/10 border border-red-500/20 text-red-400 rounded-full flex items-center justify-center">
-              <AlertCircle className="w-8 h-8 stroke-[1.5]" />
+        ) : (
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center">
+              <AlertCircle className="w-6 h-6" />
             </div>
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold tracking-tight text-zinc-100">Verification Failed</h2>
-              <p className="text-sm text-red-400/90 font-medium px-4 leading-relaxed">
-                {errorMessage}
-              </p>
-            </div>
-            <div className="pt-4 w-full">
-              <Link
-                href={origin === 'checkout' ? '/checkout' : '/'}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 group active:scale-[0.98]"
+            <h2 className="text-base font-serif font-bold text-[#0F172A]">Verification Issue</h2>
+            <p className="text-xs text-red-600 leading-relaxed">{errorMessage}</p>
+            <div className="flex flex-col gap-2 w-full pt-2">
+              <button
+                onClick={() => {
+                  hasTriggeredRef.current = false;
+                  window.location.href = '/sign-in';
+                }}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0F172A] text-white rounded-xl text-xs font-semibold hover:bg-black transition-colors"
               >
-                <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
-                Return to Home
+                <RefreshCw className="w-3.5 h-3.5" /> Try Again
+              </button>
+              <Link
+                href="/sign-in"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium hover:bg-gray-50 transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Back to Login
               </Link>
             </div>
           </div>
@@ -144,14 +171,13 @@ function PhoneCallbackContent() {
 
 export default function PhoneCallbackPage() {
   return (
-    <Suspense fallback={
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6 text-center select-none">
-        <div className="w-full max-w-md p-8 bg-zinc-950 border border-zinc-800/80 rounded-2xl flex flex-col items-center space-y-6 py-12">
-          <Loader2 className="w-12 h-12 text-zinc-600 animate-spin stroke-[1.5]" />
-          <p className="text-sm text-zinc-500 uppercase tracking-widest font-semibold text-xs">Loading…</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-[#0F172A] animate-spin" />
         </div>
-      </div>
-    }>
+      }
+    >
       <PhoneCallbackContent />
     </Suspense>
   );

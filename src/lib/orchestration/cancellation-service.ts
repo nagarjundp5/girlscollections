@@ -4,6 +4,7 @@ import { eq, and, sql } from 'drizzle-orm';
 import { transitionOrderStatus } from './order-state-machine';
 import { writeAuditLog } from './audit-service';
 import { releaseUnitSafe } from '@/lib/stock-gate';
+import { sendCancellationEmail } from '@/lib/email';
 
 /**
  * requestOrderCancellation
@@ -69,11 +70,19 @@ export async function requestOrderCancellation(params: {
       clientTx: tx,
     });
 
-    // Flag for manual refund review instead of auto-refund
+    // Set new status/refund fields + flag for manual refund review
+    const refundAmt = (order.advance_paid ?? 0) > 0 ? Number(order.advance_paid) : 0;
     await tx
       .update(schema.orders)
       .set({
+        status: 'cancelled',
+        cancelled_at: now,
+        cancelled_by: 'user',
         needs_manual_refund: true,
+        ...(refundAmt > 0 && {
+          refund_status: 'pending',
+          refund_amount: refundAmt,
+        }),
         updated_at: new Date(),
       })
       .where(eq(schema.orders.id, order.id));
@@ -134,6 +143,15 @@ export async function requestOrderCancellation(params: {
   if (alreadyCancelled) {
     return { success: true, message: 'Order is already cancelled' };
   }
+
+  // Fire cancellation email non-fatally
+  sendCancellationEmail({
+    orderNumber: order.order_number,
+    customerName: order.customer_name,
+    customerEmail: order.customer_email,
+    refundAmount: (order.advance_paid ?? 0) > 0 ? Number(order.advance_paid) : 0,
+    paymentMode: (order.payment_mode ?? 'prepaid') as 'prepaid' | 'cod',
+  }).catch((err) => console.error('[Cancellation] Email failed:', err));
 
   return {
     success: true,

@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and, lt } from 'drizzle-orm';
 import { firestoreService } from '@/lib/firestore';
 
 export async function cleanupExpiredOrders() {
@@ -128,6 +128,26 @@ export async function cleanupExpiredOrders() {
       }
     } catch (reconErr) {
       console.error('[Order Cleanup] Reconciliation safety net error:', reconErr);
+    }
+
+    // 5. Expire pending_payment orders in Neon Postgres older than 30 minutes
+    try {
+      const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
+      await db
+        .update(schema.orders)
+        .set({
+          status: 'failed',
+          order_status: 'EXPIRED',
+          updated_at: now,
+        })
+        .where(
+          and(
+            eq(schema.orders.status, 'pending_payment'),
+            lt(schema.orders.created_at, thirtyMinsAgo)
+          )
+        );
+    } catch (neonExpireErr) {
+      console.error('[Order Cleanup] Failed to expire pending_payment orders in Neon:', neonExpireErr);
     }
 
     return { 

@@ -37,6 +37,10 @@ export async function clearProductCache(): Promise<void> {
       const { redis } = await import('@/lib/redis');
       await redis.del(PRODUCT_CACHE_KEY);
       await redis.del('homepage:snapshot:v1');
+      
+      const { triggerPlpRebuildImmediate } = await import('@/lib/plp-cache');
+      // Part C: Rebuild immediately (no 30s delay) while serving previous version stale
+      triggerPlpRebuildImmediate().catch((err) => console.warn('[clearProductCache] Rebuild failed:', err));
     } catch (err) {
       console.warn('[ProductCache] Failed to clear Redis cache:', err);
     }

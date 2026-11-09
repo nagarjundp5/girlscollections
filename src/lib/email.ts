@@ -78,6 +78,7 @@ export async function sendRefundEmail({
 
 /**
  * Sends an order confirmation email to the customer by rendering a React component to static HTML.
+ * Supports optional COD/prepaid payment mode details, AWB and courier info.
  */
 export async function sendOrderSuccessEmail({
   orderNumber,
@@ -90,6 +91,11 @@ export async function sendOrderSuccessEmail({
   fulfillmentType,
   pickupCode,
   shippingAddress,
+  paymentMode,
+  advancePaid,
+  codBalance,
+  awb,
+  courierName,
 }: {
   orderNumber: string;
   customerName: string;
@@ -107,6 +113,11 @@ export async function sendOrderSuccessEmail({
     state: string;
     pincode: string;
   } | null;
+  paymentMode?: 'prepaid' | 'cod';
+  advancePaid?: number;
+  codBalance?: number;
+  awb?: string;
+  courierName?: string;
 }): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set — skipping order success email.');
@@ -545,7 +556,7 @@ export async function sendAdminFallbackAlertEmail({
   try {
     const htmlString = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 8px;">
-        <h2 style="color: #e63329; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid #e63329; padding-bottom: 10px;">⚠️ Delivery Fallback & Refund Alert</h2>
+        <h2 style="color: #e63329; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid #e63329; padding-bottom: 10px;">⚠️ Delivery Fallback &amp; Refund Alert</h2>
         <p>An automated delivery downgrade occurred because the express logistics partner failed.</p>
         
         <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -696,11 +707,13 @@ export async function sendWishlistReminderEmail({
   customerName = 'Valued Customer',
   items,
   customSubject,
+  offerCode,
 }: {
   customerEmail: string;
   customerName?: string;
   items: WishlistEmailItem[];
   customSubject?: string;
+  offerCode?: string;
 }): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set — skipping wishlist reminder email.');
@@ -719,6 +732,7 @@ export async function sendWishlistReminderEmail({
         customerName,
         items,
         siteUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://thegirlscollections.com',
+        offerCode,
       })
     );
 
@@ -748,3 +762,155 @@ export async function sendWishlistReminderEmail({
     throw err;
   }
 }
+
+/**
+ * Sends a cancellation notification email to the customer with inline HTML (no React component needed).
+ */
+export async function sendCancellationEmail({
+  orderNumber,
+  customerName,
+  customerEmail,
+  refundAmount,
+  paymentMode,
+  refundNote,
+}: {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string | null | undefined;
+  refundAmount: number;
+  paymentMode: 'prepaid' | 'cod';
+  refundNote?: string | null;
+}): Promise<void> {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[Email] RESEND_API_KEY not set — skipping cancellation email.');
+    return;
+  }
+
+  if (!customerEmail) {
+    console.warn(`[Email] No customer email on order ${orderNumber} — skipping cancellation email.`);
+    return;
+  }
+
+  try {
+    const refundRupees = (refundAmount / 100).toFixed(2);
+    const hasRefund = refundAmount > 0;
+
+    const refundSection = hasRefund
+      ? `
+        <tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; font-weight: 600; color: #1a2744; width: 180px;">Refund Amount:</td>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; color: #b87a4b; font-weight: bold; font-size: 18px;">₹${refundRupees}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; font-weight: 600; color: #1a2744;">Refund Method:</td>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; color: #555;">${paymentMode === 'prepaid' ? 'Original payment method (3-7 business days)' : 'Cash on Delivery booking – contact us for bank transfer'}</td>
+        </tr>
+        ${refundNote ? `
+        <tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; font-weight: 600; color: #1a2744;">Note:</td>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; color: #555;">${refundNote}</td>
+        </tr>` : ''}
+      `
+      : `
+        <tr>
+          <td colspan="2" style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; color: #555;">
+            No refund applicable for this cancellation.
+          </td>
+        </tr>
+      `;
+
+    const htmlString = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Cancelled – ${orderNumber}</title>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #f5f0eb; font-family: Georgia, serif;">
+        <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+          
+          <!-- Header -->
+          <div style="background-color: #1a2744; padding: 32px 40px; text-align: center;">
+            <h1 style="margin: 0; color: #d4a76a; font-size: 24px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 400;">The Girls Collections</h1>
+            <p style="margin: 8px 0 0 0; color: #9bb0d4; font-size: 13px; letter-spacing: 0.08em;">Order Cancellation Confirmation</p>
+          </div>
+
+          <!-- Body -->
+          <div style="padding: 40px;">
+            <p style="color: #1a2744; font-size: 16px; margin: 0 0 20px 0;">Dear ${customerName},</p>
+            <p style="color: #555; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
+              Your order has been successfully cancelled. We're sorry to see you go — if there's anything we can help with, please don't hesitate to reach out.
+            </p>
+
+            <!-- Order Details Table -->
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; font-weight: 600; color: #1a2744; width: 180px;">Order Number:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; color: #555;">${orderNumber}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; font-weight: 600; color: #1a2744;">Payment Mode:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; color: #555; text-transform: uppercase;">${paymentMode}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4; font-weight: 600; color: #1a2744;">Status:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8d5c4;">
+                  <span style="display: inline-block; background-color: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 4px; font-size: 13px; font-weight: 600;">Cancelled</span>
+                </td>
+              </tr>
+              ${refundSection}
+            </table>
+
+            ${hasRefund ? `
+            <div style="background-color: #fef9f0; border-left: 4px solid #d4a76a; padding: 16px 20px; margin-bottom: 24px; border-radius: 0 4px 4px 0;">
+              <p style="margin: 0; color: #7a4f1a; font-size: 14px; line-height: 1.5;">
+                <strong>Refund Update:</strong> Your refund of <strong>₹${refundRupees}</strong> has been queued for processing. 
+                ${paymentMode === 'prepaid' ? 'It will be credited to your original payment method within 3-7 business days.' : 'Please contact us with your bank details to receive your COD booking refund.'}
+              </p>
+            </div>
+            ` : ''}
+
+            <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 8px 0;">
+              If you have any questions, reply to this email or contact us at:
+            </p>
+            <p style="margin: 0;">
+              <a href="mailto:thegirlscollections@gmail.com" style="color: #1a2744; font-weight: 600;">thegirlscollections@gmail.com</a>
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div style="background-color: #f5f0eb; padding: 24px 40px; text-align: center; border-top: 1px solid #e8d5c4;">
+            <p style="margin: 0; color: #999; font-size: 12px; letter-spacing: 0.05em;">
+              © ${new Date().getFullYear()} The Girls Collections. All rights reserved.
+            </p>
+            <p style="margin: 8px 0 0 0; color: #bbb; font-size: 11px;">
+              This is an automated message. Please do not reply to this email directly.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: [customerEmail],
+      cc: [ADMIN_CC_EMAIL],
+      replyTo: REPLY_TO_EMAIL,
+      subject: `Order Cancelled – ${orderNumber} | The Girls Collections`,
+      html: htmlString,
+    });
+
+    if (error) {
+      console.error(`[Email] Resend error for cancellation email on order ${orderNumber}:`, error);
+      throw new Error(`Resend API Error: ${error.name} - ${error.message}`);
+    } else {
+      console.log(`[Email] Cancellation email sent successfully for order ${orderNumber} to ${customerEmail}`);
+    }
+  } catch (err: any) {
+    console.error(`[Email] Failed to send cancellation email for order ${orderNumber}:`, err);
+    throw err;
+  }
+}
+

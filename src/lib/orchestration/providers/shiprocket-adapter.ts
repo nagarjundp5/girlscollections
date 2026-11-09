@@ -115,10 +115,10 @@ export class ShiprocketAdapter {
 
     const targetCollectAmount = isCod ? payload.remainingAmount : payload.total;
     const diffPaise = payload.subtotal - targetCollectAmount;
-    
+
     let discountRupees = 0;
     let shippingChargesRupees = 0;
-    
+
     if (diffPaise > 0) {
       discountRupees = Math.round(diffPaise / 100);
     } else if (diffPaise < 0) {
@@ -258,11 +258,11 @@ export class ShiprocketAdapter {
     await writeAuditLog({
       orderId: payload.orderId,
       action: 'SHIPROCKET_ORDER_CREATED',
-      details: { 
-        shiprocketOrderId, 
-        shipmentId, 
-        awbCode, 
-        courierName, 
+      details: {
+        shiprocketOrderId,
+        shipmentId,
+        awbCode,
+        courierName,
         collectibleAmountRupees: Math.round(targetCollectAmount / 100),
         discountSent: discountRupees,
         shippingChargesSent: shippingChargesRupees
@@ -278,5 +278,53 @@ export class ShiprocketAdapter {
       labelUrl: labelUrl || undefined,
       rawResponse: createData,
     };
+  }
+
+  /**
+   * Cancels an order in Shiprocket by its Shiprocket order ID.
+   * Returns { success: true } on success, { success: false, error: string } on failure.
+   */
+  static async cancelOrder(shiprocketOrderId: string): Promise<{ success: boolean; error?: string }> {
+    if (process.env.DRY_RUN_SHIPPING === 'true') {
+      console.log(`[ShiprocketAdapter] DRY_RUN_SHIPPING=true — simulating cancellation of Shiprocket order ${shiprocketOrderId}`);
+      return { success: true };
+    }
+
+    if (!process.env.SHIPROCKET_EMAIL || !process.env.SHIPROCKET_PASSWORD) {
+      console.warn('[ShiprocketAdapter] Shiprocket credentials missing — skipping real cancel, returning mock success.');
+      return { success: true };
+    }
+
+    try {
+      const token = await getShiprocketToken();
+      const cancelPayload = { ids: [shiprocketOrderId] };
+
+      const { ok, data } = await callShiprocketApi<{ message?: string; status?: number }>({
+        endpoint: 'orders/cancel',
+        url: `${SHIPROCKET_API_URL}/orders/cancel`,
+        options: {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(cancelPayload),
+        },
+        requestPayload: cancelPayload,
+      });
+
+      if (!ok) {
+        const errMsg = data?.message || JSON.stringify(data);
+        console.error(`[ShiprocketAdapter] Failed to cancel Shiprocket order ${shiprocketOrderId}: ${errMsg}`);
+        return { success: false, error: errMsg };
+      }
+
+      console.log(`[ShiprocketAdapter] Successfully cancelled Shiprocket order ${shiprocketOrderId}`);
+      return { success: true };
+    } catch (err: any) {
+      const errMsg = err?.message || String(err);
+      console.error(`[ShiprocketAdapter] Exception cancelling Shiprocket order ${shiprocketOrderId}:`, err);
+      return { success: false, error: errMsg };
+    }
   }
 }

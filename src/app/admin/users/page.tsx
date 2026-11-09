@@ -10,9 +10,17 @@ interface UserItem {
   name: string;
   phone: string | null;
   email: string | null;
+  phone_verified?: boolean;
   createdAt: string;
   authProvider: 'phone' | 'google';
   totalOrders: number;
+  lifetimeValue?: number;
+  savedAddresses?: Array<{
+    id: string;
+    line1: string;
+    city: string;
+    pincode: string;
+  }>;
 }
 
 interface Pagination {
@@ -136,14 +144,15 @@ export default function AdminUsers() {
                       <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400">Phone Number</th>
                       <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400">Email Address</th>
                       <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400">Auth Method</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400">Addresses</th>
                       <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400">Signup Date</th>
-                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400 text-right">Orders</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-zinc-400 text-right">Orders / LTV</th>
                     </tr>
                   </thead>
                   <tbody>
                     {users.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-zinc-400 text-sm">No registered users found.</td>
+                        <td colSpan={7} className="p-8 text-center text-zinc-400 text-sm">No registered users found.</td>
                       </tr>
                     ) : (
                       users.map((userItem) => (
@@ -153,7 +162,18 @@ export default function AdminUsers() {
                             <span className="text-[9px] text-zinc-400 font-mono uppercase">{userItem.id}</span>
                           </td>
                           <td className="p-4 font-mono text-sm text-zinc-700">
-                            {userItem.phone ? userItem.phone : <span className="text-zinc-350">—</span>}
+                            {userItem.phone ? (
+                              <div>
+                                <span>{userItem.phone}</span>
+                                {userItem.phone_verified && (
+                                  <span className="ml-1.5 inline-block text-[9px] font-bold uppercase px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                                    Verified
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-zinc-350">—</span>
+                            )}
                           </td>
                           <td className="p-4 font-mono text-sm text-zinc-650">
                             {userItem.email ? userItem.email : <span className="text-zinc-350">—</span>}
@@ -177,6 +197,15 @@ export default function AdminUsers() {
                               )}
                             </span>
                           </td>
+                          <td className="p-4 text-xs text-zinc-500">
+                            {userItem.savedAddresses && userItem.savedAddresses.length > 0 ? (
+                              <span className="text-zinc-700 font-medium font-mono">
+                                {userItem.savedAddresses.length} saved ({userItem.savedAddresses[0]?.city || ''})
+                              </span>
+                            ) : (
+                              <span className="text-zinc-400">None</span>
+                            )}
+                          </td>
                           <td className="p-4 text-sm text-zinc-500 font-mono">
                             {new Date(userItem.createdAt).toLocaleDateString(undefined, {
                               year: 'numeric',
@@ -185,13 +214,20 @@ export default function AdminUsers() {
                             })}
                           </td>
                           <td className="p-4 text-right">
-                            <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-mono font-bold ${
-                              userItem.totalOrders > 0
-                                ? 'bg-zinc-900 text-white'
-                                : 'bg-zinc-100 text-zinc-400'
-                            }`}>
-                              {userItem.totalOrders}
-                            </span>
+                            <div className="flex flex-col items-end">
+                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-mono font-bold ${
+                                userItem.totalOrders > 0
+                                  ? 'bg-zinc-900 text-white'
+                                  : 'bg-zinc-100 text-zinc-400'
+                              }`}>
+                                {userItem.totalOrders} {userItem.totalOrders === 1 ? 'order' : 'orders'}
+                              </span>
+                              {userItem.lifetimeValue && userItem.lifetimeValue > 0 ? (
+                                <span className="text-[11px] font-mono text-emerald-700 font-bold mt-1">
+                                  ₹{Math.round(userItem.lifetimeValue / 100).toLocaleString('en-IN')}
+                                </span>
+                              ) : null}
+                            </div>
                           </td>
                         </tr>
                       ))

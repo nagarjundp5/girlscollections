@@ -31,7 +31,7 @@ export default function AdminOrders() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [activeTab, setActiveTab] = useState<'all' | 'delivery' | 'pickup'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'delivery' | 'pickup' | 'cancelled'>('all');
 
   const handleStatusChange = async (orderId: string, newStatus: Order['order_status']) => {
     try {
@@ -52,6 +52,9 @@ export default function AdminOrders() {
       (o.pickup_code && o.pickup_code.toLowerCase().includes(cleanSearch));
       
     if (!matchesSearch) return false;
+    if (activeTab === 'cancelled') {
+      return (o.order_status || (o as any).status)?.toLowerCase() === 'cancelled';
+    }
     if (activeTab === 'delivery') return o.fulfillment_type !== 'pickup';
     if (activeTab === 'pickup') return o.fulfillment_type === 'pickup';
     return true;
@@ -80,7 +83,7 @@ export default function AdminOrders() {
           </div>
           
           <div className="flex bg-zinc-150 p-1 rounded-lg self-start sm:self-auto border border-zinc-200/40">
-            {(['all', 'delivery', 'pickup'] as const).map((tab) => (
+            {(['all', 'delivery', 'pickup', 'cancelled'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -90,7 +93,7 @@ export default function AdminOrders() {
                     : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
                 }`}
               >
-                {tab === 'all' ? 'All' : tab === 'delivery' ? 'Delivery' : 'Pickup'}
+                {tab === 'all' ? 'All' : tab === 'delivery' ? 'Delivery' : tab === 'pickup' ? 'Pickup' : 'Cancelled'}
               </button>
             ))}
           </div>
@@ -161,6 +164,11 @@ export default function AdminOrders() {
                               {order.payment_type === 'cod_with_deposit' && (
                                 <span className="block text-[9px] font-mono text-zinc-400 mt-1 uppercase font-bold">
                                   COD (Dep Paid)
+                                </span>
+                              )}
+                              {(order as any).refund_status === 'pending' && (
+                                <span className="inline-block mt-1 px-2 py-0.5 text-[9px] font-bold rounded bg-amber-500 text-white animate-pulse uppercase tracking-wider">
+                                  Refund Pending
                                 </span>
                               )}
                             </div>
