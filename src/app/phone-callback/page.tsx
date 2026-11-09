@@ -87,7 +87,7 @@ function PhoneCallbackContent() {
         const data = await res.json();
 
         if (!res.ok || !data.success) {
-          throw new Error(data.error || 'Failed to complete login');
+          throw new Error(data.message || data.error || 'Failed to complete login');
         }
 
         if (!signIn) {

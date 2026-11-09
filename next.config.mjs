@@ -55,22 +55,22 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Scripts — Clerk JS, Razorpay, CDN, Cloudflare Turnstile
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
-              "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+              // Scripts — Clerk JS, Cloudflare Turnstile, Razorpay, Phone.Email, TGC domain
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.accounts.dev https://*.clerk.com https://*.clerk.dev https://*.protect.clerk.com https://clerk.browser.js https://challenges.cloudflare.com https://*.phone.email https://auth.phone.email https://user.phone.email https://www.phone.email https://*.thegirlscollections.com https://thegirlscollections.com https://*.vercel.app",
+              "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' blob: https://checkout.razorpay.com https://cdn.razorpay.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev https://*.accounts.dev https://*.clerk.com https://*.clerk.dev https://*.protect.clerk.com https://clerk.browser.js https://challenges.cloudflare.com https://*.phone.email https://auth.phone.email https://user.phone.email https://www.phone.email https://*.thegirlscollections.com https://thegirlscollections.com https://*.vercel.app",
               // Styles
-              "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.com",
-              // Images (Cloudinary CDN, local, data, blob)
-              "img-src 'self' data: https: blob: https://res.cloudinary.com",
-              // Connections (fetch/XHR/WebSocket, Cloudinary upload, Razorpay, Upstash)
-              "connect-src 'self' https: blob: https://api.cloudinary.com https://res.cloudinary.com https://api.razorpay.com",
+              "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.clerk.com https://*.clerk.accounts.dev https://*.accounts.dev https://*.thegirlscollections.com",
+              // Images (Cloudinary CDN, Clerk, local, data, blob)
+              "img-src 'self' data: https: blob: https://res.cloudinary.com https://img.clerk.com https://*.clerk.com https://*.phone.email",
+              // Connections (fetch/XHR/WebSocket, Clerk FAPI & protect wildcard port, Cloudinary, Razorpay, Upstash, Phone.Email)
+              "connect-src 'self' https: wss: blob: https://api.cloudinary.com https://res.cloudinary.com https://api.razorpay.com https://*.clerk.accounts.dev https://*.accounts.dev https://*.clerk.com https://*.clerk.dev https://*.protect.clerk.com:* https://*.thegirlscollections.com https://*.vercel.app https://*.phone.email https://auth.phone.email https://user.phone.email",
               // Workers / service workers
-              "worker-src blob: 'self'",
-              // Frames — Razorpay, Clerk, Cloudflare Turnstile
-              "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+              "worker-src blob: 'self' https://*.clerk.accounts.dev https://*.accounts.dev https://*.clerk.com",
+              // Frames — Razorpay, Clerk, Cloudflare Turnstile, Phone.Email
+              "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.clerk.accounts.dev https://*.accounts.dev https://*.clerk.com https://*.protect.clerk.com https://challenges.cloudflare.com https://*.phone.email https://auth.phone.email https://*.thegirlscollections.com https://*.vercel.app",
               "frame-ancestors 'none'",
               // Fonts
-              "font-src 'self' data:",
+              "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net",
             ].join('; '),
           },
         ],
