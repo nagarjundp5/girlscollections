@@ -1,7 +1,8 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
+import { getAuthUserId } from '@/lib/auth/getAuthUserId';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -22,7 +23,7 @@ const OnboardingSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await auth();
+    const userId = await getAuthUserId(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -51,19 +52,21 @@ export async function POST(req: Request) {
 
     const userPhone = existingUser?.phone || '';
 
-    // 2. Update Clerk user name & email if email provided
-    try {
-      const client = await clerkClient();
-      const nameParts = name.trim().split(' ');
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(' ');
+    // 2. Update Clerk user name & email if email provided and user is via Google
+    if (existingUser?.auth_provider === 'google') {
+      try {
+        const client = await clerkClient();
+        const nameParts = name.trim().split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
 
-      await client.users.updateUser(userId, {
-        firstName,
-        lastName: lastName || undefined,
-      });
-    } catch (clerkErr) {
-      console.warn('[Onboarding] Clerk user update note:', clerkErr);
+        await client.users.updateUser(userId, {
+          firstName,
+          lastName: lastName || undefined,
+        });
+      } catch (clerkErr) {
+        console.warn('[Onboarding] Clerk user update note:', clerkErr);
+      }
     }
 
     // 3. Update Neon users table

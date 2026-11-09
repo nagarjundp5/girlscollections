@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
+import { getAuthUserId } from '@/lib/auth/getAuthUserId';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -27,8 +28,7 @@ function formatToE164(countryCode: string, phone: string): string {
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
-    const userId = session?.userId;
+    const userId = await getAuthUserId(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -76,32 +76,40 @@ export async function POST(req: Request) {
 
     const e164Phone = formatToE164(rawCc, rawPhone);
 
-    const client = await clerkClient();
+    // Check if phone belongs to another account in Neon DB
+    const [neonConflict] = await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.phone, e164Phone))
+      .limit(1);
 
-    // Check if phone belongs to someone else in Clerk
-    const otherUsers = await client.users.getUserList({
-      phoneNumber: [e164Phone],
-    });
-
-    const isConflict = otherUsers.data?.some(u => u.id !== userId);
-    if (isConflict) {
+    if (neonConflict && neonConflict.id !== userId) {
       return NextResponse.json(
         { error: 'This number is already linked to another account. Sign in with that method.' },
         { status: 409 }
       );
     }
 
-    // Attach phone to existing Clerk user
-    try {
-      await client.phoneNumbers.createPhoneNumber({
-        userId,
-        phoneNumber: e164Phone,
-        primary: true,
-        verified: true,
-      });
-    } catch (clerkErr: any) {
-      // If already added on this user, proceed
-      console.log('[Attach Phone Notice]:', clerkErr?.message);
+    // Look up current user in Neon
+    const [existingNeonUser] = await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.id, userId))
+      .limit(1);
+
+    // If Google user, try attaching to Clerk without blocking
+    if (existingNeonUser?.auth_provider === 'google') {
+      try {
+        const client = await clerkClient();
+        await client.phoneNumbers.createPhoneNumber({
+          userId,
+          phoneNumber: e164Phone,
+          primary: true,
+          verified: true,
+        });
+      } catch (clerkErr: any) {
+        console.log('[Attach Phone to Clerk Notice]:', clerkErr?.message);
+      }
     }
 
     // Update Neon DB

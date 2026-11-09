@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { inArray } from 'drizzle-orm';
@@ -8,7 +7,6 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await auth();
     const body = await req.json();
     const { items } = body;
 

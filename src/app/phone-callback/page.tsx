@@ -2,22 +2,19 @@
 
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useSignIn, useClerk } from '@clerk/nextjs';
 import { AlertCircle, Loader2, ArrowLeft, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
 function PhoneCallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { signIn, isLoaded: signInLoaded } = useSignIn();
-  const { setActive } = useClerk();
 
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
-    // 15-second safety timeout so user never spins forever
+    // 15-second safety timeout so user never spins indefinitely
     const safetyTimer = setTimeout(() => {
       if (status === 'verifying') {
         setStatus('error');
@@ -29,7 +26,7 @@ function PhoneCallbackContent() {
   }, [status]);
 
   useEffect(() => {
-    if (hasTriggeredRef.current || !signInLoaded) return;
+    if (hasTriggeredRef.current) return;
 
     const user_json_url = searchParams.get('user_json_url') || searchParams.get('auth_user_json_url');
     const access_token = searchParams.get('access_token');
@@ -49,10 +46,8 @@ function PhoneCallbackContent() {
       window.history.replaceState({}, '', '/phone-callback');
     }
 
-    // Check if this was a popup flow (e.g. Google user linking phone at checkout)
-    const flowOrigin = typeof window !== 'undefined' ? sessionStorage.getItem('auth_flow_origin') : null;
-
-    if (window.opener && flowOrigin === 'checkout') {
+    // Check if this was opened in a popup window (e.g. from modal or checkout)
+    if (window.opener) {
       try {
         window.opener.postMessage(
           {
@@ -90,28 +85,14 @@ function PhoneCallbackContent() {
           throw new Error(data.message || data.error || 'Failed to complete login');
         }
 
-        if (!signIn) {
-          throw new Error('Authentication client is not available');
-        }
-
-        // Exchange ticket token for session via Clerk ticket strategy
-        const ticketResult = await signIn.create({
-          strategy: 'ticket',
-          ticket: data.token,
-        });
-
-        if (ticketResult.status !== 'complete') {
-          throw new Error('Could not finalize session. Please retry.');
-        }
-
-        await setActive({ session: ticketResult.createdSessionId });
         setStatus('success');
 
         // Redirect based on onboarding status
+        // Using window.location.href to guarantee fresh session cookie is loaded by SSR
         if (!data.onboarding_completed) {
-          router.replace('/onboarding');
+          window.location.href = '/onboarding';
         } else {
-          router.replace(data.returnTo || '/');
+          window.location.href = data.returnTo || '/';
         }
       } catch (err: any) {
         console.error('Phone login callback failed:', err);
@@ -121,7 +102,7 @@ function PhoneCallbackContent() {
     }
 
     executeLoginExchange();
-  }, [searchParams, signInLoaded, signIn, setActive, router]);
+  }, [searchParams, router]);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center p-4">

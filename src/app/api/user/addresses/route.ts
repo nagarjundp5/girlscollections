@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { getAuthUserId } from '@/lib/auth/getAuthUserId';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
@@ -21,7 +21,7 @@ const addressSchema = z.object({
 
 export async function GET(request: Request) {
   try {
-    const { userId } = await auth();
+    const userId = await getAuthUserId(request);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth();
+    const userId = await getAuthUserId(request);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

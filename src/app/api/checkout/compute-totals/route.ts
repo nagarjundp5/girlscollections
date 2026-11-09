@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { auth } from '@clerk/nextjs/server';
+import { getAuthUserId } from '@/lib/auth/getAuthUserId';
 import { computeOrderFinancials } from '@/lib/checkout-service';
 import { checkRateLimit } from '@/lib/orchestration/rate-limiter';
 
@@ -21,13 +21,7 @@ const ComputeTotalsSchema = z.object({
 
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1';
-  let userId: string | null = null;
-  try {
-    const authData = await auth();
-    userId = authData.userId;
-  } catch {
-    // Guest user
-  }
+  const userId = await getAuthUserId(request);
 
   const { success } = await checkRateLimit({
     endpoint: 'checkout',

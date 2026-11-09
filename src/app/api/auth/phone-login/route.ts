@@ -1,11 +1,12 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import { clerkClient } from '@clerk/nextjs/server';
+import { cookies } from 'next/headers';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { rateLimit } from '@/lib/rateLimit';
+import { signToken } from '@/lib/jwt';
 import { z } from 'zod';
 
 const PhoneLoginSchema = z.object({
@@ -61,8 +62,8 @@ export async function POST(req: Request) {
       );
     }
   } catch (rateErr: any) {
-    // Upstash rate limit fails open in dev rather than throwing 500
-    console.warn(`[phone-login] stage=rate-limit error=${rateErr?.message || 'Rate limit failure - failing open'}`);
+    // Fail open in dev or on Redis connection error
+    console.warn(`[phone-login] stage=rate-limit error=${rateErr?.message || 'Rate limit check failed'}`);
   }
 
   // STAGE: token-validate
@@ -100,7 +101,7 @@ export async function POST(req: Request) {
     return makeErrorResponse('TOKEN_INVALID', 'Malformed authentication request.', 400, 'token-validate');
   }
 
-  // STAGE: fetch-phone-json
+  // STAGE: fetch-phone-json (phone.email OTP verification)
   let rawPhone: string | undefined;
   let rawCc: string | undefined;
   let firstName = '';
@@ -152,82 +153,30 @@ export async function POST(req: Request) {
 
   const e164Phone = formatToE164(rawCc || '+91', rawPhone);
 
-  // STAGE: db-lookup
-  let existingNeonUser: any = null;
+  // STAGE: db-lookup & neon-upsert (Pure Phone OTP via Neon & tgc_session, decoupled from Clerk)
+  let userId: string;
+  let isNewUser = false;
+  let onboardingCompleted = false;
+  const now = new Date();
+  const nameFromPayload = `${firstName} ${lastName}`.trim();
+  let finalName = 'Customer';
+
   try {
-    const usersFound = await db
+    const [existingNeonUser] = await db
       .select()
       .from(schema.users)
       .where(eq(schema.users.phone, e164Phone))
       .limit(1);
-    existingNeonUser = usersFound[0] || null;
-  } catch (dbErr: any) {
-    console.warn(`[phone-login] stage=db-lookup error=${dbErr?.message || 'Database lookup query failed'}`);
-    return makeErrorResponse('DATABASE_ERROR', 'Database error during user verification.', 500, 'db-lookup');
-  }
 
-  // STAGE: clerk-create-user
-  let clerkUser: any = null;
-  let isNewUser = false;
-  let client: any = null;
-  try {
-    client = await clerkClient();
-
-    // Look up user by phone number in Clerk
-    const clerkUserList = await client.users.getUserList({
-      phoneNumber: [e164Phone],
-    });
-
-    if (clerkUserList.data && clerkUserList.data.length > 0) {
-      clerkUser = clerkUserList.data[0];
-    } else if (existingNeonUser?.id) {
-      try {
-        clerkUser = await client.users.getUser(existingNeonUser.id);
-      } catch {
-        clerkUser = null;
-      }
-    }
-
-    if (!clerkUser) {
-      isNewUser = true;
-      try {
-        clerkUser = await client.users.createUser({
-          phoneNumber: [e164Phone],
-          firstName: firstName || undefined,
-          lastName: lastName || undefined,
-        });
-      } catch (createErr: any) {
-        // Resolve "phone already exists" gracefully to existing user
-        const errMsg = createErr?.errors?.[0]?.message || createErr?.message || 'Unknown Clerk creation error';
-        console.warn(`[phone-login] stage=clerk-create-user error=Conflict on createUser: ${errMsg}`);
-
-        const retryList = await client.users.getUserList({
-          phoneNumber: [e164Phone],
-        });
-        if (retryList.data && retryList.data.length > 0) {
-          clerkUser = retryList.data[0];
-        } else {
-          return makeErrorResponse('CLERK_USER_CREATE_FAILED', 'Failed to initialize account with phone number.', 500, 'clerk-create-user');
-        }
-      }
-    }
-  } catch (clerkErr: any) {
-    console.warn(`[phone-login] stage=clerk-create-user error=${clerkErr?.message || 'Clerk user retrieval failed'}`);
-    return makeErrorResponse('CLERK_USER_CREATE_FAILED', 'Account service unavailable. Please retry.', 500, 'clerk-create-user');
-  }
-
-  // STAGE: neon-upsert
-  const now = new Date();
-  const nameFromPayload = `${firstName} ${lastName}`.trim();
-  const finalName = existingNeonUser?.name || nameFromPayload || 'Customer';
-  let onboardingCompleted = existingNeonUser?.onboarding_completed || false;
-
-  try {
     if (existingNeonUser) {
+      userId = existingNeonUser.id;
+      finalName = existingNeonUser.name || nameFromPayload || 'Customer';
+      onboardingCompleted = existingNeonUser.onboarding_completed || false;
+      isNewUser = false;
+
       await db
         .update(schema.users)
         .set({
-          phone: e164Phone,
           phone_verified: true,
           phone_verified_at: now,
           last_active_at: now,
@@ -236,46 +185,43 @@ export async function POST(req: Request) {
     } else {
       isNewUser = true;
       onboardingCompleted = false;
+      userId = `usr_${Date.now().toString(36)}${Math.random().toString(36).substring(2, 8)}`;
+      finalName = nameFromPayload || 'Customer';
+
       await db
         .insert(schema.users)
         .values({
-          id: clerkUser.id,
+          id: userId,
           phone: e164Phone,
           phone_verified: true,
           phone_verified_at: now,
-          email: clerkUser.primaryEmailAddress?.emailAddress || null,
-          email_verified: Boolean(clerkUser.primaryEmailAddress),
           name: finalName,
           auth_provider: 'phone',
           onboarding_completed: false,
+          notifications_opt_in: true,
           created_at: now,
           last_active_at: now,
-        })
-        .onConflictDoUpdate({
-          target: schema.users.id,
-          set: {
-            phone: e164Phone,
-            phone_verified: true,
-            phone_verified_at: now,
-            last_active_at: now,
-          },
         });
     }
-  } catch (upsertErr: any) {
-    console.warn(`[phone-login] stage=neon-upsert error=${upsertErr?.message || 'Neon user upsert failed'}`);
-    return makeErrorResponse('DATABASE_ERROR', 'Failed to record user profile.', 500, 'neon-upsert');
+  } catch (dbErr: any) {
+    console.warn(`[phone-login] stage=db-upsert error=${dbErr?.message || 'Database operation failed'}`);
+    return makeErrorResponse('DATABASE_ERROR', 'Failed to save phone verification.', 500, 'db-upsert');
   }
 
-  // STAGE: clerk-sign-in-token
-  let signInToken: any = null;
+  // STAGE: issue-session (Mint 30-day session token in tgc_session cookie)
+  let sessionToken: string;
   try {
-    signInToken = await client.signInTokens.createSignInToken({
-      userId: clerkUser.id,
-      expiresInSeconds: 60,
+    sessionToken = await signToken({ userId });
+    cookies().set('tgc_session', sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60,
+      path: '/',
     });
-  } catch (tokenErr: any) {
-    console.warn(`[phone-login] stage=clerk-sign-in-token error=${tokenErr?.message || 'Failed to mint sign in token'}`);
-    return makeErrorResponse('CLERK_SIGN_IN_TOKEN_FAILED', 'Failed to generate sign-in ticket.', 500, 'clerk-sign-in-token');
+  } catch (signErr: any) {
+    console.warn(`[phone-login] stage=issue-session error=${signErr?.message || 'Failed to sign JWT session'}`);
+    return makeErrorResponse('SESSION_CREATION_FAILED', 'Failed to establish login session.', 500, 'issue-session');
   }
 
   // Validate returnTo: same-origin relative path only
@@ -286,9 +232,16 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     success: true,
-    token: signInToken.token,
     isNewUser,
     onboarding_completed: onboardingCompleted,
     returnTo: safeReturnTo,
+    user: {
+      id: userId,
+      phone: e164Phone,
+      name: finalName,
+      authProvider: 'phone',
+      phoneVerified: true,
+      onboardingCompleted,
+    },
   });
 }

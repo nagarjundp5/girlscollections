@@ -230,13 +230,13 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
     }
   };
 
-  // Handle verified phone from phone.email
+  // Handle verified phone from phone.email (Pure OTP auth, decoupled from Clerk)
   const processVerifiedPhoneEmail = useCallback(async (userJsonUrl: string) => {
     setIsVerifying(true);
     setInlineError(null);
 
     try {
-      const res = await fetch('/api/auth/phone-email', {
+      const res = await fetch('/api/auth/phone-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_json_url: userJsonUrl }),
@@ -244,38 +244,21 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
 
       const data = await res.json();
 
-      if (!res.ok) {
-        setInlineError(data.error || 'Phone verification failed.');
+      if (!res.ok || !data.success) {
+        setInlineError(data.message || data.error || 'Phone verification failed.');
         setIsVerifying(false);
         return;
       }
 
-      if (data.ticket && signIn) {
-        // Complete sign-in using Clerk ticket strategy
-        const ticketResult = await signIn.create({
-          strategy: 'ticket',
-          ticket: data.ticket,
-        });
+      await refreshUser();
+      await mergeGuestBagOnLogin();
 
-        if (ticketResult.status === 'complete') {
-          await setActive({ session: ticketResult.createdSessionId });
-          await refreshUser();
-          await mergeGuestBagOnLogin();
-
-          if (!data.name || data.name === 'Valued Customer') {
-            setNameStep(true);
-          } else {
-            closeAuthModal();
-            addToast('Welcome to The Girls Collections! ✨', 'success');
-          }
-        } else {
-          setInlineError('Could not finalize your session. Please retry.');
-        }
-      } else {
-        await refreshUser();
-        await mergeGuestBagOnLogin();
+      if (data.isNewUser || !data.onboarding_completed) {
         closeAuthModal();
-        addToast('Welcome! 👋', 'success');
+        window.location.href = '/onboarding';
+      } else {
+        closeAuthModal();
+        addToast('Welcome to The Girls Collections! ✨', 'success');
       }
     } catch (err: any) {
       console.error('Verification exception:', err);
@@ -283,7 +266,7 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
     } finally {
       setIsVerifying(false);
     }
-  }, [signIn, setActive, refreshUser, mergeGuestBagOnLogin, addToast]);
+  }, [refreshUser, mergeGuestBagOnLogin, addToast]);
 
   // Start Phone OTP flow
   const startPhoneOTP = () => {
