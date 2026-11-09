@@ -73,7 +73,7 @@ export default function OnboardingPage() {
 
       const returnTo = sessionStorage.getItem('tgc_auth_return_to') || '/';
       sessionStorage.removeItem('tgc_auth_return_to');
-      router.replace(returnTo);
+      window.location.href = returnTo;
     } catch (err: any) {
       setError(err?.message || 'Error saving details');
     } finally {

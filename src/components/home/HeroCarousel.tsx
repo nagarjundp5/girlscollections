@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { DivisionPreference } from '@/lib/preference';
 import PreferencePill from './PreferencePill';
 import { cl, clBlur } from '@/lib/cloudinary';
@@ -21,13 +21,14 @@ export interface Slide {
   mobileImage: string;
   objectPosition?: string;
   mobileObjectPosition?: string;
+  eyebrow?: string;
   headline?: string;
-  ctaText?: string;
+  subline?: string;
   ctaLink: string;
 }
 
 const HERO_SLIDES: Slide[] = [
-  // SLIDE 1: Festive Elegance / Courtyard Duo (Women)
+  // SLIDE 1: The Twinning Edit (Mother & Daughter / Women)
   // Desktop: 2172×724 landscape | Mobile: Sunlit Courtyard 1122×1402 portrait
   {
     id: 1,
@@ -36,86 +37,96 @@ const HERO_SLIDES: Slide[] = [
     mobileImage: '/hero/hero-new-8.png',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
+    eyebrow: 'THE TWINNING EDIT',
+    headline: 'Moments, Beautifully *Matched*',
+    subline: 'Festive ethnic sets for mothers and little ones.',
     ctaLink: '/shop?target=women',
   },
-  // SLIDE 2: Diwali Sale Celebration (Family / Festive)
-  // Desktop: 2400×960 landscape | Mobile: Diwali Diyas Celebration 819×1024 portrait
-  {
-    id: 2,
-    group: 'women',
-    image: '/hero/hero-new-2.webp',
-    mobileImage: '/hero/diwali-mobile.jpg',
-    objectPosition: 'center',
-    mobileObjectPosition: 'center top',
-    ctaLink: '/shop?target=women',
-  },
-  // SLIDE 3: Courtyard Laughter & Bridal Celebration (Women)
+  // SLIDE 2: New Arrivals / Kurta Sets (Women)
   // Desktop: 2172×724 landscape | Mobile: Golden Courtyard 1122×1402 portrait
   {
-    id: 3,
+    id: 2,
     group: 'women',
     image: '/hero/hero-new-1.png',
     mobileImage: '/hero/hero-new-4.png',
     objectPosition: 'center top',
     mobileObjectPosition: 'center top',
+    eyebrow: 'NEW ARRIVALS',
+    headline: 'Tradition, Worn *Effortlessly*',
+    subline: 'Handcrafted kurta sets in pure silk and zari weaves.',
     ctaLink: '/shop?target=women',
   },
-  // SLIDE 4: Haldi Edit & Mother-Daughter Festive (Women & Kids)
-  // Desktop: 2400×960 landscape | Mobile: Mother & Child 819×1024 portrait
-  {
-    id: 4,
-    group: 'women',
-    image: '/hero/hero-new-5.webp',
-    mobileImage: '/hero/mother-daughter-mobile.jpg',
-    objectPosition: 'center',
-    mobileObjectPosition: 'center top',
-    ctaLink: '/shop?target=women',
-  },
-  // SLIDE 5: Joyful Sisters / Festive Girls (Kids / Festive)
+  // SLIDE 3: Little Celebrations (Kids)
   // Desktop: 2172×724 landscape | Mobile: Joyful Girls 1122×1402 portrait
   {
-    id: 5,
+    id: 3,
     group: 'kids',
     image: '/hero/hero-new-7.png',
     mobileImage: '/hero/hero-new-6.png',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
+    eyebrow: 'LITTLE CELEBRATIONS',
+    headline: 'Festive Joy, Made for *Twirling*',
+    subline: 'Pure silk handcrafted frocks and dhotis for joyful celebrations.',
     ctaLink: '/shop?target=kids',
   },
-  // SLIDE 6: Kids Traditional Attire (Kids)
+  // SLIDE 4: Pattu Collection (Kids)
   // Desktop: 2736×912 landscape | Mobile: Three Kids Couch 819×1024 portrait
   {
-    id: 6,
+    id: 4,
     group: 'kids',
     image: '/hero/hero-new-9.jpg',
     mobileImage: '/hero/three-kids-mobile.jpg',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
+    eyebrow: 'PATTU COLLECTION',
+    headline: 'Traditions Woven in *Pure Silk*',
+    subline: 'Handcrafted festive ensembles designed for vibrant childhood memories.',
     ctaLink: '/shop?target=kids',
   },
-  // SLIDE 7: Elegant Silk & Contemporary Edit (Women)
+  // SLIDE 5: Festive Collection (Women)
   // Desktop: 2736×912 landscape | Mobile: Matching Portrait 1408×1760
   {
-    id: 7,
+    id: 5,
     group: 'women',
     image: '/hero/hero-new-11.jpg',
     mobileImage: '/hero/hero-new-12.jpg',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
+    eyebrow: 'FESTIVE COLLECTION',
+    headline: 'Draped in *Celebration*',
+    subline: 'Zari, sequins and silk made for every festive evening.',
     ctaLink: '/shop?target=women',
   },
-  // SLIDE 8: Regal Heritage Collection (Women)
+  // SLIDE 6: Royal Heritage (Women)
   // Desktop: 2736×912 landscape | Mobile: Matching Portrait 1408×1760
   {
-    id: 8,
+    id: 6,
     group: 'women',
     image: '/hero/hero-new-13.jpg',
     mobileImage: '/hero/hero-new-14.jpg',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
+    eyebrow: 'ROYAL HERITAGE',
+    headline: 'Grace in Every *Weave*',
+    subline: 'Exquisite handloom silks and timeless embroidery for special occasions.',
     ctaLink: '/shop?target=women',
   },
 ];
+
+function renderHeadline(text: string) {
+  const parts = text.split(/(\*[^*]+\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return (
+        <em key={i} className="italic font-normal">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
+    return part;
+  });
+}
 
 interface HeroCarouselProps {
   filter: DivisionPreference;
@@ -191,6 +202,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
   if (!slide) return null;
 
+  const currentCtaLink = filter === 'kids' ? '/shop?target=kids' : (filter === 'women' ? '/shop?target=women' : slide.ctaLink);
+
   return (
     <section
       onMouseEnter={() => setIsPaused(true)}
@@ -201,9 +214,44 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       className="relative w-full bg-[#FAF8F5] select-none p-0 m-0"
       style={{ height: 'var(--hero-h)' }}
     >
+      <style jsx>{`
+        @keyframes heroTextFadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-hero-eyebrow {
+          animation: heroTextFadeUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 0ms both;
+        }
+        .animate-hero-headline {
+          animation: heroTextFadeUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+        }
+        .animate-hero-subline {
+          animation: heroTextFadeUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 160ms both;
+        }
+        .animate-hero-cta {
+          animation: heroTextFadeUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 240ms both;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-hero-eyebrow,
+          .animate-hero-headline,
+          .animate-hero-subline,
+          .animate-hero-cta {
+            animation: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+          }
+        }
+      `}</style>
+
       {/* Full-bleed clickable slide */}
       <Link
-        href={slide.ctaLink}
+        href={currentCtaLink}
         prefetch={true}
         className="absolute inset-0 z-0 block cursor-pointer w-full h-full overflow-hidden"
         aria-label={slide.headline || 'Explore Collection'}
@@ -248,23 +296,64 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           </div>
         </div>
 
-        {/* Optional Overlay Text Block (rendered only if set) */}
-        {(slide.headline || slide.ctaText) && (
-          <div className="absolute bottom-16 inset-x-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pt-12 pb-4 px-6 sm:px-12 pointer-events-none z-10">
-            <div className="max-w-[1440px] mx-auto flex flex-col items-start gap-2">
+        {/* Luxury Text Overlay */}
+        <div
+          key={`overlay-${slide.id}-${currentSlide}`}
+          className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-end sm:justify-center"
+        >
+          {/* Soft ivory-to-transparent scrim: keeps photos bright, ensures WCAG AA contrast */}
+          <div
+            className="sm:hidden absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to top, rgba(249, 246, 241, 0.94) 0%, rgba(249, 246, 241, 0.75) 28%, rgba(249, 246, 241, 0.25) 55%, transparent 75%)',
+            }}
+          />
+          <div
+            className="hidden sm:block absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(249, 246, 241, 0.88) 0%, rgba(249, 246, 241, 0.72) 25%, rgba(249, 246, 241, 0.30) 45%, transparent 65%)',
+            }}
+          />
+
+          {/* Text Content Container: aligned with header logo padding */}
+          <div className="relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-8 lg:px-12 pb-20 sm:pb-0">
+            <div className="max-w-[480px] flex flex-col items-start text-left">
+              {/* Eyebrow */}
+              {slide.eyebrow && (
+                <div className="animate-hero-eyebrow flex items-center mb-2.5 sm:mb-3.5">
+                  <span className="w-10 h-[1.5px] bg-[#B8903A] mr-3 shrink-0" aria-hidden="true" />
+                  <span className="font-sans uppercase text-[12px] sm:text-[13px] tracking-[0.3em] text-[#B8903A] font-semibold">
+                    {slide.eyebrow}
+                  </span>
+                </div>
+              )}
+
+              {/* Headline */}
               {slide.headline && (
-                <h2 className="text-xl sm:text-3xl font-serif font-semibold text-white tracking-wide">
-                  {slide.headline}
+                <h2 className="animate-hero-headline font-serif font-medium text-[#3A1530] text-[34px] sm:text-[clamp(44px,4.6vw,76px)] leading-[1.05] tracking-tight mb-2.5 sm:mb-4">
+                  {renderHeadline(slide.headline)}
                 </h2>
               )}
-              {slide.ctaText && (
-                <span className="pointer-events-auto inline-flex items-center justify-center px-5 py-2 bg-white text-[#1C1417] text-xs font-sans font-bold tracking-widest uppercase hover:bg-white/90 transition-colors shadow-sm">
-                  {slide.ctaText}
-                </span>
+
+              {/* Subline */}
+              {slide.subline && (
+                <p className="animate-hero-subline font-sans text-[15px] sm:text-[16px] text-[#5A4552] tracking-[0.02em] leading-relaxed max-w-[440px] line-clamp-2 mb-5 sm:mb-7">
+                  {slide.subline}
+                </p>
               )}
+
+              {/* CTA Button: Solid deep plum #3A1530 with ivory text & sliding gold arrow */}
+              <div className="animate-hero-cta">
+                <span className="pointer-events-auto inline-flex items-center justify-center gap-2.5 py-3.5 px-8 sm:py-4 sm:px-9 bg-[#3A1530] text-[#FDFBF7] font-sans text-[12px] sm:text-[13px] font-semibold tracking-[0.22em] uppercase rounded-full shadow-[0_4px_16px_rgba(58,21,48,0.22)] hover:bg-[#4E1C41] hover:shadow-[0_6px_22px_rgba(58,21,48,0.32)] transition-all duration-300 min-h-[48px] group">
+                  <span>SHOP NOW</span>
+                  <ArrowRight className="w-4 h-4 text-[#B8903A] transition-transform duration-300 group-hover:translate-x-1.5" />
+                </span>
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </Link>
 
       {/* Prev/Next Navigation Arrows: Available on BOTH Mobile & Desktop */}

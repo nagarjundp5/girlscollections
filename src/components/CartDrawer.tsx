@@ -17,6 +17,9 @@ import {
 import { Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useScrollLock } from '@/lib/useScrollLock';
 
+// In-memory cache for Cart Drawer recommendations to ensure 0 database and 0 network hits on repeated drawer opens
+let memoryRecommendedCache: any[] | null = null;
+
 export const CartDrawer: React.FC = () => {
   const {
     cart,
@@ -38,8 +41,70 @@ export const CartDrawer: React.FC = () => {
     return `₹${rupees.toLocaleString('en-IN')}`;
   };
 
-  // Recommended products for the in-drawer carousel
-  const recommendedProducts = MOCK_PRODUCTS.slice(0, 4);
+  // Recommended products with 2-tier client cache (memory + sessionStorage), 0 DB hits
+  const [recommendedProducts, setRecommendedProducts] = React.useState<any[]>(() => {
+    return memoryRecommendedCache || MOCK_PRODUCTS.slice(0, 4);
+  });
+
+  React.useEffect(() => {
+    if (!isCartOpen) return;
+
+    if (memoryRecommendedCache && memoryRecommendedCache.length > 0) {
+      setRecommendedProducts(memoryRecommendedCache);
+      return;
+    }
+
+    try {
+      const stored = sessionStorage.getItem('tgc_cart_recommended');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          memoryRecommendedCache = parsed;
+          setRecommendedProducts(parsed);
+          return;
+        }
+      }
+    } catch {}
+
+    let isCancelled = false;
+    async function loadRecommended() {
+      try {
+        const res = await fetch('/api/products', {
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const prods = data.products || [];
+
+        const curated = prods
+          .filter(
+            (p: any) =>
+              p &&
+              p.is_active !== false &&
+              p.images &&
+              p.images.length > 0 &&
+              !p.images[0].includes('photo-1621600411688')
+          )
+          .slice(0, 4);
+
+        if (!isCancelled && curated.length > 0) {
+          memoryRecommendedCache = curated;
+          setRecommendedProducts(curated);
+          try {
+            sessionStorage.setItem('tgc_cart_recommended', JSON.stringify(curated));
+          } catch {}
+        }
+      } catch (err) {
+        console.warn('[CartDrawer] Recommended fetch note:', err);
+      }
+    }
+
+    loadRecommended();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isCartOpen]);
 
   return (
     <AnimatePresence>
@@ -245,7 +310,7 @@ export const CartDrawer: React.FC = () => {
                       >
                         <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-2 bg-sand/20">
                           <Image
-                            src={prod.images[0]}
+                            src={prod.images?.[0] || '/logo.png'}
                             alt={prod.name}
                             fill
                             className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
@@ -259,11 +324,17 @@ export const CartDrawer: React.FC = () => {
                           </h4>
                           <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold text-navy font-tnum">
-                              ₹{prod.price.toLocaleString('en-IN')}
+                              ₹{(prod.price > 100000 ? Math.round(prod.price / 100) : prod.price).toLocaleString('en-IN')}
                             </span>
                             <button
-                              onClick={() => addToCart(prod, prod.sizes[0]?.size || 'Free Size')}
-                              className="px-2 py-0.5 rounded-md bg-roseGold/15 hover:bg-roseGold text-roseGold hover:text-white text-[10px] font-bold uppercase transition-all active:scale-95"
+                              onClick={() => {
+                                const defaultSize =
+                                  (Array.isArray(prod.sizes) && typeof prod.sizes[0] === 'string'
+                                    ? prod.sizes[0]
+                                    : prod.sizes?.[0]?.size) || 'Free Size';
+                                addToCart(prod, defaultSize);
+                              }}
+                              className="px-2 py-0.5 rounded-md bg-roseGold/15 hover:bg-roseGold text-roseGold hover:text-white text-[10px] font-bold uppercase transition-all active:scale-95 cursor-pointer"
                               title="Add to bag"
                             >
                               + Add

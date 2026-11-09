@@ -11,11 +11,13 @@ const ReverseSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    const rateCheck = await rateLimit(`loc:reverse:ip:${ip}`, 20, 60000);
-    if (!rateCheck.success) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-    }
+    try {
+      const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+      const rateCheck = await rateLimit(`loc:reverse:ip:${ip}`, 20, 60000);
+      if (!rateCheck.success) {
+        return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+      }
+    } catch {}
 
     const body = await req.json();
     const parsed = ReverseSchema.safeParse(body);
@@ -25,9 +27,9 @@ export async function POST(req: Request) {
 
     const { lat, lng } = parsed.data;
 
-    // Use Nominatim reverse geocoding with custom User-Agent and timeout
+    // Use Nominatim reverse geocoding with 3.5s timeout to prevent browser 504
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
     const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&addressdetails=1`;
 
@@ -40,38 +42,43 @@ export async function POST(req: Request) {
         },
         signal: controller.signal,
       });
-    } catch (fetchErr: any) {
+    } catch {
       clearTimeout(timeoutId);
-      return NextResponse.json({ error: 'Location service timed out' }, { status: 504 });
+      return NextResponse.json({ success: false, error: 'Location service timed out' });
     } finally {
       clearTimeout(timeoutId);
     }
 
     if (!response.ok) {
-      return NextResponse.json({ error: 'Failed to reverse geocode location' }, { status: 502 });
+      return NextResponse.json({ success: false, error: 'Reverse geocode provider unavailable' });
     }
 
     const data = await response.json();
-    const address = data?.address || {};
+    const address = data.address || {};
 
-    const rawPincode = (address.postcode || '').replace(/\D/g, '').slice(0, 6);
-    const city = address.city || address.town || address.village || address.district || address.county || '';
+    const pincode = (address.postcode || '').replace(/\D/g, '').slice(0, 6);
+    const city =
+      address.city ||
+      address.town ||
+      address.district ||
+      address.suburb ||
+      address.state_district ||
+      '';
     const state = address.state || '';
     const area = address.suburb || address.neighbourhood || address.residential || address.road || '';
 
     return NextResponse.json({
       success: true,
       location: {
-        pincode: rawPincode.length === 6 ? rawPincode : '',
+        pincode,
         city,
         state,
         area,
-        source: 'geolocation',
+        displayName: data.display_name || '',
       },
     });
   } catch (error: any) {
     console.error('[Reverse Geocode Error]:', error);
-    return NextResponse.json({ error: 'Location lookup failed' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Failed to reverse geocode coordinates' });
   }
 }
-

@@ -222,7 +222,7 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: true,
     isSale: true,
     images: [
-      "https://images.unsplash.com/photo-1621600411688-4be93cd68504?auto=format&fit=crop&q=85&w=1200",
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
       "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=85&w=1200",
     ],
     sizes: [
