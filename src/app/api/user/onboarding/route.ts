@@ -78,40 +78,72 @@ export async function POST(req: Request) {
     // 3. Update or upsert Neon users table
     const now = new Date();
     const cleanEmail = email ? email.trim() : existingUser?.email || null;
+    let effectiveUserId = userId;
 
-    if (existingUser) {
-      await db
-        .update(schema.users)
-        .set({
-          name: name.trim(),
-          email: cleanEmail,
-          onboarding_completed: true,
-          last_active_at: now,
-        })
-        .where(eq(schema.users.id, userId));
-    } else {
-      await db
-        .insert(schema.users)
-        .values({
-          id: userId,
-          name: name.trim(),
-          email: cleanEmail,
-          phone: userPhone || null,
-          phone_verified: Boolean(userPhone),
-          auth_provider: 'phone',
-          onboarding_completed: true,
-          created_at: now,
-          last_active_at: now,
-        })
-        .onConflictDoUpdate({
-          target: schema.users.id,
-          set: {
+    if (cleanEmail) {
+      const [conflictUser] = await db
+        .select()
+        .from(schema.users)
+        .where(eq(schema.users.email, cleanEmail))
+        .limit(1);
+
+      if (conflictUser && conflictUser.id !== userId) {
+        // Merge phone into the existing email user
+        effectiveUserId = conflictUser.id;
+        try {
+          await db.delete(schema.users).where(eq(schema.users.id, userId));
+        } catch {
+          await db.update(schema.users).set({ phone: null, email: null }).where(eq(schema.users.id, userId));
+        }
+
+        await db
+          .update(schema.users)
+          .set({
+            name: name.trim(),
+            phone: userPhone || conflictUser.phone,
+            phone_verified: Boolean(userPhone || conflictUser.phone_verified),
+            onboarding_completed: true,
+            last_active_at: now,
+          })
+          .where(eq(schema.users.id, conflictUser.id));
+      }
+    }
+
+    if (effectiveUserId === userId) {
+      if (existingUser) {
+        await db
+          .update(schema.users)
+          .set({
             name: name.trim(),
             email: cleanEmail,
             onboarding_completed: true,
             last_active_at: now,
-          },
-        });
+          })
+          .where(eq(schema.users.id, userId));
+      } else {
+        await db
+          .insert(schema.users)
+          .values({
+            id: userId,
+            name: name.trim(),
+            email: cleanEmail,
+            phone: userPhone || null,
+            phone_verified: Boolean(userPhone),
+            auth_provider: 'phone',
+            onboarding_completed: true,
+            created_at: now,
+            last_active_at: now,
+          })
+          .onConflictDoUpdate({
+            target: schema.users.id,
+            set: {
+              name: name.trim(),
+              email: cleanEmail,
+              onboarding_completed: true,
+              last_active_at: now,
+            },
+          });
+      }
     }
 
     // 4. Save location as default address in addresses table
@@ -122,10 +154,10 @@ export async function POST(req: Request) {
       await db
         .update(schema.addresses)
         .set({ is_default: false })
-        .where(eq(schema.addresses.user_id, userId));
+        .where(eq(schema.addresses.user_id, effectiveUserId));
 
       await db.insert(schema.addresses).values({
-        user_id: userId,
+        user_id: effectiveUserId,
         name: name.trim(),
         phone: userPhone || '9999999999',
         line1: fullLine1,
@@ -144,7 +176,7 @@ export async function POST(req: Request) {
 
     // 5. Re-issue fresh session token with onboarding status
     try {
-      const sessionToken = await signToken({ userId });
+      const sessionToken = await signToken({ userId: effectiveUserId });
       cookies().set('tgc_session', sessionToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -158,6 +190,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
+    if (err?.code === '23505' || err?.message?.includes('users_email_unique')) {
+      return NextResponse.json(
+        { error: 'This email is already linked with another account. Please use another email or leave it empty.' },
+        { status: 400 }
+      );
+    }
     console.error('[Onboarding API Error]:', err?.message || err);
     return NextResponse.json({ error: err?.message || 'Failed to complete profile' }, { status: 500 });
   }
