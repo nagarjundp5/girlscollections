@@ -5,12 +5,14 @@ import { db } from '@/db';
 import { orders } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import Link from 'next/link';
-import { CheckCircle, ShoppingBag, MapPin, ClipboardList } from 'lucide-react';
+import Image from 'next/image';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/jwt';
+import LiveOrderTracker from '@/components/order/LiveOrderTracker';
+import { MapPin, CreditCard, ShoppingBag } from 'lucide-react';
 
 export const metadata = {
-  title: 'Order Confirmed',
+  title: 'Order Confirmed | The Girls Collections',
   description: 'Thank you for your order.',
 };
 
@@ -35,7 +37,7 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
         userId = clerkAuth.userId;
       }
     } catch (e) {
-      console.warn('[Order Confirmation Page] Failed to retrieve Clerk auth session:', e);
+      console.warn('[Order Confirmation Page] Clerk auth note:', e);
     }
   }
 
@@ -49,7 +51,7 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
     notFound();
   }
 
-  // Fetch order
+  // Fetch order from Neon
   const [order] = await db
     .select()
     .from(orders)
@@ -61,102 +63,149 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
     notFound();
   }
 
+  const itemsList = (order.items as any[]) || [];
+  const address = order.shipping_address as any;
   const isPickup = order.fulfillment_type === 'pickup';
 
+  const subtotalRupees = order.subtotal > 100000 ? Math.round(order.subtotal / 100) : order.subtotal;
+  const totalRupees = order.total > 100000 ? Math.round(order.total / 100) : order.total;
+  const discountRupees = (order.discount_amount || 0) > 100000 ? Math.round((order.discount_amount || 0) / 100) : (order.discount_amount || 0);
+  const shippingRupees = (order.shipping_charge || 0) > 100000 ? Math.round((order.shipping_charge || 0) / 100) : (order.shipping_charge || 0);
+
   return (
-    <main className="min-h-screen bg-black text-white pt-28 pb-20 px-4 md:px-8">
-      <div className="max-w-xl mx-auto text-center space-y-8 animate-fade-in">
-        
-        {/* Success Icon */}
-        <div className="flex justify-center">
-          <div className="w-16 h-16 bg-white/10 text-white rounded-full flex items-center justify-center border border-white/20">
-            <CheckCircle className="w-8 h-8 text-emerald-400" />
+    <main className="min-h-screen bg-[#FBF7F1] text-[#1C1417] pt-24 sm:pt-28 pb-20 px-4 md:px-8">
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Live Order Tracker (Header, Tracking, Timeline, WhatsApp & Continue Shopping Buttons) */}
+        <LiveOrderTracker
+          order={{
+            id: order.id,
+            order_number: order.order_number,
+            customer_name: order.customer_name,
+            customer_email: order.customer_email,
+            customer_phone: order.customer_phone,
+            status: order.status,
+            order_status: order.order_status,
+            created_at: order.created_at,
+            courier_name: order.courier_name,
+            awb_code: order.awb_code,
+            tracking_url: order.tracking_url,
+            fulfillment_type: order.fulfillment_type,
+            total: totalRupees,
+          }}
+        />
+
+        {/* ── ITEMS CARD ── */}
+        <div className="bg-white border border-[#EFE7E2] rounded-3xl p-6 sm:p-7 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#EFE7E2] pb-3">
+            <ShoppingBag className="w-4 h-4 text-[#B8924A]" />
+            <h2 className="text-sm font-serif font-bold text-[#1C1417]">
+              Ordered Items ({itemsList.length})
+            </h2>
+          </div>
+
+          <div className="divide-y divide-[#EFE7E2]">
+            {itemsList.map((item, idx) => {
+              const itemPrice = item.price > 100000 ? Math.round(item.price / 100) : item.price;
+              const lineTotal = itemPrice * (item.quantity || 1);
+
+              return (
+                <div key={idx} className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative w-14 h-16 rounded-xl overflow-hidden bg-[#FAF6EE] shrink-0 border border-[#EFE7E2]">
+                      {item.image || item.images?.[0] ? (
+                        <Image
+                          src={item.image || item.images[0]}
+                          alt={item.name}
+                          fill
+                          className="object-cover object-top"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-xs font-serif text-[#B8924A]">
+                          TGC
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-[#1C1417] truncate max-w-[200px] sm:max-w-xs">
+                        {item.name}
+                      </p>
+                      <p className="text-[11px] text-gray-500 font-sans mt-0.5">
+                        Size: <strong className="text-[#1C1417]">{item.size || item.size_key || 'Free Size'}</strong> • Qty: {item.quantity || 1}
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="text-xs sm:text-sm font-bold text-[#1C1417] font-sans shrink-0">
+                    ₹{lineTotal.toLocaleString('en-IN')}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Messaging */}
-        <div className="space-y-3">
-          <span className="text-[10px] font-mono tracking-widest text-zinc-550 uppercase block">
-            Payment Verified &amp; Confirmed
-          </span>
-          <h1 className="text-3xl font-black uppercase tracking-widest font-mono">
-            Welcome To The Drop.
-          </h1>
-          <p className="text-xs text-zinc-400 max-w-sm mx-auto leading-relaxed">
-            Your order <strong>{order.order_number}</strong> has been secured. A confirmation is waiting in your dashboard.
-          </p>
-        </div>
-
-        {/* Main Details Panel */}
-        <div className="bg-zinc-950 border border-zinc-850 p-6 rounded-xl text-left space-y-5">
-          <h2 className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 border-b border-zinc-900 pb-3 font-bold">
-            Fulfillment Summary
-          </h2>
+        {/* ── DELIVERY ADDRESS CARD ── */}
+        <div className="bg-white border border-[#EFE7E2] rounded-3xl p-6 sm:p-7 shadow-xs space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#EFE7E2] pb-3">
+            <MapPin className="w-4 h-4 text-[#B8924A]" />
+            <h2 className="text-sm font-serif font-bold text-[#1C1417]">
+              {isPickup ? 'Store Pickup Details' : 'Delivery Address'}
+            </h2>
+          </div>
 
           {isPickup ? (
-            <div className="space-y-4">
-              <div className="bg-white text-black p-5 rounded-lg text-center space-y-1">
-                <span className="text-[9px] uppercase font-mono tracking-widest text-zinc-500 block">
-                  In-Store pickup code
-                </span>
-                <div className="text-2xl font-black font-mono tracking-[0.2em] pl-[0.2em] py-1">
-                  {order.pickup_code}
-                </div>
-              </div>
-              <div className="text-xs space-y-1 font-mono text-zinc-400">
-                <p className="text-white font-bold">📍 Store Pickup Point:</p>
-                <p>DRFTN Store</p>
-                <p>1st Floor, Kogilu Main Rd, above Sri Venkateshwar Vaibhava Veg Hotel, K B Sandra, Yelahanka, Bengaluru</p>
-                <p className="text-[10px] text-zinc-500 mt-2">
-                  Show this code to store staff when collecting your items.
-                </p>
-              </div>
+            <div className="text-xs text-gray-600 leading-relaxed space-y-1">
+              <p className="font-bold text-[#1C1417]">The Girls Collections Store</p>
+              <p>Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004</p>
+              <p className="pt-1 text-gray-500">Pickup Code: <strong className="text-[#3B1230] text-sm">{order.pickup_code || 'TGC-STORE'}</strong></p>
             </div>
           ) : (
-            <div className="text-xs space-y-1.5 font-mono text-zinc-400">
-              <p className="text-white font-bold">📍 Shipping To:</p>
-              <p className="text-zinc-300 font-bold">{order.customer_name}</p>
-              <p>{order.shipping_address?.line1}</p>
-              {order.shipping_address?.line2 && <p>{order.shipping_address?.line2}</p>}
-              <p>{order.shipping_address?.city}, {order.shipping_address?.state} - {order.shipping_address?.pincode}</p>
+            <div className="text-xs text-gray-600 leading-relaxed space-y-0.5">
+              <p className="font-bold text-[#1C1417] text-sm">{order.customer_name}</p>
+              <p>{address?.line1}</p>
+              {address?.line2 && <p>{address?.line2}</p>}
+              <p>{address?.city}, {address?.state} - {address?.pincode}</p>
+              <p className="pt-1 text-gray-500">Phone: {order.customer_phone}</p>
             </div>
           )}
-
-          {/* Items breakdown preview */}
-          <div className="border-t border-zinc-900 pt-4 space-y-3 font-mono">
-            <h3 className="text-[9px] text-zinc-500 uppercase tracking-wider">
-              secured fits
-            </h3>
-            {(order.items as any[]).map((item, idx) => (
-              <div key={idx} className="flex justify-between text-xs">
-                <span className="text-zinc-300 truncate max-w-[200px]">
-                  {item.name} ({item.size}) x{item.quantity}
-                </span>
-                <span>₹{(item.price * item.quantity / 100).toLocaleString('en-IN')}</span>
-              </div>
-            ))}
-            <div className="border-t border-zinc-900 pt-3 flex justify-between font-black text-xs text-white">
-              <span>TOTAL</span>
-              <span>₹{(order.total / 100).toLocaleString('en-IN')}</span>
-            </div>
-          </div>
         </div>
 
-        {/* Dashboard Navigation Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-          <Link
-            href={`/account/orders/${order.id}`}
-            className="flex items-center justify-center gap-2 border border-zinc-800 hover:border-zinc-700 bg-zinc-950 text-white px-6 py-3 font-bold uppercase tracking-widest text-xs transition-colors rounded-lg"
-          >
-            <ClipboardList className="w-4 h-4" />
-            Track Order
-          </Link>
-          <Link
-            href="/shop"
-            className="flex items-center justify-center border border-white bg-white text-black px-6 py-3 font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-colors rounded-lg"
-          >
-            Shop New Drops
-          </Link>
+        {/* ── PAYMENT SUMMARY CARD ── */}
+        <div className="bg-white border border-[#EFE7E2] rounded-3xl p-6 sm:p-7 shadow-xs space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#EFE7E2] pb-3">
+            <CreditCard className="w-4 h-4 text-[#B8924A]" />
+            <h2 className="text-sm font-serif font-bold text-[#1C1417]">Payment Summary</h2>
+          </div>
+
+          <div className="space-y-2 text-xs text-gray-600">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span className="font-medium text-[#1C1417]">₹{subtotalRupees.toLocaleString('en-IN')}</span>
+            </div>
+            {discountRupees > 0 && (
+              <div className="flex justify-between text-emerald-600 font-medium">
+                <span>Discount</span>
+                <span>-₹{discountRupees.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span>Shipping</span>
+              <span className="font-medium text-[#1C1417]">
+                {shippingRupees === 0 ? 'FREE' : `₹${shippingRupees.toLocaleString('en-IN')}`}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Payment Mode</span>
+              <span className="font-semibold text-[#1C1417] uppercase">
+                {order.payment_mode === 'cod' ? 'Cash on Delivery (COD)' : 'Prepaid (Razorpay / UPI)'}
+              </span>
+            </div>
+            <div className="border-t border-[#EFE7E2] pt-3 flex justify-between text-sm sm:text-base font-serif font-bold text-[#3B1230]">
+              <span>Total Paid</span>
+              <span>₹{totalRupees.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
         </div>
       </div>
     </main>

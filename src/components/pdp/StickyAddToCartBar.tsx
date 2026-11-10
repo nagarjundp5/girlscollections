@@ -19,11 +19,10 @@ export const StickyAddToCartBar: React.FC<StickyAddToCartBarProps> = ({
 
   useEffect(() => {
     const galleryEl = document.getElementById('pdp-primary-gallery');
-    
-    // Fallback: observe gallery element; if absent, reveal after 400px scroll
+
     if (!galleryEl) {
       const handleScroll = () => {
-        setIsVisible(window.scrollY > 400);
+        setIsVisible(window.scrollY > 450);
       };
       window.addEventListener('scroll', handleScroll, { passive: true });
       return () => window.removeEventListener('scroll', handleScroll);
@@ -31,7 +30,7 @@ export const StickyAddToCartBar: React.FC<StickyAddToCartBarProps> = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Sticky bar slides in ONLY after the primary product gallery image scrolls out of view
+        // Sticky bar slides in ONLY after the primary product gallery scrolls out of view
         setIsVisible(!entry.isIntersecting);
       },
       { threshold: 0.1 }
@@ -43,42 +42,39 @@ export const StickyAddToCartBar: React.FC<StickyAddToCartBarProps> = ({
 
   return (
     <div
-      className={`fixed bottom-0 inset-x-0 z-[80] bg-ivory/95 backdrop-blur-md border-t border-zariGold/30 px-4 py-3 shadow-2xl transition-all duration-200 ease-out ${
+      className={`fixed z-[85] inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#EFE7E2] px-4 py-2.5 shadow-xl transition-all duration-300 ease-out ${
         isVisible
-          ? 'translate-y-0 opacity-100'
+          ? 'translate-y-0 opacity-100 pointer-events-auto'
           : 'translate-y-full opacity-0 pointer-events-none'
-      }`}
+      } bottom-[56px] sm:bottom-0`}
+      style={{
+        paddingBottom: 'calc(0.625rem + env(safe-area-inset-bottom, 0px))',
+      }}
     >
-      <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
-        
-        {/* Product Title & Price Info */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="min-w-0">
-            <h4 className="text-xs sm:text-sm font-serif font-semibold text-inkNavy truncate">
-              {product.name}
-            </h4>
-            <div className="flex items-baseline gap-2">
-              <span className="text-xs sm:text-sm font-sans font-bold text-zariGold font-tnum">
-                ₹{product.price.toLocaleString('en-IN')}
-              </span>
-              <span className="text-[10px] font-sans text-inkNavy/60 uppercase">
-                • Size {selectedSize}
-              </span>
-            </div>
+      <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
+        {/* Product Details Left */}
+        <div className="min-w-0 flex-1">
+          <h4 className="text-xs sm:text-sm font-serif font-bold text-[#1C1417] truncate leading-tight">
+            {product.name}
+          </h4>
+          <div className="flex items-center gap-2 mt-0.5 text-xs">
+            <span className="font-extrabold text-[#1C1417]">
+              ₹{product.price.toLocaleString('en-IN')}
+            </span>
+            <span className="text-[11px] text-[#B8903A] font-semibold">
+              {selectedSize ? `• Size: ${selectedSize}` : '• Select size'}
+            </span>
           </div>
         </div>
 
-        {/* Action Button */}
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={onAddToCart}
-            className="px-5 py-2.5 bg-inkNavy text-white hover:bg-zariGold active:scale-[0.97] transition-all duration-120 ease-out rounded-md text-xs font-sans font-bold uppercase tracking-wider flex items-center gap-2 shadow-md cursor-pointer"
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>ADD TO BAG</span>
-          </button>
-        </div>
-
+        {/* Solid Wine Add To Bag Right */}
+        <button
+          onClick={onAddToCart}
+          className="h-[44px] px-5 sm:px-8 rounded-[6px] bg-[#3B1230] hover:bg-[#2A0D22] active:scale-[0.98] text-white font-sans text-xs font-bold uppercase tracking-[0.16em] flex items-center justify-center gap-2 shrink-0 shadow-md transition-all cursor-pointer"
+        >
+          <ShoppingBag className="w-3.5 h-3.5" />
+          <span>{selectedSize ? 'ADD TO BAG' : 'CHOOSE SIZE'}</span>
+        </button>
       </div>
     </div>
   );

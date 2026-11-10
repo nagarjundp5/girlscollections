@@ -22,7 +22,9 @@ export default function CancelOrderButton({
   const { addToast } = useToast();
   const [isPending, setIsPending] = useState(false);
   const [timeLeftSec, setTimeLeftSec] = useState<number | null>(null);
-  const [isCancelled, setIsCancelled] = useState(orderStatus === 'CANCELLED' || orderStatus === 'cancelled');
+  const [isCancelled, setIsCancelled] = useState(
+    orderStatus === 'CANCELLED' || orderStatus === 'cancelled'
+  );
 
   useEffect(() => {
     if (!cancelAllowedUntil) {
@@ -46,7 +48,16 @@ export default function CancelOrderButton({
     return () => clearInterval(interval);
   }, [cancelAllowedUntil]);
 
-  const cancellableStatuses = ['CREATED', 'PAYMENT_PENDING', 'PAID', 'CANCELLATION_WINDOW', 'placed', 'confirmed', 'preparing'];
+  const cancellableStatuses = [
+    'CREATED',
+    'PAYMENT_PENDING',
+    'PAID',
+    'CANCELLATION_WINDOW',
+    'placed',
+    'confirmed',
+    'preparing',
+    'packing',
+  ];
   const isStatusCancellable = cancellableStatuses.includes(orderStatus) && !isCancelled;
   const isTimeValid = timeLeftSec !== null && timeLeftSec > 0;
   const canCancel = isStatusCancellable && isTimeValid;
@@ -54,7 +65,7 @@ export default function CancelOrderButton({
   const handleCancel = async () => {
     if (
       !window.confirm(
-        'Are you sure you want to cancel this order? Items will be returned to inventory.'
+        'Are you sure you want to cancel this order? Handcrafted items will be returned to inventory.'
       )
     ) {
       return;
@@ -96,9 +107,9 @@ export default function CancelOrderButton({
 
   if (isCancelled) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 text-zinc-400 px-4 py-2.5 rounded-lg text-xs font-mono flex items-center gap-2">
-        <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-        <span>This order has been cancelled.</span>
+      <div className="bg-[#FAF6EE] border border-[#B8924A]/30 text-rose-800 px-4 py-2.5 rounded-xl text-xs flex items-center gap-2">
+        <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+        <span className="font-medium">This order has been cancelled.</span>
       </div>
     );
   }
@@ -106,14 +117,14 @@ export default function CancelOrderButton({
   if (canCancel) {
     return (
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <div className="flex items-center gap-1.5 text-amber-400 font-mono text-xs bg-amber-400/10 border border-amber-400/20 px-3 py-1.5 rounded-lg">
-          <Clock className="w-3.5 h-3.5 animate-pulse" />
-          <span>You can cancel this order for the next {formatCountdown(timeLeftSec!)}</span>
+        <div className="flex items-center gap-1.5 text-[#3B1230] text-xs bg-[#FAF6EE] border border-[#B8924A]/30 px-3 py-2 rounded-xl">
+          <Clock className="w-3.5 h-3.5 text-[#B8924A] animate-pulse" />
+          <span>Cancellation available for the next <strong>{formatCountdown(timeLeftSec!)}</strong></span>
         </div>
         <button
           onClick={handleCancel}
           disabled={isPending}
-          className="border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 disabled:opacity-40 px-4 py-2 font-mono uppercase tracking-widest text-xs transition-all flex items-center gap-2 rounded-lg cursor-pointer"
+          className="border border-rose-300 text-rose-700 hover:bg-rose-50 disabled:opacity-40 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-2 rounded-xl cursor-pointer min-h-[44px]"
         >
           {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
           {isPending ? 'Cancelling...' : 'Cancel Order'}
@@ -122,10 +133,9 @@ export default function CancelOrderButton({
     );
   }
 
-  // Once cancel_allowed_until has passed or order is being prepared for shipping
   return (
-    <div className="text-[11px] text-zinc-400 font-mono bg-zinc-950 border border-zinc-850 p-3 rounded-lg max-w-md">
-      This order is being prepared for shipment and can no longer be cancelled here. Contact support for help.
+    <div className="text-xs text-gray-500 bg-[#FAF6EE]/50 border border-[#EFE7E2] p-3 rounded-xl max-w-md">
+      This order is being packed for dispatch and can no longer be self-cancelled. Please message WhatsApp support if you need assistance.
     </div>
   );
 }

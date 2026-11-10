@@ -14,9 +14,15 @@ export default function WhatsAppButton() {
 
   if (!mounted || isExcluded) return null;
 
+  const isPdp = pathname?.startsWith('/shop/') && pathname !== '/shop';
+
   return (
     <div
-      className="fixed z-40 flex items-center group select-none pointer-events-auto transition-all duration-300 ease-out right-4 sm:right-6 bottom-[calc(64px+env(safe-area-inset-bottom,0px)+16px)] sm:bottom-8"
+      className={`fixed z-40 flex items-center group select-none pointer-events-auto transition-all duration-300 ease-out right-4 sm:right-6 ${
+        isPdp
+          ? 'bottom-[calc(76px+env(safe-area-inset-bottom,0px))] sm:bottom-8'
+          : 'bottom-[calc(64px+env(safe-area-inset-bottom,0px)+16px)] sm:bottom-8'
+      }`}
     >
       {/* Desktop Hover Label Badge */}
       <span className="hidden sm:inline-block opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 text-[11px] font-sans font-semibold uppercase tracking-[0.12em] text-[#1C1417] bg-[#FAF6EE]/95 backdrop-blur-md px-3 py-1.5 shadow-md border border-[#1C1417]/10 mr-2.5 pointer-events-none rounded-xs">

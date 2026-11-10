@@ -83,7 +83,16 @@ function redactSensitiveData(payload: any): any {
   if (!payload) return payload;
   return JSON.parse(
     JSON.stringify(payload, (key, value) => {
-      if (key === 'billing_phone' || key === 'customerPhone' || key === 'phone' || key === 'password') {
+      if (
+        key === 'billing_phone' ||
+        key === 'customerPhone' ||
+        key === 'phone' ||
+        key === 'password' ||
+        key === 'billing_address' ||
+        key === 'billing_address_2' ||
+        key === 'line1' ||
+        key === 'line2'
+      ) {
         return '***REDACTED***';
       }
       return value;

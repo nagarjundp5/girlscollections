@@ -3,6 +3,7 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq, sql, isNull } from 'drizzle-orm';
 import { writeAuditLog } from './audit-service';
+import { getSiteUrl, getQStashPublishHeaders } from '@/lib/getSiteUrl';
 
 export interface QStashShippingJobPayload {
   shippingJobId: string;
@@ -100,20 +101,8 @@ export async function publishQStashShippingJobIdempotent(params: {
 
   // ── Publish with retry + exponential backoff ──
   const client = getQStashClient();
-
-  const rawBase =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.APP_BASE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://www.thegirlscollections.com');
-
-  // Normalize apex domain (thegirlscollections.com) to canonical www.thegirlscollections.com
-  // This prevents Vercel 301 redirects converting QStash POST webhooks into GET (which throws 405)
-  const baseUrl = rawBase
-    .replace('://thegirlscollections.com', '://www.thegirlscollections.com')
-    .replace('://drftnclothing.in', '://www.thegirlscollections.com')
-    .replace('://drftn.in', '://www.thegirlscollections.com');
-
-  const destinationUrl = `${baseUrl.replace(/\/$/, '')}/api/webhooks/qstash/shipping-worker`;
+  const siteUrl = getSiteUrl();
+  const destinationUrl = `${siteUrl}/api/webhooks/qstash/shipping-worker`;
 
   const payload: QStashShippingJobPayload = {
     shippingJobId,
@@ -140,13 +129,16 @@ export async function publishQStashShippingJobIdempotent(params: {
 
   for (let attempt = 0; attempt < RETRY_BACKOFF_MS.length + 1; attempt++) {
     try {
+      const publishHeaders = getQStashPublishHeaders({ 'x-correlation-id': correlationId });
       const res = await client.publishJSON({
         url: destinationUrl,
         delay: delaySeconds,
         body: payload,
         retries: 3,
-        headers: { 'x-correlation-id': correlationId },
+        headers: publishHeaders,
       });
+
+      console.log(`[QStashClient] QStash message dispatched! Message ID: ${res.messageId} | Destination: ${destinationUrl}`);
 
       // ── Success: persist messageId + timestamp for observability ──
       await db

@@ -6,16 +6,32 @@ import * as schema from '@/db/schema';
 import { eq, or } from 'drizzle-orm';
 import { transitionOrderStatus, OrderState } from '@/lib/orchestration/order-state-machine';
 import { writeAuditLog } from '@/lib/orchestration/audit-service';
+import { firestoreService } from '@/lib/firestore';
+import crypto from 'crypto';
+
+function safeCompareTokens(provided: string | null, expected: string | undefined): boolean {
+  if (!provided || !expected) return false;
+  const provClean = provided.replace(/^Bearer\s+/i, '').trim();
+  const expClean = expected.trim();
+  if (provClean.length !== expClean.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(provClean), Buffer.from(expClean));
+}
 
 export async function POST(request: Request) {
   let eventId = '';
 
   try {
-    const tokenHeader = request.headers.get('x-shiprocket-token') || request.headers.get('authorization');
+    const tokenHeader =
+      request.headers.get('x-shiprocket-token') ||
+      request.headers.get('x-api-key') ||
+      request.headers.get('authorization');
     const expectedToken = process.env.SHIPROCKET_WEBHOOK_SECRET || process.env.SHIPROCKET_WEBHOOK_TOKEN;
 
-    if (expectedToken && tokenHeader !== expectedToken && tokenHeader !== `Bearer ${expectedToken}`) {
-      return NextResponse.json({ error: 'Unauthorized Shiprocket Webhook token' }, { status: 401 });
+    if (expectedToken) {
+      if (!safeCompareTokens(tokenHeader, expectedToken)) {
+        console.warn('[Shiprocket Webhook] Unauthorized: Invalid secret header.');
+        return NextResponse.json({ error: 'Unauthorized Shiprocket Webhook token' }, { status: 401 });
+      }
     }
 
     const payload = await request.json();
@@ -66,19 +82,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
-    // Map Shiprocket status to OrderState
+    // Map Shiprocket status to canonical state
     const rawStatus = (current_status || '').toUpperCase();
     let targetState: OrderState | null = null;
+    let canonicalStatus: string = order.status;
 
-    if (rawStatus.includes('PICKED UP') || rawStatus.includes('IN TRANSIT') || rawStatus.includes('SHIPPED')) {
-      targetState = 'IN_TRANSIT';
+    if (rawStatus.includes('DELIVERED')) {
+      targetState = 'DELIVERED';
+      canonicalStatus = 'delivered';
     } else if (rawStatus.includes('OUT FOR DELIVERY')) {
       targetState = 'OUT_FOR_DELIVERY';
-    } else if (rawStatus.includes('DELIVERED')) {
-      targetState = 'DELIVERED';
+      canonicalStatus = 'out_for_delivery';
+    } else if (
+      rawStatus.includes('PICKED UP') ||
+      rawStatus.includes('IN TRANSIT') ||
+      rawStatus.includes('SHIPPED') ||
+      rawStatus.includes('REACHED')
+    ) {
+      targetState = 'IN_TRANSIT';
+      canonicalStatus = 'shipped';
+    } else if (rawStatus.includes('RTO') || rawStatus.includes('RETURN')) {
+      canonicalStatus = 'cancelled';
     }
 
-    // Write shipment event
+    // Write shipment event history
     await db.insert(schema.shipmentEvents).values({
       order_id: order.id,
       status: current_status || 'UPDATED',
@@ -89,36 +116,56 @@ export async function POST(request: Request) {
       raw_data: payload,
     });
 
-    // Update order fields
-    const updatedStatus = targetState === 'DELIVERED'
-      ? 'delivered'
-      : (targetState === 'OUT_FOR_DELIVERY'
-        ? 'out_for_delivery'
-        : (targetState === 'IN_TRANSIT' ? 'shipped' : order.status));
+    const trackingUrl =
+      payload.tracking_url ||
+      order.tracking_url ||
+      (awb ? `https://shiprocket.co/tracking/${awb}` : null);
 
+    // Update Neon DB order fields
     await db
       .update(schema.orders)
       .set({
         awb_code: awb || order.awb_code,
         courier_name: courier_name || order.courier_name,
         tracking_number: awb || order.tracking_number,
-        tracking_url: payload.tracking_url || order.tracking_url,
-        status: updatedStatus as any,
+        tracking_url: trackingUrl,
+        status: canonicalStatus as any,
         updated_at: new Date(),
       })
       .where(eq(schema.orders.id, order.id));
 
-    // Transition OrderState if state progression occurred
+    // Mirror to Firestore order_status collection for instant client reads
+    try {
+      await firestoreService.setDoc(
+        'order_status',
+        order.id,
+        {
+          order_id: order.id,
+          order_number: order.order_number,
+          awb: awb || order.awb_code,
+          courier_name: courier_name || order.courier_name,
+          tracking_url: trackingUrl,
+          status: canonicalStatus,
+          shiprocket_status: current_status,
+          updated_at: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (fsErr) {
+      console.warn('[Shiprocket Webhook] Firestore mirror note:', fsErr);
+    }
+
+    // Transition OrderState machine
     if (targetState && order.order_status !== targetState) {
       try {
         await transitionOrderStatus({
           orderId: order.id,
           currentStatus: order.order_status,
           targetState,
-          reason: `Shiprocket webhook status update: ${current_status}`,
+          reason: `Shiprocket webhook: ${current_status}`,
         });
       } catch (fsmErr) {
-        console.warn(`[Shiprocket Webhook] Could not transition order ${order.order_number}:`, fsmErr);
+        console.warn(`[Shiprocket Webhook] State machine notice for ${order.order_number}:`, fsmErr);
       }
     }
 
@@ -130,7 +177,7 @@ export async function POST(request: Request) {
     await writeAuditLog({
       orderId: order.id,
       action: 'WEBHOOK:SHIPROCKET_STATUS_UPDATED',
-      details: { current_status, awb, courier_name },
+      details: { current_status, awb, courier_name, canonicalStatus },
     });
 
     return NextResponse.json({ success: true, processed: true });

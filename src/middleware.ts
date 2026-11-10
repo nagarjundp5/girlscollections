@@ -20,8 +20,8 @@ export default clerkMiddleware(async (auth, req) => {
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), browsing-topics=()');
 
-  // Bypass Clerk session validation for custom auth API endpoints
-  if (pathname.startsWith('/api/auth/')) {
+  // Bypass Clerk session validation for webhooks and custom auth API endpoints
+  if (pathname.startsWith('/api/webhooks/') || pathname.startsWith('/api/auth/')) {
     return response;
   }
 

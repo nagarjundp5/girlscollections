@@ -33,8 +33,8 @@ export interface Product {
   set_type?: string;
   description: string;
   careInstructions: string[];
-  rating: number;
-  reviewsCount: number;
+  rating?: number;
+  reviewsCount?: number;
 }
 
 export interface CategoryMenu {
@@ -53,7 +53,7 @@ export const NAVIGATION_CATEGORIES: CategoryMenu[] = [
     id: "women",
     title: "Women",
     slug: "women",
-    featuredImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=600",
+    featuredImg: "/hero/hero-saree-1.png",
     promoText: "The Festive Edit — Handwoven Silk & Zari Collection",
     subcategories: [
       { name: "Anarkali Suit Sets", slug: "anarkalis" },
@@ -153,7 +153,6 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: true,
     isSale: true,
     images: [
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
       "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=85&w=1200",
       "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=85&w=1200",
     ],
@@ -189,7 +188,7 @@ export const MOCK_PRODUCTS: Product[] = [
     isSale: true,
     images: [
       "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=85&w=1200",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
+      "/hero/hero-saree-3.png",
     ],
     sizes: [
       { size: "XS", inStock: true },
@@ -222,8 +221,8 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: true,
     isSale: true,
     images: [
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
-      "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=85&w=1200",
+      "/hero/three-kids-mobile.jpg",
+      "/hero/hero-kids-2.png",
     ],
     sizes: [
       { size: "1-2Y", inStock: true },
@@ -257,7 +256,7 @@ export const MOCK_PRODUCTS: Product[] = [
     isSale: false,
     images: [
       "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=85&w=1200",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
+      "/hero/two-women-mobile.jpg",
     ],
     sizes: [
       { size: "S", inStock: true },
@@ -357,7 +356,7 @@ export const MOCK_PRODUCTS: Product[] = [
     isSale: true,
     images: [
       "https://images.unsplash.com/photo-1621600411688-4be93cd68504?auto=format&fit=crop&q=85&w=1200",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
+      "/hero/hero-saree-1.png",
     ],
     sizes: [
       { size: "2-3Y", inStock: true },
@@ -390,7 +389,7 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: false,
     isSale: false,
     images: [
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=1200",
+      "/hero/hero-saree-3.png",
       "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=85&w=1200",
     ],
     sizes: [
@@ -431,7 +430,7 @@ export const OCCASIONS_DATA = [
     id: "everyday",
     title: "Everyday Luxe",
     subtitle: "Breathable Silks & Cottons",
-    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=85&w=800",
+    image: "/hero/hero-saree-1.png",
     count: "35 items",
   },
   {

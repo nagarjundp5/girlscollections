@@ -211,15 +211,15 @@ const CategoryCircle: React.FC<{ category: CategoryCircleItem }> = ({ category }
   return (
     <Link
       href={href}
-      className="group relative flex flex-col items-center shrink-0 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] rounded-full transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] pt-4"
+      className="group relative flex flex-col items-center flex-[0_0_auto] snap-center select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] pt-4 w-[100px] sm:w-[116px] md:w-[124px]"
       aria-label={`Shop ${category.name}`}
     >
       {/* ── Outer ring ── */}
-      <div className="relative p-[2.5px] rounded-full border border-[#B8924A]/30 group-hover:border-[#B8924A] transition-colors bg-[#FAF6EE] shadow-xs shrink-0">
+      <div className="relative p-[2.5px] rounded-full border border-[#B8924A]/30 group-hover:border-[#B8924A] transition-colors bg-[#FAF6EE] shadow-xs shrink-0 w-[100px] h-[100px] sm:w-[116px] sm:h-[116px] md:w-[124px] md:h-[124px]">
 
         {/* ── Inner circle: warm ivory background ── */}
         <div
-          className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[130px] md:h-[130px] rounded-full overflow-hidden flex items-center justify-center shrink-0 border border-[#B8924A]/20"
+          className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center shrink-0 border border-[#B8924A]/20"
           style={{
             background: 'radial-gradient(circle at 45% 35%, #FFFFFF 0%, #FAF6EE 65%, #F0E8D8 100%)',
             WebkitMaskImage: '-webkit-radial-gradient(white, black)',
@@ -256,7 +256,7 @@ const CategoryCircle: React.FC<{ category: CategoryCircleItem }> = ({ category }
                 src={category.image}
                 alt={category.name}
                 fill
-                sizes="(max-width: 640px) 110px, (max-width: 1024px) 130px, 140px"
+                sizes="(max-width: 640px) 110px, (max-width: 1024px) 124px, 130px"
                 className="object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.18)] transition-transform duration-300 group-hover:scale-105"
                 priority={false}
                 loading="lazy"
@@ -266,16 +266,11 @@ const CategoryCircle: React.FC<{ category: CategoryCircleItem }> = ({ category }
         )}
       </div>
 
-      {/* ── Label below circle ── */}
-      <div className="mt-2.5 flex flex-col items-center justify-start text-center w-[100px] sm:w-[120px] md:w-[130px] min-h-[2.4em] leading-[1.2]">
-        <span className="font-sans text-[11px] sm:text-xs font-semibold tracking-[0.08em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors truncate w-full">
-          {category.line1}
+      {/* ── Label below circle: 13px, max 2 lines, centered, fixed 36px height ── */}
+      <div className="mt-2 flex flex-col items-center justify-center text-center w-[100px] sm:w-[116px] md:w-[124px] h-[36px] overflow-hidden">
+        <span className="font-sans text-[13px] font-semibold tracking-[0.04em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors line-clamp-2 text-center leading-[1.2] px-0.5">
+          {category.line1}{category.line2 ? ` ${category.line2}` : ''}
         </span>
-        {category.line2 && (
-          <span className="font-sans text-[11px] sm:text-xs font-semibold tracking-[0.08em] uppercase text-[#1A1A2E] group-hover:text-[#B8924A] transition-colors truncate w-full">
-            {category.line2}
-          </span>
-        )}
       </div>
     </Link>
   );
@@ -292,12 +287,12 @@ const ShopMoreCircle: React.FC<{ target: 'women' | 'kids' }> = ({ target }) => {
   return (
     <button
       onClick={handleOpenGroupMenu}
-      className="group relative flex flex-col items-center shrink-0 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] rounded-full transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] cursor-pointer pt-4 min-h-[44px]"
+      className="group relative flex flex-col items-center flex-[0_0_auto] snap-center select-none outline-none focus-visible:ring-2 focus-visible:ring-[#B8924A] transition-transform duration-200 active:scale-[0.98] hover:scale-[1.02] cursor-pointer pt-4 w-[100px] sm:w-[116px] md:w-[124px]"
       aria-label={`Explore all ${target} categories`}
     >
-      <div className="relative p-[2.5px] rounded-full border border-[#B8924A]/40 group-hover:border-[#B8924A] transition-colors bg-[#FAF6EE] shadow-xs shrink-0">
+      <div className="relative p-[2.5px] rounded-full border border-[#B8924A]/40 group-hover:border-[#B8924A] transition-colors bg-[#FAF6EE] shadow-xs shrink-0 w-[100px] h-[100px] sm:w-[116px] sm:h-[116px] md:w-[124px] md:h-[124px]">
         <div
-          className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[130px] md:h-[130px] rounded-full overflow-hidden bg-[#1A1E3A] flex flex-col items-center justify-center text-white shrink-0 border border-[#B8924A]/30 transition-colors"
+          className="relative w-full h-full rounded-full overflow-hidden bg-[#1A1E3A] flex flex-col items-center justify-center text-white shrink-0 border border-[#B8924A]/30 transition-colors"
           style={{
             WebkitMaskImage: '-webkit-radial-gradient(white, black)',
             isolation: 'isolate',
@@ -316,8 +311,8 @@ const ShopMoreCircle: React.FC<{ target: 'women' | 'kids' }> = ({ target }) => {
         </div>
       </div>
 
-      <div className="mt-2.5 flex flex-col items-center justify-start text-center w-[100px] sm:w-[120px] md:w-[130px] min-h-[2.4em] leading-[1.2]">
-        <span className="font-sans text-[11px] sm:text-xs font-semibold tracking-[0.08em] uppercase text-[#B8924A] group-hover:text-[#1A1E3A] transition-colors truncate w-full">
+      <div className="mt-2 flex flex-col items-center justify-center text-center w-[100px] sm:w-[116px] md:w-[124px] h-[36px] overflow-hidden">
+        <span className="font-sans text-[13px] font-semibold tracking-[0.04em] uppercase text-[#B8924A] group-hover:text-[#1A1E3A] transition-colors line-clamp-2 text-center leading-[1.2]">
           SEE ALL
         </span>
       </div>
@@ -386,55 +381,53 @@ export const CircularCategoryScroller: React.FC<CircularCategoryScrollerProps> =
       aria-label="Categories"
       className="relative w-full bg-[#FAF6EE] border-b border-[#1A1E3A]/8 select-none"
       style={{
-        paddingTop: 'clamp(38px, 5vw, 52px)',
+        paddingTop: 'clamp(28px, 4vw, 42px)',
         paddingBottom: '20px',
         overflow: 'visible',
       }}
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 relative">
-        {/* ── Prev Arrow Button ── */}
+      <div className="max-w-[1440px] mx-auto relative px-0">
+        {/* ── Prev Arrow Button (32px, vertically centred on circles, hidden at start) ── */}
         <div
-          className={`absolute left-2 sm:left-4 z-20 transition-opacity duration-200 ${
+          className={`absolute left-1 sm:left-2 lg:left-3 z-20 transition-opacity duration-200 ${
             canScrollLeft ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
-          style={{ top: '65%', transform: 'translateY(-50%)' }}
+          style={{ top: '66px', transform: 'translateY(-50%)' }}
         >
           <button
             type="button"
             onClick={() => scrollPage('left')}
-            className="w-8 h-8 lg:w-10 lg:h-10 min-w-[36px] min-h-[36px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none"
+            className="w-8 h-8 min-w-[32px] min-h-[32px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none"
             aria-label="Previous categories"
           >
-            <ChevronLeft className="w-4 h-4 lg:w-5 lg:h-5 stroke-[2]" />
+            <ChevronLeft className="w-4 h-4 stroke-[2]" />
           </button>
         </div>
 
-        {/* ── Next Arrow Button ── */}
+        {/* ── Next Arrow Button (32px, vertically centred on circles, hidden at end) ── */}
         <div
-          className={`absolute right-2 sm:right-4 z-20 transition-opacity duration-200 ${
+          className={`absolute right-1 sm:right-2 lg:right-3 z-20 transition-opacity duration-200 ${
             canScrollRight ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
-          style={{ top: '65%', transform: 'translateY(-50%)' }}
+          style={{ top: '66px', transform: 'translateY(-50%)' }}
         >
           <button
             type="button"
             onClick={() => scrollPage('right')}
-            className="w-8 h-8 lg:w-10 lg:h-10 min-w-[36px] min-h-[36px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none"
+            className="w-8 h-8 min-w-[32px] min-h-[32px] rounded-full bg-white border border-[#E2D8CC] shadow-md hover:shadow-lg flex items-center justify-center text-[#1C1417] transition-all cursor-pointer focus:outline-none"
             aria-label="Next categories"
           >
-            <ChevronRight className="w-4 h-4 lg:w-5 lg:h-5 stroke-[2]" />
+            <ChevronRight className="w-4 h-4 stroke-[2]" />
           </button>
         </div>
 
-        {/* ── Scroll Track ── */}
+        {/* ── Scroll Track: 40px mobile padding, 56px desktop padding, 16px gap, snap-center ── */}
         <div
           ref={scrollRef}
-          className="flex items-start gap-4 sm:gap-6 lg:gap-8 snap-x snap-mandatory no-scrollbar scroll-smooth overflow-x-auto overflow-y-visible"
+          className="flex items-start gap-4 snap-x snap-mandatory no-scrollbar scroll-smooth overflow-x-auto overflow-y-visible px-10 lg:px-14"
           style={{
             WebkitOverflowScrolling: 'touch',
             scrollSnapType: 'x mandatory',
-            paddingLeft: '32px',
-            paddingRight: '32px',
           }}
         >
           {displayedCategories.map((cat: CategoryCircleItem) => (

@@ -6,6 +6,9 @@ import {
   publishQStashShippingJobIdempotent,
 } from '@/lib/orchestration/qstash-client';
 import { writeAuditLog } from '@/lib/orchestration/audit-service';
+import { db } from '@/db';
+import * as schema from '@/db/schema';
+import { eq, or } from 'drizzle-orm';
 import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
@@ -13,20 +16,14 @@ export const dynamic = 'force-dynamic';
 /**
  * POST /api/admin/shipping/requeue
  *
- * Manual recovery endpoint for rare QStash publish failures.
- *
- * Finds all shipping_jobs in status PENDING with qstash_message_id IS NULL
- * (i.e., jobs that have a committed order/payment but no QStash message —
- * caused by a QStash outage at the time of checkout commit).
- *
- * For each orphaned job:
- * - Publishes a new QStash delayed message (delay: 0 for immediate dispatch)
- * - Stores resulting messageId on the job row
- * - Writes an audit log entry
- *
- * SECURITY: requireAdmin + verifyCsrfOrigin guard.
- * IDEMPOTENCY: Safe to call multiple times — publishQStashShippingJobIdempotent
- * uses atomic test-and-set and ignores already-published jobs.
+ * Admin retry & requeue endpoint for shipping jobs.
+ * Accepts optional body: { jobId?: string, orderId?: string }
+ * If specific jobId or orderId is passed:
+ *   - Resets status from FAILED to PENDING
+ *   - Clears qstash_message_id
+ *   - Publishes immediate QStash trigger
+ * If no parameter is passed:
+ *   - Finds all orphaned/failed shipping jobs and requeues them
  */
 export async function POST(request: Request) {
   const csrfErr = verifyCsrfOrigin(request);
@@ -36,13 +33,34 @@ export async function POST(request: Request) {
   if (authRes instanceof NextResponse) return authRes;
 
   try {
+    let body: any = {};
+    try {
+      body = await request.json();
+    } catch {
+      // Empty body is acceptable for bulk requeue
+    }
 
-    const orphanedJobs = await findOrphanedShippingJobs();
+    const { jobId, orderId } = body;
+    let targetJobs: any[] = [];
 
-    if (orphanedJobs.length === 0) {
+    if (jobId) {
+      targetJobs = await db
+        .select()
+        .from(schema.shippingJobs)
+        .where(eq(schema.shippingJobs.id, jobId));
+    } else if (orderId) {
+      targetJobs = await db
+        .select()
+        .from(schema.shippingJobs)
+        .where(eq(schema.shippingJobs.order_id, orderId));
+    } else {
+      targetJobs = await findOrphanedShippingJobs();
+    }
+
+    if (targetJobs.length === 0) {
       return NextResponse.json({
         success: true,
-        message: 'No orphaned shipping jobs found — all jobs have QStash messages.',
+        message: 'No eligible shipping jobs found to requeue.',
         requeued: 0,
       });
     }
@@ -55,16 +73,31 @@ export async function POST(request: Request) {
       error?: string;
     }> = [];
 
-    for (const job of orphanedJobs) {
+    for (const job of targetJobs) {
       const correlationId = crypto.randomUUID();
+
+      // Reset job to PENDING and clear qstash_message_id to allow clean publish
+      await db
+        .update(schema.shippingJobs)
+        .set({
+          status: 'PENDING',
+          qstash_message_id: null,
+          run_after: new Date(),
+          updated_at: new Date(),
+        })
+        .where(eq(schema.shippingJobs.id, job.id));
 
       try {
         const result = await publishQStashShippingJobIdempotent({
           shippingJobId: job.id,
           orderId: job.order_id,
           correlationId,
-          delaySeconds: 0, // Immediate dispatch for admin requeue
+          delaySeconds: 0, // Immediate dispatch
         });
+
+        console.log(
+          `[Admin Requeue] Shipping job ${job.id} dispatched! QStash Message ID: ${result.messageId || 'none'} (mode: ${result.mode})`
+        );
 
         results.push({
           jobId: job.id,
@@ -80,6 +113,7 @@ export async function POST(request: Request) {
           details: { jobId: job.id, messageId: result.messageId, mode: result.mode },
         });
       } catch (err: any) {
+        console.error(`[Admin Requeue] Failed to publish job ${job.id}:`, err?.message);
         results.push({
           jobId: job.id,
           orderId: job.order_id,
@@ -101,8 +135,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Requeued ${requeued} shipping job(s). ${failed} failed — check audit logs.`,
-      total: orphanedJobs.length,
+      message: `Requeued ${requeued} shipping job(s). ${failed} failed.`,
+      total: targetJobs.length,
       requeued,
       failed,
       results,

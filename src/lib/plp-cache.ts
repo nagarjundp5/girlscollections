@@ -645,18 +645,19 @@ export async function triggerPlpRebuildImmediate(): Promise<void> {
   if (qstashToken && !qstashToken.includes('placeholder') && !qstashToken.includes('mock')) {
     try {
       const { Client } = await import('@upstash/qstash');
+      const { getSiteUrl, getQStashPublishHeaders } = await import('@/lib/getSiteUrl');
       const client = new Client({ token: qstashToken });
 
-      const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-      const targetUrl = `${baseUrl.replace(/\/$/, '')}/api/webhooks/qstash/plp-warmup`;
+      const siteUrl = getSiteUrl();
+      const targetUrl = `${siteUrl}/api/webhooks/qstash/plp-warmup`;
 
-      await client.publishJSON({
+      const res = await client.publishJSON({
         url: targetUrl,
         body: { targetVersion: nextVer },
         delay: 0, // NO 30s delay
+        headers: getQStashPublishHeaders(),
       });
+      console.log(`[PlpCache] QStash plp-warmup dispatched! Message ID: ${res.messageId}`);
       return;
     } catch (err) {
       console.warn('[PlpCache] QStash dispatch failed, running local rebuild:', err);
