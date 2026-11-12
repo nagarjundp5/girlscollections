@@ -35,6 +35,13 @@ export default function StorefrontShell({ children }: { children: React.ReactNod
   const isAdminRoute = pathname?.startsWith('/admin');
 
   const [hideAnnouncement, setHideAnnouncement] = useState(false);
+  const [isIdle, setIsIdle] = useState(false);
+
+  // Defer interactive marketing/chat overlays until after page paint & idle
+  useEffect(() => {
+    const timer = setTimeout(() => setIsIdle(true), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Single passive, rAF-throttled scroll listener to smoothly hide/show announcement bar via translateY
   useEffect(() => {
@@ -127,10 +134,16 @@ export default function StorefrontShell({ children }: { children: React.ReactNod
       <QuickViewModal />
       <SearchOverlay />
       <ToastContainer />
-      <WhatsAppButton />
       <MobileBottomNav />
-      <LoginIncentivePopup />
-      <PushPrompt />
+
+      {/* Deferred third-party and popup overlays (loaded after idle) */}
+      {isIdle && (
+        <>
+          <WhatsAppButton />
+          <LoginIncentivePopup />
+          <PushPrompt />
+        </>
+      )}
     </>
   );
 }

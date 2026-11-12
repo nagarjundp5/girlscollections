@@ -282,7 +282,7 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
 
                         {hasDiscount && comparePrice && (
                           <>
-                            <span className="text-[12px] md:text-[13px] font-sans text-[#767676] line-through font-normal">
+                            <span className="text-[12px] md:text-[13px] font-sans text-[#595959] line-through font-normal">
                               {formatPrice(comparePrice)}
                             </span>
                             <span className="text-[12px] md:text-[13px] font-sans font-semibold text-[#B8283B]">

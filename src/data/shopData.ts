@@ -221,8 +221,8 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: true,
     isSale: true,
     images: [
-      "/hero/three-kids-mobile.jpg",
       "/hero/hero-kids-2.png",
+      "/hero/hero-kids-2.webp",
     ],
     sizes: [
       { size: "1-2Y", inStock: true },

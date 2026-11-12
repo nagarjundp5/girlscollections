@@ -32,6 +32,8 @@ export interface CategoryGroup {
   items: CategorySubItem[];
 }
 
+import { categoryHref } from '@/lib/categoryHref';
+
 export interface PrimaryCategory {
   id: string;
   name: string;
@@ -41,7 +43,7 @@ export interface PrimaryCategory {
 
 // Canonical URL Generator helper
 export function getCategoryHref(category: CategoryItem): string {
-  return `/shop?category=${category.slug}&target=${category.group}`;
+  return categoryHref(category.slug, category.group);
 }
 
 // Exact Client-Supplied Women Categories (17 items) — Full names strictly preserved

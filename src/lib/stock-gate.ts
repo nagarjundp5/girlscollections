@@ -1,4 +1,5 @@
 import { redis } from './redis';
+import { normalizeSize } from '@/lib/normalizeSize';
 
 // Atomic multi-unit claim: checks current >= requested, then decrements by requested in one round-trip.
 // Returns {1, new_stock} on success, or {0, current_stock} on failure.
@@ -19,7 +20,8 @@ export interface ClaimResult {
 }
 
 export async function tryClaimUnit(productId: string, size: string, quantity: number = 1): Promise<ClaimResult> {
-  const key = `stock:${productId}:${size}`;
+  const canonicalSize = normalizeSize('all', size) || size;
+  const key = `stock:${productId}:${canonicalSize}`;
   const result = await redis.eval(CLAIM_SCRIPT, [key], [String(quantity)]) as [number, number];
   return {
     success: result[0] === 1,
@@ -28,7 +30,8 @@ export async function tryClaimUnit(productId: string, size: string, quantity: nu
 }
 
 export async function releaseUnit(productId: string, size: string, quantity: number = 1): Promise<void> {
-  const key = `stock:${productId}:${size}`;
+  const canonicalSize = normalizeSize('all', size) || size;
+  const key = `stock:${productId}:${canonicalSize}`;
   await redis.incrby(key, quantity);
 }
 

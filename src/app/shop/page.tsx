@@ -4,6 +4,7 @@ import { getPlpData } from '@/lib/plp-cache';
 
 interface ShopPageProps {
   searchParams: {
+    q?: string;
     category?: string;
     target?: string;
     occasion?: string;
@@ -20,6 +21,8 @@ interface ShopPageProps {
   };
 }
 
+export const revalidate = 300;
+
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   // Server-render first page & facets using shared PLP cache (1 GET on hit)
   const { data } = await getPlpData({
@@ -32,6 +35,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       initialCategory={searchParams.category}
       initialTarget={searchParams.target}
       initialOccasion={searchParams.occasion}
+      initialQuery={searchParams.q}
       initialData={data}
     />
   );

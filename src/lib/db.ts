@@ -37,6 +37,7 @@ export async function clearProductCache(): Promise<void> {
       const { redis } = await import('@/lib/redis');
       await redis.del(PRODUCT_CACHE_KEY);
       await redis.del('homepage:snapshot:v1');
+      await redis.del('cart:recommended:v2');
       
       const { triggerPlpRebuildImmediate } = await import('@/lib/plp-cache');
       // Part C: Rebuild immediately (no 30s delay) while serving previous version stale

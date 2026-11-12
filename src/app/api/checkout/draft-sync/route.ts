@@ -93,9 +93,9 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ success: true, id });
+    return NextResponse.json({ ok: true, success: true, id });
   } catch (err: any) {
     console.error('Checkout draft-sync exception:', err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ ok: false, success: false, error: err?.message || 'draft sync failed' }, { status: 200 });
   }
 }

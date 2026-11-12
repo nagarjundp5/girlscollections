@@ -33,8 +33,8 @@ const HERO_SLIDES: Slide[] = [
   {
     id: 1,
     group: 'women',
-    image: '/hero/hero-new-3.png',
-    mobileImage: '/hero/hero-new-8.png',
+    image: '/hero/hero-new-3-d.webp',
+    mobileImage: '/hero/hero-new-8-m.webp',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     eyebrow: 'THE TWINNING EDIT',
@@ -47,8 +47,8 @@ const HERO_SLIDES: Slide[] = [
   {
     id: 2,
     group: 'women',
-    image: '/hero/hero-new-1.png',
-    mobileImage: '/hero/hero-new-4.png',
+    image: '/hero/hero-new-1-d.webp',
+    mobileImage: '/hero/hero-new-4-m.webp',
     objectPosition: 'center top',
     mobileObjectPosition: 'center top',
     eyebrow: 'NEW ARRIVALS',
@@ -61,8 +61,8 @@ const HERO_SLIDES: Slide[] = [
   {
     id: 3,
     group: 'kids',
-    image: '/hero/hero-new-7.png',
-    mobileImage: '/hero/hero-new-6.png',
+    image: '/hero/hero-new-7-d.webp',
+    mobileImage: '/hero/hero-new-6-m.webp',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     eyebrow: 'LITTLE CELEBRATIONS',
@@ -75,8 +75,8 @@ const HERO_SLIDES: Slide[] = [
   {
     id: 4,
     group: 'kids',
-    image: '/hero/hero-new-9.jpg',
-    mobileImage: '/hero/three-kids-mobile.jpg',
+    image: '/hero/hero-new-9.webp',
+    mobileImage: '/hero/hero-new-9.webp',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     eyebrow: 'PATTU COLLECTION',
@@ -89,8 +89,8 @@ const HERO_SLIDES: Slide[] = [
   {
     id: 5,
     group: 'women',
-    image: '/hero/hero-new-11.jpg',
-    mobileImage: '/hero/hero-new-12.jpg',
+    image: '/hero/hero-new-11.webp',
+    mobileImage: '/hero/hero-new-12.webp',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     eyebrow: 'FESTIVE COLLECTION',
@@ -103,8 +103,8 @@ const HERO_SLIDES: Slide[] = [
   {
     id: 6,
     group: 'women',
-    image: '/hero/hero-new-13.jpg',
-    mobileImage: '/hero/hero-new-14.jpg',
+    image: '/hero/hero-new-13.webp',
+    mobileImage: '/hero/hero-new-14.webp',
     objectPosition: 'center',
     mobileObjectPosition: 'center top',
     eyebrow: 'ROYAL HERITAGE',
@@ -148,7 +148,21 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [autoplayReady, setAutoplayReady] = useState(false);
   const touchStartX = useRef<number | null>(null);
+
+  // Defer hero autoplay until after idle to protect initial LCP / main thread
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const start = () => setAutoplayReady(true);
+    if ('requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(start, { timeout: 4000 });
+      return () => (window as any).cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(start, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Reset to first slide on filter change
   useEffect(() => {
@@ -164,14 +178,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
-  // 5s autoplay, pause on touch, hover, or hidden tab
+  // 5s autoplay after idle, pause on touch, hover, or hidden tab
   useEffect(() => {
-    if (isPaused || activeSlides.length <= 1) return;
+    if (!autoplayReady || isPaused || activeSlides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % activeSlides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused, activeSlides.length]);
+  }, [autoplayReady, isPaused, activeSlides.length]);
 
   const slide = activeSlides[currentSlide] || activeSlides[0];
 
@@ -356,10 +370,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
         </div>
       </Link>
 
-      {/* Prev/Next Navigation Arrows: Available on BOTH Mobile & Desktop */}
+      {/* Prev/Next Navigation Arrows: Available on BOTH Mobile & Desktop (44px min touch target) */}
       {activeSlides.length > 1 && (
         <div className="absolute inset-y-0 left-0 right-0 z-20 pointer-events-none flex items-center justify-between px-3 sm:px-6">
-          {/* Prev Arrow: 36px on mobile (12px from edge), 44px on desktop */}
           <button
             type="button"
             onClick={(e) => {
@@ -367,13 +380,12 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               e.stopPropagation();
               handlePrev();
             }}
-            className="pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/75 hover:bg-white text-[#1C1417] backdrop-blur-xs shadow-md transition-all flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
+            className="pointer-events-auto w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/80 hover:bg-white text-[#1C1417] backdrop-blur-xs shadow-md transition-all flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5 stroke-[2]" />
           </button>
 
-          {/* Next Arrow: 36px on mobile (12px from edge), 44px on desktop */}
           <button
             type="button"
             onClick={(e) => {
@@ -381,7 +393,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               e.stopPropagation();
               handleNext();
             }}
-            className="pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/75 hover:bg-white text-[#1C1417] backdrop-blur-xs shadow-md transition-all flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
+            className="pointer-events-auto w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/80 hover:bg-white text-[#1C1417] backdrop-blur-xs shadow-md transition-all flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1C1417]"
             aria-label="Next slide"
           >
             <ChevronRight className="w-5 h-5 stroke-[2]" />
@@ -390,12 +402,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       )}
 
       {/* 
-        Slide Dots: Small dots placed at bottom-9 (safely above the floating pill at bottom-0)
-        Never collides with the pill.
+        Slide Dots: ≥44px touch area (with p-3.5 padding) to pass WCAG / Lighthouse mobile accessibility
       */}
       {activeSlides.length > 1 && (
         <div className="absolute bottom-9 inset-x-0 z-20 flex items-center justify-center pointer-events-auto">
-          <div className="flex items-center space-x-2 bg-black/25 backdrop-blur-xs px-2.5 py-1 rounded-full">
+          <div className="flex items-center space-x-1 bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">
             {activeSlides.map((_, idx) => (
               <button
                 key={idx}
@@ -405,14 +416,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   e.stopPropagation();
                   setCurrentSlide(idx);
                 }}
-                className="p-1 cursor-pointer focus:outline-none"
+                className="p-3 min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer focus:outline-none"
                 aria-label={`Go to slide ${idx + 1}`}
               >
                 <span
                   className={`block rounded-full transition-all duration-300 ${
                     idx === currentSlide
                       ? 'w-5 h-1.5 bg-white'
-                      : 'w-1.5 h-1.5 bg-white/45 hover:bg-white/80'
+                      : 'w-1.5 h-1.5 bg-white/60 hover:bg-white'
                   }`}
                 />
               </button>

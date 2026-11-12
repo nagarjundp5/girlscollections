@@ -52,14 +52,47 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
   }
 
   // Fetch order from Neon
-  const [order] = await db
+  const [dbOrder] = await db
     .select()
     .from(orders)
     .where(eq(orders.id, params.orderId))
     .limit(1);
 
+  let order: any = dbOrder;
+
+  // Fallback to pending_checkouts or paid_unfulfilled in Firestore if Neon commit is being recovered
+  if (!order) {
+    try {
+      const { firestoreService } = await import('@/lib/firestore');
+      const pending = await firestoreService.getDoc('pending_checkouts', params.orderId);
+      if (pending && (!pending.user_id || pending.user_id === userId)) {
+        order = {
+          id: pending.id,
+          order_number: pending.order_number,
+          user_id: pending.user_id || userId,
+          customer_name: pending.customer_name,
+          customer_email: pending.customer_email,
+          customer_phone: pending.customer_phone,
+          shipping_address: pending.shipping_address,
+          items: pending.items,
+          subtotal: pending.subtotal,
+          total: pending.total,
+          discount_amount: pending.discount_amount || 0,
+          shipping_charge: pending.shipping_charge || 0,
+          payment_status: 'paid',
+          payment_method: pending.payment_type === 'cod_with_deposit' ? 'cod' : 'online',
+          order_status: 'CONFIRMING',
+          fulfillment_type: pending.fulfillment_type || 'delivery',
+          created_at: new Date(pending.created_at || Date.now()),
+        };
+      }
+    } catch (e) {
+      console.warn('[Order Confirmation Page] Firestore fallback note:', e);
+    }
+  }
+
   // IDOR check
-  if (!order || order.user_id !== userId) {
+  if (!order || (order.user_id && order.user_id !== userId)) {
     notFound();
   }
 

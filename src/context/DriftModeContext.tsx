@@ -100,7 +100,11 @@ export const DriftModeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [popupShownCount]);
 
   useEffect(() => {
-    refreshStatus();
+    if (isSignedIn) {
+      refreshStatus();
+    } else {
+      setIsLoading(false);
+    }
   }, [refreshStatus, isSignedIn]);
 
   useEffect(() => {

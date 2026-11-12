@@ -176,9 +176,33 @@ export default function CheckoutPage() {
     }
   };
 
-  // Draft Sync to Firestore for incomplete checkout tracking
-  const syncDraftCheckout = (stepNum: number = 1, completed: boolean = false) => {
+  const lastSyncTimeRef = React.useRef<number>(0);
+  const syncTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const syncFailuresRef = React.useRef<number>(0);
+  const syncBackoffUntilRef = React.useRef<number>(0);
+
+  // Draft Sync to Firestore for incomplete checkout tracking (debounced: max 1 per 5s or on step change)
+  const syncDraftCheckout = (stepNum: number = 1, completed: boolean = false, force: boolean = false) => {
     if (!draftIdRef.current || items.length === 0) return;
+    const now = Date.now();
+    if (now < syncBackoffUntilRef.current) return;
+
+    if (!force && !completed && now - lastSyncTimeRef.current < 5000) {
+      if (!syncTimeoutRef.current) {
+        syncTimeoutRef.current = setTimeout(() => {
+          syncTimeoutRef.current = null;
+          syncDraftCheckout(stepNum, completed, true);
+        }, 5000 - (now - lastSyncTimeRef.current));
+      }
+      return;
+    }
+
+    lastSyncTimeRef.current = now;
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current);
+      syncTimeoutRef.current = null;
+    }
+
     fetch('/api/checkout/draft-sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -202,7 +226,23 @@ export default function CheckoutPage() {
         step: stepNum,
         isCompleted: completed,
       }),
-    }).catch(() => {});
+    })
+      .then((res) => {
+        if (!res.ok) {
+          syncFailuresRef.current += 1;
+          if (syncFailuresRef.current >= 2) {
+            syncBackoffUntilRef.current = Date.now() + Math.min(30000, 5000 * Math.pow(2, syncFailuresRef.current - 2));
+          }
+        } else {
+          syncFailuresRef.current = 0;
+        }
+      })
+      .catch(() => {
+        syncFailuresRef.current += 1;
+        if (syncFailuresRef.current >= 2) {
+          syncBackoffUntilRef.current = Date.now() + Math.min(30000, 5000 * Math.pow(2, syncFailuresRef.current - 2));
+        }
+      });
   };
 
   const triggerCheckoutEligibilityCheck = async (pin: string) => {
@@ -307,7 +347,7 @@ export default function CheckoutPage() {
             setFormData(prev => ({ ...prev, phone: clean }));
             addToast('Mobile number verified & linked! ✓', 'success');
             await refreshUser();
-            syncDraftCheckout(1, false);
+            syncDraftCheckout(1, false, true);
           } else {
             addToast(data.error || 'Failed to verify mobile number', 'error');
           }
@@ -462,7 +502,7 @@ export default function CheckoutPage() {
       }).catch(() => {});
     }
 
-    syncDraftCheckout(2, false);
+    syncDraftCheckout(2, false, true);
     setCurrentStep(2);
     window.scrollTo(0, 0);
   };
@@ -563,7 +603,7 @@ export default function CheckoutPage() {
 
               const verifyData = await verifyRes.json();
               if (verifyData.success) {
-                syncDraftCheckout(2, true);
+                syncDraftCheckout(2, true, true);
                 addToast(isCodDeposit ? '₹200 COD deposit verified! Order confirmed.' : 'Payment successful! Order confirmed.', 'success');
                 clearCart();
                 router.push(`/order-confirmation/${orderData.orderId}`);
@@ -591,7 +631,7 @@ export default function CheckoutPage() {
         rzp.open();
         return;
       } else {
-        syncDraftCheckout(2, true);
+        syncDraftCheckout(2, true, true);
         addToast('Order placed. Redirecting to WhatsApp to complete details...', 'success');
         const itemsListText = items.map((i) => `• ${i.name} (Size: ${i.size}) x ${i.quantity}`).join('%0A');
         const messageText = `Hello The Girls Collections! I'd like to confirm my order.%0A%0A*Order Number:* ${orderData.orderNumber}%0A*Customer:* ${formData.name}%0A*Phone:* ${formData.phone}%0A*Address:* ${formData.line1 || 'Store Pickup'}, ${formData.city || 'Bengaluru'} - ${formData.pincode || '560064'}%0A%0A*Items:*%0A${itemsListText}%0A%0A*Total Amount:* ₹${(breakdown.total / 100).toFixed(2)}`;

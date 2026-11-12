@@ -1,7 +1,10 @@
 import { z } from 'zod';
+import { normalizeSize } from '@/lib/normalizeSize';
 
-// Sizes allowed in the system (Women XS-5XL, numeric 26-48, Kids 0-3M to 15-16Y, 000-44, Free Size)
-export const SizeEnum = z.string().trim().min(1).max(30);
+// Sizes allowed in the system (Women XS-6XL, numeric 12-40, Kids k12-k40, Free Size)
+export const SizeEnum = z.string().trim().min(1).max(30).refine((val) => normalizeSize('all', val) !== null, {
+  message: 'Invalid size value',
+});
 
 // Product ID pattern (enforces valid UUID to prevent DB casting crashes)
 export const ProductIdSchema = z.string().uuid('Invalid product ID format');

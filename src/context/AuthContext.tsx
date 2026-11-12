@@ -126,9 +126,20 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  // Fetch session on mount & sync
+  // Fetch session on mount & sync (only if auth cookie or clerk session exists)
   const refreshUser = useCallback(async () => {
     try {
+      const hasSessionCookie =
+        typeof document !== 'undefined' &&
+        (document.cookie.includes('tgc_session') ||
+          document.cookie.includes('__session') ||
+          document.cookie.includes('__client_uat'));
+
+      if (!hasSessionCookie && !clerkIsSignedIn) {
+        setIsLoaded(true);
+        return;
+      }
+
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();

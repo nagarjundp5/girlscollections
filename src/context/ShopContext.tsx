@@ -100,7 +100,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [wishlist]);
 
   const addToCart = (product: Product, size: string, color?: string, quantity = 1) => {
-    const selectedColor = color || (product.colors[0]?.name ?? 'Standard');
+    const selectedColor = color || (product.colors?.[0]?.name ?? 'Standard');
     const itemId = `${product.id}-${size}-${selectedColor}`;
 
     setCart((prev) => {

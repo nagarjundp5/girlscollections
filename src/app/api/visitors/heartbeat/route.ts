@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const nowSec = Math.floor(now.getTime() / 1000);
     const monthStr = now.toISOString().slice(0, 7); // 'YYYY-MM'
 
-    // 1. Update Redis cache for instant sub-millisecond metrics
+    // 1. Update Redis cache for instant sub-millisecond metrics (zero Neon queries)
     try {
       if (redis) {
         // Add or update timestamp score in live visitors sorted set
@@ -28,25 +28,7 @@ export async function POST(request: Request) {
         await redis.pfadd('analytics:visitors:overall', vid);
       }
     } catch (redisErr) {
-      // Redis error handled quietly — fallback to Postgres
-    }
-
-    // 2. Persist to PostgreSQL database for long-term audit trail and fail-safe count
-    try {
-      await db
-        .insert(schema.uniqueVisitors)
-        .values({
-          visitor_id: vid,
-          first_seen_at: now,
-          last_seen_at: now,
-          created_month: monthStr,
-        })
-        .onConflictDoUpdate({
-          target: schema.uniqueVisitors.visitor_id,
-          set: { last_seen_at: now },
-        });
-    } catch (dbErr) {
-      // Ignore if DB upsert encounters transient schema lock
+      // Redis error handled quietly
     }
 
     return NextResponse.json({ success: true });

@@ -1,121 +1,109 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, X, TrendingUp, History, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, X, ArrowLeft, ArrowRight, History, Sparkles } from 'lucide-react';
 import { useShop } from '@/context/ShopContext';
-import { MOCK_PRODUCTS, Product } from '@/data/shopData';
 import { useScrollLock } from '@/lib/useScrollLock';
+import { matchProducts, normalizeQuery, SearchableItem } from '@/lib/search/match';
+import { CompactSearchItem } from '@/app/api/search/index/route';
+import { WOMEN_CIRCLE_CATEGORIES, KIDS_CIRCLE_CATEGORIES } from '@/components/home/CircularCategoryScroller';
+import { categoryHref } from '@/lib/categoryHref';
 
-const TRENDING_TAGS = [
+const STORAGE_KEY = 'tgc_recent_searches_v2';
+const DEFAULT_TRENDING = [
   'Silk Anarkalis',
-  'Wedding Lehengas',
+  'Bridal Lehengas',
   'Festive Organza',
-  'Kids Pure Silk Pattu',
-  'Zari Lehengas',
-];
-
-const OCCASION_TILES = [
-  { label: 'Wedding', query: 'lehenga' },
-  { label: 'Reception', query: 'anarkali' },
-  { label: 'Festive', query: 'organza' },
-  { label: 'Everyday', query: 'pattu' },
+  'Kids Pattu Frock',
+  'Co-ord Sets',
+  'Chanderi Kurtas',
 ];
 
 export const SearchOverlay: React.FC = () => {
+  const router = useRouter();
   const { isSearchOpen, setIsSearchOpen } = useShop();
+
+  const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Product[]>([]);
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [targetPref, setTargetPref] = useState<'women' | 'kids'>('women');
+
+  // Search catalog index
+  const [catalogIndex, setCatalogIndex] = useState<CompactSearchItem[]>([]);
+  const [isLoadingIndex, setIsLoadingIndex] = useState(false);
+
+  // Recent searches
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  // Results state
+  const [matchedProducts, setMatchedProducts] = useState<CompactSearchItem[]>([]);
+  const [correctedTerm, setCorrectedTerm] = useState<string | undefined>(undefined);
+  const [forceExactQuery, setForceExactQuery] = useState<string | null>(null);
+
+  // Keyboard navigation
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useScrollLock(isSearchOpen);
 
-  // Load recent searches on mount
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Load recent searches from localStorage
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
     try {
-      const saved = localStorage.getItem('tgc_recent_searches');
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        setRecentSearches(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setRecentSearches(parsed.slice(0, 6));
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch {}
   }, []);
 
-  const saveRecentSearch = (searchTerm: string) => {
-    if (!searchTerm.trim()) return;
-    const updated = [searchTerm, ...recentSearches.filter((s) => s.toLowerCase() !== searchTerm.toLowerCase())].slice(0, 5);
-    setRecentSearches(updated);
-    try {
-      localStorage.setItem('tgc_recent_searches', JSON.stringify(updated));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const [dbProducts, setDbProducts] = useState<Product[]>([]);
-
+  // Fetch compact search index when overlay opens (or on idle)
   useEffect(() => {
-    async function loadProducts() {
-      try {
-        const res = await fetch('/api/products');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.products && data.products.length > 0) {
-            const formatted: Product[] = data.products.map((p: any) => ({
-              id: p.id,
-              slug: p.slug,
-              name: p.name,
-              category: p.category || 'ethnic-wear',
-              target: (p.gender === 'kids' || p.category?.includes('kids')) ? 'kids' : 'women',
-              subcategory: p.subcategory || p.category || '',
-              occasion: p.occasion || 'Festive',
-              price: p.price > 10000 ? Math.round(p.price / 100) : p.price,
-              originalPrice: p.compare_price ? (p.compare_price > 10000 ? Math.round(p.compare_price / 100) : p.compare_price) : undefined,
-              isNew: true,
-              isBestSeller: !!p.is_featured,
-              isSale: !!p.compare_price,
-              images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [],
-              sizes: [{ size: 'Free Size', inStock: true }],
-              colors: [{ name: 'Standard', hex: '#C9A66B' }],
-              fabric: p.description || '',
-              description: p.description || '',
-              careInstructions: ['Dry Clean Only'],
-              rating: 5.0,
-              reviewsCount: 10,
-            }));
-            setDbProducts(formatted);
+    if (!isSearchOpen) return;
+
+    if (catalogIndex.length === 0 && !isLoadingIndex) {
+      setIsLoadingIndex(true);
+      fetch('/api/search/index')
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data.items)) {
+            setCatalogIndex(data.items);
           }
-        }
-      } catch (e) {
-        console.error('Failed to load search products:', e);
-      }
+        })
+        .catch((err) => console.warn('Search index load note:', err))
+        .finally(() => setIsLoadingIndex(false));
     }
-    loadProducts();
-  }, []);
+  }, [isSearchOpen, catalogIndex.length, isLoadingIndex]);
 
+  // Focus input automatically on open & reset state
   useEffect(() => {
-    if (query.trim() === '') {
-      setResults([]);
-    } else {
-      const q = query.toLowerCase();
-      const pool = dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
-      const filtered = pool.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          (p.subcategory && p.subcategory.toLowerCase().includes(q)) ||
-          (p.fabric && p.fabric.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      );
-      setResults(filtered);
+    if (isSearchOpen) {
+      setQuery('');
+      setDebouncedQuery('');
+      setForceExactQuery(null);
+      setSelectedIndex(-1);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
     }
-  }, [query, dbProducts]);
+  }, [isSearchOpen]);
 
+  // Handle ESC key to close
   useEffect(() => {
+    if (!isSearchOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isSearchOpen) {
+      if (e.key === 'Escape') {
         setIsSearchOpen(false);
       }
     };
@@ -123,180 +111,516 @@ export const SearchOverlay: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, setIsSearchOpen]);
 
-  if (!isSearchOpen) return null;
+  // 120ms debounce for typing
+  useEffect(() => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 
-  return (
-    <div className="fixed inset-0 z-[105] flex flex-col bg-inkNavy/95 backdrop-blur-xl text-ivory animate-in fade-in duration-300 overflow-y-auto">
-      
-      {/* Top Bar Header */}
-      <div className="max-w-[1440px] mx-auto w-full px-6 sm:px-12 pt-8 pb-4 flex items-center justify-between border-b border-zariGold/20">
-        <span className="font-sans font-semibold text-xs text-zariGold tracking-[0.25em] uppercase">
-          WHAT ARE YOU LOOKING FOR?
-        </span>
+    debounceTimerRef.current = setTimeout(() => {
+      setDebouncedQuery(query.trim());
+      setSelectedIndex(-1);
+    }, 120);
+
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, [query]);
+
+  // Perform client-side matching using the typo-tolerant matching engine
+  useEffect(() => {
+    const activeSearch = forceExactQuery || debouncedQuery;
+    if (activeSearch.length < 2 || catalogIndex.length === 0) {
+      setMatchedProducts([]);
+      setCorrectedTerm(undefined);
+      return;
+    }
+
+    const { results, correctedQuery } = matchProducts(catalogIndex, activeSearch, {
+      targetPreference: targetPref,
+      limit: 6,
+    });
+
+    setMatchedProducts(results);
+    setCorrectedTerm(forceExactQuery ? undefined : correctedQuery);
+
+    // If zero results, log to capped Redis list
+    if (results.length === 0) {
+      fetch('/api/search/log-zero', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: activeSearch }),
+      }).catch(() => {});
+    }
+  }, [debouncedQuery, forceExactQuery, catalogIndex, targetPref]);
+
+  const saveRecent = useCallback((term: string) => {
+    const clean = term.trim();
+    if (!clean) return;
+    setRecentSearches((prev) => {
+      const next = [clean, ...prev.filter((item) => item.toLowerCase() !== clean.toLowerCase())].slice(0, 6);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const removeRecent = useCallback((term: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setRecentSearches((prev) => {
+      const next = prev.filter((item) => item !== term);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const clearAllRecent = useCallback(() => {
+    setRecentSearches([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {}
+  }, []);
+
+  const handleSelectSearch = useCallback((searchTerm: string) => {
+    saveRecent(searchTerm);
+    setIsSearchOpen(false);
+    router.push(`/shop?q=${encodeURIComponent(searchTerm)}&target=${targetPref}`);
+  }, [router, setIsSearchOpen, saveRecent, targetPref]);
+
+  // Category suggestions matching query
+  const matchedCategories = useMemo(() => {
+    const q = normalizeQuery(debouncedQuery);
+    if (q.length < 2) return [];
+
+    const activeList = targetPref === 'kids' ? KIDS_CIRCLE_CATEGORIES : WOMEN_CIRCLE_CATEGORIES;
+    return activeList
+      .filter((c) => {
+        const nameNorm = normalizeQuery(c.name);
+        return nameNorm.includes(q) || q.includes(nameNorm);
+      })
+      .slice(0, 3);
+  }, [debouncedQuery, targetPref]);
+
+  // Keyboard navigation for live suggestions list
+  const totalNavItems = matchedProducts.length + matchedCategories.length + (debouncedQuery.length >= 2 ? 1 : 0);
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev < totalNavItems - 1 ? prev + 1 : 0));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : totalNavItems - 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex === -1 || selectedIndex === totalNavItems - 1) {
+        handleSelectSearch(query);
+      } else if (selectedIndex < matchedProducts.length) {
+        const prod = matchedProducts[selectedIndex];
+        saveRecent(prod.name);
+        setIsSearchOpen(false);
+        router.push(`/shop/${prod.slug}`);
+      } else {
+        const catIdx = selectedIndex - matchedProducts.length;
+        const cat = matchedCategories[catIdx];
+        if (cat) {
+          saveRecent(cat.name);
+          setIsSearchOpen(false);
+          router.push(categoryHref(cat.slug, cat.group));
+        }
+      }
+    }
+  };
+
+  // Matched part in bold helper
+  const renderHighlightedName = (name: string, highlightQuery: string) => {
+    const normName = normalizeQuery(name);
+    const normQ = normalizeQuery(highlightQuery);
+    const tokens = normQ.split(' ').filter(Boolean);
+
+    if (tokens.length === 0) return <span>{name}</span>;
+
+    // Build regex of tokens
+    const regex = new RegExp(`(${tokens.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+    const parts = name.split(regex);
+
+    return (
+      <span>
+        {parts.map((part, i) =>
+          regex.test(part) ? (
+            <strong key={i} className="font-bold text-[#1C1417] bg-[#F4E4E2]/40 px-0.5 rounded">
+              {part}
+            </strong>
+          ) : (
+            <span key={i} className="text-[#1C1417]/90">{part}</span>
+          )
+        )}
+      </span>
+    );
+  };
+
+  if (!mounted || !isSearchOpen) return null;
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search Catalog"
+      className="fixed inset-0 z-[120] bg-[#FBF7F1] flex flex-col overflow-hidden select-none"
+    >
+      {/* ── TOP BAR (60px) ─────────────────────────────────────────────────── */}
+      <div className="h-[64px] border-b border-[#EFE7E2] px-3 sm:px-6 flex items-center gap-2 sm:gap-3 bg-[#FBF7F1] shrink-0 pt-[env(safe-area-inset-top,0px)]">
+        {/* 44px Touch Target Back Button */}
         <button
+          type="button"
           onClick={() => setIsSearchOpen(false)}
-          className="w-10 h-10 rounded-full bg-ivory/10 flex items-center justify-center text-ivory hover:bg-zariGold hover:text-white transition-colors"
-          aria-label="Close search"
+          className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[#EFE7E2]/50 text-[#1C1417] active:scale-95 transition-all cursor-pointer shrink-0"
+          aria-label="Back to store"
         >
-          <X className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" />
         </button>
-      </div>
 
-      {/* Input Stage */}
-      <div className="max-w-4xl mx-auto w-full px-6 sm:px-12 py-8 sm:py-12">
-        <div className="relative flex items-center border-b-2 border-zariGold/60 pb-3">
-          <Search className="w-7 h-7 text-zariGold mr-4 shrink-0" />
+        {/* 48px Rounded White Input with 1px #EFE7E2 border */}
+        <div className="flex-1 relative flex items-center">
+          <Search className="w-4 h-4 text-[#8C7A70] absolute left-3.5 pointer-events-none" />
           <input
-            type="text"
+            ref={inputRef}
+            type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && query.trim()) {
-                saveRecentSearch(query.trim());
-              }
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setForceExactQuery(null);
             }}
-            placeholder="Search anarkalis, pattu frocks, lehengas, kurtis..."
-            autoFocus
-            className="w-full bg-transparent text-xl sm:text-3xl text-ivory placeholder-ivory/40 focus:outline-none font-serif tracking-tight"
+            onKeyDown={handleInputKeyDown}
+            placeholder="Search kurtas, lehengas, frocks..."
+            className="w-full h-[48px] pl-10 pr-10 rounded-full bg-white border border-[#EFE7E2] text-[16px] font-sans text-[#1C1417] placeholder:text-[#8C7A70] outline-none focus:border-[#3B1230] focus:ring-1 focus:ring-[#3B1230] transition-all"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck="false"
           />
-          {query && (
-            <button onClick={() => setQuery('')} className="text-ivory/60 hover:text-ivory p-2">
-              <X className="w-5 h-5" />
+          {query.length > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery('');
+                setDebouncedQuery('');
+                setForceExactQuery(null);
+                inputRef.current?.focus();
+              }}
+              className="w-[44px] h-[44px] flex items-center justify-center absolute right-0 text-[#8C7A70] hover:text-[#1C1417] cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
+      </div>
 
-        {/* Pre-typing suggestions */}
-        {query.trim() === '' && (
-          <div className="mt-10 space-y-8">
-            
-            {/* Recent Searches (If any) */}
+      {/* ── SCROLLABLE BODY ────────────────────────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 py-4 space-y-6 pb-[max(2rem,env(safe-area-inset-bottom,20px))]">
+        {/* 1. WHILE TYPING (>1 char): LIVE SUGGESTIONS */}
+        {debouncedQuery.length >= 2 ? (
+          <div className="space-y-4 max-w-2xl mx-auto">
+            {/* Typo Correction Header */}
+            {correctedTerm && correctedTerm.toLowerCase() !== debouncedQuery.toLowerCase() && (
+              <div className="bg-[#FAF6EE] border border-[#B8924A]/30 rounded-xl p-3 text-xs text-[#1C1417]">
+                <span>Showing results for </span>
+                <span className="font-bold text-[#3B1230] capitalize">{correctedTerm}</span>
+                <span className="mx-2 text-[#8C7A70]">·</span>
+                <button
+                  type="button"
+                  onClick={() => setForceExactQuery(debouncedQuery)}
+                  className="text-[#B8924A] hover:underline cursor-pointer font-medium"
+                >
+                  Search for &lsquo;{debouncedQuery}&rsquo; instead
+                </button>
+              </div>
+            )}
+
+            {/* Results count & Quick Target Tabs */}
+            <div className="flex items-center justify-between border-b border-[#EFE7E2] pb-2">
+              <span className="text-xs font-sans font-semibold uppercase tracking-wider text-[#8C7A70]">
+                {matchedProducts.length > 0
+                  ? `Suggestions (${matchedProducts.length})`
+                  : 'No exact matches'}
+              </span>
+              <div className="flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => setTargetPref('women')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-colors ${
+                    targetPref === 'women'
+                      ? 'bg-[#3B1230] text-white'
+                      : 'bg-white border border-[#EFE7E2] text-[#1C1417]'
+                  }`}
+                >
+                  Women
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTargetPref('kids')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-colors ${
+                    targetPref === 'kids'
+                      ? 'bg-[#3B1230] text-white'
+                      : 'bg-white border border-[#EFE7E2] text-[#1C1417]'
+                  }`}
+                >
+                  Kids
+                </button>
+              </div>
+            </div>
+
+            {/* Category matches if any */}
+            {matchedCategories.length > 0 && (
+              <div className="space-y-1">
+                {matchedCategories.map((cat, idx) => (
+                  <Link
+                    key={cat.id}
+                    href={categoryHref(cat.slug, cat.group)}
+                    onClick={() => {
+                      saveRecent(cat.name);
+                      setIsSearchOpen(false);
+                    }}
+                    className={`flex items-center justify-between p-3 rounded-xl border border-[#EFE7E2] bg-white hover:bg-[#FAF6EE] cursor-pointer transition-colors ${
+                      selectedIndex === matchedProducts.length + idx ? 'ring-2 ring-[#3B1230]' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#FAF6EE] border border-[#B8924A]/20 flex items-center justify-center text-[#B8924A]">
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-[#1C1417] capitalize">{cat.name}</p>
+                        <p className="text-[10px] text-[#8C7A70] uppercase tracking-wider">in {cat.group}</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-[#8C7A70]" />
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Product Rows (Up to 6) */}
+            {matchedProducts.length > 0 ? (
+              <div className="space-y-2">
+                {matchedProducts.map((prod, idx) => (
+                  <Link
+                    key={prod.id}
+                    href={`/shop/${prod.slug}`}
+                    onClick={() => {
+                      saveRecent(prod.name);
+                      setIsSearchOpen(false);
+                    }}
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border border-[#EFE7E2] bg-white hover:border-[#3B1230]/40 transition-all cursor-pointer ${
+                      selectedIndex === idx ? 'ring-2 ring-[#3B1230] bg-[#FAF6EE]' : ''
+                    }`}
+                  >
+                    {/* 56px Thumbnail */}
+                    <div className="relative w-[56px] h-[56px] rounded-lg overflow-hidden bg-[#FAF6EE] shrink-0 border border-[#EFE7E2]">
+                      <Image
+                        src={prod.img || '/hero/hero-saree-1.png'}
+                        alt={prod.name}
+                        fill
+                        className="object-cover object-top"
+                        sizes="56px"
+                      />
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-[#1C1417] truncate leading-tight">
+                        {renderHighlightedName(prod.name, debouncedQuery)}
+                      </p>
+                      <p className="text-[11px] text-[#8C7A70] truncate mt-0.5 capitalize">
+                        {prod.catName || prod.cat} · {prod.div}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs font-bold text-[#1C1417] font-tnum">
+                          ₹{prod.price.toLocaleString('en-IN')}
+                        </span>
+                        {prod.mrp && prod.mrp > prod.price && (
+                          <span className="text-[10px] text-[#8C7A70] line-through font-tnum">
+                            ₹{prod.mrp.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                        {!prod.inStock && (
+                          <span className="text-[9px] uppercase tracking-wider text-rose-600 font-bold">
+                            Out of Stock
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <ArrowRight className="w-4 h-4 text-[#8C7A70] shrink-0 pr-1" />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              /* Zero Results State */
+              <div className="text-center py-8 space-y-4">
+                <p className="text-sm text-[#1C1417]">
+                  No products found for &lsquo;<strong>{debouncedQuery}</strong>&rsquo;
+                </p>
+                {correctedTerm && (
+                  <p className="text-xs text-[#8C7A70]">
+                    Did you mean{' '}
+                    <button
+                      type="button"
+                      onClick={() => setQuery(correctedTerm)}
+                      className="font-bold text-[#3B1230] underline cursor-pointer"
+                    >
+                      {correctedTerm}
+                    </button>
+                    ?
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Sticky "See all results" Button */}
+            <div className="pt-2 sticky bottom-4">
+              <button
+                type="button"
+                onClick={() => handleSelectSearch(debouncedQuery)}
+                className="w-full h-[48px] rounded-xl bg-[#3B1230] text-white text-xs font-sans font-bold uppercase tracking-[0.16em] hover:bg-[#4E1A40] shadow-md flex items-center justify-center space-x-2 transition-transform active:scale-[0.98] cursor-pointer"
+              >
+                <span>See all results for &lsquo;{debouncedQuery}&rsquo;</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* 2. EMPTY STATE (NO QUERY) */
+          <div className="space-y-6 max-w-2xl mx-auto">
+            {/* a) Recent Searches */}
             {recentSearches.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-xs font-sans font-semibold text-zariGold tracking-[0.2em] uppercase mb-3">
-                  <History className="w-4 h-4" />
-                  <span>RECENT SEARCHES</span>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-sans font-bold uppercase tracking-[0.12em] text-[#1C1417]">
+                    <History className="w-3.5 h-3.5 text-[#8C7A70]" />
+                    <span>Recent Searches</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={clearAllRecent}
+                    className="text-[11px] text-[#8C7A70] hover:text-[#3B1230] cursor-pointer font-medium"
+                  >
+                    Clear all
+                  </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {recentSearches.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setQuery(s)}
-                      className="px-3.5 py-1.5 rounded-md bg-ivory/10 border border-zariGold/20 text-xs font-sans text-ivory/80 hover:bg-zariGold hover:text-white transition-all"
+                  {recentSearches.map((item) => (
+                    <div
+                      key={item}
+                      onClick={() => handleSelectSearch(item)}
+                      className="h-[36px] pl-3 pr-2 rounded-full bg-white border border-[#EFE7E2] hover:border-[#3B1230] flex items-center gap-1.5 text-xs text-[#1C1417] cursor-pointer transition-colors shadow-2xs"
                     >
-                      {s}
-                    </button>
+                      <span>{item}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => removeRecent(item, e)}
+                        className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-[#FAF6EE] text-[#8C7A70] hover:text-[#1C1417] cursor-pointer"
+                        aria-label={`Remove ${item}`}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Trending Tags */}
-            <div>
-              <div className="flex items-center gap-2 text-xs font-sans font-semibold text-zariGold tracking-[0.2em] uppercase mb-3">
-                <TrendingUp className="w-4 h-4" />
-                <span>TRENDING</span>
+            {/* b) Trending Chips (Solid, 14px, weight 500, dark text on blush #F4E4E2 with 1px border) */}
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-1.5 text-xs font-sans font-bold uppercase tracking-[0.12em] text-[#1C1417]">
+                <Sparkles className="w-3.5 h-3.5 text-[#B8924A]" />
+                <span>Trending Searches</span>
               </div>
-              <div className="flex flex-wrap gap-2.5">
-                {TRENDING_TAGS.map((tag) => (
+              <div className="flex flex-wrap gap-2">
+                {DEFAULT_TRENDING.map((trend) => (
                   <button
-                    key={tag}
-                    onClick={() => {
-                      setQuery(tag);
-                      saveRecentSearch(tag);
-                    }}
-                    className="px-4 py-2 rounded-md bg-ivory/10 border border-zariGold/30 text-xs font-sans font-medium text-ivory/90 hover:bg-zariGold hover:text-white transition-all"
+                    key={trend}
+                    type="button"
+                    onClick={() => handleSelectSearch(trend)}
+                    className="h-[38px] px-3.5 rounded-full bg-[#F4E4E2] border border-[#E5D2D0] hover:border-[#3B1230] text-[14px] font-medium text-[#1C1417] flex items-center cursor-pointer transition-transform active:scale-95 shadow-2xs"
                   >
-                    {tag}
+                    {trend}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Shop by Occasion Tiles */}
-            <div>
-              <div className="text-xs font-sans font-semibold text-zariGold tracking-[0.2em] uppercase mb-3">
-                SHOP BY OCCASION
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {OCCASION_TILES.map((occ) => (
-                  <button
-                    key={occ.label}
-                    onClick={() => {
-                      setQuery(occ.query);
-                      saveRecentSearch(occ.label);
-                    }}
-                    className="p-4 rounded-xl bg-ivory/5 border border-zariGold/20 hover:border-zariGold hover:bg-zariGold/10 text-left transition-all group"
-                  >
-                    <span className="font-serif font-bold text-sm text-ivory group-hover:text-zariGold block">
-                      {occ.label}
-                    </span>
-                    <span className="text-[10px] font-sans text-ivory/60 block mt-0.5 uppercase tracking-wider">
-                      Explore →
-                    </span>
-                  </button>
-                ))}
+            {/* c) Women / Kids Quick Tabs */}
+            <div className="flex items-center gap-2 border-b border-[#EFE7E2] pb-2">
+              <span className="text-xs font-sans font-bold uppercase tracking-[0.12em] text-[#1C1417]">
+                Shop By Category
+              </span>
+              <div className="ml-auto flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => setTargetPref('women')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-colors ${
+                    targetPref === 'women'
+                      ? 'bg-[#3B1230] text-white'
+                      : 'bg-white border border-[#EFE7E2] text-[#1C1417]'
+                  }`}
+                >
+                  Women
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTargetPref('kids')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-colors ${
+                    targetPref === 'kids'
+                      ? 'bg-[#3B1230] text-white'
+                      : 'bg-white border border-[#EFE7E2] text-[#1C1417]'
+                  }`}
+                >
+                  Kids
+                </button>
               </div>
             </div>
 
-          </div>
-        )}
-
-        {/* Real-time Search Results */}
-        {query.trim() !== '' && (
-          <div className="mt-10">
-            <div className="text-xs font-sans font-semibold uppercase tracking-[0.2em] text-zariGold mb-6">
-              RESULTS FOR &quot;{query}&quot; ({results.length} piece{results.length !== 1 ? 's' : ''})
-            </div>
-
-            {results.length === 0 ? (
-              <div className="py-12 text-center text-ivory/60 font-serif text-lg">
-                No items match your search. Try searching for &quot;Anarkali&quot;, &quot;Pattu Frock&quot;, or &quot;Lehenga&quot;.
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {results.map((product) => (
+            {/* d) Shop by Category (2-row horizontal scroller of circular category images with labels) */}
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 pb-2">
+              {(targetPref === 'kids' ? KIDS_CIRCLE_CATEGORIES : WOMEN_CIRCLE_CATEGORIES)
+                .slice(0, 8)
+                .map((cat) => (
                   <Link
-                    key={product.id}
-                    href={`/shop/${product.slug}`}
-                    onClick={() => {
-                      saveRecentSearch(query);
-                      setIsSearchOpen(false);
-                    }}
-                    className="group flex items-center p-3 rounded-xl bg-ivory/5 border border-zariGold/20 hover:bg-zariGold/10 transition-all"
+                    key={cat.id}
+                    href={categoryHref(cat.slug, cat.group)}
+                    onClick={() => setIsSearchOpen(false)}
+                    className="flex flex-col items-center group cursor-pointer"
                   >
-                    <div className="relative w-16 h-20 rounded-lg overflow-hidden shrink-0 bg-sand/20">
-                      {product.images[0] && (
-                        <Image
-                          src={product.images[0]}
-                          alt={product.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform"
-                        />
+                    <div className="w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] rounded-full border border-[#B8924A]/30 bg-white p-1 flex items-center justify-center overflow-hidden shadow-2xs group-hover:scale-105 transition-transform">
+                      {cat.image ? (
+                        <div className="relative w-full h-full rounded-full overflow-hidden">
+                          <Image
+                            src={cat.image}
+                            alt={cat.name}
+                            fill
+                            className="object-cover object-top"
+                            sizes="68px"
+                          />
+                        </div>
+                      ) : (
+                        <span className="font-serif text-sm font-bold text-[#B8924A]">
+                          {cat.name.charAt(0)}
+                        </span>
                       )}
                     </div>
-                    <div className="ml-4 flex-1 min-w-0">
-                      <span className="font-sans text-[9px] text-zariGold tracking-wider uppercase block">
-                        {product.category}
-                      </span>
-                      <h4 className="text-xs sm:text-sm font-sans font-medium text-ivory truncate group-hover:text-zariGold transition-colors">
-                        {product.name}
-                      </h4>
-                      <p className="text-xs font-sans font-bold text-zariGold mt-1 font-tnum">
-                        ₹{product.price.toLocaleString('en-IN')}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-zariGold/60 group-hover:text-zariGold group-hover:translate-x-1 transition-all" />
+                    <span className="mt-1.5 text-[11px] font-sans font-medium text-[#1C1417] text-center line-clamp-1 group-hover:text-[#3B1230]">
+                      {cat.line1} {cat.line2 || ''}
+                    </span>
                   </Link>
                 ))}
-              </div>
-            )}
+            </div>
           </div>
         )}
-
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
-
-export default SearchOverlay;

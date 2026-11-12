@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { getPlpData } from '@/lib/plp-cache';
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
         headers: {
           'X-Cache': cacheStatus,
           'X-Neon-Queries': String(neonQueries),
-          'Cache-Control': 'public, max-age=30, stale-while-revalidate=300',
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
         },
       }
     );

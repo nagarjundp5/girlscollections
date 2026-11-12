@@ -16,7 +16,7 @@ const SmallCircularLogoCrest: React.FC<{ className?: string }> = ({ className = 
     className={`relative flex items-center justify-center select-none shrink-0 w-[56px] h-[56px] md:w-[64px] md:h-[64px] rounded-full bg-[#FAF6EE] border border-[#B8924A]/25 overflow-hidden shadow-xs ${className}`}
   >
     <Image
-      src="/logo-highres.png"
+      src="/logo-120.webp"
       alt="The Girls Collections"
       width={128}
       height={140}

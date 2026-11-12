@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === 'production' && process.env.SKIP_ADMIN_AUTH === 'tr
 const nextConfig = {
   productionBrowserSourceMaps: false,
   experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
     serverComponentsExternalPackages: ['firebase-admin', '@google-cloud/firestore', '@grpc/grpc-js', 'pg'],
   },
   images: {

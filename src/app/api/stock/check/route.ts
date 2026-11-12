@@ -3,6 +3,7 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { SizeEnum } from '@/lib/validations';
+import { normalizeSize } from '@/lib/normalizeSize';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,15 +43,25 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Product not found or inactive' }, { status: 404 });
     }
 
+    const canonicalSize = normalizeSize('all', size) || size;
     const stock = product.stock_quantity || {};
-    const qty = stock[size] !== undefined ? stock[size] : 0;
+    const qty =
+      stock[canonicalSize] !== undefined
+        ? stock[canonicalSize]
+        : stock[canonicalSize.toLowerCase()] !== undefined
+        ? stock[canonicalSize.toLowerCase()]
+        : stock[canonicalSize.toUpperCase()] !== undefined
+        ? stock[canonicalSize.toUpperCase()]
+        : stock[size] !== undefined
+        ? stock[size]
+        : 0;
     const inStock = qty > 0;
     const lowStock = inStock && qty <= 3;
 
     return new NextResponse(
       JSON.stringify({
         productId,
-        size,
+        size: canonicalSize,
         available: qty,
         inStock,
         lowStock,

@@ -76,7 +76,7 @@ export const TestimonialsSection: React.FC = () => {
               {/* Thin Divider */}
               <div className="w-full h-[1px] bg-[#E2D8CC]" />
 
-              <p className="text-[11px] font-sans uppercase tracking-[0.14em] text-[#B8924A] font-semibold">
+              <p className="text-[11px] font-sans uppercase tracking-[0.14em] text-[#8B6A2E] font-semibold">
                 Purchased: {t.product}
               </p>
             </div>

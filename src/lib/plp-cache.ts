@@ -3,6 +3,8 @@ import { createHash } from 'crypto';
 import { redis, isRedisConfigured } from '@/lib/redis';
 import { dbService } from '@/lib/db';
 import { Product } from '@/data/shopData';
+import { resolveCanonicalCategorySlug } from '@/lib/categoryHref';
+import { matchProducts } from '@/lib/search/match';
 
 // ─── 1. Zod Validation & Whitelist Schema (Safely handles duplicates & arrays) ───
 const singleString = z.preprocess((val) => {
@@ -17,6 +19,7 @@ const singleNumber = z.preprocess((val) => {
 
 export const PlpQueryInputSchema = z
   .object({
+    q: singleString,
     target: singleString.default('all'),
     category: singleString,
     categories: z.union([z.string(), z.array(z.string())]).optional(),
@@ -38,6 +41,7 @@ export const PlpQueryInputSchema = z
   .passthrough(); // Allow Next.js internal router params like _rsc without throwing
 
 export interface NormalizedPlpParams {
+  q?: string;
   target: 'women' | 'kids' | 'all';
   categories: string[];
   sizes: string[];
@@ -156,6 +160,7 @@ export function normalizePlpParams(raw: Record<string, any>): NormalizedPlpParam
   const limit = Math.max(1, Math.min(50, Number(parsed.limit) || 24));
 
   return {
+    q: parsed.q ? String(parsed.q).trim() : undefined,
     target,
     categories,
     sizes,
@@ -197,6 +202,7 @@ export async function getPlpCacheVersion(): Promise<string> {
 
 export function buildPlpCacheKey(params: NormalizedPlpParams, version: string): { key: string; hash: string } {
   const canonical = JSON.stringify({
+    q: params.q || '',
     t: params.target,
     c: params.categories,
     s: params.sizes,
@@ -302,13 +308,19 @@ export async function executeNeonPlpQuery(params: NormalizedPlpParams): Promise<
       if (params.target === 'kids' && prodTarget !== 'kids') return false;
     }
 
-    // Categories
+    // Categories (with canonical mapping for Kids Western Bodycon & Skirt and Top)
     if (params.categories.length > 0) {
       const cat = (p.category || '').toLowerCase();
       const subcat = (p.subcategory || '').toLowerCase();
-      const matches = params.categories.some(
-        (c) => cat.includes(c) || subcat.includes(c) || c.includes(cat)
-      );
+      const matches = params.categories.some((rawC) => {
+        const c = rawC.toLowerCase();
+        if (cat.includes(c) || subcat.includes(c) || c.includes(cat)) return true;
+        const canon = resolveCanonicalCategorySlug(c, params.target);
+        if (cat.includes(canon) || subcat.includes(canon) || canon.includes(cat)) return true;
+        if ((c.includes('bodycon') || canon.includes('bodycon')) && (cat.includes('bodycon') || subcat.includes('bodycon'))) return true;
+        if ((c.includes('skirt') || canon.includes('skirt')) && (cat.includes('skirt') || subcat.includes('skirt'))) return true;
+        return false;
+      });
       if (!matches) return false;
     }
 
@@ -369,21 +381,35 @@ export async function executeNeonPlpQuery(params: NormalizedPlpParams): Promise<
     return true;
   });
 
+  // Apply search query matching if `q` parameter is present
+  let matchedList = filtered;
+  if (params.q) {
+    const searchRes = matchProducts(filtered, params.q, {
+      targetPreference: params.target === 'all' ? undefined : params.target,
+      limit: 100,
+    });
+    matchedList = searchRes.results;
+  }
+
   // Sort
-  filtered.sort((a: any, b: any) => {
-    const priceA = Number(a.price) || 0;
-    const priceB = Number(b.price) || 0;
-    if (params.sort === 'price-low') return priceA - priceB;
-    if (params.sort === 'price-high') return priceB - priceA;
-    if (params.sort === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-    if (params.sort === 'popular') return (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0);
-    if (params.sort === 'discount') {
-      const discA = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
-      const discB = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
-      return discB - discA;
-    }
-    return 0; // 'featured' keeps curated order
-  });
+  if (params.sort !== 'featured' || !params.q) {
+    matchedList.sort((a: any, b: any) => {
+      const priceA = Number(a.price) || 0;
+      const priceB = Number(b.price) || 0;
+      if (params.sort === 'price-low') return priceA - priceB;
+      if (params.sort === 'price-high') return priceB - priceA;
+      if (params.sort === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+      if (params.sort === 'popular') return (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0);
+      if (params.sort === 'discount') {
+        const discA = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
+        const discB = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
+        return discB - discA;
+      }
+      return 0; // 'featured' keeps curated order
+    });
+  }
+
+  const finalFiltered = matchedList;
 
   // Compute Facets
   const facets = {
@@ -394,7 +420,7 @@ export async function executeNeonPlpQuery(params: NormalizedPlpParams): Promise<
     occasions: {} as Record<string, number>,
   };
 
-  filtered.forEach((p: any) => {
+  finalFiltered.forEach((p: any) => {
     if (p.category) facets.categories[p.category] = (facets.categories[p.category] || 0) + 1;
     if (p.occasion) facets.occasions[p.occasion] = (facets.occasions[p.occasion] || 0) + 1;
     if (p.fabric) facets.fabrics[p.fabric] = (facets.fabrics[p.fabric] || 0) + 1;
@@ -413,9 +439,9 @@ export async function executeNeonPlpQuery(params: NormalizedPlpParams): Promise<
   });
 
   // Slice Pagination
-  const total = filtered.length;
+  const total = finalFiltered.length;
   const startIndex = (params.page - 1) * params.limit;
-  const paginatedProducts = filtered.slice(startIndex, startIndex + params.limit);
+  const paginatedProducts = finalFiltered.slice(startIndex, startIndex + params.limit);
   const hasMore = startIndex + params.limit < total;
 
   return {
@@ -515,9 +541,10 @@ export async function getPlpData(rawParams: Record<string, any>): Promise<PlpRes
   // Query Neon once
   const freshData = await executeNeonPlpQuery(params);
 
-  // Store in Redis (TTL 30 min)
+  // Store in Redis (TTL 30 min, max 60s for empty lists to prevent stale empty caches)
+  const ttl = freshData.total === 0 ? 60 : TTL_REDIS_SEC;
   try {
-    await redis.set(key, JSON.stringify(freshData), { ex: TTL_REDIS_SEC });
+    await redis.set(key, JSON.stringify(freshData), { ex: ttl });
     if (hasLock) {
       await redis.del(lockKey);
     }
@@ -544,7 +571,8 @@ async function revalidateInBackground(
     if (!lock) return;
 
     const fresh = await executeNeonPlpQuery(params);
-    await redis.set(key, JSON.stringify(fresh), { ex: TTL_REDIS_SEC });
+    const ttl = fresh.total === 0 ? 60 : TTL_REDIS_SEC;
+    await redis.set(key, JSON.stringify(fresh), { ex: ttl });
     await redis.del(lockKey);
   } catch (err) {
     console.warn('[PlpCache] Background revalidation failed:', err);

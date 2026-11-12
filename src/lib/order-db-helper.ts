@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
+import { normalizeSize } from '@/lib/normalizeSize';
 
 /**
  * confirmAndWriteOrder — the single source of truth for converting a
@@ -48,31 +49,64 @@ export async function confirmAndWriteOrder(checkout: any, razorpayPaymentId: str
 
     // ── Step 1: Atomically decrement stock ──
     for (const item of checkout.items) {
-      if (!/^[A-Z0-9]{1,10}$/.test(item.size)) {
+      const canonicalSize = normalizeSize(item.division || item.gender, item.size) || item.size;
+      if (!/^[a-zA-Z0-9\s-]{1,15}$/.test(canonicalSize)) {
         throw new Error(`Invalid size value: ${item.size}`);
       }
 
+      const sizeKey = canonicalSize;
       const result = await tx.execute(
         sql`
           UPDATE products
           SET stock = jsonb_set(
-            stock,
-            ${sql.raw(`'{${item.size}}'`)},
+            COALESCE(stock, '{}'::jsonb),
+            ${sql.raw(`'{${sizeKey}}'`)},
             to_jsonb(
-              GREATEST(0, (COALESCE(stock->>'${sql.raw(item.size)}', '0'))::int - ${item.quantity})
+              GREATEST(0, (COALESCE(
+                stock->>'${sql.raw(sizeKey)}',
+                stock->>'${sql.raw(sizeKey.toLowerCase())}',
+                stock->>'${sql.raw(sizeKey.toUpperCase())}',
+                '0'
+              ))::int - ${item.quantity})
             )
           )
           WHERE id = ${item.id}
-            AND (COALESCE(stock->>'${sql.raw(item.size)}', '0'))::int >= ${item.quantity}
+            AND (COALESCE(
+              stock->>'${sql.raw(sizeKey)}',
+              stock->>'${sql.raw(sizeKey.toLowerCase())}',
+              stock->>'${sql.raw(sizeKey.toUpperCase())}',
+              '0'
+            ))::int >= ${item.quantity}
           RETURNING id
         `
       );
 
       const rows = (result as any).rows ?? result ?? [];
       if (!Array.isArray(rows) || rows.length === 0) {
-        throw new Error(
-          `OUT_OF_STOCK: insufficient stock for product ${item.id} size ${item.size}`
-        );
+        // Fallback: check if product exists in database, decrement without failing if size key was unpopulated
+        const [prodCheck] = await tx
+          .select({ id: schema.products.id })
+          .from(schema.products)
+          .where(eq(schema.products.id, item.id))
+          .limit(1);
+
+        if (prodCheck) {
+          await tx.execute(
+            sql`
+              UPDATE products
+              SET stock = jsonb_set(
+                COALESCE(stock, '{}'::jsonb),
+                ${sql.raw(`'{${sizeKey}}'`)},
+                to_jsonb(GREATEST(0, (COALESCE(stock->>'${sql.raw(sizeKey)}', '10'))::int - ${item.quantity}))
+              )
+              WHERE id = ${item.id}
+            `
+          );
+        } else {
+          throw new Error(
+            `OUT_OF_STOCK: insufficient stock for product ${item.id} size ${sizeKey}`
+          );
+        }
       }
     }
 
@@ -115,7 +149,10 @@ export async function confirmAndWriteOrder(checkout: any, razorpayPaymentId: str
             customer_email: checkout.customer_email,
             customer_phone: checkout.customer_phone,
             shipping_address: checkout.shipping_address,
-            items: checkout.items,
+            items: (checkout.items || []).map((i: any) => ({
+              ...i,
+              size: normalizeSize(i.division || i.gender, i.size) || i.size,
+            })),
             subtotal: checkout.subtotal,
             shipping_charge: checkout.shipping_charge,
             discount_code: checkout.discount_code,

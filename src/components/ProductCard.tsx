@@ -97,6 +97,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="relative aspect-[3/4] w-full overflow-hidden block rounded-2xl bg-sand/20 shadow-xs group-hover:shadow-md transition-shadow duration-300">
         <Link
           href={`/shop/${product.slug}`}
+          prefetch={false}
           className={`relative w-full h-full block overflow-hidden ${
             archShape ? 'arch-frame-sm arch-inner' : ''
           }`}
@@ -132,7 +133,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.images[0] ? (
             <>
               <Image
-                src={cl(product.images[0], { w: 600, q: 'auto:good' })}
+                src={cl(product.images[0], { w: 400, q: 'auto:good' })}
                 alt={product.name}
                 fill
                 priority={priorityImage}
@@ -141,13 +142,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 className={`object-contain transition-transform duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
                   isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'
                 }`}
-                sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
 
-              {/* Hover Crossfade Image */}
-              {product.images[1] && (
+              {/* Hover Crossfade Image — only mount when hovered to save mobile payload */}
+              {product.images[1] && isHovered && (
                 <Image
-                  src={cl(product.images[1], { w: 600, q: 'auto:good' })}
+                  src={cl(product.images[1], { w: 400, q: 'auto:good' })}
                   alt={`${product.name} hover view`}
                   fill
                   loading="lazy"

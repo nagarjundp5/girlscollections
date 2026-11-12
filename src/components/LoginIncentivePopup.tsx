@@ -237,7 +237,7 @@ export default function LoginIncentivePopup() {
                       <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-white/10" />
                       </div>
-                      <span className="relative bg-zinc-950 px-3 text-[9px] uppercase tracking-widest font-mono text-zinc-500">
+                      <span className="relative bg-zinc-950 px-3 text-[9px] uppercase tracking-widest font-mono text-zinc-300">
                         Or
                       </span>
                     </div>

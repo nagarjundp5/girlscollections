@@ -59,7 +59,13 @@ export const firestoreService = {
     } else {
       if (options?.merge) {
         const existingRaw = await redis.get(`mock_firestore:${collectionName}:${docId}`);
-        const existing = existingRaw ? JSON.parse(existingRaw as string) : {};
+        const existing = !existingRaw
+          ? {}
+          : typeof existingRaw === 'string'
+          ? JSON.parse(existingRaw)
+          : typeof existingRaw === 'object'
+          ? existingRaw
+          : {};
         const merged = { ...existing, ...data };
         await redis.set(`mock_firestore:${collectionName}:${docId}`, JSON.stringify(merged));
       } else {

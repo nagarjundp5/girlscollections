@@ -298,6 +298,84 @@ export async function POST(request: Request) {
     } catch (sentryErr) {
       console.error('Sentry reporting failed:', sentryErr);
     }
-    return NextResponse.json({ error: 'An unexpected verification error occurred' }, { status: 500 });
+
+    // NEVER lose a paid order: If order creation failed after payment signature/amount was verified,
+    // persist paid_unfulfilled record, queue QStash retry, and return 200 so customer never sees raw 500.
+    const orderId = reqBody?.orderId;
+    const razorpay_payment_id = reqBody?.razorpay_payment_id;
+    const razorpay_order_id = reqBody?.razorpay_order_id;
+    let checkout = null;
+    try {
+      if (orderId) {
+        checkout = await firestoreService.getDoc('pending_checkouts', orderId);
+      }
+    } catch (fGetErr) {
+      console.error('Failed to get pending checkout for recovery:', fGetErr);
+    }
+
+    const unfulfilledDoc = {
+      orderId,
+      orderNumber: checkout?.order_number || orderId,
+      razorpayOrderId: razorpay_order_id || checkout?.razorpay_order_id,
+      razorpayPaymentId: razorpay_payment_id,
+      cartSnapshot: checkout ? {
+        items: checkout.items,
+        total: checkout.total,
+        customer_name: checkout.customer_name,
+        customer_email: checkout.customer_email,
+        customer_phone: checkout.customer_phone,
+        shipping_address: checkout.shipping_address,
+        fulfillment_type: checkout.fulfillment_type,
+        payment_type: checkout.payment_type,
+        discount_code: checkout.discount_code,
+        discount_amount: checkout.discount_amount,
+      } : null,
+      user: {
+        userId: checkout?.user_id || null,
+        name: checkout?.customer_name || 'Customer',
+        email: checkout?.customer_email,
+        phone: checkout?.customer_phone,
+      },
+      error: error?.message || String(error),
+      attempts: 1,
+      status: 'pending_recovery',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      await firestoreService.setDoc('paid_unfulfilled', razorpay_payment_id || orderId, unfulfilledDoc);
+    } catch (unfulfilledErr) {
+      console.error('[paid_unfulfilled] Failed to write doc to Firestore:', unfulfilledErr);
+    }
+
+    // Queue QStash recovery retry (max 5, exponential backoff)
+    if (process.env.QSTASH_TOKEN) {
+      try {
+        const { Client } = await import('@upstash/qstash');
+        const { getSiteUrl, getQStashPublishHeaders } = await import('@/lib/getSiteUrl');
+        const client = new Client({ token: process.env.QSTASH_TOKEN });
+        await client.publishJSON({
+          url: `${getSiteUrl()}/api/webhooks/qstash/order-recovery`,
+          body: {
+            orderId,
+            razorpayPaymentId: razorpay_payment_id,
+            attempt: 1,
+          },
+          delay: 10,
+          headers: getQStashPublishHeaders(),
+        });
+      } catch (qErr) {
+        console.error('[Order Recovery QStash] Dispatch error:', qErr);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      pendingConfirmation: true,
+      orderId,
+      orderNumber: checkout?.order_number || orderId,
+      message: 'Payment received, confirming your order...',
+    }, { status: 200 });
   }
 }

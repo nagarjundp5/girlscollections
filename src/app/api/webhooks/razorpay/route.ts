@@ -152,12 +152,20 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Order confirmation failed' }, { status: 500 });
       }
 
-      // Update Firestore checkout status
-      await firestoreService.updateDoc('pending_checkouts', checkout.id, {
-        status: 'paid',
-        payment_id: payment.id,
-        updated_at: new Date().toISOString(),
-      }).catch(() => {}); // Non-critical
+      // Update Firestore checkout status and mark any unfulfilled record recovered
+      await Promise.all([
+        firestoreService.updateDoc('pending_checkouts', checkout.id, {
+          status: 'paid',
+          payment_id: payment.id,
+          updated_at: new Date().toISOString(),
+        }).catch(() => {}),
+        firestoreService.updateDoc('paid_unfulfilled', payment.id, {
+          status: 'recovered',
+          order_id: confirmedOrder.id,
+          order_number: confirmedOrder.order_number,
+          updated_at: new Date().toISOString(),
+        }).catch(() => {}),
+      ]);
 
       // Mark webhook event as processed
       await db

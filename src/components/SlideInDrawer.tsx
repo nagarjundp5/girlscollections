@@ -21,12 +21,33 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
   const { wishlist } = useShop();
   const [currentScreen, setCurrentScreen] = useState<DrawerScreen>('divisions');
   const [mounted, setMounted] = useState(false);
+  const [publishedCategorySlugs, setPublishedCategorySlugs] = useState<Set<string> | null>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (publishedCategorySlugs) return;
+
+    fetch('/api/search/index')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.items)) {
+          const set = new Set<string>();
+          data.items.forEach((item: any) => {
+            if (item.cat) {
+              set.add(`${item.div || 'women'}:${item.cat.toLowerCase()}`);
+            }
+          });
+          setPublishedCategorySlugs(set);
+        }
+      })
+      .catch(() => {});
+  }, [isOpen, publishedCategorySlugs]);
 
   const handleClose = React.useCallback(() => {
     setCurrentScreen('divisions');
@@ -347,7 +368,15 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
 
               {/* Category List */}
               <div className="divide-y divide-[#EFE7E2] pt-1">
-                {(currentScreen === 'women' ? WOMEN_CATEGORIES : KIDS_CATEGORIES).map((cat) => (
+                {(currentScreen === 'women' ? WOMEN_CATEGORIES : KIDS_CATEGORIES)
+                  .filter((cat) => {
+                    if (!publishedCategorySlugs) return true;
+                    return (
+                      publishedCategorySlugs.has(`${currentScreen}:${cat.slug.toLowerCase()}`) ||
+                      publishedCategorySlugs.has(`${currentScreen}:${cat.id.toLowerCase()}`)
+                    );
+                  })
+                  .map((cat) => (
                   <Link
                     key={cat.id}
                     href={getCategoryHref(cat)}

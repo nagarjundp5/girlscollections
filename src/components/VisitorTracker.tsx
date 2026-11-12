@@ -57,8 +57,8 @@ export function VisitorTracker() {
       }).catch(() => {});
     };
 
-    // Send initial heartbeat on page load
-    sendHeartbeat();
+    // Send initial heartbeat after 5s idle delay (zero impact on LCP)
+    const initialTimer = setTimeout(sendHeartbeat, 5000);
 
     // Periodic heartbeat every 60 seconds while page stays open
     const interval = setInterval(sendHeartbeat, 60000);
@@ -72,6 +72,7 @@ export function VisitorTracker() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      clearTimeout(initialTimer);
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };

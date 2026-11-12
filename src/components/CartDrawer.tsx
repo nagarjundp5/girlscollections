@@ -49,8 +49,22 @@ export const CartDrawer: React.FC = () => {
 
   // Recommended products with 2-tier client cache (memory + sessionStorage), 0 DB hits
   const [recommendedProducts, setRecommendedProducts] = useState<any[]>(() => {
-    return memoryRecommendedCache || MOCK_PRODUCTS.slice(0, 4);
+    if (memoryRecommendedCache && memoryRecommendedCache.length > 0) return memoryRecommendedCache;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = sessionStorage.getItem('tgc_cart_recommended_v2');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            memoryRecommendedCache = parsed;
+            return parsed;
+          }
+        }
+      } catch {}
+    }
+    return [];
   });
+  const [isLoadingRecommended, setIsLoadingRecommended] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isCartOpen) return;
@@ -61,7 +75,7 @@ export const CartDrawer: React.FC = () => {
     }
 
     try {
-      const stored = sessionStorage.getItem('tgc_cart_recommended');
+      const stored = sessionStorage.getItem('tgc_cart_recommended_v2');
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -73,6 +87,8 @@ export const CartDrawer: React.FC = () => {
     } catch {}
 
     let isCancelled = false;
+    setIsLoadingRecommended(true);
+
     async function loadRecommended() {
       try {
         const res = await fetch('/api/products/recommended', {
@@ -89,19 +105,24 @@ export const CartDrawer: React.FC = () => {
               p.is_active !== false &&
               p.images &&
               p.images.length > 0 &&
+              !p.images[0].includes('three-kids-mobile') &&
               !p.images[0].includes('photo-1610030469983')
           )
-          .slice(0, 4);
+          .slice(0, 6);
 
         if (!isCancelled && curated.length > 0) {
           memoryRecommendedCache = curated;
           setRecommendedProducts(curated);
           try {
-            sessionStorage.setItem('tgc_cart_recommended', JSON.stringify(curated));
+            sessionStorage.setItem('tgc_cart_recommended_v2', JSON.stringify(curated));
           } catch {}
         }
       } catch (err) {
         console.warn('[CartDrawer] Recommended fetch note:', err);
+      } finally {
+        if (!isCancelled) {
+          setIsLoadingRecommended(false);
+        }
       }
     }
 
@@ -131,15 +152,27 @@ export const CartDrawer: React.FC = () => {
       ? rawSizes.map((s: any) => (typeof s === 'string' ? s : s?.size)).filter(Boolean)
       : [];
 
+    const safeProd = {
+      ...prod,
+      colors: Array.isArray(prod.colors) && prod.colors.length > 0 ? prod.colors : [{ name: 'Standard', hex: '#000000' }],
+    };
+
     if (sizesList.length > 1) {
       // Product requires size choice: open quick size picker
-      setSizePickerProduct({ ...prod, parsedSizes: sizesList });
+      setSizePickerProduct({ ...safeProd, parsedSizes: sizesList });
     } else {
       // Single size or Free Size
       const defaultSize = sizesList[0] || 'Free Size';
-      addToCart(prod, defaultSize);
+      addToCart(safeProd, defaultSize);
     }
   };
+
+  const cartProductKeys = new Set(
+    cart.map((item) => String(item.product?.id || item.product?.slug || ''))
+  );
+  const visibleRecommendations = recommendedProducts
+    .filter((p) => !cartProductKeys.has(String(p.id)) && !cartProductKeys.has(String(p.slug)))
+    .slice(0, 4);
 
   return (
     <AnimatePresence>
@@ -375,60 +408,80 @@ export const CartDrawer: React.FC = () => {
                 )}
 
                 {/* 6. "YOU MAY ALSO LIKE" RECOMMENDATIONS */}
-                <div className="pt-3 border-t border-[#EFE7E2] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xs font-sans font-bold uppercase tracking-[0.14em] text-[#1C1417]">
-                      You May Also Like
-                    </h3>
-                    <span className="text-[10px] font-sans text-[#B8903A] font-medium">Curated for you</span>
-                  </div>
+                {(visibleRecommendations.length > 0 || isLoadingRecommended) && (
+                  <div className="pt-3 border-t border-[#EFE7E2] space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-sans font-bold uppercase tracking-[0.14em] text-[#1C1417]">
+                        You May Also Like
+                      </h3>
+                      <span className="text-[10px] font-sans text-[#B8903A] font-medium">Curated for you</span>
+                    </div>
 
-                  <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-1">
-                    {recommendedProducts.map((prod, idx) => (
-                      <motion.div
-                        key={prod.id}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          delay: 0.1 + idx * 0.05,
-                          type: 'spring',
-                          stiffness: 260,
-                          damping: 20,
-                        }}
-                        className="snap-start shrink-0 w-[125px] sm:w-[135px] bg-white rounded-xl p-2.5 border border-[#EFE7E2] shadow-2xs flex flex-col justify-between group"
-                      >
-                        <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-2 bg-[#F7F2EC]">
-                          <Image
-                            src={prod.images?.[0] || '/hero/hero-saree-1.png'}
-                            alt={prod.name}
-                            fill
-                            className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
-                            sizes="135px"
-                          />
-                        </div>
+                    {visibleRecommendations.length > 0 ? (
+                      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-1">
+                        {visibleRecommendations.map((prod, idx) => (
+                          <motion.div
+                            key={prod.id || prod.slug}
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              delay: 0.1 + idx * 0.05,
+                              type: 'spring',
+                              stiffness: 260,
+                              damping: 20,
+                            }}
+                            className="snap-start shrink-0 w-[125px] sm:w-[135px] bg-white rounded-xl p-2.5 border border-[#EFE7E2] shadow-2xs flex flex-col justify-between group"
+                          >
+                            <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-2 bg-[#F7F2EC]">
+                              <Image
+                                src={prod.images?.[0] || '/hero/hero-saree-1.png'}
+                                alt={prod.name}
+                                fill
+                                className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                                sizes="135px"
+                              />
+                            </div>
 
-                        <div className="space-y-1.5">
-                          <h4 className="text-[11px] font-sans font-medium text-[#1C1417] line-clamp-1 group-hover:text-[#3B1230] transition-colors">
-                            {prod.name}
-                          </h4>
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="text-[11px] font-bold text-[#1C1417] font-tnum">
-                              ₹{(prod.price > 100000 ? Math.round(prod.price / 100) : prod.price).toLocaleString('en-IN')}
-                            </span>
-                            {/* 44px Outlined + ADD Button with Quick Size Picker */}
-                            <button
-                              onClick={() => handleAddRecommended(prod)}
-                              className="h-[44px] min-w-[54px] px-2.5 rounded-lg border border-[#3B1230] text-[#3B1230] hover:bg-[#3B1230] hover:text-white text-[11px] font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer flex items-center justify-center"
-                              title="Add to bag"
-                            >
-                              + ADD
-                            </button>
+                            <div className="space-y-1.5">
+                              <h4 className="text-[11px] font-sans font-medium text-[#1C1417] line-clamp-1 group-hover:text-[#3B1230] transition-colors">
+                                {prod.name}
+                              </h4>
+                              <div className="flex items-center justify-between gap-1">
+                                <span className="text-[11px] font-bold text-[#1C1417] font-tnum">
+                                  ₹{(prod.price > 100000 ? Math.round(prod.price / 100) : prod.price).toLocaleString('en-IN')}
+                                </span>
+                                {/* 44px Outlined + ADD Button with Quick Size Picker */}
+                                <button
+                                  onClick={() => handleAddRecommended(prod)}
+                                  className="h-[44px] min-w-[54px] px-2.5 rounded-lg border border-[#3B1230] text-[#3B1230] hover:bg-[#3B1230] hover:text-white text-[11px] font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+                                  title="Add to bag"
+                                >
+                                  + ADD
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="shrink-0 w-[125px] sm:w-[135px] bg-white rounded-xl p-2.5 border border-[#EFE7E2] shadow-2xs space-y-2 animate-pulse"
+                          >
+                            <div className="aspect-[3/4] w-full rounded-lg bg-[#F7F2EC]" />
+                            <div className="h-3 bg-[#F7F2EC] rounded w-3/4" />
+                            <div className="flex justify-between items-center pt-1">
+                              <div className="h-3 bg-[#F7F2EC] rounded w-1/3" />
+                              <div className="h-8 w-12 bg-[#F7F2EC] rounded-lg" />
+                            </div>
                           </div>
-                        </div>
-                      </motion.div>
-                    ))}
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </div>
 
               {/* QUICK SIZE PICKER SHEET (POPOVER) */}

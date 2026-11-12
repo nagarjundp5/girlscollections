@@ -28,6 +28,7 @@ interface PLPPageContentProps {
   initialCategory?: string;
   initialTarget?: string;
   initialOccasion?: string;
+  initialQuery?: string;
   initialData?: PlpCacheValue;
 }
 
@@ -35,6 +36,7 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
   initialCategory,
   initialTarget,
   initialOccasion,
+  initialQuery,
   initialData,
 }) => {
   const router = useRouter();
@@ -193,17 +195,19 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
       return;
     }
 
+    const currentKey = JSON.stringify(currentFilters) + ':' + currentSort;
+
     if (!hasMountedRef.current) {
       hasMountedRef.current = true;
-      // If server already rendered initialData, do not duplicate the fetch
+      // If server already rendered initialData, do not duplicate the fetch on initial mount
       if (initialData) {
         return;
       }
     }
 
-    // Subsequent filter or sort URL changes
+    // Only fetch on subsequent user-initiated filter or sort changes
     fetchProducts(1, false);
-  }, [fetchProducts, initialData]);
+  }, [fetchProducts, initialData, currentFilters, currentSort]);
 
   // Save scroll before navigating to PDP
   useEffect(() => {
@@ -317,11 +321,13 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
         )}
       </div>
 
-      {/* Selected Category Small 18px Title Above Toolbar (normal weight, one line) */}
-      {selectedCategoryName && (
+      {/* Selected Category or Search Query Title Above Toolbar */}
+      {(selectedCategoryName || searchParams?.get('q') || initialQuery) && (
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-2">
           <h1 className="text-[18px] font-normal tracking-[0.04em] uppercase text-[#1C1417] leading-tight truncate">
-            {selectedCategoryName}
+            {searchParams?.get('q') || initialQuery
+              ? `Results for '${searchParams?.get('q') || initialQuery}'`
+              : selectedCategoryName}
           </h1>
         </div>
       )}
@@ -355,6 +361,7 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
           onLoadMore={handleLoadMore}
           mobileColumns={mobileColumns}
           desktopColumns={desktopColumns}
+          target={searchParams?.get('target') || initialTarget || 'women'}
         />
       </main>
 

@@ -19,6 +19,7 @@ function generateOrderNumber(): string {
 }
 
 import { createOrderSchema } from '@/lib/validations';
+import { normalizeSize } from '@/lib/normalizeSize';
 import { razorpay } from '@/lib/razorpay';
 import { z } from 'zod';
 import { auth } from '@clerk/nextjs/server';
@@ -362,7 +363,7 @@ export async function POST(request: Request) {
 
     logPerf('Phone OTP Verified');
 
-    // 2. Fetch products, product images, settings, discount code, and sequence number concurrently
+    // 2. Fetch products, product images, settings, discount code, and product sizes concurrently
     const productIds = items.map((i) => i.productId);
     const dbProductsPromise = db
       .select()
@@ -376,6 +377,14 @@ export async function POST(request: Request) {
       .select()
       .from(schema.productImages)
       .where(inArray(schema.productImages.product_id, productIds));
+
+    const dbProductSizesPromise = db
+      .select()
+      .from(schema.productSizes)
+      .where(and(
+        inArray(schema.productSizes.product_id, productIds),
+        eq(schema.productSizes.is_active, true)
+      ));
 
     const dbSettingsPromise = !isPickup 
       ? db.select().from(schema.settings)
@@ -404,18 +413,19 @@ export async function POST(request: Request) {
       : Promise.resolve([]);
 
     // Await all promises in parallel
-    const [dbProducts, dbProductImages, dbSettings, dbCodeRows] = await Promise.all([
+    const [dbProducts, dbProductImages, dbSettings, dbCodeRows, dbProductSizes] = await Promise.all([
       dbProductsPromise,
       dbProductImagesPromise,
       dbSettingsPromise,
-      dbCodePromise
+      dbCodePromise,
+      dbProductSizesPromise,
     ]);
 
     if (dbProducts.length !== new Set(productIds).size) {
       return NextResponse.json({ error: 'One or more products are inactive or not found' }, { status: 400 });
     }
 
-    // 3. Verify stock availability and calculate subtotal (in paise)
+    // 3. Verify size existence, price from product_sizes, and stock availability BEFORE creating payment
     let calculatedSubtotal = 0;
     const orderItemsToSave: Array<{
       id: string;
@@ -426,6 +436,7 @@ export async function POST(request: Request) {
       image: string;
       slug: string;
       weight_grams: number;
+      division?: string;
     }> = [];
 
     for (const item of items) {
@@ -434,17 +445,54 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Product verification failed' }, { status: 400 });
       }
 
-      // Check stock
-      const stock = dbProd.stock_quantity || {};
-      const available = stock[item.size] || 0;
-      if (available < item.quantity) {
+      // 1. Resolve canonical master size key
+      const canonicalSize = normalizeSize(dbProd.gender, item.size);
+      if (!canonicalSize) {
         return NextResponse.json(
-          { error: `Product "${dbProd.name}" in size ${item.size} is out of stock.` },
+          { error: `Invalid size "${item.size}" for product "${dbProd.name}". Please select a valid size.` },
           { status: 400 }
         );
       }
 
-      calculatedSubtotal += dbProd.price * item.quantity;
+      // 2. Pre-payment validation: verify size exists for that product
+      const matchingProductSizes = (dbProductSizes || []).filter((ps: any) => ps.product_id === dbProd.id);
+      const productSizeRow = matchingProductSizes.find((ps: any) => {
+        const normKey = normalizeSize(dbProd.gender, ps.size_key);
+        return normKey === canonicalSize || ps.size_key?.toLowerCase() === canonicalSize.toLowerCase();
+      });
+
+      const prodSizesArray: any[] = Array.isArray(dbProd.sizes) ? dbProd.sizes : [];
+      const hasSizeInProdArray = prodSizesArray.some((s: any) => {
+        const sVal = typeof s === 'string' ? s : s?.size;
+        return normalizeSize(dbProd.gender, sVal) === canonicalSize || (sVal && sVal.toLowerCase() === canonicalSize.toLowerCase());
+      });
+
+      if (matchingProductSizes.length > 0 && !productSizeRow && !hasSizeInProdArray) {
+        return NextResponse.json(
+          { error: `Size "${item.size}" is not available for product "${dbProd.name}".` },
+          { status: 400 }
+        );
+      }
+
+      // 3. Price from product_sizes if available, otherwise base price
+      const itemUnitPrice = productSizeRow?.price && productSizeRow.price > 0
+        ? productSizeRow.price
+        : dbProd.price;
+
+      // 4. Stock availability check
+      const stock = dbProd.stock_quantity || {};
+      const available = productSizeRow?.stock !== undefined
+        ? productSizeRow.stock
+        : (stock[canonicalSize] ?? stock[canonicalSize.toLowerCase()] ?? stock[canonicalSize.toUpperCase()] ?? stock[item.size] ?? 10);
+
+      if (available < item.quantity) {
+        return NextResponse.json(
+          { error: `Product "${dbProd.name}" in size ${canonicalSize} is out of stock.` },
+          { status: 400 }
+        );
+      }
+
+      calculatedSubtotal += itemUnitPrice * item.quantity;
 
       const prodImages = dbProductImages.filter((img: any) => img.product_id === item.productId);
       const firstImage = dbProd.images?.[0] || prodImages?.[0]?.image_url || '';
@@ -452,12 +500,13 @@ export async function POST(request: Request) {
       orderItemsToSave.push({
         id: dbProd.id,
         name: dbProd.name,
-        size: item.size,
+        size: canonicalSize,
         quantity: item.quantity,
-        price: dbProd.price, // stored in paise
+        price: itemUnitPrice, // stored in paise
         image: firstImage,
         slug: dbProd.slug,
         weight_grams: dbProd.weight_grams || 500,
+        division: dbProd.gender,
       });
     }
 
