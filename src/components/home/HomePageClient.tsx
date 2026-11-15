@@ -4,7 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import HeroCarousel from '@/components/home/HeroCarousel';
 import CircularCategoryScroller from '@/components/home/CircularCategoryScroller';
-import ShopByCategoryBento from '@/components/home/ShopByCategoryBento';
+import ShopByCategoryCarousel from '@/components/home/ShopByCategoryCarousel';
+import CategoryProductRows from '@/components/home/CategoryProductRows';
+import VisitOurStore from '@/components/home/VisitOurStore';
 import ProductCarousel from '@/components/home/ProductCarousel';
 import { Product } from '@/types';
 import { DivisionPreference, getStoredPreference, setStoredPreference } from '@/lib/preference';
@@ -13,8 +15,6 @@ import { DivisionPreference, getStoredPreference, setStoredPreference } from '@/
 const PreferenceModal = dynamic(() => import('@/components/home/PreferenceModal'), {
   ssr: false,
 });
-
-const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'));
 
 interface HomePageClientProps {
   trendingProducts: Product[];
@@ -110,13 +110,6 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
             viewAllHref="/shop?target=women"
             viewAllLabel="VIEW ALL WOMEN"
           />
-
-          <ShopByCategoryBento
-            filter="women"
-            title="Shop Women's Collection"
-            viewAllHref="/shop?target=women"
-            viewAllLabel="VIEW ALL WOMEN CATEGORIES"
-          />
         </div>
 
         {/* 
@@ -132,32 +125,22 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
             viewAllHref="/shop?target=kids"
             viewAllLabel="VIEW ALL KIDS"
           />
-
-          <ShopByCategoryBento
-            filter="kids"
-            title="Shop Kids' Collection"
-            viewAllHref="/shop?target=kids"
-            viewAllLabel="VIEW ALL KIDS CATEGORIES"
-          />
         </div>
 
         {/* 
-          NEW IN:
-          Follows active preference
+          SHOP BY CATEGORY (Cutout carousel)
         */}
-        {newDrops && newDrops.length > 0 && (
-          <ProductCarousel
-            title="New In"
-            products={newDrops}
-            variant="new"
-            filter={pref}
-            viewAllHref={`/shop?sort=newest&target=${pref}`}
-            viewAllLabel="VIEW ALL NEW DROPS"
-          />
-        )}
+        <ShopByCategoryCarousel filter={pref} />
 
-        {/* REVIEWS & PATRON TESTIMONIALS */}
-        <TestimonialsSection />
+        {/* 
+          CATEGORY PRODUCT ROWS ("{Category} | Top Picks" carousels)
+        */}
+        <CategoryProductRows filter={pref} />
+
+        {/* 
+          VISIT OUR STORE (Bottom of home page, above footer)
+        */}
+        <VisitOurStore />
       </div>
 
       {/* FIRST-VISIT CHOOSER MODAL (opens ~1s after load, only if no preference stored) */}

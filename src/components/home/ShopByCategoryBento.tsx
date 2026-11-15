@@ -63,13 +63,6 @@ const TOP_CATEGORIES: ShopCategoryTile[] = [
     group: 'women',
     image: 'https://res.cloudinary.com/lt3ga2by/image/upload/v1793907858/tgc/categories/skirt-and-top.webp',
   },
-  {
-    id: 'kids-coords',
-    name: 'Children Co-ords',
-    slug: 'children-co-ord-set',
-    group: 'kids',
-    image: 'https://res.cloudinary.com/lt3ga2by/image/upload/v1793907854/tgc/categories/children-co-ord-set.webp',
-  },
 ];
 
 interface ShopByCategoryBentoProps {

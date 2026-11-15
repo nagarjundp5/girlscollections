@@ -1118,16 +1118,6 @@ export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     line2: 'FROCKS',
     topOffset: '7.7%',
   },
-  {
-    id: 'children-co-ord-set',
-    name: 'Children Co-ord Set',
-    slug: 'children-co-ord-set',
-    group: 'kids',
-    image: '/categories/cutouts/children-co-ord-set.webp',
-    line1: 'KIDS CO-ORD',
-    line2: 'SETS',
-    topOffset: '7.7%',
-  },
 ];
 
 // ─── Category Circle with Head Pop-Out Effect ────────────────────────────────

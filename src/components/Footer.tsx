@@ -1,196 +1,222 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, RefreshCw, Truck, Award, Scissors, Lock } from 'lucide-react';
 import BrandLogo from './BrandLogo';
-import ZariThread from '@/components/ui/ZariThread';
 
-import NotificationBellWidget from './NotificationBellWidget';
+// ─── PLACEHOLDER CONSTANTS (User can customize these) ────────────────────────
+export const EMAIL_HERE = 'care@thegirlscollections.com';
+export const PHONE_HERE = '+91 98765 43210';
+export const HOURS_HERE = 'Mon - Sat: 10:00 AM - 9:00 PM\nSun: 11:00 AM - 8:00 PM';
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail('');
-    }
-  };
-
-  const trustItems = [
-    {
-      icon: ShieldCheck,
-      title: 'Cash on Delivery',
-      subtitle: 'Available Pan-India',
-    },
-    {
-      icon: Truck,
-      title: 'Express Shipping',
-      subtitle: 'Dispatched in 24 Hours',
-    },
-    {
-      icon: RefreshCw,
-      title: 'Hassle-Free Returns',
-      subtitle: 'Easy Doorstep Pickups',
-    },
-    {
-      icon: Award,
-      title: '100% Certified Fabrics',
-      subtitle: 'Pure Silk & Handlooms',
-    },
-    {
-      icon: Scissors,
-      title: 'Custom Sizing',
-      subtitle: 'Tailored to Fit You',
-    },
-    {
-      icon: Lock,
-      title: 'Secure Checkout',
-      subtitle: '256-Bit Encrypted Payments',
-    },
-  ];
-
   return (
-    <footer className="bg-navy text-ivory relative border-t border-zariGold/30 select-none">
-      {/* Top Woven Pattern Border */}
-      <ZariThread variant="footerWeave" />
-
-      {/* HORIZONTAL TRUST STRIP */}
-      <div className="bg-nearBlack border-b border-zariGold/20 py-8">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-12">
-          <div
-            className="flex sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory py-1"
-            style={{ WebkitOverflowScrolling: 'touch' }}
-          >
-            {trustItems.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={idx}
-                  className="flex items-center gap-3 shrink-0 snap-start min-w-[190px] sm:min-w-0"
-                >
-                  <div className="w-10 h-10 rounded-full bg-zariGold/15 border border-zariGold/30 flex items-center justify-center shrink-0">
-                    <Icon className="w-5 h-5 text-zariGold" />
-                  </div>
-                  <div>
-                    <p className="font-sans font-bold text-xs text-ivory leading-snug">
-                      {item.title}
-                    </p>
-                    <p className="font-sans text-[11px] text-ivory/60 leading-tight">
-                      {item.subtitle}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* NEWSLETTER SECTION */}
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 py-16 border-b border-zariGold/20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-6 space-y-3">
-            <span className="eyebrow-text text-zariGold">ROYAL INNER CIRCLE</span>
-            <h3 className="text-2xl sm:text-4xl font-serif font-semibold text-ivory">
-              Private Drop Invitations &amp; Festive Styling Guides
-            </h3>
-            <p className="text-xs font-sans text-ivory/70 mb-4">
-              Receive 10% off your first handcrafted anarkali or kids ethnic ensemble.
+    <footer className="w-full bg-[#FCFAF8] text-[#1C1417] border-t border-[#EAE5DE] select-none">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-12 py-12 md:py-16">
+        {/* Four columns on desktop, stacked on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 text-xs md:text-[13px] font-sans">
+          
+          {/* Column 1: Logo + Copyright */}
+          <div className="space-y-4 flex flex-col items-start">
+            <BrandLogo variant="horizontal" size="md" />
+            <p className="text-[#1C1417]/70 text-xs leading-relaxed max-w-xs pt-1">
+              Curated luxury Indian fashion & handcrafted ethnic wear for women and girls.
+            </p>
+            <p className="text-[#1C1417]/60 text-[11px] pt-2">
+              © 2026 The Girls Collections. All Rights Reserved.
             </p>
           </div>
 
-          <div className="lg:col-span-6">
-            {subscribed ? (
-              <div className="p-4 rounded-[2px] bg-zariGold/15 border border-zariGold text-zariGold-light text-sm font-serif">
-                ✨ Thank you for joining. Welcome to The Girls Collections inner circle.
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address..."
-                  required
-                  className="flex-1 px-5 py-4 rounded-[2px] bg-ivory text-inkNavy placeholder-inkNavy/50 focus:outline-none focus:ring-2 focus:ring-zariGold text-sm font-sans font-medium"
-                />
-                <button
-                  type="submit"
-                  className="px-8 py-4 rounded-[2px] btn-gold-gradient text-xs font-bold uppercase tracking-[0.2em] flex items-center justify-center space-x-2 cursor-pointer"
+          {/* Column 2: About Us */}
+          <div className="space-y-3.5">
+            <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
+              About Us
+            </h4>
+            <ul className="space-y-2.5 text-[#1C1417]/75">
+              <li>
+                <Link href="/about" className="hover:text-[#C5A059] transition-colors">
+                  Our Story
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-[#C5A059] transition-colors">
+                  Blog
+                </Link>
+              </li>
+            </ul>
+
+            {/* Social Line Icons (Facebook, Instagram, Pinterest, YouTube) */}
+            <div className="pt-3">
+              <span className="block text-[10px] font-sans font-bold uppercase tracking-widest text-[#1C1417]/50 mb-2">
+                Follow Us
+              </span>
+              <div className="flex items-center space-x-3.5 text-[#1C1417]/80">
+                {/* Facebook */}
+                <a
+                  href="#"
+                  aria-label="Facebook"
+                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
                 >
-                  <span>Subscribe</span>
-                  <ArrowRight className="w-4 h-4 text-white" />
-                </button>
-              </form>
-            )}
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                  </svg>
+                </a>
+
+                {/* Instagram */}
+                <a
+                  href="#"
+                  aria-label="Instagram"
+                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </a>
+
+                {/* Pinterest */}
+                <a
+                  href="#"
+                  aria-label="Pinterest"
+                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29-.09-.78-.17-1.98.04-2.83.19-.77 1.25-5.3 1.25-5.3s-.32-.64-.32-1.58c0-1.48.86-2.59 1.93-2.59.91 0 1.35.68 1.35 1.5 0 .91-.58 2.28-.88 3.55-.25 1.06.53 1.93 1.58 1.93 1.9 0 3.36-2 3.36-4.89 0-2.56-1.84-4.35-4.47-4.35-3.05 0-4.84 2.29-4.84 4.65 0 .92.35 1.91.8 2.45.09.11.1.2.07.32-.08.33-.26 1.06-.3 1.21-.05.2-.17.24-.38.15-1.44-.67-2.34-2.77-2.34-4.46 0-3.63 2.64-6.97 7.61-6.97 3.99 0 7.1 2.85 7.1 6.66 0 3.97-2.5 7.17-5.98 7.17-1.17 0-2.27-.61-2.64-1.33l-.72 2.74c-.26 1-.96 2.25-1.43 3.01.99.31 2.04.47 3.13.47 5.52 0 10-4.48 10-10S17.52 2 12 2z" />
+                  </svg>
+                </a>
+
+                {/* YouTube */}
+                <a
+                  href="#"
+                  aria-label="YouTube"
+                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* BROWSER DROP NOTIFICATION WIDGET */}
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 pt-8">
-        <NotificationBellWidget />
-      </div>
+          {/* Column 3: Quick Links */}
+          <div className="space-y-3.5">
+            <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
+              Quick Links
+            </h4>
+            <ul className="space-y-2.5 text-[#1C1417]/75">
+              <li>
+                <Link
+                  href="/policies/shipping-and-delivery-policy"
+                  className="hover:text-[#C5A059] transition-colors"
+                >
+                  Shipping &amp; Delivery
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/policies/refund-return-exchange-policy"
+                  className="hover:text-[#C5A059] transition-colors"
+                >
+                  Returns &amp; Cancellation
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-[#C5A059] transition-colors">
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/policies/privacy-policy"
+                  className="hover:text-[#C5A059] transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/policies/terms-and-conditions"
+                  className="hover:text-[#C5A059] transition-colors"
+                >
+                  Terms &amp; Conditions
+                </Link>
+              </li>
+              <li>
+                <Link href="/track" className="hover:text-[#C5A059] transition-colors">
+                  Track Orders
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-      {/* MAIN FOOTER COLUMNS */}
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 border-b border-zariGold/20 text-xs font-sans">
-        {/* Column 1: Brand Info */}
-        <div className="lg:col-span-2 space-y-4">
-          <BrandLogo variant="badge" size="lg" />
-          <p className="text-ivory/75 leading-relaxed max-w-sm font-light">
-            Curated D2C luxury Indian fashion brand specializing in traditional &amp; contemporary anarkalis, lehengas, 
-            indo-western ensembles for women, and handcrafted pure silk pattu frocks for young girls.
-          </p>
-        </div>
+          {/* Column 4: Contact */}
+          <div className="space-y-3.5">
+            <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
+              Contact
+            </h4>
+            <ul className="space-y-2.5 text-[#1C1417]/75">
+              <li>
+                <Link href="/contact" className="hover:text-[#C5A059] transition-colors">
+                  Find a Store
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${EMAIL_HERE}`}
+                  className="hover:text-[#C5A059] transition-colors break-all"
+                >
+                  {EMAIL_HERE}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${PHONE_HERE.replace(/\s+/g, '')}`}
+                  className="hover:text-[#C5A059] transition-colors"
+                >
+                  {PHONE_HERE}
+                </a>
+              </li>
+              <li className="pt-2 text-[11px] text-[#1C1417]/60 whitespace-pre-line leading-relaxed">
+                {HOURS_HERE}
+              </li>
+            </ul>
+          </div>
 
-        {/* Column 2: Shop */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-serif font-bold text-zariGold uppercase tracking-[0.2em]">Shop</h4>
-          <ul className="space-y-2.5 text-ivory/75 font-light">
-            <li><Link href="/shop?category=anarkali-kurta-suit-sets" className="hover:text-zariGold transition-colors">Silk Anarkalis</Link></li>
-            <li><Link href="/shop?category=all-kurta-sets" className="hover:text-zariGold transition-colors">Kurta Suit Sets</Link></li>
-            <li><Link href="/shop?category=kids-lehenga-blouse-or-pattu-pavadai" className="hover:text-zariGold transition-colors">Kids Pattu Pavadai</Link></li>
-            <li><Link href="/shop?category=party-wear-frocks" className="hover:text-zariGold transition-colors">Party Wear Frocks</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 3: Client Care */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-serif font-bold text-zariGold uppercase tracking-[0.2em]">Client Care</h4>
-          <ul className="space-y-2.5 text-ivory/75 font-light">
-            <li><Link href="/track" className="hover:text-zariGold transition-colors">Track Order</Link></li>
-            <li><Link href="/contact" className="hover:text-zariGold transition-colors">Styling Concierge</Link></li>
-            <li><Link href="/policies/terms-and-conditions" className="hover:text-zariGold transition-colors font-medium text-zariGold">Terms &amp; Conditions</Link></li>
-            <li><Link href="/policies/privacy-policy" className="hover:text-zariGold transition-colors">Privacy Policy</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 4: About */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-serif font-bold text-zariGold uppercase tracking-[0.2em]">About</h4>
-          <ul className="space-y-2.5 text-ivory/75 font-light">
-            <li><Link href="/about" className="hover:text-zariGold transition-colors">Our Heritage</Link></li>
-            <li><Link href="/about" className="hover:text-zariGold transition-colors">Artisan Craftsmanship</Link></li>
-            <li><Link href="/contact" className="hover:text-zariGold transition-colors">Contact Us</Link></li>
-          </ul>
-        </div>
-      </div>
-
-      {/* COPYRIGHT & PAYMENT METHODS */}
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-ivory/60 space-y-4 sm:space-y-0">
-        <p>© {new Date().getFullYear()} The Girls Collections. Custom Built with Quiet Luxury.</p>
-        <div className="flex items-center space-x-3 text-zariGold font-sans text-[10px] tracking-widest uppercase">
-          <span>RAZORPAY</span>
-          <span>•</span>
-          <span>UPI</span>
-          <span>•</span>
-          <span>VISA</span>
-          <span>•</span>
-          <span>MASTERCARD</span>
         </div>
       </div>
     </footer>
