@@ -11,6 +11,7 @@ import GoogleReviewsSection from '@/components/home/GoogleReviewsSection';
 import ProductCarousel from '@/components/home/ProductCarousel';
 import { Product } from '@/types';
 import { DivisionPreference, getStoredPreference, setStoredPreference } from '@/lib/preference';
+import { TabbedProducts, TabbedCategoryRows } from '@/lib/homepage-snapshot';
 
 // Dynamically import chooser modal to avoid blocking LCP or adding to initial critical bundle
 const PreferenceModal = dynamic(() => import('@/components/home/PreferenceModal'), {
@@ -18,18 +19,22 @@ const PreferenceModal = dynamic(() => import('@/components/home/PreferenceModal'
 });
 
 interface HomePageClientProps {
-  trendingProducts: Product[];
+  trending?: TabbedProducts;
+  newDrops?: TabbedProducts;
+  categoryRows?: TabbedCategoryRows;
+  spotlightProduct?: Product | null;
+  trendingProducts?: Product[];
   womenTrending?: Product[];
   kidsTrending?: Product[];
-  newDrops: Product[];
-  spotlightProduct: Product | null;
 }
 
 export const HomePageClient: React.FC<HomePageClientProps> = ({
-  trendingProducts,
+  trending,
+  newDrops,
+  categoryRows,
+  trendingProducts = [],
   womenTrending = [],
   kidsTrending = [],
-  newDrops,
 }) => {
   const [pref, setPref] = useState<DivisionPreference>('all');
   const [isCrossfading, setIsCrossfading] = useState(false);
@@ -63,9 +68,10 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
     }, 200);
   }, [pref]);
 
-  // Fallbacks if one division is empty
-  const activeWomenTrending = womenTrending.length > 0 ? womenTrending : trendingProducts;
-  const activeKidsTrending = kidsTrending.length > 0 ? kidsTrending : trendingProducts;
+  // Preloaded bounded sets per gender tab — strictly zero client-side DB/API fetching on tab switch
+  const womenList = trending?.women && trending.women.length > 0 ? trending.women : womenTrending;
+  const kidsList = trending?.kids && trending.kids.length > 0 ? trending.kids : kidsTrending;
+  const allList = trending?.all && trending.all.length > 0 ? trending.all : trendingProducts;
 
   return (
     <div className="w-full bg-[#FAF8F5] text-[#1C1417] selection:bg-[#F3DDE0] selection:text-[#1A1E3A] pb-16">
@@ -105,7 +111,7 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
         <div data-division="women" className="w-full flex flex-col">
           <ProductCarousel
             title={pref === 'women' ? 'Trending This Week' : "Women's Trending"}
-            products={activeWomenTrending}
+            products={womenList}
             variant="trending"
             filter="women"
             viewAllHref="/shop?target=women"
@@ -120,7 +126,7 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
         <div data-division="kids" className="w-full flex flex-col">
           <ProductCarousel
             title={pref === 'kids' ? 'Trending This Week' : "Kids' Trending"}
-            products={activeKidsTrending}
+            products={kidsList}
             variant="trending"
             filter="kids"
             viewAllHref="/shop?target=kids"
@@ -138,7 +144,8 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
         */}
         <CategoryProductRows
           filter={pref}
-          products={[...trendingProducts, ...activeWomenTrending, ...activeKidsTrending, ...newDrops]}
+          categoryRows={categoryRows}
+          products={[...allList, ...womenList, ...kidsList]}
         />
 
         {/* 

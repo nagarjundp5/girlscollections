@@ -9,11 +9,13 @@ export default async function HomePage() {
 
   return (
     <HomePageClient
-      trendingProducts={snapshot.trendingProducts}
-      womenTrending={snapshot.womenTrending}
-      kidsTrending={snapshot.kidsTrending}
+      trending={snapshot.trending}
       newDrops={snapshot.newDrops}
+      categoryRows={snapshot.categoryRows}
       spotlightProduct={snapshot.spotlightProduct}
+      trendingProducts={snapshot.trending.all}
+      womenTrending={snapshot.trending.women}
+      kidsTrending={snapshot.trending.kids}
     />
   );
 }

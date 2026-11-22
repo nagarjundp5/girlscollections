@@ -32,44 +32,14 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
   const { isInWishlist, toggleWishlist } = useShop();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // Filter products by homepage active category tab (Women / Kids / All)
+  // Products are pre-filtered in SQL per gender tab — strictly zero client-side gender filtering
   const filteredProducts = useMemo(() => {
     if (!products || products.length === 0) return [];
 
-    let list = products.filter(
-      (p) => p && p.is_active !== false && p.price > 0 && p.images && p.images.length > 0
+    return products.filter(
+      (p) => p && p.is_active !== false && p.price > 0 && Array.isArray(p.images) && p.images.length > 0
     );
-
-    if (filter === 'women') {
-      list = list.filter((p) => {
-        if (p.gender === 'both') return true;
-        const cat = (p.category || '').toLowerCase();
-        const sub = (p.subcategory || '').toLowerCase();
-        const isKids =
-          cat.includes('kids') ||
-          sub.includes('kids') ||
-          cat.includes('frock') ||
-          cat.includes('pattu') ||
-          p.gender === 'unisex';
-        return !isKids;
-      });
-    } else if (filter === 'kids') {
-      list = list.filter((p) => {
-        if (p.gender === 'both') return true;
-        const cat = (p.category || '').toLowerCase();
-        const sub = (p.subcategory || '').toLowerCase();
-        return (
-          cat.includes('kids') ||
-          sub.includes('kids') ||
-          cat.includes('frock') ||
-          cat.includes('pattu') ||
-          p.gender === 'unisex'
-        );
-      });
-    }
-
-    return list;
-  }, [products, filter]);
+  }, [products]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
@@ -182,26 +152,26 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
                         className="block w-full h-full relative"
                         aria-label={product.name}
                       >
-                        {/* Primary Image - uncropped object-contain */}
+                        {/* Primary Image - fixed aspect-[3/4] object-cover */}
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                          className={`object-contain transition-opacity duration-500 ease-in-out ${
+                          className={`object-cover transition-opacity duration-500 ease-in-out ${
                             isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
                           }`}
                           loading="lazy"
                         />
 
-                        {/* Secondary Image (Hover Swap on Desktop) - uncropped object-contain */}
+                        {/* Secondary Image (Hover Swap on Desktop) - fixed aspect-[3/4] object-cover */}
                         {hasSecondImage && (
                           <Image
                             src={optimizedSecondary}
                             alt={`${product.name} alternate view`}
                             fill
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                            className={`object-contain transition-opacity duration-500 ease-in-out ${
+                            className={`object-cover transition-opacity duration-500 ease-in-out ${
                               isHovered ? 'opacity-100' : 'opacity-0'
                             }`}
                             loading="lazy"

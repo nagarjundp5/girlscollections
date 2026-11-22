@@ -1,23 +1,93 @@
 import { unstable_cache } from 'next/cache';
 import { dbHttp } from '@/db';
-import * as schema from '@/db/schema';
-import { eq, desc, and, or, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { Product } from '@/types';
+import { WOMEN_CATEGORIES, KIDS_CATEGORIES, CategoryItem } from '@/data/categoryTaxonomy';
+import { resolveCanonicalCategorySlug } from '@/lib/categoryHref';
+
+export interface TabbedProducts {
+  all: Product[];
+  women: Product[];
+  kids: Product[];
+}
+
+export interface CategoryRowData {
+  category: CategoryItem;
+  products: Product[];
+}
+
+export interface TabbedCategoryRows {
+  all: CategoryRowData[];
+  women: CategoryRowData[];
+  kids: CategoryRowData[];
+}
 
 export interface HomepageSnapshot {
+  trending: TabbedProducts;
+  newDrops: TabbedProducts;
+  categoryRows: TabbedCategoryRows;
+  spotlightProduct: Product | null;
+  // Backwards compatibility fields
   womenTrending: Product[];
   kidsTrending: Product[];
   trendingProducts: Product[];
-  newDrops: Product[];
-  spotlightProduct: Product | null;
   updatedAt: string;
 }
 
-function mapToHomepageProduct(r: any): Product {
+export type NormalizedGender = 'women' | 'kids' | 'unisex' | 'unknown';
+
+/**
+ * Normalizes any raw product gender / category into a single mapping.
+ * Logs any active product with null or unknown gender.
+ */
+export function normalizeProductGender(
+  rawGender?: string | null,
+  category?: string | null,
+  subcategory?: string | null
+): NormalizedGender {
+  const g = (rawGender || '').toLowerCase().trim();
+  const c = (category || '').toLowerCase().trim();
+  const s = (subcategory || '').toLowerCase().trim();
+
+  if (
+    g === 'kids' ||
+    g === 'girls' ||
+    g === 'boys' ||
+    g === 'children' ||
+    c.includes('kid') ||
+    c.includes('frock') ||
+    c.includes('pattu') ||
+    s.includes('kid') ||
+    s.includes('frock')
+  ) {
+    return 'kids';
+  }
+  if (g === 'both' || g === 'unisex') {
+    return 'unisex';
+  }
+  if (
+    g === 'women' ||
+    g === 'ladies' ||
+    g === 'womens' ||
+    c.includes('kurta') ||
+    c.includes('anarkali') ||
+    c.includes('saree') ||
+    c.includes('lehenga') ||
+    c.includes('gown') ||
+    c.includes('top')
+  ) {
+    return 'women';
+  }
+  return 'unknown';
+}
+
+function mapRowToProduct(r: any): Product {
   const priceRupees = r.price > 100000 ? Math.round(r.price / 100) : r.price;
   const compareRupees = r.compare_price
     ? (r.compare_price > 100000 ? Math.round(r.compare_price / 100) : r.compare_price)
     : undefined;
+
+  const normGender = r.norm_gender || normalizeProductGender(r.gender, r.category);
 
   return {
     id: r.id,
@@ -27,8 +97,8 @@ function mapToHomepageProduct(r: any): Product {
     compare_price: compareRupees,
     originalPrice: compareRupees,
     category: r.category,
-    gender: r.gender,
-    target: r.gender === 'kids' ? 'kids' : 'women',
+    gender: r.gender || normGender,
+    target: normGender === 'kids' ? 'kids' : 'women',
     images: r.image ? [r.image] : [],
     sizes: [],
     created_at: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
@@ -37,87 +107,306 @@ function mapToHomepageProduct(r: any): Product {
 }
 
 /**
- * Raw loader for homepage sections.
- * Executes ONLY 2 queries with strict LIMITs:
- *   1. New drops: LIMIT 10
- *   2. Trending: LIMIT 20 (partitioned into womenTrending and kidsTrending)
- * Selects only slim columns: id, name, slug, price, compare_price, category, gender, created_at, images[1].
- * ZERO Redis calls, ZERO full-table scans, ZERO N+1 subqueries.
+ * Builds separate bounded sets per tab (all, women, kids) in SQL.
+ * Query 1: Trending + New Drops partitioned by gender using ROW_NUMBER() OVER
+ * Query 2: Category rows partitioned by gender and category using ROW_NUMBER() OVER
+ * Total rows returned stay strictly under ~150.
  */
 async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
-  const slimSelect = {
-    id: schema.products.id,
-    name: schema.products.name,
-    slug: schema.products.slug,
-    price: schema.products.price,
-    compare_price: schema.products.compare_price,
-    category: schema.products.category,
-    gender: schema.products.gender,
-    created_at: schema.products.created_at,
-    image: sql<string>`coalesce(${schema.products.images}[1], '')`,
-  };
+  // Query 1: Trending & New Drops partitioned by gender
+  const trendingAndNewQuery = sql`
+    WITH base_products AS (
+      SELECT
+        p.id,
+        p.name,
+        p.slug,
+        p.price,
+        p.compare_price,
+        p.category,
+        p.gender,
+        p.created_at,
+        COALESCE(pi.image_url, p.images[1], '') AS image,
+        CASE
+          WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
+            OR lower(coalesce(p.category, '')) LIKE '%kid%'
+            OR lower(coalesce(p.category, '')) LIKE '%frock%'
+            OR lower(coalesce(p.category, '')) LIKE '%pattu%'
+            OR lower(coalesce(p.subcategory, '')) LIKE '%kid%'
+            OR lower(coalesce(p.subcategory, '')) LIKE '%frock%'
+            THEN 'kids'
+          WHEN lower(coalesce(p.gender, '')) IN ('both', 'unisex')
+            THEN 'unisex'
+          WHEN lower(coalesce(p.gender, '')) IN ('women', 'ladies', 'womens')
+            OR lower(coalesce(p.category, '')) LIKE '%kurta%'
+            OR lower(coalesce(p.category, '')) LIKE '%anarkali%'
+            OR lower(coalesce(p.category, '')) LIKE '%saree%'
+            OR lower(coalesce(p.category, '')) LIKE '%lehenga%'
+            THEN 'women'
+          ELSE 'unknown'
+        END AS norm_gender,
+        p.is_trending,
+        p.is_featured,
+        p.is_best_seller,
+        p.units_sold
+      FROM products p
+      LEFT JOIN LATERAL (
+        SELECT pi.image_url, pi.width, pi.height
+        FROM product_images pi
+        WHERE pi.product_id = p.id
+        ORDER BY pi.sort_order ASC, pi.created_at ASC
+        LIMIT 1
+      ) pi ON true
+      WHERE p.is_active = true
+        AND COALESCE(pi.image_url, p.images[1], '') <> ''
+    ),
+    ranked_trending AS (
+      SELECT *,
+        ROW_NUMBER() OVER (
+          PARTITION BY norm_gender
+          ORDER BY
+            is_trending DESC,
+            is_featured DESC,
+            is_best_seller DESC,
+            units_sold DESC,
+            created_at DESC,
+            id DESC
+        ) AS rn_trend
+      FROM base_products
+    ),
+    ranked_new AS (
+      SELECT *,
+        ROW_NUMBER() OVER (
+          PARTITION BY norm_gender
+          ORDER BY created_at DESC, id DESC
+        ) AS rn_new
+      FROM base_products
+    )
+    SELECT
+      id, name, slug, price, compare_price, category, gender, created_at, image, norm_gender,
+      'trending' AS section, rn_trend AS rn
+    FROM ranked_trending
+    WHERE rn_trend <= 12
+    UNION ALL
+    SELECT
+      id, name, slug, price, compare_price, category, gender, created_at, image, norm_gender,
+      'new' AS section, rn_new AS rn
+    FROM ranked_new
+    WHERE rn_new <= 12;
+  `;
 
-  const [newDropsRows, trendingRows] = await Promise.all([
-    // Query 1: New Drops (max 10 products)
-    dbHttp
-      .select(slimSelect)
-      .from(schema.products)
-      .where(eq(schema.products.is_active, true))
-      .orderBy(desc(schema.products.created_at), desc(schema.products.id))
-      .limit(10),
+  // Query 2: Category rows partitioned by gender and category
+  const categoryRowsQuery = sql`
+    WITH base_products AS (
+      SELECT
+        p.id,
+        p.name,
+        p.slug,
+        p.price,
+        p.compare_price,
+        p.category,
+        p.gender,
+        p.created_at,
+        COALESCE(pi.image_url, p.images[1], '') AS image,
+        CASE
+          WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
+            OR lower(coalesce(p.category, '')) LIKE '%kid%'
+            OR lower(coalesce(p.category, '')) LIKE '%frock%'
+            OR lower(coalesce(p.category, '')) LIKE '%pattu%'
+            OR lower(coalesce(p.subcategory, '')) LIKE '%kid%'
+            OR lower(coalesce(p.subcategory, '')) LIKE '%frock%'
+            THEN 'kids'
+          WHEN lower(coalesce(p.gender, '')) IN ('both', 'unisex')
+            THEN 'unisex'
+          WHEN lower(coalesce(p.gender, '')) IN ('women', 'ladies', 'womens')
+            OR lower(coalesce(p.category, '')) LIKE '%kurta%'
+            OR lower(coalesce(p.category, '')) LIKE '%anarkali%'
+            OR lower(coalesce(p.category, '')) LIKE '%saree%'
+            OR lower(coalesce(p.category, '')) LIKE '%lehenga%'
+            THEN 'women'
+          ELSE 'unknown'
+        END AS norm_gender
+      FROM products p
+      LEFT JOIN LATERAL (
+        SELECT pi.image_url, pi.width, pi.height
+        FROM product_images pi
+        WHERE pi.product_id = p.id
+        ORDER BY pi.sort_order ASC, pi.created_at ASC
+        LIMIT 1
+      ) pi ON true
+      WHERE p.is_active = true
+        AND COALESCE(pi.image_url, p.images[1], '') <> ''
+    ),
+    ranked_cat AS (
+      SELECT *,
+        ROW_NUMBER() OVER (
+          PARTITION BY norm_gender, category
+          ORDER BY created_at DESC, id DESC
+        ) AS rn
+      FROM base_products
+    )
+    SELECT id, name, slug, price, compare_price, category, gender, created_at, image, norm_gender
+    FROM ranked_cat
+    WHERE rn <= 6;
+  `;
 
-    // Query 2: Trending (max 20 products)
-    dbHttp
-      .select(slimSelect)
-      .from(schema.products)
-      .where(eq(schema.products.is_active, true))
-      .orderBy(
-        desc(schema.products.is_trending),
-        desc(schema.products.is_featured),
-        desc(schema.products.units_sold),
-        desc(schema.products.created_at),
-        desc(schema.products.id)
-      )
-      .limit(20),
+  const [tAndNResult, catResult] = await Promise.all([
+    dbHttp.execute(trendingAndNewQuery),
+    dbHttp.execute(categoryRowsQuery),
   ]);
 
-  const newDrops = newDropsRows.map(mapToHomepageProduct);
-  const trendingPool = trendingRows.map(mapToHomepageProduct);
+  const tAndNRows: any[] = (tAndNResult as any).rows || (Array.isArray(tAndNResult) ? tAndNResult : []);
+  const catRows: any[] = (catResult as any).rows || (Array.isArray(catResult) ? catResult : []);
 
-  const isKids = (p: Product) => {
-    const cat = (p.category || '').toLowerCase();
-    return p.gender === 'kids' || cat.includes('kid') || cat.includes('frock');
-  };
+  console.log(`[HomepageSnapshot] Query 1 (Trending+New) rows: ${tAndNRows.length}, Query 2 (CategoryRows) rows: ${catRows.length}, Total: ${tAndNRows.length + catRows.length}`);
 
-  const womenTrending = trendingPool.filter((p: Product) => !isKids(p)).slice(0, 10);
-  const kidsTrending = trendingPool.filter((p: Product) => isKids(p)).slice(0, 10);
+  // Log any unknown or null gender products
+  [...tAndNRows, ...catRows].forEach((r) => {
+    if (r.norm_gender === 'unknown') {
+      console.warn(`[HomepageSnapshot] Active product with null/unknown gender: "${r.name}" (id: ${r.id}, gender: ${r.gender}, category: ${r.category})`);
+    }
+  });
 
-  // If kidsTrending is small, backfill from newDrops or trending
-  const finalKidsTrending =
-    kidsTrending.length > 0 ? kidsTrending : trendingPool.slice(0, 8);
-  const finalWomenTrending =
-    womenTrending.length > 0 ? womenTrending : trendingPool.slice(0, 8);
+  // Separate trending and new drops from Query 1
+  const trendingRows = tAndNRows.filter((r) => r.section === 'trending');
+  const newRows = tAndNRows.filter((r) => r.section === 'new');
 
-  const trendingProducts = [
-    ...finalWomenTrending.slice(0, 5),
-    ...finalKidsTrending.slice(0, 5),
+  const womenTrendingCandidates = trendingRows.filter((r) => r.norm_gender === 'women' || r.norm_gender === 'unisex').map(mapRowToProduct);
+  const kidsTrendingCandidates = trendingRows.filter((r) => r.norm_gender === 'kids' || r.norm_gender === 'unisex').map(mapRowToProduct);
+  const allTrendingCandidates = trendingRows.map(mapRowToProduct);
+
+  const womenNewCandidates = newRows.filter((r) => r.norm_gender === 'women' || r.norm_gender === 'unisex').map(mapRowToProduct);
+  const kidsNewCandidates = newRows.filter((r) => r.norm_gender === 'kids' || r.norm_gender === 'unisex').map(mapRowToProduct);
+  const allNewCandidates = newRows.map(mapRowToProduct);
+
+  // Helper to dedupe and backfill from newest products of the SAME gender up to target count
+  function buildSectionList(primaryList: Product[], backfillList: Product[], targetCount = 12, minCount = 8): Product[] {
+    const seen = new Set<string>();
+    const result: Product[] = [];
+
+    // Add from primary list
+    for (const p of primaryList) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        result.push(p);
+        if (result.length >= targetCount) break;
+      }
+    }
+
+    // If fewer than minCount, backfill from SAME gender backfillList
+    if (result.length < minCount) {
+      for (const p of backfillList) {
+        if (!seen.has(p.id)) {
+          seen.add(p.id);
+          result.push(p);
+          if (result.length >= targetCount) break;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  // 1. Trending per gender tab
+  const trendingWomen = buildSectionList(womenTrendingCandidates, womenNewCandidates, 12, 8);
+  const trendingKids = buildSectionList(kidsTrendingCandidates, kidsNewCandidates, 12, 8);
+  const trendingAll = buildSectionList(allTrendingCandidates, allNewCandidates, 12, 8);
+
+  // 2. New Drops per gender tab
+  const newDropsWomen = buildSectionList(womenNewCandidates, womenTrendingCandidates, 12, 8);
+  const newDropsKids = buildSectionList(kidsNewCandidates, kidsTrendingCandidates, 12, 8);
+  const newDropsAll = buildSectionList(allNewCandidates, allTrendingCandidates, 12, 8);
+
+  // 3. Category rows per tab
+  const catProducts = catRows.map(mapRowToProduct);
+
+  const normalizeCat = (s?: string | null) => (s || '').toLowerCase().replace(/_/g, '-').trim();
+
+  function matchCategory(p: Product, cat: CategoryItem): boolean {
+    const cSlug = normalizeCat(cat.slug);
+    const cId = normalizeCat(cat.id);
+    const cCanon = normalizeCat(resolveCanonicalCategorySlug(cSlug, cat.group));
+    const targetSlugs = new Set([cSlug, cId, cCanon]);
+
+    const pCat = normalizeCat(p.category);
+    if (pCat) {
+      const pCanon = normalizeCat(resolveCanonicalCategorySlug(pCat, cat.group));
+      if (targetSlugs.has(pCat) || targetSlugs.has(pCanon)) return true;
+    }
+    return false;
+  }
+
+  function buildCategoryRowsForGender(
+    taxonomyCategories: CategoryItem[],
+    pool: Product[],
+    maxRows = 5
+  ): CategoryRowData[] {
+    const rows: CategoryRowData[] = [];
+    const usedProductIds = new Set<string>();
+
+    for (const cat of taxonomyCategories) {
+      if (rows.length >= maxRows) break;
+      const matched = pool.filter((p) => matchCategory(p, cat) && !usedProductIds.has(p.id));
+      if (matched.length >= 3) {
+        const slice = matched.slice(0, 8);
+        slice.forEach((p) => usedProductIds.add(p.id));
+        rows.push({
+          category: cat,
+          products: slice,
+        });
+      }
+    }
+
+    return rows;
+  }
+
+  const womenCatPool = catProducts.filter((p: any) => p.gender === 'women' || p.gender === 'unisex' || p.target === 'women');
+  const kidsCatPool = catProducts.filter((p: any) => p.gender === 'kids' || p.gender === 'unisex' || p.target === 'kids');
+
+  const womenCategoryRows = buildCategoryRowsForGender(WOMEN_CATEGORIES, womenCatPool, 5);
+  const kidsCategoryRows = buildCategoryRowsForGender(KIDS_CATEGORIES, kidsCatPool, 5);
+  const allCategoryRows = [
+    ...womenCategoryRows.slice(0, 3),
+    ...kidsCategoryRows.slice(0, 2),
   ];
 
-  const spotlightProduct = trendingProducts[0] || newDrops[0] || null;
+  const spotlightProduct = trendingAll[0] || newDropsAll[0] || null;
+
+  console.log('\n=================== HOMEPAGE SNAPSHOT VERIFICATION TABLE ===================');
+  console.log('| Tab   | Trending (Count & IDs) | New Drops (Count & IDs) | Category Rows (Count & Breakdown) |');
+  console.log('| :---  | :---                   | :---                    | :---                              |');
+  console.log(`| All   | Count: ${trendingAll.length} [${trendingAll.map((p) => p.id.slice(0, 8)).join(', ')}] | Count: ${newDropsAll.length} [${newDropsAll.map((p) => p.id.slice(0, 8)).join(', ')}] | ${allCategoryRows.length} rows: ${allCategoryRows.map((r) => `${r.category.name} (${r.products.length} prods: [${r.products.map((p) => p.id.slice(0, 8)).join(',')}])`).join('; ')} |`);
+  console.log(`| Women | Count: ${trendingWomen.length} [${trendingWomen.map((p) => p.id.slice(0, 8)).join(', ')}] | Count: ${newDropsWomen.length} [${newDropsWomen.map((p) => p.id.slice(0, 8)).join(', ')}] | ${womenCategoryRows.length} rows: ${womenCategoryRows.map((r) => `${r.category.name} (${r.products.length} prods: [${r.products.map((p) => p.id.slice(0, 8)).join(',')}])`).join('; ')} |`);
+  console.log(`| Kids  | Count: ${trendingKids.length} [${trendingKids.map((p) => p.id.slice(0, 8)).join(', ')}] | Count: ${newDropsKids.length} [${newDropsKids.map((p) => p.id.slice(0, 8)).join(', ')}] | ${kidsCategoryRows.length} rows: ${kidsCategoryRows.map((r) => `${r.category.name} (${r.products.length} prods: [${r.products.map((p) => p.id.slice(0, 8)).join(',')}])`).join('; ')} |`);
+  console.log('============================================================================\n');
 
   return {
-    womenTrending: finalWomenTrending,
-    kidsTrending: finalKidsTrending,
-    trendingProducts,
-    newDrops,
+    trending: {
+      all: trendingAll,
+      women: trendingWomen,
+      kids: trendingKids,
+    },
+    newDrops: {
+      all: newDropsAll,
+      women: newDropsWomen,
+      kids: newDropsKids,
+    },
+    categoryRows: {
+      all: allCategoryRows,
+      women: womenCategoryRows,
+      kids: kidsCategoryRows,
+    },
     spotlightProduct,
+    // Backwards-compatible fields
+    womenTrending: trendingWomen,
+    kidsTrending: trendingKids,
+    trendingProducts: trendingAll,
     updatedAt: new Date().toISOString(),
   };
 }
 
 /**
  * Cached homepage snapshot loader:
- * Key: "homepage-snapshot"
+ * Key: "homepage-snapshot-v3" (bumped to v3 to discard old cached data)
  * Revalidate: 600 seconds
  * Tag: "homepage"
  */
@@ -128,16 +417,18 @@ export const getHomepageSnapshot = unstable_cache(
     } catch (err) {
       console.error('[HomepageSnapshot] Failed to build snapshot:', err);
       return {
+        trending: { all: [], women: [], kids: [] },
+        newDrops: { all: [], women: [], kids: [] },
+        categoryRows: { all: [], women: [], kids: [] },
+        spotlightProduct: null,
         womenTrending: [],
         kidsTrending: [],
         trendingProducts: [],
-        newDrops: [],
-        spotlightProduct: null,
         updatedAt: new Date().toISOString(),
       };
     }
   },
-  ['homepage-snapshot'],
+  ['homepage-snapshot-v3'],
   { revalidate: 600, tags: ['homepage'] }
 );
 

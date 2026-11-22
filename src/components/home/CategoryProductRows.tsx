@@ -10,9 +10,13 @@ import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { WOMEN_CATEGORIES, KIDS_CATEGORIES, CategoryItem } from '@/data/categoryTaxonomy';
 import { resolveCanonicalCategorySlug } from '@/lib/categoryHref';
 
+import { TabbedCategoryRows } from '@/lib/homepage-snapshot';
+
 interface CategoryProductRowsProps {
   filter?: 'all' | 'women' | 'kids';
-  /** Pre-fetched products from the server snapshot — avoids client-side /api/products fetch */
+  /** Pre-grouped category rows from server snapshot */
+  categoryRows?: TabbedCategoryRows;
+  /** Pre-fetched products from the server snapshot */
   products?: Product[];
 }
 
@@ -165,12 +169,13 @@ const CategoryCarouselRow: React.FC<{
                         className="block w-full h-full relative"
                         aria-label={product.name}
                       >
+                        {/* Fixed aspect-[3/4] object-cover */}
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                          className={`object-contain transition-opacity duration-500 ease-in-out ${
+                          className={`object-cover transition-opacity duration-500 ease-in-out ${
                             isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
                           }`}
                           loading="lazy"
@@ -182,7 +187,7 @@ const CategoryCarouselRow: React.FC<{
                             alt={`${product.name} alternate view`}
                             fill
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                            className={`object-contain transition-opacity duration-500 ease-in-out ${
+                            className={`object-cover transition-opacity duration-500 ease-in-out ${
                               isHovered ? 'opacity-100' : 'opacity-0'
                             }`}
                             loading="lazy"
@@ -294,7 +299,7 @@ const CategoryCarouselRow: React.FC<{
   );
 };
 
-export const CategoryProductRows: React.FC<CategoryProductRowsProps> = ({ filter = 'all', products = [] }) => {
+export const CategoryProductRows: React.FC<CategoryProductRowsProps> = ({ filter = 'all', products = [], categoryRows }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [allProducts, setAllProducts] = useState<Product[]>(products);
 
@@ -374,8 +379,12 @@ export const CategoryProductRows: React.FC<CategoryProductRowsProps> = ({ filter
     return false;
   };
 
-  // Group products into categories dynamically with cross-row de-duplication
+  // Group products into categories dynamically or use server-provided pre-grouped categoryRows per tab
   const activeRows: CategoryRowData[] = useMemo(() => {
+    if (categoryRows && categoryRows[filter || 'all'] && categoryRows[filter || 'all'].length > 0) {
+      return categoryRows[filter || 'all'];
+    }
+
     if (!allProducts || allProducts.length === 0) {
       return [];
     }

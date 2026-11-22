@@ -20,20 +20,25 @@ function getPooledConnectionString(rawUrl: string): string {
   return rawUrl;
 }
 
-const rawDatabaseUrl =
-  process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/thegirlscollections';
-const databaseUrl = getPooledConnectionString(rawDatabaseUrl);
-const isNeon = databaseUrl.includes('neon.tech');
+function getEffectiveDbConfig() {
+  const rawDatabaseUrl =
+    process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/thegirlscollections';
+  const databaseUrl = getPooledConnectionString(rawDatabaseUrl);
+  const isNeon = databaseUrl.includes('neon.tech');
+  return { databaseUrl, isNeon };
+}
 
 // Development isolation guard: prevent local dev/testing from exhausting production Neon egress
-if (
-  process.env.NODE_ENV === 'development' &&
-  databaseUrl.includes('ep-purple-firefly-azcc4gbe')
-) {
-  throw new Error(
-    '[Neon Guard] BLOCKED: Local development attempted to connect to the production Neon database. ' +
-      'To prevent egress depletion, configure a dedicated Neon development branch in .env.local.'
-  );
+function checkDevIsolationGuard(databaseUrl: string) {
+  if (
+    process.env.NODE_ENV === 'development' &&
+    databaseUrl.includes('ep-purple-firefly-azcc4gbe')
+  ) {
+    throw new Error(
+      '[Neon Guard] BLOCKED: Local development attempted to connect to the production Neon database. ' +
+        'To prevent egress depletion, configure a dedicated Neon development branch in .env.local.'
+    );
+  }
 }
 
 // Lazy connection instances — NEVER connect at module scope
@@ -43,6 +48,8 @@ let _dbHttp: any = null;
 
 export function getDb() {
   if (!_db) {
+    const { databaseUrl, isNeon } = getEffectiveDbConfig();
+    checkDevIsolationGuard(databaseUrl);
     if (isNeon) {
       _pool = new NeonPool({ connectionString: databaseUrl });
       _db = drizzleNeonPool(_pool as NeonPool, { schema });
@@ -56,6 +63,8 @@ export function getDb() {
 
 export function getDbHttp() {
   if (!_dbHttp) {
+    const { databaseUrl, isNeon } = getEffectiveDbConfig();
+    checkDevIsolationGuard(databaseUrl);
     _dbHttp = isNeon ? drizzleNeonHttp(neon(databaseUrl), { schema }) : getDb();
   }
   return _dbHttp;
