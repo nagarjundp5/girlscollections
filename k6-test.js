@@ -1,3 +1,7 @@
+// ⚠️  WARNING: DO NOT RUN THIS AGAINST A REAL DATABASE OR PRODUCTION ENDPOINT.
+// This load test fires 1000 concurrent VUs and WILL exhaust Neon Free tier egress
+// (5 GB/month limit) in minutes. Only run against a local mock server or a staging
+// environment that uses its own isolated Neon branch with a separate DATABASE_URL.
 import http from 'k6/http';
 import { check } from 'k6';
 

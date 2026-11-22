@@ -1,7 +1,7 @@
 /**
  * Utility for generating Cloudinary CDN URLs with responsive transformations.
- * Operates purely via string manipulation (zero server CPU load).
- * Guarantees zero traffic hits Vercel /_next/image CDN.
+ * Fixed widths only (400 / 800 / 1200) with f_auto,q_auto on every image URL.
+ * Guarantees zero traffic hits Vercel /_next/image CDN (next/image has unoptimized: true).
  */
 export interface CloudinaryUrlOptions {
   w?: number;
@@ -28,6 +28,20 @@ const CLOUD_NAME =
   'lt3ga2by';
 
 /**
+ * Snap arbitrary requested widths to exactly 3 fixed widths (400 / 800 / 1200)
+ * to strictly prevent transformation sprawl on Cloudinary Free Tier (25 credits/month).
+ */
+function snapToFixedWidth(requestedWidth?: number): number {
+  if (!requestedWidth || requestedWidth <= 500) {
+    return 400; // Small: Cards, thumbnails, related products
+  }
+  if (requestedWidth <= 950) {
+    return 800; // Medium: Modal, tablet, list zoom
+  }
+  return 1200; // Large: PDP hero, desktop zoom
+}
+
+/**
  * Extract canonical public ID from a full Cloudinary URL or raw string
  */
 export function extractCloudinaryPublicId(urlOrId: string): string {
@@ -49,7 +63,7 @@ export function extractCloudinaryPublicId(urlOrId: string): string {
 
 /**
  * Primary Cloudinary URL builder: cl(publicIdOrUrl, options)
- * Produces direct res.cloudinary.com URLs bypassing Vercel Image optimization.
+ * Produces direct res.cloudinary.com URLs with f_auto,q_auto and fixed widths (400/800/1200).
  */
 export function cl(
   publicIdOrUrl: string,
@@ -57,33 +71,25 @@ export function cl(
 ): string {
   if (!publicIdOrUrl) return '';
 
-  let width: number | undefined;
+  let rawWidth: number | undefined;
   let height: number | undefined;
   let ar: string | undefined;
-  let quality: string = 'auto:good';
-  let format: string = 'auto';
-  let crop: string = 'limit'; // Safe default: never crops heads or edges
+  let crop: string = 'limit';
   let gravity: string | undefined;
-  let dpr: string | number = 'auto';
   let blur: number | undefined;
 
   if (typeof options === 'number') {
-    width = options;
+    rawWidth = options;
   } else if (options && typeof options === 'object') {
-    width = options.w ?? options.width;
+    rawWidth = options.w ?? options.width;
     height = options.h ?? options.height;
     ar = options.ar ?? options.aspectRatio;
-    if (options.q !== undefined || options.quality !== undefined) {
-      quality = String(options.q ?? options.quality);
-    }
-    if (options.f || options.format) format = options.f || options.format || 'auto';
     if (options.c || options.crop) crop = (options.c || options.crop) as string;
     if (options.g || options.gravity) gravity = options.g || options.gravity;
-    if (options.dpr !== undefined) dpr = options.dpr;
     if (options.blur !== undefined) blur = options.blur;
   }
 
-  // Non-cloudinary external links (e.g. data URI or blob) pass through untouched
+  // Non-cloudinary external links pass through untouched
   if (
     publicIdOrUrl.startsWith('data:') ||
     publicIdOrUrl.startsWith('blob:') ||
@@ -95,9 +101,13 @@ export function cl(
   const publicId = extractCloudinaryPublicId(publicIdOrUrl);
   if (!publicId) return publicIdOrUrl;
 
-  const transformations: string[] = [`f_${format}`, `q_${quality}`];
-  if (dpr) transformations.push(`dpr_${dpr}`);
-  if (width) transformations.push(`w_${width}`);
+  // Strict Cloudinary Free Tier requirement: f_auto,q_auto on EVERY image URL
+  const transformations: string[] = ['f_auto', 'q_auto'];
+
+  // Fixed widths only: snap to 400, 800, or 1200
+  const fixedWidth = snapToFixedWidth(rawWidth);
+  transformations.push(`w_${fixedWidth}`);
+
   if (height) transformations.push(`h_${height}`);
   if (ar) transformations.push(`ar_${ar}`);
   if (crop) transformations.push(`c_${crop}`);
@@ -108,8 +118,20 @@ export function cl(
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformStr}/${publicId}`;
 }
 
+export function clCard(publicIdOrUrl: string): string {
+  return cl(publicIdOrUrl, 400);
+}
+
+export function clHero(publicIdOrUrl: string): string {
+  return cl(publicIdOrUrl, 1200);
+}
+
+export function clMedium(publicIdOrUrl: string): string {
+  return cl(publicIdOrUrl, 800);
+}
+
 /**
- * Backward compatibility alias for existing callers
+ * Backward compatibility aliases for existing callers
  */
 export function getCloudinaryUrl(
   publicIdOrUrl: string,
@@ -129,27 +151,11 @@ export function getOptimizedImageUrl(
  * Generates a tiny blurred placeholder URL for progressive Next.js blurDataURL
  */
 export function clBlur(publicIdOrUrl: string): string {
-  return cl(publicIdOrUrl, {
-    w: 24,
-    blur: 200,
-    q: 15,
-    f: 'webp',
-  });
+  const publicId = extractCloudinaryPublicId(publicIdOrUrl);
+  if (!publicId) return publicIdOrUrl;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,w_24,e_blur:200/${publicId}`;
 }
 
 export function getBlurPlaceholderUrl(publicIdOrUrl: string): string {
   return clBlur(publicIdOrUrl);
-}
-
-/**
- * Pre-warm Cloudinary Edge Cache for hero/priority images
- */
-export async function prewarmCloudinaryImage(url: string): Promise<boolean> {
-  if (!url || !url.startsWith('https://res.cloudinary.com')) return false;
-  try {
-    const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-    return res.ok;
-  } catch {
-    return false;
-  }
 }

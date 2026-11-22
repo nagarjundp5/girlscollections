@@ -7,7 +7,7 @@ const DEFAULT_ADMIN_ALLOWLIST = [
   'admin@tgc.in',
   'nnvh2608@gmail.com',
   'nnvg2608@gmail.com',
-  'drftnclothing@gmail.com',
+  'thegirlscollections01@gmail.com',
   'chethansc47@gmail.com',
 ];
 
@@ -140,6 +140,21 @@ export async function requireAdmin(): Promise<AdminAuthContext | NextResponse> {
       { status: 403 }
     );
   }
+
+  // 60 req/min admin rate limiting
+  try {
+    const { rateLimitAdmin } = await import('@/lib/rateLimit');
+    const limitResult = await rateLimitAdmin(session.email || session.userId);
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many admin requests. Please slow down.' },
+        { status: 429, headers: { 'Retry-After': String(limitResult.reset || 60) } }
+      );
+    }
+  } catch {
+    // Fail open
+  }
+
   return session;
 }
 
@@ -151,6 +166,21 @@ export async function requireStaffOrAdmin(): Promise<AdminAuthContext | NextResp
       { status: 401 }
     );
   }
+
+  // 60 req/min admin rate limiting
+  try {
+    const { rateLimitAdmin } = await import('@/lib/rateLimit');
+    const limitResult = await rateLimitAdmin(session.email || session.userId);
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many admin requests. Please slow down.' },
+        { status: 429, headers: { 'Retry-After': String(limitResult.reset || 60) } }
+      );
+    }
+  } catch {
+    // Fail open
+  }
+
   return session;
 }
 

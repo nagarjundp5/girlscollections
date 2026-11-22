@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { siteConfig } from '@/lib/siteConfig';
 
 export default function WhatsAppButton() {
   const pathname = usePathname();
@@ -18,10 +19,10 @@ export default function WhatsAppButton() {
 
   return (
     <div
-      className={`fixed z-40 flex items-center group select-none pointer-events-auto transition-all duration-300 ease-out right-4 sm:right-6 ${
+      className={`fixed z-40 items-center group select-none pointer-events-auto transition-all duration-300 ease-out right-4 sm:right-6 ${
         isPdp
-          ? 'bottom-[calc(76px+env(safe-area-inset-bottom,0px))] sm:bottom-8'
-          : 'bottom-[calc(64px+env(safe-area-inset-bottom,0px)+16px)] sm:bottom-8'
+          ? 'hidden sm:flex sm:bottom-8' // Hidden on mobile PDP to avoid overlapping sticky Add to Bag bar
+          : 'flex bottom-[calc(64px+env(safe-area-inset-bottom,0px)+16px)] sm:bottom-8'
       }`}
     >
       {/* Desktop Hover Label Badge */}
@@ -31,7 +32,7 @@ export default function WhatsAppButton() {
 
       {/* Floating WhatsApp Action Button: 52px Green Circle with crisp inline SVG */}
       <a
-        href="https://wa.me/917483848505?text=Hello%20The%20Girls%20Collections!%20I%20have%20a%20question%20about%20your%20couture%20and%20festive%20wear."
+        href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hello%20The%20Girls%20Collections!%20I%20have%20a%20question%20about%20your%20couture%20and%20festive%20wear.`}
         target="_blank"
         rel="noopener noreferrer"
         className="w-[52px] h-[52px] active:scale-95 transition-transform duration-150 ease-out flex items-center justify-center shrink-0 shadow-lg hover:shadow-xl rounded-full bg-[#25D366] text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"

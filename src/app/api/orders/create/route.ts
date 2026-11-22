@@ -712,11 +712,11 @@ export async function POST(request: Request) {
     // Shipping address fallback if pickup order
     const shippingAddr = isPickup 
       ? {
-          line1: "The Girls Collections Store, 1st Floor, Kogilu Main Rd",
-          line2: "above Sri Venkateshwar Vaibhava Veg Hotel, K B Sandra, Yelahanka",
+          line1: "The Girls Collections Store, North Hanuman Temple, 3, NAT Street",
+          line2: "DV Gundappa Rd, Gandhi Bazaar, Basavanagudi",
           city: "Bengaluru",
           state: "Karnataka",
-          pincode: "560064"
+          pincode: "560004"
         }
       : customerInfo.address;
 

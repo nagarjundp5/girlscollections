@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { rateLimit } from '@/lib/rateLimit';
+import { rateLimitAuthOtp } from '@/lib/rateLimit';
 import { signToken } from '@/lib/jwt';
 import { z } from 'zod';
 
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   // STAGE: rate-limit
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    const rateCheck = await rateLimit(`auth:phone-login:ip:${ip}`, 10, 60000);
+    const rateCheck = await rateLimitAuthOtp(ip);
     if (!rateCheck.success) {
       console.warn(`[phone-login] stage=rate-limit error=Rate limit exceeded for IP`);
       return makeErrorResponse(
@@ -229,6 +229,10 @@ export async function POST(req: Request) {
   if (returnToPath && returnToPath.startsWith('/') && !returnToPath.startsWith('//') && !returnToPath.includes('\\')) {
     safeReturnTo = returnToPath;
   }
+
+  // Invalidate Redis user session cache for /api/auth/me
+  const { invalidateUserCache } = await import('@/lib/user-cache');
+  await invalidateUserCache(userId);
 
   return NextResponse.json({
     success: true,

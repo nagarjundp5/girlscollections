@@ -188,6 +188,10 @@ export async function POST(req: Request) {
       console.warn('[Onboarding] Session token refresh note:', tokenErr);
     }
 
+    // Invalidate Redis user session cache for /api/auth/me
+    const { invalidateUserCache } = await import('@/lib/user-cache');
+    await invalidateUserCache(effectiveUserId);
+
     return NextResponse.json({ success: true });
   } catch (err: any) {
     if (err?.code === '23505' || err?.message?.includes('users_email_unique')) {

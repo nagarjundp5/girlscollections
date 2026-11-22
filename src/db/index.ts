@@ -5,9 +5,36 @@ import { drizzle as drizzlePg } from 'drizzle-orm/node-postgres';
 import { Pool as PgPool } from 'pg';
 import * as schema from './schema';
 
-const databaseUrl =
+// Ensure pooled Neon connection string (appends -pooler if missing)
+function getPooledConnectionString(rawUrl: string): string {
+  if (rawUrl && rawUrl.includes('neon.tech') && !rawUrl.includes('-pooler')) {
+    const parts = rawUrl.split('@');
+    if (parts.length === 2) {
+      const hostPart = parts[1];
+      const hostMatch = hostPart.match(/^([a-z0-9-]+)(\.[a-z0-9.-]+\.neon\.tech.*)$/i);
+      if (hostMatch) {
+        return `${parts[0]}@${hostMatch[1]}-pooler${hostMatch[2]}`;
+      }
+    }
+  }
+  return rawUrl;
+}
+
+const rawDatabaseUrl =
   process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/thegirlscollections';
+const databaseUrl = getPooledConnectionString(rawDatabaseUrl);
 const isNeon = databaseUrl.includes('neon.tech');
+
+// Development isolation guard: prevent local dev/testing from exhausting production Neon egress
+if (
+  process.env.NODE_ENV === 'development' &&
+  databaseUrl.includes('ep-purple-firefly-azcc4gbe')
+) {
+  throw new Error(
+    '[Neon Guard] BLOCKED: Local development attempted to connect to the production Neon database. ' +
+      'To prevent egress depletion, configure a dedicated Neon development branch in .env.local.'
+  );
+}
 
 // Lazy connection instances — NEVER connect at module scope
 let _pool: NeonPool | PgPool | null = null;

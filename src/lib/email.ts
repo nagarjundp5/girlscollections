@@ -8,14 +8,16 @@ import { DepositConfirmationEmail } from '@/components/DepositConfirmationEmail'
 import { PaymentPendingReminderEmail } from '@/components/PaymentPendingReminderEmail';
 import { DeliveryStatusEmail } from '@/components/DeliveryStatusEmail';
 import { WishlistReminderEmail, WishlistEmailItem } from '@/components/WishlistReminderEmail';
+import { siteConfig } from '@/lib/siteConfig';
+import { getSizeLabel } from '@/data/masterSizes';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_for_build');
 
 // The verified "from" address must match a domain you've added in Resend.
-// e.g. RESEND_FROM_EMAIL="The Girls Collections <orders@thegirlscollections.com>"
-const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || 'The Girls Collections <onboarding@resend.dev>';
-const REPLY_TO_EMAIL = 'thegirlscollections@gmail.com';
-const ADMIN_CC_EMAIL = 'thegirlscollections@gmail.com';
+// Keep order@thegirlscollections.com ONLY as the Resend "from" sender
+const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || 'The Girls Collections <order@thegirlscollections.com>';
+const REPLY_TO_EMAIL = siteConfig.email;
+const ADMIN_CC_EMAIL = siteConfig.email;
 
 /**
  * Sends a refund notification email to the customer by rendering a React component to static HTML.
@@ -482,7 +484,7 @@ export async function sendAbandonedCartEmail({
   try {
     const itemsHtml = items.map(item => `
       <div style="margin-bottom: 12px; padding: 12px; border: 1px solid #eaeaea;">
-        <p style="margin: 0; font-weight: bold;">${item.name} (${item.size})</p>
+        <p style="margin: 0; font-weight: bold;">${item.name} (${getSizeLabel(item.size)})</p>
         <p style="margin: 4px 0 0 0; color: #666; font-size: 14px;">Qty: ${item.quantity} | ₹${(item.price / 100).toFixed(2)}</p>
       </div>
     `).join('');
@@ -875,7 +877,7 @@ export async function sendCancellationEmail({
               If you have any questions, reply to this email or contact us at:
             </p>
             <p style="margin: 0;">
-              <a href="mailto:thegirlscollections@gmail.com" style="color: #1a2744; font-weight: 600;">thegirlscollections@gmail.com</a>
+              <a href="mailto:${siteConfig.email}" style="color: #1a2744; font-weight: 600;">${siteConfig.email}</a>
             </p>
           </div>
 

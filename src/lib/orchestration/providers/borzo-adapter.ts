@@ -78,8 +78,8 @@ export class BorzoAdapter {
       matter: `The Girls Collections Order ${payload.orderNumber}`,
       points: [
         {
-          address: 'The Girls Collections Store, 1st Floor, Kogilu Main Rd, Yelahanka, Bengaluru 560064',
-          contact_person: { name: 'The Girls Collections Fulfillment', phone: '918045678900' },
+          address: 'North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004',
+          contact_person: { name: 'The Girls Collections Fulfillment', phone: '919844371705' },
         },
         {
           address: `${payload.shippingAddress.line1}, ${payload.shippingAddress.line2 || ''}, ${payload.shippingAddress.city} ${payload.shippingAddress.pincode}`,

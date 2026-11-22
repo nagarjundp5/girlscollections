@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 const DEFAULT_SETTINGS = {
   store_name: 'The Girls Collections',
-  contact_number: '+91 7483848505',
+  contact_number: '+91 9844371705',
   instagram_handle: '@thegirlscollections',
   free_shipping_threshold: 199900, // paise (₹1999)
   default_shipping_charge: 9900,  // paise (₹99)
@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS = {
   borzo_free_threshold: 149900, // ₹1499 in paise
   borzo_cutoff_start: '11:00',
   borzo_cutoff_end: '16:00',
-  borzo_pickup_address: 'The Girls Collections Atelier, 1st Floor, Yelahanka, Bengaluru, Karnataka, 560064',
+  borzo_pickup_address: 'North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004',
   maintenance_mode: 'false',
 };
 

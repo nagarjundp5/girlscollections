@@ -181,6 +181,13 @@ export async function releaseCheckoutReservation(holdId: string): Promise<void> 
       await redis.del(redisKey);
     }
     await redis.del(metadataKey);
+
+    try {
+      const { bustProductCacheTags } = await import('@/lib/db');
+      await bustProductCacheTags();
+    } catch {
+      // Non-critical
+    }
   } catch (err) {
     console.error('[Reservation] Release failed:', err);
   }

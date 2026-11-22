@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { siteConfig } from '@/lib/siteConfig';
 
 interface RefundConfirmationEmailProps {
   orderNumber: string;
@@ -31,7 +32,7 @@ export function RefundConfirmationEmail({
               {/* Header */}
               <tr>
                 <td style={{ padding: '36px 40px 28px', borderBottom: '1px solid #1e1e1e' }}>
-                  <img src="https://www.drftnclothing.in/logo.png?v=3" alt="The Girls Collections" width="130" style={{ display: 'block', border: 'none', outline: 'none' }} />
+                  <img src="https://www.thegirlscollections.com/logo.png?v=3" alt="The Girls Collections" width="130" style={{ display: 'block', border: 'none', outline: 'none' }} />
                 </td>
               </tr>
 
@@ -76,7 +77,7 @@ export function RefundConfirmationEmail({
                 <td style={{ padding: '24px 40px', borderTop: '1px solid #1e1e1e' }}>
                   <p style={{ margin: 0, fontSize: '12px', color: '#444', lineHeight: 1.6 }}>
                     Questions? Reply to this email or reach us at{' '}
-                    <a href="mailto:thegirlscollections@gmail.com" style={{ color: '#888', textDecoration: 'none' }}>thegirlscollections@gmail.com</a>
+                    <a href={`mailto:${siteConfig.email}`} style={{ color: '#888', textDecoration: 'none' }}>{siteConfig.email}</a>
                   </p>
                   <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#333' }}>
                     © {new Date().getFullYear()} The Girls Collections Clothing. Bengaluru, India.

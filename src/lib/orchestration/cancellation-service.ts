@@ -144,6 +144,14 @@ export async function requestOrderCancellation(params: {
     return { success: true, message: 'Order is already cancelled' };
   }
 
+  // Invalidate product cache debounced so restored stock reflects immediately
+  try {
+    const { bustProductCacheTags } = await import('@/lib/db');
+    await bustProductCacheTags();
+  } catch (bustErr) {
+    console.warn('[Cancellation] bustProductCacheTags failed:', bustErr);
+  }
+
   // Fire cancellation email non-fatally
   sendCancellationEmail({
     orderNumber: order.order_number,

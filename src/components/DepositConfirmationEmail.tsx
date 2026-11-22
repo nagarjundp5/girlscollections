@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { siteConfig } from '@/lib/siteConfig';
+import { getSizeLabel } from '@/data/masterSizes';
 
 interface DepositConfirmationEmailProps {
   orderNumber: string;
@@ -94,7 +96,7 @@ export function DepositConfirmationEmail({
                             <p style={{ margin: '0 0 16px', fontSize: '28px', fontWeight: 900, color: '#ffffff', letterSpacing: '4px' }}>{pickupCode}</p>
                             <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.6', color: '#ccc' }}>
                               <strong>Store pickup address:</strong><br />
-                              The Girls Collections Store, 1st Floor, Kogilu Main Rd, Yelahanka, Bengaluru - 560064
+                              {siteConfig.legalName}, {siteConfig.address}
                             </p>
                           </div>
                         ) : (
@@ -118,7 +120,7 @@ export function DepositConfirmationEmail({
                     {items.map((item, index) => (
                       <tr key={index}>
                         <td style={{ padding: '10px 0', fontSize: '14px', color: '#ccc' }}>
-                          {item.name} ({item.size}) <span style={{ color: '#666', fontSize: '12px' }}>x{item.quantity}</span>
+                          {item.name} ({getSizeLabel(item.size)}) <span style={{ color: '#666', fontSize: '12px' }}>x{item.quantity}</span>
                         </td>
                         <td align="right" style={{ padding: '10px 0', fontSize: '14px', color: '#ffffff', fontWeight: 'bold' }}>
                           ₹{((item.price * item.quantity) / 100).toFixed(2)}
@@ -167,7 +169,7 @@ export function DepositConfirmationEmail({
                 <td style={{ padding: '24px 40px', borderTop: '1px solid #1e1e1e' }}>
                   <p style={{ margin: 0, fontSize: '12px', color: '#444', lineHeight: 1.6 }}>
                     Questions? Reply to this email or reach us at{' '}
-                    <a href="mailto:thegirlscollections@gmail.com" style={{ color: '#888', textDecoration: 'none' }}>thegirlscollections@gmail.com</a>
+                    <a href={`mailto:${siteConfig.email}`} style={{ color: '#888', textDecoration: 'none' }}>{siteConfig.email}</a>
                   </p>
                   <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#333' }}>
                     © {new Date().getFullYear()} The Girls Collections. Bengaluru, India.

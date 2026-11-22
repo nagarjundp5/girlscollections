@@ -18,6 +18,7 @@ import {
   RefreshCw,
   MapPin,
   HelpCircle,
+  FileText,
   ChevronDown,
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
@@ -136,9 +137,10 @@ const QUICK_JUMP_LINKS = [
 const CUSTOMER_CARE_LINKS = [
   { id: 'chat', label: 'WhatsApp Support', href: '/contact', icon: MessageCircle, subtitle: 'Instant 10am - 8pm IST' },
   { id: 'track', label: 'Track Order Status', href: '/account/orders', icon: Package, subtitle: 'Real-time courier updates' },
-  { id: 'returns', label: 'Returns & Exchanges', href: '/policies/terms-and-conditions', icon: RefreshCw, subtitle: 'Easy 7-day doorstep pickup' },
-  { id: 'stores', label: 'Store Locator', href: '/contact#stores', icon: MapPin, subtitle: 'Bengaluru flagship boutiquery' },
-  { id: 'faq', label: 'About & FAQ', href: '/about', icon: HelpCircle, subtitle: 'Brand story & questions' },
+  { id: 'returns', label: 'Returns & Exchange', href: '/returns-and-exchange', icon: RefreshCw, subtitle: '7-day returns (No online exchange)' },
+  { id: 'terms', label: 'Terms & Conditions', href: '/terms-and-conditions', icon: FileText, subtitle: 'Platform usage & legal terms' },
+  { id: 'stores', label: 'Store Locator', href: '/contact', icon: MapPin, subtitle: 'Bengaluru flagship boutiquery' },
+  { id: 'faq', label: 'Help & FAQs', href: '/faqs', icon: HelpCircle, subtitle: 'Common questions & support' },
 ];
 
 export const FullScreenMenu: React.FC<FullScreenMenuProps> = ({ isOpen, onClose }) => {

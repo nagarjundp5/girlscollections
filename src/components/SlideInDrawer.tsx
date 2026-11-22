@@ -4,10 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, ChevronRight, ChevronLeft, MessageCircle, Package, User, Heart, Sparkles, TrendingUp } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, MessageCircle, Package, User, Heart, Sparkles, TrendingUp, FileText, HelpCircle } from 'lucide-react';
 import { WOMEN_CATEGORIES, KIDS_CATEGORIES, getCategoryHref } from '@/data/categoryTaxonomy';
 import { useAuthSession } from '@/context/AuthContext';
 import { useShop } from '@/context/ShopContext';
+import { siteConfig } from '@/lib/siteConfig';
 
 interface SlideInDrawerProps {
   isOpen: boolean;
@@ -340,8 +341,32 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
                   <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
                 </Link>
 
+                <Link
+                  href="/terms-and-conditions"
+                  onClick={handleClose}
+                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                >
+                  <span className="flex items-center gap-2.5 font-medium">
+                    <FileText className="w-4 h-4 text-[#B8924A]" />
+                    Terms &amp; Conditions
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                </Link>
+
+                <Link
+                  href="/faqs"
+                  onClick={handleClose}
+                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                >
+                  <span className="flex items-center gap-2.5 font-medium">
+                    <HelpCircle className="w-4 h-4 text-[#B8924A]" />
+                    Help &amp; FAQs
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                </Link>
+
                 <a
-                  href="https://wa.me/917411644799?text=Hi%2C%20I%20would%20like%20assistance%20with%20The%20Girls%20Collections"
+                  href={siteConfig.whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"

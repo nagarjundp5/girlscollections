@@ -9,8 +9,10 @@ function getLimiter(): Ratelimit | null {
     try {
       limiterInstance = new Ratelimit({
         redis,
-        limiter: Ratelimit.slidingWindow(5, '10 s'),
-        analytics: true,
+        // Cheapest algorithm: fixedWindow, analytics: false (0 extra write commands)
+        limiter: Ratelimit.fixedWindow(20, '60 s'),
+        analytics: false,
+        prefix: 'ratelimit:buy',
       });
     } catch (err) {
       console.error('[buyAttemptLimiter] Failed to initialize Ratelimit:', err);
@@ -26,8 +28,8 @@ export const buyAttemptLimiter = {
     if (!limiter) {
       return {
         success: true,
-        limit: 5,
-        remaining: 5,
+        limit: 20,
+        remaining: 20,
         reset: Date.now(),
         pending: Promise.resolve(),
       };
@@ -35,15 +37,14 @@ export const buyAttemptLimiter = {
     try {
       return await limiter.limit(identifier);
     } catch (err) {
-      console.error('[buyAttemptLimiter] Redis error (failing open):', err);
+      console.warn('[buyAttemptLimiter] Redis error (failing open):', err);
       return {
         success: true,
-        limit: 5,
-        remaining: 5,
+        limit: 20,
+        remaining: 20,
         reset: Date.now(),
         pending: Promise.resolve(),
       };
     }
   },
 };
-

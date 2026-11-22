@@ -208,6 +208,10 @@ export async function POST(request: Request) {
       path: '/',
     });
 
+    // Invalidate Redis session cache for /api/auth/me
+    const { invalidateUserCache } = await import('@/lib/user-cache');
+    await invalidateUserCache(updatedUser.id);
+
     const formattedUser = {
       ...updatedUser,
       authProvider: updatedUser.auth_provider,

@@ -11,6 +11,8 @@ import CancelOrderButton from './CancelOrderButton';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/jwt';
 import LiveOrderTracker from '@/components/order/LiveOrderTracker';
+import { siteConfig } from '@/lib/siteConfig';
+import { getSizeLabel } from '@/data/masterSizes';
 
 export const metadata = {
   title: 'Order Details | The Girls Collections',
@@ -145,7 +147,7 @@ export default async function OrderDetailPage({ params }: { params: { orderId: s
                         {item.name}
                       </p>
                       <p className="text-[11px] text-gray-500 font-sans mt-0.5">
-                        Size: <strong className="text-[#1C1417]">{item.size || item.size_key || 'Free Size'}</strong> • Qty: {item.quantity || 1}
+                        Size: <strong className="text-[#1C1417]">{getSizeLabel(item.size || item.size_key || 'Free Size')}</strong> • Qty: {item.quantity || 1}
                       </p>
                     </div>
                   </div>
@@ -171,7 +173,14 @@ export default async function OrderDetailPage({ params }: { params: { orderId: s
           {isPickup ? (
             <div className="text-xs text-gray-600 leading-relaxed space-y-1">
               <p className="font-bold text-[#1C1417]">The Girls Collections Store</p>
-              <p>Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004</p>
+              <a
+                href={siteConfig.mapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#B8903A] transition-colors block text-[#1C1417]/80"
+              >
+                {siteConfig.address}
+              </a>
               <p className="pt-1 text-gray-500">Pickup Code: <strong className="text-[#3B1230] text-sm">{order.pickup_code || 'TGC-STORE'}</strong></p>
             </div>
           ) : (

@@ -68,7 +68,7 @@ export async function POST(
     if (courierProvider === 'borzo') {
       // Fetch store pickup address
       const dbSettings = await db.select().from(schema.settings);
-      let borzoPickupAddress = 'DRFTN Store, Yelahanka, Bengaluru';
+      let borzoPickupAddress = 'North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004';
       dbSettings.forEach((row: any) => {
         if (row.key === 'borzo_pickup_address') borzoPickupAddress = row.value;
       });
@@ -91,7 +91,7 @@ export async function POST(
               {
                 address: borzoPickupAddress,
                 contact_person: {
-                  phone: '917483848505',
+                  phone: '919844371705',
                   name: 'The Girls Collections Dispatch Desk'
                 }
               },
@@ -359,7 +359,7 @@ export async function POST(
           customer_phone: updatedOrder.customer_phone,
           tracking_number: awb,
           courier_partner: courierName,
-          tracking_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://drftn.in'}/track?orderNumber=${updatedOrder.order_number}&phone=${updatedOrder.customer_phone}`,
+          tracking_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://thegirlscollections.com'}/track?orderNumber=${updatedOrder.order_number}&phone=${updatedOrder.customer_phone}`,
         }),
       }).catch((err) => console.error('Make.com shipping notification failed:', err));
     }

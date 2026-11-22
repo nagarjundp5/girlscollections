@@ -219,7 +219,12 @@ export const orders = pgTable('orders', {
   is_first_order: boolean('is_first_order').notNull().default(false),
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => [
+  index('orders_user_id_idx').on(t.user_id),
+  index('orders_status_idx').on(t.status),
+  index('orders_order_status_idx').on(t.order_status),
+  index('orders_created_at_idx').on(t.created_at),
+]);
 
 // 4. Discount Codes Table
 export const discountCodes = pgTable('discount_codes', {

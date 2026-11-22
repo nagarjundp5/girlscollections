@@ -7,6 +7,7 @@ import CircularCategoryScroller from '@/components/home/CircularCategoryScroller
 import ShopByCategoryCarousel from '@/components/home/ShopByCategoryCarousel';
 import CategoryProductRows from '@/components/home/CategoryProductRows';
 import VisitOurStore from '@/components/home/VisitOurStore';
+import GoogleReviewsSection from '@/components/home/GoogleReviewsSection';
 import ProductCarousel from '@/components/home/ProductCarousel';
 import { Product } from '@/types';
 import { DivisionPreference, getStoredPreference, setStoredPreference } from '@/lib/preference';
@@ -135,12 +136,20 @@ export const HomePageClient: React.FC<HomePageClientProps> = ({
         {/* 
           CATEGORY PRODUCT ROWS ("{Category} | Top Picks" carousels)
         */}
-        <CategoryProductRows filter={pref} />
+        <CategoryProductRows
+          filter={pref}
+          products={[...trendingProducts, ...activeWomenTrending, ...activeKidsTrending, ...newDrops]}
+        />
 
         {/* 
-          VISIT OUR STORE (Bottom of home page, above footer)
+          VISIT OUR STORE
         */}
         <VisitOurStore />
+
+        {/* 
+          GOOGLE REVIEWS SECTION ("Loved by Bengaluru", directly above the footer)
+        */}
+        <GoogleReviewsSection />
       </div>
 
       {/* FIRST-VISIT CHOOSER MODAL (opens ~1s after load, only if no preference stored) */}

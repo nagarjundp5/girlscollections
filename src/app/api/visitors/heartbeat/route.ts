@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
-import { db } from '@/db';
-import * as schema from '@/db/schema';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,17 +16,17 @@ export async function POST(request: Request) {
     const nowSec = Math.floor(now.getTime() / 1000);
     const monthStr = now.toISOString().slice(0, 7); // 'YYYY-MM'
 
-    // 1. Update Redis cache for instant sub-millisecond metrics (zero Neon queries)
+    // Batched single pipeline request in Upstash Redis (1 HTTP round-trip)
     try {
       if (redis) {
-        // Add or update timestamp score in live visitors sorted set
-        await redis.zadd('analytics:live_visitors', { score: nowSec, member: vid });
-        // Add to monthly & overall HyperLogLog counters for unique deduplicated visitor counts
-        await redis.pfadd(`analytics:visitors:${monthStr}`, vid);
-        await redis.pfadd('analytics:visitors:overall', vid);
+        const pipe = redis.pipeline();
+        pipe.zadd('analytics:live_visitors', { score: nowSec, member: vid });
+        pipe.pfadd(`analytics:visitors:${monthStr}`, vid);
+        pipe.pfadd('analytics:visitors:overall', vid);
+        await pipe.exec();
       }
     } catch (redisErr) {
-      // Redis error handled quietly
+      console.warn('[heartbeat] Redis pipeline warning:', redisErr);
     }
 
     return NextResponse.json({ success: true });

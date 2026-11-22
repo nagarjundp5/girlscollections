@@ -11,6 +11,8 @@ import { toast } from '@/lib/toast';
 import { StoreSettings } from '@/types';
 import { MOCK_PRODUCTS } from '@/data/shopData';
 import { ButterflyMotif } from '@/components/ui/Motifs';
+import { siteConfig } from '@/lib/siteConfig';
+import { getSizeLabel } from '@/data/masterSizes';
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
@@ -191,7 +193,7 @@ export default function CartPage() {
                           {item.name}
                         </h3>
                         <p className="text-xs text-charcoal-muted font-medium mt-1">
-                          Size: <span className="font-bold text-navy">{item.size}</span>
+                          Size: <span className="font-bold text-navy">{getSizeLabel(item.size)}</span>
                         </p>
                       </div>
                       <span className="text-base font-bold text-navy shrink-0 font-sans">
@@ -250,7 +252,15 @@ export default function CartPage() {
               Continue Shopping
             </Link>
             <span className="text-xs text-charcoal-muted font-medium">
-              Need help? WhatsApp us at <a href="https://wa.me/917483848505" target="_blank" className="underline font-bold text-navy">+91 74838 48505</a>
+              Need help? WhatsApp us at{' '}
+              <a
+                href={siteConfig.whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline font-bold text-navy hover:text-zariGold transition-colors"
+              >
+                +91 {siteConfig.phone}
+              </a>
             </span>
           </div>
 

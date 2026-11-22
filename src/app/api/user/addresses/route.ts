@@ -77,6 +77,10 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    // Invalidate Redis user session cache for /api/auth/me
+    const { invalidateUserCache } = await import('@/lib/user-cache');
+    await invalidateUserCache(userId);
+
     return NextResponse.json({ address: newAddress });
   } catch (err: any) {
     if (err instanceof z.ZodError) {

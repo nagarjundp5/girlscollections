@@ -1,6 +1,5 @@
 /**
- * Fast2SMS Integration — DRFTN E-Commerce
- * =========================================
+ * Fast2SMS Integration — The Girls Collections
  * Used exclusively for:
  *   1. Order confirmation SMS (sent after payment.captured webhook)
  *   2. Delivery status SMS (shipped / out-for-delivery / delivered)
@@ -113,7 +112,7 @@ export async function sendOrderConfirmationSMS({
   totalPaise: number;
 }): Promise<SMSResult> {
   const totalRupees = (totalPaise / 100).toFixed(0);
-  const message = `Your DRFTN order ${orderNumber} is confirmed! Total: Rs.${totalRupees}. Track: https://drftn.in/track`;
+  const message = `Your The Girls Collections order ${orderNumber} is confirmed! Total: Rs.${totalRupees}. Track: https://thegirlscollections.com/track`;
 
   return sendSMS({
     phone,
@@ -127,7 +126,7 @@ export async function sendOrderConfirmationSMS({
 // 2. Order Shipped SMS
 //    Triggered: when admin assigns AWB in /api/admin/orders/[orderId]/shipment
 //    DLT Template example:
-//      "DRFTN order {#var#} shipped via {#var#} (AWB: {#var#}). Track: https://drftn.in/track"
+//      "Your The Girls Collections order {#var#} shipped via {#var#} (AWB: {#var#}). Track: https://thegirlscollections.com/track"
 // ---------------------------------------------------------------------------
 export async function sendOrderShippedSMS({
   phone,
@@ -140,7 +139,7 @@ export async function sendOrderShippedSMS({
   courierPartner: string;
   trackingNumber: string;
 }): Promise<SMSResult> {
-  const message = `DRFTN order ${orderNumber} is shipped via ${courierPartner} (AWB: ${trackingNumber}). Track: https://drftn.in/track`;
+  const message = `Your The Girls Collections order ${orderNumber} is shipped via ${courierPartner} (AWB: ${trackingNumber}). Track: https://thegirlscollections.com/track`;
 
   return sendSMS({
     phone,
@@ -154,7 +153,7 @@ export async function sendOrderShippedSMS({
 // 3. Out for Delivery SMS
 //    Triggered: Borzo status=active OR Shiprocket "out for delivery" webhook
 //    DLT Template example:
-//      "DRFTN order {#var#} is out for delivery today! Please keep your phone handy."
+//      "Your The Girls Collections order {#var#} is out for delivery today! Please keep your phone handy."
 // ---------------------------------------------------------------------------
 export async function sendOutForDeliverySMS({
   phone,
@@ -163,7 +162,7 @@ export async function sendOutForDeliverySMS({
   phone: string;
   orderNumber: string;
 }): Promise<SMSResult> {
-  const message = `Your DRFTN order ${orderNumber} is out for delivery today! Please keep your phone handy.`;
+  const message = `Your The Girls Collections order ${orderNumber} is out for delivery today! Please keep your phone handy.`;
 
   return sendSMS({
     phone,
@@ -177,7 +176,7 @@ export async function sendOutForDeliverySMS({
 // 4. Delivered SMS
 //    Triggered: Borzo status=completed OR Shiprocket "delivered" webhook
 //    DLT Template example:
-//      "DRFTN order {#var#} delivered! Thanks for shopping with us."
+//      "Your The Girls Collections order {#var#} delivered! Thanks for shopping with us."
 // ---------------------------------------------------------------------------
 export async function sendDeliveredSMS({
   phone,
@@ -186,7 +185,7 @@ export async function sendDeliveredSMS({
   phone: string;
   orderNumber: string;
 }): Promise<SMSResult> {
-  const message = `Your DRFTN order ${orderNumber} has been delivered! We hope you love it. Shop again: https://drftn.in`;
+  const message = `Your The Girls Collections order ${orderNumber} has been delivered! We hope you love it. Shop again: https://thegirlscollections.com`;
 
   return sendSMS({
     phone,

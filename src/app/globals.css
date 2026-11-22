@@ -309,6 +309,27 @@ html[data-pref="kids"] [data-division="women"] {
   animation: marqueeScroll 35s linear infinite;
 }
 
+/* Vertical marquee for Google reviews */
+@keyframes marqueeVertical {
+  0% { transform: translateY(0%); }
+  100% { transform: translateY(-50%); }
+}
+
+.animate-marquee-vertical {
+  animation: marqueeVertical 30s linear infinite;
+}
+
+.animate-marquee-vertical-slow {
+  animation: marqueeVertical 42s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-vertical,
+  .animate-marquee-vertical-slow {
+    animation: none !important;
+  }
+}
+
 /* Drawer Keyframes (GPU transform & opacity only) */
 @keyframes drawerOverlayFadeIn {
   from { opacity: 0; }

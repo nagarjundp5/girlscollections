@@ -26,6 +26,7 @@ import {
 import { SizeChartModal } from './SizeChartModal';
 import { ProductAccordions } from './ProductAccordions';
 import { getSizeLabel } from '@/data/masterSizes';
+import { siteConfig } from '@/lib/siteConfig';
 
 interface ProductInfoProps {
   product: Product;
@@ -459,7 +460,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       {/* Equal-Width Concierge Buttons: WhatsApp & Video Consultation */}
       <div className="grid grid-cols-2 gap-3 pt-1">
         <a
-          href="https://wa.me/917406164512?text=Hi%20The%20Girls%20Collections%2C%20I%20would%20like%20to%20inquire%20about%20this%20outfit."
+          href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Hi The Girls Collections, I would like to inquire about this outfit.')}`}
           target="_blank"
           rel="noopener noreferrer"
           className="h-[44px] rounded-[6px] border border-emerald-600 bg-white hover:bg-emerald-50 text-emerald-700 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"

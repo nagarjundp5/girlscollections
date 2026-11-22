@@ -6,7 +6,7 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { rateLimit } from '@/lib/rateLimit';
+import { rateLimitCheckoutFlow } from '@/lib/rateLimit';
 
 const cartItemSchema = z.object({
   productId: z.string().min(1),
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     }
 
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
-    const limiter = await rateLimit(`cart_${userId}_${ip}`, 60, 60000);
+    const limiter = await rateLimitCheckoutFlow(`${userId}_${ip}`);
     if (!limiter.success) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }

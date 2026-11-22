@@ -1,64 +1,38 @@
+import { unstable_cache } from 'next/cache';
 import { Product, Category, Order, DiscountCode, StoreSettings, ContactSubmission } from '../types';
+import { getCachedSlimCatalogue, toTypesProduct } from '@/lib/catalogue';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Redis-backed product cache
-//
-// Replaces the previous per-process in-memory Map. On multi-instance serverless
-// deployments (Vercel) each function cold-start had its own isolated cache,
-// so a price/stock change in instance A was invisible to instance B for up to 60s.
-// Redis is shared across all instances — one invalidation busts all of them.
+// Immediate Cache Invalidation across Vercel Data Cache
+// Direct revalidateTag/revalidatePath calls execute synchronously in serverless
+// execution lifecycle — cannot be frozen or lost by background timeouts.
 // ─────────────────────────────────────────────────────────────────────────────
-const PRODUCT_CACHE_KEY = 'dbservice:products:active:v1';
-const PRODUCT_CACHE_TTL_SEC = 60;
-
-async function getProductsFromRedisCache(): Promise<any | null> {
-  try {
-    const { redis } = await import('@/lib/redis');
-    const raw = await redis.get(PRODUCT_CACHE_KEY);
-    if (!raw) return null;
-    return typeof raw === 'string' ? JSON.parse(raw) : raw;
-  } catch {
-    return null; // Redis miss/error → fall through to Neon
-  }
-}
-
-async function setProductsInRedisCache(data: any): Promise<void> {
-  try {
-    const { redis } = await import('@/lib/redis');
-    await redis.set(PRODUCT_CACHE_KEY, JSON.stringify(data), { ex: PRODUCT_CACHE_TTL_SEC });
-  } catch (err) {
-    console.warn('[ProductCache] Failed to write Redis cache:', err);
+export async function bustProductCacheTags(category?: string): Promise<void> {
+  if (typeof window === 'undefined') {
+    try {
+      const { revalidatePath, revalidateTag } = await import('next/cache');
+      revalidateTag('products');
+      revalidateTag('homepage');
+      revalidateTag('featured-products');
+      revalidateTag('trending-products');
+      revalidateTag('new-drops');
+      revalidateTag('categories');
+      revalidateTag('category-thumbnails');
+      revalidateTag('home');
+      if (category) {
+        revalidateTag(`products-${category}`);
+      }
+      revalidatePath('/', 'page');
+      revalidatePath('/shop', 'page');
+    } catch (err) {
+      // Graceful fallback if called outside Next server request context
+      console.warn('[Cache Invalidation Warning]:', err);
+    }
   }
 }
 
 export async function clearProductCache(): Promise<void> {
-  if (typeof window === 'undefined') {
-    try {
-      const { redis } = await import('@/lib/redis');
-      await redis.del(PRODUCT_CACHE_KEY);
-      await redis.del('homepage:snapshot:v1');
-      await redis.del('cart:recommended:v2');
-      
-      const { triggerPlpRebuildImmediate } = await import('@/lib/plp-cache');
-      // Part C: Rebuild immediately (no 30s delay) while serving previous version stale
-      triggerPlpRebuildImmediate().catch((err) => console.warn('[clearProductCache] Rebuild failed:', err));
-    } catch (err) {
-      console.warn('[ProductCache] Failed to clear Redis cache:', err);
-    }
-
-    try {
-      const { revalidatePath, revalidateTag } = await import('next/cache');
-      revalidatePath('/');
-      revalidatePath('/shop');
-      revalidateTag('featured-products');
-      revalidateTag('trending-products');
-      revalidateTag('new-drops');
-      revalidateTag('products');
-      revalidateTag('home');
-    } catch {
-      // Graceful fallback if called outside Next server request context
-    }
-  }
+  return bustProductCacheTags();
 }
 
 function sanitizeProductFields(fields: Record<string, any>): Record<string, any> {
@@ -316,172 +290,43 @@ export const dbService = {
   // -----------------------------------------------------------------------
   // PRODUCTS
   // -----------------------------------------------------------------------
-  async getProducts(): Promise<Product[]> {
+  async getProducts(limit = 24): Promise<Product[]> {
     if (typeof window === 'undefined') {
-      // ── Redis cache check ─────────────────────────────────────────────────
-      const cachedData = await getProductsFromRedisCache();
-      if (cachedData) return cachedData;
-
       const { dbHttp } = await import('@/db');
       const schema = await import('@/db/schema');
-      const { eq, desc, inArray, asc } = await import('drizzle-orm');
-      
-      const results = await dbHttp
-        .select()
+      const { sql, eq, desc } = await import('drizzle-orm');
+      const safeLimit = Math.min(24, Math.max(1, limit));
+      const rows = await dbHttp
+        .select({
+          id: schema.products.id,
+          name: schema.products.name,
+          slug: schema.products.slug,
+          price: schema.products.price,
+          compare_price: schema.products.compare_price,
+          category: schema.products.category,
+          gender: schema.products.gender,
+          created_at: schema.products.created_at,
+          image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+        })
         .from(schema.products)
         .where(eq(schema.products.is_active, true))
-        .orderBy(desc(schema.products.created_at));
-      
-      if (results.length === 0) {
-        await setProductsInRedisCache([]);
-        return [];
-      }
+        .orderBy(desc(schema.products.created_at))
+        .limit(safeLimit);
 
-      const productIds = results.map((r: any) => r.id);
-      const allImages = await dbHttp
-        .select()
-        .from(schema.productImages)
-        .where(inArray(schema.productImages.product_id, productIds))
-        .orderBy(asc(schema.productImages.sort_order));
-
-      const allVariants = await dbHttp
-        .select()
-        .from(schema.productVariants)
-        .where(inArray(schema.productVariants.product_id, productIds))
-        .orderBy(asc(schema.productVariants.created_at));
-
-      const allSizes = await dbHttp
-        .select()
-        .from(schema.productSizes)
-        .where(inArray(schema.productSizes.product_id, productIds))
-        .orderBy(asc(schema.productSizes.sort));
-
-      const allPriceGroups = await dbHttp
-        .select()
-        .from(schema.productPriceGroups)
-        .where(inArray(schema.productPriceGroups.product_id, productIds));
-
-      const priceGroupsById = allPriceGroups.reduce((acc: Record<string, any>, g: any) => {
-        acc[g.id] = g;
-        return acc;
-      }, {} as Record<string, any>);
-
-      const priceGroupsByProductId = allPriceGroups.reduce((acc: Record<string, any[]>, g: any) => {
-        if (!acc[g.product_id]) acc[g.product_id] = [];
-        acc[g.product_id].push(g);
-        return acc;
-      }, {} as Record<string, any[]>);
-
-      const sizesByProductId = allSizes.reduce((acc: Record<string, any[]>, s: any) => {
-        if (!acc[s.product_id]) acc[s.product_id] = [];
-        const linkedGroup = s.price_group_id ? priceGroupsById[s.price_group_id] : null;
-        acc[s.product_id].push({
-          id: s.id,
-          product_id: s.product_id,
-          size_key: s.size_key,
-          price: linkedGroup ? linkedGroup.price : s.price,
-          mrp: linkedGroup ? (linkedGroup.mrp || s.mrp) : s.mrp,
-          stock: s.stock,
-          sku: s.sku,
-          price_group_id: s.price_group_id,
-          group_name: linkedGroup ? linkedGroup.name : null,
-          is_active: s.is_active,
-          sort: s.sort,
-        });
-        return acc;
-      }, {} as Record<string, any[]>);
-
-      const variantsByProductId = allVariants.reduce((acc: Record<string, any[]>, v: any) => {
-        if (!acc[v.product_id]) acc[v.product_id] = [];
-        acc[v.product_id].push({
-          id: v.id,
-          product_id: v.product_id,
-          colour_name: v.colour_name,
-          colour_hex: v.colour_hex,
-          images: v.images || [],
-          sizes: v.sizes || [],
-          stock_quantity: v.stock_quantity || {},
-          stock_qty: v.stock_qty || 0,
-          sku: v.sku,
-          price_override: v.price_override,
-          is_active: v.is_active,
-          created_at: v.created_at ? v.created_at.toISOString() : undefined,
-        });
-        return acc;
-      }, {} as Record<string, any[]>);
-
-      const imagesByProductId = allImages.reduce((acc: Record<string, string[]>, img: any) => {
-        if (img.sort_order !== 99) {
-          if (!acc[img.product_id]) acc[img.product_id] = [];
-          acc[img.product_id].push(img.image_url);
-        }
-        return acc;
-      }, {} as Record<string, string[]>);
-
-      const hiddenImageByProductId = allImages.reduce((acc: Record<string, string>, img: any) => {
-        if (img.sort_order === 99) {
-          acc[img.product_id] = img.image_url;
-        }
-        return acc;
-      }, {} as Record<string, string>);
-      
-      const formatted = results.map((r: any) => {
-        const prodVariants = variantsByProductId[r.id] || [];
-        const fallbackImgs = imagesByProductId[r.id] && imagesByProductId[r.id].length > 0
-          ? imagesByProductId[r.id]
-          : (prodVariants[0]?.images || r.images || []);
-
-        return {
-          id: r.id,
-          name: r.name,
-          slug: r.slug,
-          description: r.description || '',
-          price: r.price,
-          base_price: r.price,
-          compare_price: r.compare_price || undefined,
-          category: r.category,
-          subcategory: r.subcategory || undefined,
-          gender: r.gender,
-          images: fallbackImgs,
-          hidden_detail_image: hiddenImageByProductId[r.id] || undefined,
-          sizes: r.sizes,
-          stock_quantity: r.stock_quantity,
-          is_featured: r.is_featured,
-          is_trending: r.is_trending ?? false,
-          is_best_seller: r.is_best_seller ?? false,
-          is_new_arrival: r.is_new_arrival ?? false,
-          paired_with: r.paired_with ?? null,
-          is_active: r.is_active,
-          weight_grams: r.weight_grams,
-          length_cm: r.length_cm,
-          breadth_cm: r.breadth_cm,
-          height_cm: r.height_cm,
-          units_sold: r.units_sold ?? 0,
-          created_at: r.created_at.toISOString(),
-          variants: prodVariants,
-          product_sizes: sizesByProductId[r.id] || [],
-          price_groups: priceGroupsByProductId[r.id] || [],
-          has_different_prices: (() => {
-            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
-            if (szs.length <= 1) return false;
-            return szs.some((s: any) => s.price !== szs[0].price);
-          })(),
-          min_price: (() => {
-            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
-            return szs.length > 0 ? Math.min(...szs.map((s: any) => s.price)) : r.price;
-          })(),
-          max_price: (() => {
-            const szs = (sizesByProductId[r.id] || []).filter((s: any) => s.is_active && s.price > 0);
-            return szs.length > 0 ? Math.max(...szs.map((s: any) => s.price)) : r.price;
-          })(),
-        };
-      });
-
-      // ── Write Redis cache ─────────────────────────────────────────────
-      await setProductsInRedisCache(formatted);
-      return formatted;
+      return rows.map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        price: r.price > 100000 ? Math.round(r.price / 100) : r.price,
+        compare_price: r.compare_price ? (r.compare_price > 100000 ? Math.round(r.compare_price / 100) : r.compare_price) : undefined,
+        category: r.category,
+        gender: r.gender,
+        images: r.image ? [r.image] : [],
+        sizes: [],
+        is_active: true,
+      } as unknown as Product));
     } else {
-      const res = await fetch('/api/products');
+      const res = await fetch(`/api/products?limit=${limit}`);
       if (!res.ok) throw new Error('Failed to fetch products');
       const data = await res.json();
       return data.products || [];
@@ -822,172 +667,86 @@ export const dbService = {
     if (typeof window === 'undefined') {
       const { dbHttp } = await import('@/db');
       const schema = await import('@/db/schema');
-      const { eq, ne, and, desc, inArray, asc } = await import('drizzle-orm');
-
-      let rawList = await dbHttp
-        .select()
+      const { sql, eq, and, ne, desc } = await import('drizzle-orm');
+      const safeLimit = Math.min(8, Math.max(1, limit));
+      const rows = await dbHttp
+        .select({
+          id: schema.products.id,
+          name: schema.products.name,
+          slug: schema.products.slug,
+          price: schema.products.price,
+          compare_price: schema.products.compare_price,
+          category: schema.products.category,
+          gender: schema.products.gender,
+          created_at: schema.products.created_at,
+          image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+        })
         .from(schema.products)
-        .where(and(
-          eq(schema.products.category, category),
-          ne(schema.products.id, currentProductId),
-          eq(schema.products.is_active, true)
-        ))
+        .where(and(eq(schema.products.is_active, true), ne(schema.products.id, currentProductId)))
         .orderBy(desc(schema.products.created_at))
-        .limit(limit);
+        .limit(safeLimit);
 
-      if (rawList.length < limit) {
-        const existingIds = [currentProductId, ...rawList.map((p: any) => p.id)];
-        const { notInArray } = await import('drizzle-orm');
-        const backfillList = await dbHttp
-          .select()
-          .from(schema.products)
-          .where(and(
-            eq(schema.products.is_active, true),
-            notInArray(schema.products.id, existingIds)
-          ))
-          .orderBy(desc(schema.products.created_at))
-          .limit(limit - rawList.length);
-
-        rawList = [...rawList, ...backfillList];
-      }
-
-      if (rawList.length === 0) return [];
-
-      const pIds = rawList.map((p: any) => p.id);
-      const [allImages, allVariants] = await Promise.all([
-        dbHttp
-          .select()
-          .from(schema.productImages)
-          .where(inArray(schema.productImages.product_id, pIds))
-          .orderBy(asc(schema.productImages.sort_order)),
-        dbHttp
-          .select()
-          .from(schema.productVariants)
-          .where(inArray(schema.productVariants.product_id, pIds))
-          .orderBy(asc(schema.productVariants.created_at)),
-      ]);
-
-      const imagesByProductId = allImages.reduce((acc: Record<string, string[]>, img: any) => {
-        if (img.sort_order !== 99) {
-          if (!acc[img.product_id]) acc[img.product_id] = [];
-          acc[img.product_id].push(img.image_url);
-        }
-        return acc;
-      }, {} as Record<string, string[]>);
-
-      const variantsByProductId = allVariants.reduce((acc: Record<string, any[]>, v: any) => {
-        if (!acc[v.product_id]) acc[v.product_id] = [];
-        acc[v.product_id].push(v);
-        return acc;
-      }, {} as Record<string, any[]>);
-
-      return rawList.map((prod: any) => {
-        const prodVariants = variantsByProductId[prod.id] || [];
-        const fallbackImgs = (imagesByProductId[prod.id] && imagesByProductId[prod.id].length > 0)
-          ? imagesByProductId[prod.id]
-          : (prodVariants[0]?.images && prodVariants[0].images.length > 0 ? prodVariants[0].images : (prod.images && prod.images.length > 0 ? prod.images : []));
-
-        return {
-          id: prod.id,
-          name: prod.name,
-          slug: prod.slug,
-          description: prod.description || '',
-          price: prod.price,
-          base_price: prod.price,
-          compare_price: prod.compare_price || undefined,
-          category: prod.category,
-          subcategory: prod.subcategory || undefined,
-          gender: prod.gender,
-          images: fallbackImgs,
-          sizes: prod.sizes,
-          stock_quantity: prod.stock_quantity,
-          is_featured: prod.is_featured,
-          paired_with: prod.paired_with ?? null,
-          is_active: prod.is_active,
-          weight_grams: prod.weight_grams,
-          created_at: prod.created_at ? new Date(prod.created_at).toISOString() : new Date().toISOString(),
-        };
-      });
-    } else {
-      const res = await fetch(`/api/products?category=${category}&limit=${limit}`);
+      return rows.map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        price: r.price > 100000 ? Math.round(r.price / 100) : r.price,
+        compare_price: r.compare_price ? (r.compare_price > 100000 ? Math.round(r.compare_price / 100) : r.compare_price) : undefined,
+        category: r.category,
+        gender: r.gender,
+        images: r.image ? [r.image] : [],
+        sizes: [],
+        is_active: true,
+      } as unknown as Product));
+    }
+    // Client-side: fetch slim list via public API
+    try {
+      const res = await fetch(`/api/products?category=${encodeURIComponent(category)}&limit=${limit}`);
       if (!res.ok) return [];
       const data = await res.json();
       return data.products || [];
+    } catch {
+      return [];
     }
   },
 
-  async getHomepageProducts(limit?: number): Promise<Product[]> {
+  async getHomepageProducts(limit = 10): Promise<Product[]> {
     if (typeof window === 'undefined') {
       const { dbHttp } = await import('@/db');
       const schema = await import('@/db/schema');
-      const { eq, desc, inArray, asc } = await import('drizzle-orm');
-
-      let query = dbHttp
-        .select()
+      const { sql, eq, desc } = await import('drizzle-orm');
+      const safeLimit = Math.min(10, Math.max(1, limit));
+      const rows = await dbHttp
+        .select({
+          id: schema.products.id,
+          name: schema.products.name,
+          slug: schema.products.slug,
+          price: schema.products.price,
+          compare_price: schema.products.compare_price,
+          category: schema.products.category,
+          gender: schema.products.gender,
+          created_at: schema.products.created_at,
+          image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+        })
         .from(schema.products)
         .where(eq(schema.products.is_active, true))
-        .orderBy(desc(schema.products.is_featured), desc(schema.products.created_at));
+        .orderBy(desc(schema.products.created_at))
+        .limit(safeLimit);
 
-      const rawList = limit ? await query.limit(limit) : await query;
-      if (rawList.length === 0) return [];
-
-      const pIds = rawList.map((p: any) => p.id);
-      const [allImages, allVariants] = await Promise.all([
-        dbHttp
-          .select()
-          .from(schema.productImages)
-          .where(inArray(schema.productImages.product_id, pIds))
-          .orderBy(asc(schema.productImages.sort_order)),
-        dbHttp
-          .select()
-          .from(schema.productVariants)
-          .where(inArray(schema.productVariants.product_id, pIds))
-          .orderBy(asc(schema.productVariants.created_at)),
-      ]);
-
-      const imagesByProductId = allImages.reduce((acc: Record<string, string[]>, img: any) => {
-        if (img.sort_order !== 99) {
-          if (!acc[img.product_id]) acc[img.product_id] = [];
-          acc[img.product_id].push(img.image_url);
-        }
-        return acc;
-      }, {} as Record<string, string[]>);
-
-      const variantsByProductId = allVariants.reduce((acc: Record<string, any[]>, v: any) => {
-        if (!acc[v.product_id]) acc[v.product_id] = [];
-        acc[v.product_id].push(v);
-        return acc;
-      }, {} as Record<string, any[]>);
-
-      return rawList.map((prod: any) => {
-        const prodVariants = variantsByProductId[prod.id] || [];
-        const fallbackImgs = (imagesByProductId[prod.id] && imagesByProductId[prod.id].length > 0)
-          ? imagesByProductId[prod.id]
-          : (prodVariants[0]?.images && prodVariants[0].images.length > 0 ? prodVariants[0].images : (prod.images && prod.images.length > 0 ? prod.images : []));
-
-        return {
-          id: prod.id,
-          name: prod.name,
-          slug: prod.slug,
-          description: prod.description || '',
-          price: prod.price,
-          base_price: prod.price,
-          compare_price: prod.compare_price || undefined,
-          category: prod.category,
-          subcategory: prod.subcategory || undefined,
-          gender: prod.gender,
-          images: fallbackImgs,
-          sizes: prod.sizes,
-          stock_quantity: prod.stock_quantity,
-          is_featured: prod.is_featured,
-          paired_with: prod.paired_with ?? null,
-          is_active: prod.is_active,
-          weight_grams: prod.weight_grams,
-          created_at: prod.created_at ? new Date(prod.created_at).toISOString() : new Date().toISOString(),
-        };
-      });
+      return rows.map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        price: r.price > 100000 ? Math.round(r.price / 100) : r.price,
+        compare_price: r.compare_price ? (r.compare_price > 100000 ? Math.round(r.compare_price / 100) : r.compare_price) : undefined,
+        category: r.category,
+        gender: r.gender,
+        images: r.image ? [r.image] : [],
+        sizes: [],
+        is_active: true,
+      } as unknown as Product));
     } else {
-      const url = limit ? `/api/products?limit=${limit}` : `/api/products`;
+      const url = `/api/products?limit=${limit}`;
       const res = await fetch(url);
       if (!res.ok) return [];
       const data = await res.json();
@@ -997,92 +756,26 @@ export const dbService = {
 
   async getCategoryThumbnails(): Promise<Record<string, string>> {
     if (typeof window === 'undefined') {
-      const { unstable_cache } = await import('next/cache');
-      
-      const fetchCachedThumbnails = unstable_cache(
-        async () => {
-          const { dbHttp } = await import('@/db');
-          const schema = await import('@/db/schema');
-          const { eq, desc, inArray, asc } = await import('drizzle-orm');
+      const { dbHttp } = await import('@/db');
+      const schema = await import('@/db/schema');
+      const { sql, eq, desc } = await import('drizzle-orm');
+      const rows = await dbHttp
+        .select({
+          category: schema.products.category,
+          image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+        })
+        .from(schema.products)
+        .where(eq(schema.products.is_active, true))
+        .orderBy(desc(schema.products.is_featured), desc(schema.products.created_at))
+        .limit(30);
 
-          // Fetch active products
-          const prods = await dbHttp
-            .select()
-            .from(schema.products)
-            .where(eq(schema.products.is_active, true))
-            .orderBy(desc(schema.products.created_at));
-
-          if (prods.length === 0) return { all: '' };
-
-          // Fetch all images & variants in batch
-          const pIds = prods.map((p: any) => p.id);
-          const [allImages, allVariants] = await Promise.all([
-            dbHttp
-              .select()
-              .from(schema.productImages)
-              .where(inArray(schema.productImages.product_id, pIds))
-              .orderBy(asc(schema.productImages.sort_order)),
-            dbHttp
-              .select()
-              .from(schema.productVariants)
-              .where(inArray(schema.productVariants.product_id, pIds))
-              .orderBy(asc(schema.productVariants.created_at)),
-          ]);
-
-          const imagesByProductId = allImages.reduce((acc: Record<string, string[]>, img: any) => {
-            if (img.sort_order !== 99) {
-              if (!acc[img.product_id]) acc[img.product_id] = [];
-              acc[img.product_id].push(img.image_url);
-            }
-            return acc;
-          }, {} as Record<string, string[]>);
-
-          const variantsByProductId = allVariants.reduce((acc: Record<string, any[]>, v: any) => {
-            if (!acc[v.product_id]) acc[v.product_id] = [];
-            acc[v.product_id].push(v);
-            return acc;
-          }, {} as Record<string, any[]>);
-
-          const getPrimaryImage = (p: any) => {
-            if (imagesByProductId[p.id] && imagesByProductId[p.id].length > 0) {
-              return imagesByProductId[p.id][0];
-            }
-            const pVars = variantsByProductId[p.id] || [];
-            if (pVars[0]?.images && pVars[0].images.length > 0) {
-              return pVars[0].images[0];
-            }
-            if (p.images && p.images.length > 0) {
-              return p.images[0];
-            }
-            return '';
-          };
-
-          const thumbnails: Record<string, string> = {};
-
-          // Select for each category
-          const categories = Array.from(new Set(prods.map((p: any) => p.category)));
-          for (const cat of categories) {
-            const catProds = prods.filter((p: any) => p.category === cat);
-            // Try featured products first, then most recently created active product
-            const featured = catProds.filter((p: any) => p.is_featured);
-            const chosen = featured.length > 0 ? featured[0] : catProds[0];
-            if (cat) {
-              thumbnails[cat as string] = getPrimaryImage(chosen);
-            }
-          }
-
-          // Select overall for 'all' (overall featured, else most recent product image)
-          const overallFeatured = prods.filter((p: any) => p.is_featured);
-          const overallChosen = overallFeatured.length > 0 ? overallFeatured[0] : prods[0];
-          thumbnails['all'] = getPrimaryImage(overallChosen);
-
-          return thumbnails;
-        },
-        ['category-thumbnails-cache-key'],
-        { revalidate: 600, tags: ['category-thumbnails'] }
-      );
-
-      return fetchCachedThumbnails();
+      const thumbnails: Record<string, string> = { all: rows[0]?.image || '' };
+      for (const r of rows) {
+        if (r.category && !thumbnails[r.category]) {
+          thumbnails[r.category] = r.image;
+        }
+      }
+      return thumbnails;
     } else {
       const res = await fetch('/api/categories/thumbnails');
       const data = await res.json();
@@ -2245,7 +1938,7 @@ export const dbService = {
       
       const settingsObj: StoreSettings = {
         store_name: 'The Girls Collections',
-        contact_number: '+91 7483848505',
+        contact_number: '+91 9844371705',
         instagram_handle: '@thegirlscollections',
         free_shipping_threshold: 199900,
         default_shipping_charge: 9900,
@@ -2257,7 +1950,7 @@ export const dbService = {
         borzo_free_threshold: 149900,
         borzo_cutoff_start: '11:00',
         borzo_cutoff_end: '16:00',
-        borzo_pickup_address: 'The Girls Collections Atelier, Yelahanka, Bengaluru',
+        borzo_pickup_address: 'North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004',
       };
 
       rows.forEach((row: any) => {

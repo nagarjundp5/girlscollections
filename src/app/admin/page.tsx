@@ -54,6 +54,7 @@ export default function AdminDashboard() {
     fetchDashboardStats(range);
 
     const fetchLiveVisitors = async () => {
+      if (document.visibilityState === 'hidden') return;
       try {
         const [resUsers, resVisitors] = await Promise.all([
           fetch('/api/admin/users/active'),
@@ -77,7 +78,8 @@ export default function AdminDashboard() {
     };
 
     fetchLiveVisitors();
-    const interval = setInterval(fetchLiveVisitors, 15000);
+    // Poll every 60s, only when visible
+    const interval = setInterval(fetchLiveVisitors, 60000);
     return () => clearInterval(interval);
   }, [range]);
 

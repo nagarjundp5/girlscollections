@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { siteConfig } from '@/lib/siteConfig';
+import { getSizeLabel } from '@/data/masterSizes';
 
 interface DeliverySuccessEmailProps {
   orderNumber: string;
@@ -35,7 +37,7 @@ export function DeliverySuccessEmail({
               {/* Header */}
               <tr>
                 <td style={{ padding: '36px 40px 28px', borderBottom: '1px solid #1e1e1e' }}>
-                  <img src="https://www.drftnclothing.in/logo.png?v=3" alt="DRFTN" width="130" style={{ display: 'block', border: 'none', outline: 'none' }} />
+                  <img src="https://www.thegirlscollections.com/logo.png?v=3" alt="The Girls Collections" width="130" style={{ display: 'block', border: 'none', outline: 'none' }} />
                 </td>
               </tr>
 
@@ -73,7 +75,7 @@ export function DeliverySuccessEmail({
                     {items.map((item, index) => (
                       <tr key={index}>
                         <td style={{ padding: '10px 0', fontSize: '14px', color: '#ccc' }}>
-                          {item.name} ({item.size}) <span style={{ color: '#666', fontSize: '12px' }}>x{item.quantity}</span>
+                          {item.name} ({getSizeLabel(item.size)}) <span style={{ color: '#666', fontSize: '12px' }}>x{item.quantity}</span>
                         </td>
                         <td align="right" style={{ padding: '10px 0', fontSize: '14px', color: '#ffffff', fontWeight: 'bold' }}>
                           ₹{((item.price * item.quantity) / 100).toFixed(2)}
@@ -98,7 +100,7 @@ export function DeliverySuccessEmail({
                 <td style={{ padding: '24px 40px', borderTop: '1px solid #1e1e1e' }}>
                   <p style={{ margin: 0, fontSize: '12px', color: '#444', lineHeight: 1.6 }}>
                     Questions? Reply to this email or reach us at{' '}
-                    <a href="mailto:drftnclothing@gmail.com" style={{ color: '#888', textDecoration: 'none' }}>drftnclothing@gmail.com</a>
+                    <a href={`mailto:${siteConfig.email}`} style={{ color: '#888', textDecoration: 'none' }}>{siteConfig.email}</a>
                   </p>
                   <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#333' }}>
                     © {new Date().getFullYear()} DRFTN Clothing. Bengaluru, India.

@@ -81,6 +81,9 @@ export async function POST(req: Request) {
           })
           .where(eq(schema.users.id, id));
         console.log(`[Clerk Webhook] Updated existing Neon user ${id}`);
+
+        const { invalidateUserCache } = await import('@/lib/user-cache');
+        await invalidateUserCache(id);
       } else {
         // Determine auth provider (default to google if external account or no phone)
         const isGoogle = evt.data.external_accounts && evt.data.external_accounts.some((acc: any) => acc.provider === 'google');

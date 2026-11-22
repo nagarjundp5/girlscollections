@@ -6,11 +6,11 @@ import * as schema from '@/db/schema';
 import { eq, and, or, ne, sql } from 'drizzle-orm';
 import { discountValidateSchema } from '@/lib/validations';
 
-import { rateLimit } from '@/lib/rateLimit';
+import { rateLimitCheckoutFlow } from '@/lib/rateLimit';
 
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
-  const rl = await rateLimit(`discount:validate:${ip}`, 10, 60 * 1000);
+  const rl = await rateLimitCheckoutFlow(ip);
   if (!rl.success) {
     return NextResponse.json(
       { error: `Too many discount verification attempts. Retry in ${rl.reset} seconds.` },

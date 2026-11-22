@@ -1,38 +1,25 @@
 import { NextResponse } from 'next/server';
-import { revalidateTag, revalidatePath } from 'next/cache';
-import { dbService } from '@/lib/db';
+import { dbService, bustProductCacheTags } from '@/lib/db';
 import { adminProductSchema } from '@/lib/validations';
 import { requireStaffOrAdmin, requireAdmin } from '@/lib/auth/admin';
-
-/**
- * Bust all homepage category, featured, and trending caches for a product.
- * Always revalidate 'products-all', 'featured-products', and 'trending-products'.
- */
-function bustProductCacheTags(category?: string) {
-  revalidatePath('/');
-  revalidatePath('/shop');
-  revalidateTag('products-all');
-  revalidateTag('products');
-  revalidateTag('featured-products');
-  revalidateTag('trending-products');
-  revalidateTag('new-drops');
-  if (category) {
-    revalidateTag(`products-${category}`);
-  }
-  console.log(`[revalidateTag] homepage & products busted${category ? `, products-${category}` : ''}`);
-}
 
 /**
  * GET /api/admin/products
  * Fetch all products (including inactive products) with exact stock levels
  */
-export async function GET() {
+export async function GET(request: Request) {
   const authResult = await requireStaffOrAdmin();
   if (authResult instanceof NextResponse) return authResult;
 
   try {
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, Number(searchParams.get('page')) || 1);
+    const limit = Math.max(1, Math.min(100, Number(searchParams.get('limit')) || 50));
+    const isPaginated = searchParams.has('page') || searchParams.has('limit');
+
     const rawProducts = await dbService.getAllProducts();
-    
+    const total = rawProducts.length;
+
     // Server-side field sanitization: strip sales figures for staff role
     const isStaff = authResult.role === 'staff';
     const products = (rawProducts || []).map((p: any) => {
@@ -41,7 +28,19 @@ export async function GET() {
       return staffSafeProduct;
     });
 
-    return NextResponse.json({ products });
+    if (isPaginated) {
+      const startIndex = (page - 1) * limit;
+      const paginated = products.slice(startIndex, startIndex + limit);
+      return NextResponse.json({
+        products: paginated,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      });
+    }
+
+    return NextResponse.json({ products, total });
   } catch (error) {
     console.error('Admin products GET exception:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -276,7 +275,7 @@ export async function PATCH(request: Request) {
     bustProductCacheTags(updatedProduct.category);
     // Also bust category from incoming body in case category changed
     if (validationResult.data.category && validationResult.data.category !== updatedProduct.category) {
-      revalidateTag(`products-${validationResult.data.category}`);
+      bustProductCacheTags(validationResult.data.category);
     }
 
     return NextResponse.json({ success: true, product: updatedProduct });

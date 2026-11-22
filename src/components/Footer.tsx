@@ -3,11 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import BrandLogo from './BrandLogo';
-
-// ─── PLACEHOLDER CONSTANTS (User can customize these) ────────────────────────
-export const EMAIL_HERE = 'care@thegirlscollections.com';
-export const PHONE_HERE = '+91 98765 43210';
-export const HOURS_HERE = 'Mon - Sat: 10:00 AM - 9:00 PM\nSun: 11:00 AM - 8:00 PM';
+import { siteConfig } from '@/lib/siteConfig';
+import { MapPin, Phone, Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -20,10 +17,10 @@ export default function Footer() {
           <div className="space-y-4 flex flex-col items-start">
             <BrandLogo variant="horizontal" size="md" />
             <p className="text-[#1C1417]/70 text-xs leading-relaxed max-w-xs pt-1">
-              Curated luxury Indian fashion & handcrafted ethnic wear for women and girls.
+              Curated luxury Indian fashion &amp; handcrafted ethnic wear for women and girls.
             </p>
             <p className="text-[#1C1417]/60 text-[11px] pt-2">
-              © 2026 The Girls Collections. All Rights Reserved.
+              © {new Date().getFullYear()} {siteConfig.legalName}. All Rights Reserved.
             </p>
           </div>
 
@@ -39,8 +36,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-[#C5A059] transition-colors">
-                  Blog
+                <Link href="/contact" className="hover:text-[#C5A059] transition-colors">
+                  Visit Boutique
+                </Link>
+              </li>
+              <li>
+                <Link href="/faqs" className="hover:text-[#C5A059] transition-colors">
+                  Help &amp; FAQs
                 </Link>
               </li>
             </ul>
@@ -51,28 +53,11 @@ export default function Footer() {
                 Follow Us
               </span>
               <div className="flex items-center space-x-3.5 text-[#1C1417]/80">
-                {/* Facebook */}
-                <a
-                  href="#"
-                  aria-label="Facebook"
-                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                  </svg>
-                </a>
-
                 {/* Instagram */}
                 <a
-                  href="#"
+                  href="https://www.instagram.com/thegirlscollections"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
                   className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
                 >
@@ -91,57 +76,35 @@ export default function Footer() {
                   </svg>
                 </a>
 
-                {/* Pinterest */}
+                {/* WhatsApp */}
                 <a
-                  href="#"
-                  aria-label="Pinterest"
-                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
+                  href={siteConfig.whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#25D366] hover:border-[#25D366] transition-colors"
                 >
                   <svg
                     className="w-4 h-4"
                     viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    fill="currentColor"
                   >
-                    <path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29-.09-.78-.17-1.98.04-2.83.19-.77 1.25-5.3 1.25-5.3s-.32-.64-.32-1.58c0-1.48.86-2.59 1.93-2.59.91 0 1.35.68 1.35 1.5 0 .91-.58 2.28-.88 3.55-.25 1.06.53 1.93 1.58 1.93 1.9 0 3.36-2 3.36-4.89 0-2.56-1.84-4.35-4.47-4.35-3.05 0-4.84 2.29-4.84 4.65 0 .92.35 1.91.8 2.45.09.11.1.2.07.32-.08.33-.26 1.06-.3 1.21-.05.2-.17.24-.38.15-1.44-.67-2.34-2.77-2.34-4.46 0-3.63 2.64-6.97 7.61-6.97 3.99 0 7.1 2.85 7.1 6.66 0 3.97-2.5 7.17-5.98 7.17-1.17 0-2.27-.61-2.64-1.33l-.72 2.74c-.26 1-.96 2.25-1.43 3.01.99.31 2.04.47 3.13.47 5.52 0 10-4.48 10-10S17.52 2 12 2z" />
-                  </svg>
-                </a>
-
-                {/* YouTube */}
-                <a
-                  href="#"
-                  aria-label="YouTube"
-                  className="w-8 h-8 rounded-full border border-[#EAE5DE] flex items-center justify-center hover:text-[#C5A059] hover:border-[#C5A059] transition-colors"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.186 8.186 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.8 11.63c-.26-.13-1.56-.77-1.8-.86-.24-.09-.42-.13-.6.13-.18.26-.69.86-.84 1.04-.16.17-.31.2-.58.06-.26-.13-1.11-.41-2.12-1.31-.79-.7-1.32-1.57-1.48-1.83-.15-.26-.02-.4.11-.53.12-.12.26-.31.4-.46.13-.15.17-.26.26-.44.09-.17.04-.33-.02-.46-.07-.13-.6-1.45-.83-1.99-.22-.52-.44-.45-.6-.46-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.97.95-.97 2.31s.99 2.68 1.13 2.86c.13.19 1.95 2.97 4.72 4.17.66.29 1.18.46 1.58.59.66.21 1.27.18 1.74.11.53-.08 1.56-.64 1.78-1.25.22-.61.22-1.14.16-1.25-.07-.11-.25-.18-.51-.31z" />
                   </svg>
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Column 3: Quick Links */}
+          {/* Column 3: Quick Links / Policies */}
           <div className="space-y-3.5">
             <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
-              Quick Links
+              Customer Care &amp; Policies
             </h4>
             <ul className="space-y-2.5 text-[#1C1417]/75">
               <li>
                 <Link
-                  href="/policies/shipping-and-delivery-policy"
+                  href="/shipping-and-delivery"
                   className="hover:text-[#C5A059] transition-colors"
                 >
                   Shipping &amp; Delivery
@@ -149,20 +112,20 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/policies/refund-return-exchange-policy"
+                  href="/returns-and-exchange"
                   className="hover:text-[#C5A059] transition-colors"
                 >
-                  Returns &amp; Cancellation
+                  Returns &amp; Exchange (No Online Exchange)
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-[#C5A059] transition-colors">
-                  FAQs
+                <Link href="/faqs" className="hover:text-[#C5A059] transition-colors">
+                  FAQs &amp; Help
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/policies/privacy-policy"
+                  href="/privacy-policy"
                   className="hover:text-[#C5A059] transition-colors"
                 >
                   Privacy Policy
@@ -170,7 +133,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/policies/terms-and-conditions"
+                  href="/terms-and-conditions"
                   className="hover:text-[#C5A059] transition-colors"
                 >
                   Terms &amp; Conditions
@@ -178,45 +141,81 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/track" className="hover:text-[#C5A059] transition-colors">
-                  Track Orders
+                  Track Orders (AWB)
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Contact */}
+          {/* Column 4: Contact & Flagship Boutique */}
           <div className="space-y-3.5">
             <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
-              Contact
+              Flagship Boutique
             </h4>
             <ul className="space-y-2.5 text-[#1C1417]/75">
               <li>
-                <Link href="/contact" className="hover:text-[#C5A059] transition-colors">
-                  Find a Store
-                </Link>
-              </li>
-              <li>
                 <a
-                  href={`mailto:${EMAIL_HERE}`}
-                  className="hover:text-[#C5A059] transition-colors break-all"
+                  href={siteConfig.mapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2 hover:text-[#C5A059] transition-colors leading-relaxed group"
                 >
-                  {EMAIL_HERE}
+                  <MapPin className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                  <span>{siteConfig.address}</span>
                 </a>
               </li>
               <li>
                 <a
-                  href={`tel:${PHONE_HERE.replace(/\s+/g, '')}`}
-                  className="hover:text-[#C5A059] transition-colors"
+                  href={`mailto:${siteConfig.email}`}
+                  className="flex items-center gap-2 hover:text-[#C5A059] transition-colors break-all"
                 >
-                  {PHONE_HERE}
+                  <Mail className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                  <span>{siteConfig.email}</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${siteConfig.telLink}`}
+                  className="flex items-center gap-2 hover:text-[#C5A059] transition-colors font-medium"
+                >
+                  <Phone className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                  <span>+91 {siteConfig.phone}</span>
                 </a>
               </li>
               <li className="pt-2 text-[11px] text-[#1C1417]/60 whitespace-pre-line leading-relaxed">
-                {HOURS_HERE}
+                {siteConfig.hours}
               </li>
             </ul>
           </div>
 
+        </div>
+
+        {/* Small "Policies" link row at footer bottom */}
+        <div className="mt-12 pt-6 border-t border-[#EAE5DE] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#1C1417]/60">
+          <p>
+            {siteConfig.legalName} • Basavanagudi, Bengaluru, Karnataka
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 font-medium">
+            <Link href="/terms-and-conditions" className="hover:text-[#1A1E3A] hover:underline transition-colors">
+              Terms &amp; Conditions
+            </Link>
+            <span>•</span>
+            <Link href="/privacy-policy" className="hover:text-[#1A1E3A] hover:underline transition-colors">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link href="/shipping-and-delivery" className="hover:text-[#1A1E3A] hover:underline transition-colors">
+              Shipping &amp; Delivery
+            </Link>
+            <span>•</span>
+            <Link href="/returns-and-exchange" className="hover:text-[#1A1E3A] hover:underline transition-colors">
+              Returns &amp; Exchange
+            </Link>
+            <span>•</span>
+            <Link href="/faqs" className="hover:text-[#1A1E3A] hover:underline transition-colors">
+              FAQs
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

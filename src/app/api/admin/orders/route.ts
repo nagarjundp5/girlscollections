@@ -69,20 +69,37 @@ export async function GET(request: Request) {
       }
     }
 
+    const page = Math.max(1, Number(searchParams.get('page')) || 1);
+    const limit = Math.max(1, Math.min(100, Number(searchParams.get('limit')) || 50));
+    const isPaginated = searchParams.has('page') || searchParams.has('limit');
+
     let list: any[] = [];
     try {
-      list = await db
-        .select()
-        .from(schema.orders)
-        .orderBy(desc(schema.orders.created_at));
+      if (isPaginated) {
+        list = await db
+          .select()
+          .from(schema.orders)
+          .orderBy(desc(schema.orders.created_at))
+          .limit(limit)
+          .offset((page - 1) * limit);
+      } else {
+        list = await db
+          .select()
+          .from(schema.orders)
+          .orderBy(desc(schema.orders.created_at))
+          .limit(100);
+      }
     } catch (dbErr) {
       console.warn('Drizzle select error, falling back to SQL execute:', dbErr);
-      const raw: any = await db.execute(sql`SELECT * FROM orders ORDER BY created_at DESC`);
+      const raw: any = await db.execute(sql`SELECT * FROM orders ORDER BY created_at DESC LIMIT 100`);
       list = (raw.rows || (Array.isArray(raw) ? raw : [])) as any[];
     }
 
     const formattedOrders = list.map(formatOrderRow).filter(Boolean);
-    return NextResponse.json({ orders: formattedOrders });
+    return NextResponse.json({
+      orders: formattedOrders,
+      ...(isPaginated ? { page, limit } : {}),
+    });
   } catch (error: any) {
     console.error('Admin orders GET error:', error);
     return NextResponse.json({ orders: [], error: error?.message || 'Failed to fetch orders' });

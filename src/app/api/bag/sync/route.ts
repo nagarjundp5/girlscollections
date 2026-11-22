@@ -2,11 +2,18 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { inArray } from 'drizzle-orm';
+import { rateLimitCheckoutFlow } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
+    const limitRes = await rateLimitCheckoutFlow(ip);
+    if (!limitRes.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(limitRes.reset) } });
+    }
+
     const body = await req.json();
     const { items } = body;
 

@@ -14,9 +14,10 @@ export async function GET() {
   try {
     const now = new Date();
     const nowSec = Math.floor(now.getTime() / 1000);
-    const threeMinsAgoSec = nowSec - 180;
+    // Align with 5-minute (300s) client heartbeat plus 60s jitter tolerance = 6-minute (360s) window
+    const activeWindowSec = nowSec - 360;
     const monthStr = now.toISOString().slice(0, 7); // 'YYYY-MM'
-    const threeMinsAgoDate = new Date(now.getTime() - 3 * 60 * 1000);
+    const activeWindowDate = new Date(now.getTime() - 6 * 60 * 1000);
 
     let liveVisitors = 0;
     let monthlyVisitors = 0;
@@ -25,7 +26,7 @@ export async function GET() {
     // 1. Fetch live active visitors from Redis sorted set
     try {
       if (redis) {
-        await redis.zremrangebyscore('analytics:live_visitors', 0, threeMinsAgoSec);
+        await redis.zremrangebyscore('analytics:live_visitors', 0, activeWindowSec);
         liveVisitors = await redis.zcard('analytics:live_visitors');
         monthlyVisitors = await redis.pfcount(`analytics:visitors:${monthStr}`);
         overallVisitors = await redis.pfcount('analytics:visitors:overall');
@@ -40,7 +41,7 @@ export async function GET() {
         const [dbLive] = await db
           .select({ value: countDistinct(schema.uniqueVisitors.visitor_id) })
           .from(schema.uniqueVisitors)
-          .where(gte(schema.uniqueVisitors.last_seen_at, threeMinsAgoDate));
+          .where(gte(schema.uniqueVisitors.last_seen_at, activeWindowDate));
         liveVisitors = dbLive?.value || 0;
       }
 

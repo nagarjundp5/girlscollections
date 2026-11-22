@@ -94,23 +94,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     return () => grid.removeEventListener('scroll', handleScroll, { capture: true });
   }, []);
 
-  // Infinite scroll IntersectionObserver sentinel
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel || !hasMore || !onLoadMore || isLoading) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          onLoadMore();
-        }
-      },
-      { rootMargin: '300px' }
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [hasMore, onLoadMore, isLoading]);
+  // Infinite scroll IntersectionObserver sentinel removed — manual Load More only per requirements
 
   if (isLoading && products.length === 0) {
     return (
@@ -180,10 +164,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         ))}
       </div>
 
-      {/* Infinite Scroll Sentinel */}
-      {hasMore && <div ref={sentinelRef} className="h-10 w-full" />}
-
-      {/* Fallback Load More Button */}
+      {/* Load More Button */}
       {hasMore && onLoadMore && (
         <div className="text-center pt-8 pb-4">
           <button

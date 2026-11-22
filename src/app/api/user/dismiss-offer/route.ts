@@ -40,6 +40,9 @@ export async function POST(request: Request) {
       .set({ first_order_offer_dismissed: true })
       .where(eq(schema.users.id, userId));
 
+    const { invalidateUserCache } = await import('@/lib/user-cache');
+    await invalidateUserCache(userId);
+
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error('[DismissOffer]', err?.message);

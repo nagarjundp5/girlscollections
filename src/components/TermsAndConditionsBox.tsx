@@ -21,8 +21,8 @@ const HIGHLIGHTS = [
   {
     id: 'returns',
     icon: RefreshCw,
-    title: 'Easy 7-Day Replacement',
-    desc: 'Hassle-free size exchanges and returns within 7 days of delivery. Customer support assists with quick doorstep pickup.',
+    title: '7-Day Return Policy (No Online Exchange)',
+    desc: 'Returns accepted within 7 days of delivery for unworn items with tags. Online orders have no exchange; returns only. In-store exchanges available in Gandhi Bazaar.',
   },
   {
     id: 'security',
@@ -178,14 +178,14 @@ export default function TermsAndConditionsBox({
               </section>
 
               <section>
-                <h3 className="font-semibold text-amber-400 text-sm mb-1">4. Returns & Size Exchanges</h3>
-                <p>We accept size exchange requests within 7 days of delivery for unworn items with original tags intact. Returns for refund are processed according to our standard return guidelines.</p>
+                <h3 className="font-semibold text-amber-400 text-sm mb-1">4. Returns &amp; No Online Exchange</h3>
+                <p>Online orders: NO EXCHANGE on any product purchased online. Returns accepted within 7 days of delivery for unworn items with original tags and uncut unboxing video for defects. In-store exchange available exclusively at our Gandhi Bazaar, Bengaluru boutique.</p>
               </section>
             </div>
 
             <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
               <Link
-                href="/policies/terms-and-conditions"
+                href="/terms-and-conditions"
                 target="_blank"
                 className="text-xs text-amber-400 underline hover:text-white"
               >

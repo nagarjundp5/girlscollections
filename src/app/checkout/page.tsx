@@ -13,6 +13,8 @@ import TermsAndConditionsBox from '@/components/TermsAndConditionsBox';
 import { ButterflyMotif } from '@/components/ui/Motifs';
 import { useRouter } from 'next/navigation';
 import { useLocationAutofill } from '@/hooks/useLocationAutofill';
+import { siteConfig } from '@/lib/siteConfig';
+import { getSizeLabel } from '@/data/masterSizes';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -63,7 +65,7 @@ export default function CheckoutPage() {
     freeShippingThreshold: 199900,
     defaultShippingCharge: 0,
     codFee: 0,
-    whatsappNumber: '+917483848505',
+    whatsappNumber: `+91${siteConfig.whatsappNumber}`,
     borzoCutoffStart: '11:00',
     borzoCutoffEnd: '16:00',
     blrPincodeRanges: '560001-560300',
@@ -633,9 +635,9 @@ export default function CheckoutPage() {
       } else {
         syncDraftCheckout(2, true, true);
         addToast('Order placed. Redirecting to WhatsApp to complete details...', 'success');
-        const itemsListText = items.map((i) => `• ${i.name} (Size: ${i.size}) x ${i.quantity}`).join('%0A');
-        const messageText = `Hello The Girls Collections! I'd like to confirm my order.%0A%0A*Order Number:* ${orderData.orderNumber}%0A*Customer:* ${formData.name}%0A*Phone:* ${formData.phone}%0A*Address:* ${formData.line1 || 'Store Pickup'}, ${formData.city || 'Bengaluru'} - ${formData.pincode || '560064'}%0A%0A*Items:*%0A${itemsListText}%0A%0A*Total Amount:* ₹${(breakdown.total / 100).toFixed(2)}`;
-        const whatsappUrl = `https://wa.me/${storeConfig.whatsappNumber.replace('+', '')}?text=${messageText}`;
+        const itemsListText = items.map((i) => `• ${i.name} (Size: ${getSizeLabel(i.size)}) x ${i.quantity}`).join('%0A');
+        const messageText = `Hello The Girls Collections! I'd like to confirm my order.%0A%0A*Order Number:* ${orderData.orderNumber}%0A*Customer:* ${formData.name}%0A*Phone:* ${formData.phone}%0A*Address:* ${formData.line1 || 'Store Pickup'}, ${formData.city || 'Bengaluru'} - ${formData.pincode || '560004'}%0A%0A*Items:*%0A${itemsListText}%0A%0A*Total Amount:* ₹${(breakdown.total / 100).toFixed(2)}`;
+        const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${messageText}`;
 
         window.open(whatsappUrl, '_blank');
         clearCart();
@@ -1064,9 +1066,9 @@ export default function CheckoutPage() {
               ) : (
                 <section className="bg-white border border-zariGold/30 rounded-2xl p-6 shadow-sm space-y-3">
                   <h2 className="text-base font-serif font-bold text-navy border-b border-zariGold/20 pb-2">Store Collection Details</h2>
-                  <p className="text-xs text-navy font-bold">The Girls Collections Boutique Store</p>
+                  <p className="text-xs text-navy font-bold">{siteConfig.legalName} Boutique Store</p>
                   <p className="text-xs text-charcoal-muted leading-relaxed">
-                    1st Floor, Maruthi Nagar, Yelahanka, Bengaluru, Karnataka - 560064
+                    {siteConfig.address}
                   </p>
                 </section>
               )}
@@ -1081,13 +1083,17 @@ export default function CheckoutPage() {
                   className="mt-0.5 h-4.5 w-4.5 rounded border-zariGold/40 text-zariGold focus:ring-zariGold accent-zariGold cursor-pointer"
                 />
                 <label htmlFor="main-checkout-terms" className="text-xs text-navy leading-relaxed cursor-pointer select-none">
-                  I agree to The Girls Collections{' '}
-                  <Link href="/policies/terms-and-conditions" target="_blank" className="font-bold underline text-zariGold">
+                  By placing the order you agree to The Girls Collections{' '}
+                  <Link href="/terms-and-conditions" target="_blank" className="font-bold underline text-zariGold">
                     Terms &amp; Conditions
-                  </Link>{' '}
-                  &amp;{' '}
-                  <Link href="/policies/privacy-policy" target="_blank" className="font-bold underline text-zariGold">
+                  </Link>
+                  ,{' '}
+                  <Link href="/privacy-policy" target="_blank" className="font-bold underline text-zariGold">
                     Privacy Policy
+                  </Link>
+                  , and{' '}
+                  <Link href="/returns-and-exchange" target="_blank" className="font-bold underline text-zariGold">
+                    Returns Policy
                   </Link>.
                 </label>
               </div>
@@ -1242,7 +1248,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-serif font-bold text-navy truncate">{item.name}</h4>
-                      <p className="text-[11px] text-charcoal-muted mt-0.5">Size: <span className="font-bold text-navy">{item.size}</span></p>
+                      <p className="text-[11px] text-charcoal-muted mt-0.5">Size: <span className="font-bold text-navy">{getSizeLabel(item.size)}</span></p>
                       <p className="text-xs font-sans font-bold text-zariGold mt-1">
                         ₹{((item.price * item.quantity) / 100).toLocaleString('en-IN')}
                       </p>

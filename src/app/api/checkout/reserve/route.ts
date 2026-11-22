@@ -10,6 +10,7 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { inArray } from 'drizzle-orm';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
+import { rateLimitCheckoutFlow } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,18 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(request: Request) {
   try {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('x-real-ip') ||
+      '127.0.0.1';
+    const limitResult = await rateLimitCheckoutFlow(ip);
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many reservation requests. Please wait.' },
+        { status: 429, headers: { 'Retry-After': String(limitResult.reset || 60) } }
+      );
+    }
+
     const body = await request.json();
     const { action = 'create', userId = 'guest_user', items, holdId } = body;
 

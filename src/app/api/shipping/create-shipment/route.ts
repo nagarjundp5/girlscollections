@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       length: 25,  // standard packet length in cm
       width: 20,   // standard width in cm
       height: 5,   // standard height in cm
-      pickup_address: '1st Floor, Kogilu Main Rd, above Sri Venkateshwar Vaibhava Veg Hotel, K B Sandra, Maruthi Nagar, Yelahanka, Bengaluru, Karnataka 560064',
+      pickup_address: 'North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004',
       delivery_address: {
         name: order.customer_name,
         phone: order.customer_phone,
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
           customer_phone: updatedOrder.customer_phone,
           tracking_number: awb,
           courier_partner: courierName,
-          tracking_url: `https://www.drftnclothing.in/track?orderNumber=${updatedOrder.order_number}&phone=${updatedOrder.customer_phone}`
+          tracking_url: `https://www.thegirlscollections.com/track?orderNumber=${updatedOrder.order_number}&phone=${updatedOrder.customer_phone}`
         })
       }).catch(err => console.error('Make.com shipping notification failed:', err));
     }

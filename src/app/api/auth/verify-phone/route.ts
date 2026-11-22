@@ -117,6 +117,10 @@ export async function POST(request: Request) {
         dbUser.phone_verified = true;
       }
 
+      // Invalidate Redis user session cache for /api/auth/me
+      const { invalidateUserCache } = await import('@/lib/user-cache');
+      await invalidateUserCache(dbUser.id);
+
       // ── Returning user ── set session cookie and return immediately
       const token = await signToken({ userId: dbUser.id });
       cookies().set('tgc_session', token, {

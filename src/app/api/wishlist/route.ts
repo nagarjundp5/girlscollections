@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { dbService } from '@/lib/db';
 import { verifyToken } from '@/lib/jwt';
+import { rateLimitCheckoutFlow } from '@/lib/rateLimit';
 
 async function resolveAuthenticatedUserId(req: NextRequest): Promise<string | null> {
   // 1. Check custom session token in cookies (`tgc_session`)
@@ -28,6 +29,11 @@ async function resolveAuthenticatedUserId(req: NextRequest): Promise<string | nu
 
 export async function GET(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
+    const limitRes = await rateLimitCheckoutFlow(ip);
+    if (!limitRes.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(limitRes.reset) } });
+    }
     const userId = await resolveAuthenticatedUserId(req);
 
     if (!userId) {
@@ -55,6 +61,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
+    const limitRes = await rateLimitCheckoutFlow(ip);
+    if (!limitRes.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(limitRes.reset) } });
+    }
     const userId = await resolveAuthenticatedUserId(req);
 
     if (!userId) {

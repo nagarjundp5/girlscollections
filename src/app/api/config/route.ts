@@ -39,7 +39,7 @@ export async function GET() {
       freeShippingThreshold: 0, // Free Shipping Sale (₹0)
       defaultShippingCharge: 0, // Free Shipping Sale (₹0)
       codFee: 0,                // Free Shipping Sale (₹0)
-      whatsappNumber: '+917483848505',
+      whatsappNumber: '+919844371705',
       blrPincodeRanges,
       borzoSurcharge,
       borzoFreeThreshold,

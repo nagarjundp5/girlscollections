@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Search, X, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useCartStore } from '@/lib/cartStore';
+import { siteConfig } from '@/lib/siteConfig';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -13,6 +14,7 @@ const NAV_LINKS = [
   { href: '/wishlist', label: 'Wishlist' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: '/terms-and-conditions', label: 'Terms & Conditions' },
 ];
 
 const InstagramIcon = ({ className }: { className?: string }) => (
@@ -529,7 +531,7 @@ export default function MobileNavbar() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.2 }}
-                  href="https://wa.me/917483848505?text=Hey%20The%20Girls%20Collections!%20I'm%20interested%20in%20your%20ethnic%20collection."
+                  href={`https://wa.me/${siteConfig.whatsappNumber}?text=Hey%20The%20Girls%20Collections!%20I'm%20interested%20in%20your%20ethnic%20collection.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-200 pointer-events-auto"

@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { rateLimit } from '@/lib/rateLimit';
+import { rateLimitAuthOtp } from '@/lib/rateLimit';
 import { signToken } from '@/lib/jwt';
 
 function formatToE164(countryCode: string, phone: string): string {
@@ -29,7 +29,7 @@ function formatToE164(countryCode: string, phone: string): string {
 export async function POST(req: Request) {
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    const rateCheck = await rateLimit(`auth:phone-email:ip:${ip}`, 10, 60000);
+    const rateCheck = await rateLimitAuthOtp(ip);
     if (!rateCheck.success) {
       return NextResponse.json(
         { error: `Too many attempts. Please retry in ${rateCheck.reset} seconds.` },
@@ -81,6 +81,16 @@ export async function POST(req: Request) {
     }
 
     const e164Phone = formatToE164(rawCc, rawPhone);
+
+    // Primary rate limit: 5 attempts per 10 min per phone number
+    const { rateLimitAuthOtpByPhone } = await import('@/lib/rateLimit');
+    const phoneRateCheck = await rateLimitAuthOtpByPhone(e164Phone);
+    if (!phoneRateCheck.success) {
+      return NextResponse.json(
+        { error: `Too many attempts for this phone number. Please retry in ${phoneRateCheck.reset} seconds.` },
+        { status: 429 }
+      );
+    }
 
     // Look up or create Neon user directly
     const [existingNeonUser] = await db
@@ -134,6 +144,10 @@ export async function POST(req: Request) {
       maxAge: 30 * 24 * 60 * 60,
       path: '/',
     });
+
+    // Invalidate Redis user session cache for /api/auth/me
+    const { invalidateUserCache } = await import('@/lib/user-cache');
+    await invalidateUserCache(userId);
 
     return NextResponse.json({
       success: true,

@@ -12,8 +12,9 @@ import { ProductGrid } from './ProductGrid';
 import { DraftFilters, EMPTY_DRAFT_FILTERS } from './FilterDrawerPortal';
 import { SORT_OPTIONS } from './SortSheetModal';
 import { PlpCacheValue } from '@/lib/plp-cache';
+import { toShopProduct, SlimCatalogueProduct } from '@/lib/catalogue';
 
-// Dynamic import for drawer & modal only when opened (Part 4 Speed requirement)
+// Dynamic import for drawer & modal only when opened
 const FilterDrawerPortal = dynamic(
   () => import('./FilterDrawerPortal').then((m) => m.FilterDrawerPortal),
   { ssr: false }
@@ -27,17 +28,27 @@ const SortSheetModal = dynamic(
 interface PLPPageContentProps {
   initialCategory?: string;
   initialTarget?: string;
+  initialSort?: string;
   initialOccasion?: string;
   initialQuery?: string;
+  initialProducts?: Product[];
+  initialNextCursor?: string | null;
+  initialHasMore?: boolean;
   initialData?: PlpCacheValue;
+  allProducts?: Product[];
 }
 
 export const PLPPageContent: React.FC<PLPPageContentProps> = ({
   initialCategory,
   initialTarget,
+  initialSort,
   initialOccasion,
   initialQuery,
+  initialProducts,
+  initialNextCursor,
+  initialHasMore,
   initialData,
+  allProducts,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -52,21 +63,22 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [sortModalOpen, setSortModalOpen] = useState(false);
 
-  // Products state (seeded from server-rendered initialData if available)
-  const [products, setProducts] = useState<Product[]>(initialData?.products || []);
-  const [page, setPage] = useState(initialData?.page || 1);
-  const [totalCount, setTotalCount] = useState(initialData?.total || 0);
-  const [hasMore, setHasMore] = useState(initialData?.hasMore || false);
-  const [isLoading, setIsLoading] = useState(!initialData);
-  const [facetCounts, setFacetCounts] = useState<{
-    categories?: Record<string, number>;
-    sizes?: Record<string, number>;
-    colours?: Record<string, number>;
-    fabrics?: Record<string, number>;
-    occasions?: Record<string, number>;
-  }>(initialData?.facets || {});
+  // Products and cursor-based pagination state
+  const [products, setProducts] = useState<Product[]>(
+    initialProducts || allProducts || initialData?.products || []
+  );
+  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor || null);
+  const [hasMore, setHasMore] = useState<boolean>(initialHasMore ?? false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const hasMountedRef = useRef(false);
+  // Sync state on server re-render (e.g. filter or sort navigation)
+  useEffect(() => {
+    if (initialProducts) {
+      setProducts(initialProducts);
+      setNextCursor(initialNextCursor || null);
+      setHasMore(initialHasMore ?? false);
+    }
+  }, [initialProducts, initialNextCursor, initialHasMore]);
 
   // Parse filters from URL
   const currentFilters: DraftFilters = useMemo(() => {
@@ -132,94 +144,30 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
     return '';
   }, [currentFilters.categories, initialCategory]);
 
-  // Fetch products from server API
-  const fetchProducts = useCallback(
-    async (pageToFetch: number, append: boolean = false) => {
-      setIsLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (currentFilters.target.length > 0) params.set('target', currentFilters.target.join(','));
-        if (currentFilters.categories.length > 0) params.set('categories', currentFilters.categories.join(','));
-        if (currentFilters.sizes.length > 0) params.set('sizes', currentFilters.sizes.join(','));
-        if (currentFilters.colours.length > 0) params.set('colours', currentFilters.colours.join(','));
-        if (currentFilters.fabrics.length > 0) params.set('fabrics', currentFilters.fabrics.join(','));
-        if (currentFilters.occasions.length > 0) params.set('occasions', currentFilters.occasions.join(','));
-        if (currentFilters.minPrice > 500) params.set('minPrice', String(currentFilters.minPrice));
-        if (currentFilters.maxPrice < 35000) params.set('maxPrice', String(currentFilters.maxPrice));
-        if (currentFilters.discount > 0) params.set('discount', String(currentFilters.discount));
-        if (currentFilters.inStockOnly) params.set('inStock', 'true');
-        if (currentSort) params.set('sort', currentSort);
+  const totalCount = products.length;
+  const computedFacets = initialData?.facets || {};
 
-        const limit = typeof window !== 'undefined' && window.innerWidth >= 768 ? 24 : 20;
-        params.set('page', String(pageToFetch));
-        params.set('limit', String(limit));
-
-        const res = await fetch(`/api/products/list?${params.toString()}`);
-        if (!res.ok) throw new Error('Failed to fetch catalogue');
-
-        const data = await res.json();
-        const incomingProducts: Product[] = data.products || [];
-
-        setProducts((prev) => (append ? [...prev, ...incomingProducts] : incomingProducts));
-        setTotalCount(data.total || incomingProducts.length);
-        setHasMore(data.hasMore || false);
-        setPage(pageToFetch);
-
-        if (data.facetCounts) {
-          setFacetCounts(data.facetCounts);
-        }
-      } catch (err) {
-        console.error('[PLP] Fetch error:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [currentFilters, currentSort]
-  );
-
-  // Restore scroll position or use server-rendered data
+  // Restore scroll position
   useEffect(() => {
     const savedScroll = sessionStorage.getItem('tgc_plp_scroll');
-    const savedPage = sessionStorage.getItem('tgc_plp_page');
-
-    if (savedScroll && savedPage) {
-      const targetPage = Number(savedPage);
-      fetchProducts(targetPage, false).then(() => {
-        setTimeout(() => {
-          window.scrollTo({ top: Number(savedScroll), behavior: 'smooth' });
-          sessionStorage.removeItem('tgc_plp_scroll');
-          sessionStorage.removeItem('tgc_plp_page');
-        }, 150);
-      });
-      hasMountedRef.current = true;
-      return;
+    if (savedScroll) {
+      setTimeout(() => {
+        window.scrollTo({ top: Number(savedScroll), behavior: 'smooth' });
+        sessionStorage.removeItem('tgc_plp_scroll');
+      }, 150);
     }
-
-    const currentKey = JSON.stringify(currentFilters) + ':' + currentSort;
-
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      // If server already rendered initialData, do not duplicate the fetch on initial mount
-      if (initialData) {
-        return;
-      }
-    }
-
-    // Only fetch on subsequent user-initiated filter or sort changes
-    fetchProducts(1, false);
-  }, [fetchProducts, initialData, currentFilters, currentSort]);
+  }, []);
 
   // Save scroll before navigating to PDP
   useEffect(() => {
     const handleSaveScroll = () => {
       sessionStorage.setItem('tgc_plp_scroll', String(window.scrollY));
-      sessionStorage.setItem('tgc_plp_page', String(page));
     };
     window.addEventListener('beforeunload', handleSaveScroll);
     return () => window.removeEventListener('beforeunload', handleSaveScroll);
-  }, [page]);
+  }, []);
 
-  // Apply filters by writing to URL once (inside startTransition)
+  // Apply filters by writing to URL once (SQL filters server-side)
   const handleApplyFilters = (newFilters: DraftFilters) => {
     startTransition(() => {
       const params = new URLSearchParams();
@@ -267,7 +215,7 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
     handleApplyFilters(EMPTY_DRAFT_FILTERS);
   };
 
-  // Select Sort
+  // Select Sort (SQL sorts server-side)
   const handleSelectSort = (sortVal: string) => {
     startTransition(() => {
       const params = new URLSearchParams(searchParams.toString());
@@ -276,10 +224,39 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
     });
   };
 
-  // Load more / Infinite scroll trigger
-  const handleLoadMore = () => {
-    if (isLoading || !hasMore) return;
-    fetchProducts(page + 1, true);
+  // Load more trigger: fetches the next 12 products from /api/products using keyset cursor
+  const handleLoadMore = async () => {
+    if (isLoadingMore || !hasMore || !nextCursor) return;
+    setIsLoadingMore(true);
+    try {
+      const params = new URLSearchParams();
+      params.set('cursor', nextCursor);
+      params.set('limit', '12');
+
+      const catParam = initialCategory || currentFilters.categories[0] || searchParams.get('category') || '';
+      if (catParam) params.set('category', catParam);
+
+      const targetParam = initialTarget || currentFilters.target[0] || searchParams.get('target') || '';
+      if (targetParam) params.set('target', targetParam);
+
+      if (currentSort && currentSort !== 'featured') {
+        params.set('sort', currentSort);
+      }
+
+      const res = await fetch(`/api/products?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.products)) {
+          setProducts((prev) => [...prev, ...data.products]);
+          setNextCursor(data.nextCursor || null);
+          setHasMore(Boolean(data.hasMore));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load more products:', err);
+    } finally {
+      setIsLoadingMore(false);
+    }
   };
 
   // Active filter count for toolbar badge
@@ -301,7 +278,6 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
 
   return (
     <div className="w-full bg-[#FAF8F5] text-[#1C1417] min-h-screen select-none font-sans">
-      
       {/* Small Breadcrumb (Desktop Only) */}
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-1 hidden md:flex items-center space-x-1.5 text-xs text-neutral-500 font-sans">
         <Link href="/" className="hover:text-black transition-colors">
@@ -332,9 +308,9 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
         </div>
       )}
 
-      {/* ONE Sticky Toolbar (Height 52px, 1px bottom border, z-index below header) */}
+      {/* ONE Sticky Toolbar */}
       <ShopToolbar
-        productCount={totalCount}
+        productCount={products.length}
         activeFilterCount={activeFilterCount}
         onOpenFilter={() => setFilterDrawerOpen(true)}
         onOpenSort={() => setSortModalOpen(true)}
@@ -356,7 +332,7 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
       <main className="w-full">
         <ProductGrid
           products={products}
-          isLoading={isLoading || isPending}
+          isLoading={isLoadingMore || isPending}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
           mobileColumns={mobileColumns}
@@ -365,19 +341,19 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
         />
       </main>
 
-      {/* Lazy Filter Drawer Portal */}
+      {/* Filter Drawer Portal */}
       {filterDrawerOpen && (
         <FilterDrawerPortal
           isOpen={filterDrawerOpen}
           onClose={() => setFilterDrawerOpen(false)}
           appliedFilters={currentFilters}
           onApply={handleApplyFilters}
-          facetCounts={facetCounts}
+          facetCounts={computedFacets}
           totalCount={totalCount}
         />
       )}
 
-      {/* Lazy Sort Modal Portal */}
+      {/* Sort Modal Portal */}
       {sortModalOpen && (
         <SortSheetModal
           isOpen={sortModalOpen}
@@ -386,7 +362,6 @@ export const PLPPageContent: React.FC<PLPPageContentProps> = ({
           onSelectSort={handleSelectSort}
         />
       )}
-
     </div>
   );
 };

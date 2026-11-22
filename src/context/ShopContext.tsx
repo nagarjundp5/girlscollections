@@ -21,7 +21,7 @@ interface ShopContextType {
   setIsSearchOpen: (open: boolean) => void;
   quickViewProduct: Product | null;
   setQuickViewProduct: (product: Product | null) => void;
-  addToCart: (product: Product, size: string, color?: string, quantity?: number) => void;
+  addToCart: (product: Product, size: string, color?: string, quantity?: number) => void | Promise<void>;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, newQty: number) => void;
   toggleWishlist: (productId: string) => void;
@@ -99,9 +99,23 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [wishlist]);
 
-  const addToCart = (product: Product, size: string, color?: string, quantity = 1) => {
+  const addToCart = async (product: Product, size: string, color?: string, quantity = 1) => {
     const selectedColor = color || (product.colors?.[0]?.name ?? 'Standard');
     const itemId = `${product.id}-${size}-${selectedColor}`;
+
+    // Live Neon stock check on Add to Bag
+    try {
+      const res = await fetch(`/api/stock/check?productId=${encodeURIComponent(product.id)}&size=${encodeURIComponent(size)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.inStock === false) {
+          alert(`Sorry, "${product.name}" in size ${size} is currently out of stock.`);
+          return;
+        }
+      }
+    } catch (stockErr) {
+      console.warn('[addToCart] Stock check warning:', stockErr);
+    }
 
     setCart((prev) => {
       const existing = prev.find((item) => item.id === itemId);

@@ -43,3 +43,9 @@ backups/
 preview.html
 girls-collections-groups.json
 girls-collections-upload-state.json
+
+# Lighthouse output JSONs — large (~1 MB each), never commit to repo
+local-lh.json
+prod-lh.json
+*.lh.json
+*.dump

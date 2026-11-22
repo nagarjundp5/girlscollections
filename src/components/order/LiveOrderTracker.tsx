@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import Link from 'next/link';
+import { siteConfig } from '@/lib/siteConfig';
 
 export interface LiveOrderTrackerProps {
   order: {
@@ -44,7 +45,7 @@ export interface LiveOrderTrackerProps {
 
 export default function LiveOrderTracker({
   order: initialOrder,
-  supportPhone = '917406164512',
+  supportPhone = siteConfig.whatsappNumber,
 }: LiveOrderTrackerProps) {
   const [order, setOrder] = useState(initialOrder);
   const [copiedOrderNumber, setCopiedOrderNumber] = useState(false);

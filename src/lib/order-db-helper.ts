@@ -294,9 +294,24 @@ export async function confirmAndWriteOrder(checkout: any, razorpayPaymentId: str
           console.error('[confirmAndWriteOrder] Post-commit QStash publish exception (non-fatal):', err)
         );
       }
-
     } catch (publishErr) {
       console.error('[confirmAndWriteOrder] Failed to schedule QStash message post-commit:', publishErr);
+    }
+
+    try {
+      const { bustProductCacheTags } = await import('@/lib/db');
+      await bustProductCacheTags();
+    } catch (bustErr) {
+      console.warn('[confirmAndWriteOrder] bustProductCacheTags warning:', bustErr);
+    }
+
+    if (checkout.user_id) {
+      try {
+        const { invalidateUserCache } = await import('@/lib/user-cache');
+        await invalidateUserCache(checkout.user_id);
+      } catch (userCacheErr) {
+        console.warn('[confirmAndWriteOrder] invalidateUserCache warning:', userCacheErr);
+      }
     }
   }
 

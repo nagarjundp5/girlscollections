@@ -520,9 +520,9 @@ export default function AdminOrderDetail() {
               <div className="text-xs bg-zinc-50 border border-zinc-200 p-4 rounded text-zinc-700 space-y-1.5 leading-relaxed">
                 {order.fulfillment_type === 'pickup' ? (
                   <>
-                    <p className="font-bold text-zinc-900">📍 YELAHANKA STORE PICKUP</p>
-                    <p>DRFTN Store</p>
-                    <p>1st Floor, Kogilu Main Rd, above Sri Venkateshwar Vaibhava Veg Hotel, K B Sandra, Maruthi Nagar, Yelahanka, Bengaluru, KA - 560064</p>
+                    <p className="font-bold text-zinc-900">📍 GANDHI BAZAAR STORE PICKUP</p>
+                    <p>The Girls Collections Store</p>
+                    <p>North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004</p>
                     <p className="font-mono text-zinc-500 mt-2">📞 {order.customer_phone}</p>
                   </>
                 ) : (

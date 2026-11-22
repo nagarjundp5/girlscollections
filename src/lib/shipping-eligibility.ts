@@ -73,7 +73,7 @@ export async function checkDeliveryEligibility(pincode: string): Promise<Eligibi
     try {
       // Retrieve pickup location from settings or fallback to standard store address
       const dbSettings = await db.select().from(schema.settings);
-      let pickupAddr = 'The Girls Collections Store, Yelahanka, Bengaluru - 560064';
+      let pickupAddr = 'North Hanuman Temple, 3, NAT Street, DV Gundappa Rd, Gandhi Bazaar, Basavanagudi, Bengaluru, Karnataka 560004';
       dbSettings.forEach((row: any) => {
         if (row.key === 'borzo_pickup_address') pickupAddr = row.value;
       });
@@ -90,7 +90,7 @@ export async function checkDeliveryEligibility(pincode: string): Promise<Eligibi
           points: [
             {
               address: pickupAddr,
-              contact_person: { phone: '917483848505' },
+              contact_person: { phone: '919844371705' },
             },
             {
               address: `Bengaluru, Karnataka - ${cleanPincode}`,

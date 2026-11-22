@@ -12,6 +12,8 @@ import { resolveCanonicalCategorySlug } from '@/lib/categoryHref';
 
 interface CategoryProductRowsProps {
   filter?: 'all' | 'women' | 'kids';
+  /** Pre-fetched products from the server snapshot — avoids client-side /api/products fetch */
+  products?: Product[];
 }
 
 interface CategoryRowData {
@@ -292,61 +294,20 @@ const CategoryCarouselRow: React.FC<{
   );
 };
 
-export const CategoryProductRows: React.FC<CategoryProductRowsProps> = ({ filter = 'all' }) => {
+export const CategoryProductRows: React.FC<CategoryProductRowsProps> = ({ filter = 'all', products = [] }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>(products);
 
-  // IntersectionObserver: Don't load row data until near viewport (350px rootMargin)
+  // Keep allProducts in sync if parent passes updated products (e.g. hot-reload)
   useEffect(() => {
-    const node = containerRef.current;
-    if (!node) return;
-
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setInView(true);
-            observer.disconnect();
-          }
-        },
-        { rootMargin: '350px' }
+    if (products.length > 0) {
+      setAllProducts(
+        [...products].sort(
+          (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+        )
       );
-      observer.observe(node);
-      return () => observer.disconnect();
-    } else {
-      setInView(true);
     }
-  }, []);
-
-  // Fetch products in ONE query when in view
-  useEffect(() => {
-    if (!inView) return;
-
-    let cancelled = false;
-
-    fetch('/api/products')
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch');
-        return res.json();
-      })
-      .then((data) => {
-        if (!cancelled && data.products && Array.isArray(data.products)) {
-          // Sort by newest
-          const sorted = [...data.products].sort(
-            (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
-          );
-          setAllProducts(sorted);
-        }
-      })
-      .catch((err) => {
-        console.warn('[CategoryProductRows] Error fetching products:', err);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [inView]);
+  }, [products]);
 
   // Helper to normalize and match category slugs
   const normalizeSlug = (s?: string | null): string =>

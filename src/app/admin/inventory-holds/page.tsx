@@ -45,7 +45,10 @@ export default function AdminInventoryHoldsPage() {
 
   useEffect(() => {
     fetchHolds();
-    const interval = setInterval(fetchHolds, 10000); // refresh every 10s
+    // Poll every 30s, skip when the tab is hidden to avoid unnecessary egress
+    const interval = setInterval(() => {
+      if (document.visibilityState !== 'hidden') fetchHolds();
+    }, 30000);
     return () => clearInterval(interval);
   }, [fetchHolds]);
 

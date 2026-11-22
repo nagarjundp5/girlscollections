@@ -163,11 +163,11 @@ export default async function ProductDetailPage({ params }: PDPPageProps) {
 
   let relatedProducts: ShopProduct[] = [];
   try {
-    const all = await dbService.getAllProducts();
-    relatedProducts = (all || [])
+    // Use parameterized cached query (card fields only, same category, LIMIT 4)
+    const relatedRaw = await dbService.getRelatedProducts(product.category, product.id, 4);
+    relatedProducts = (relatedRaw || [])
       .map(formatDbProductToShopProduct)
-      .filter((p) => p.id !== product.id && p.target === product.target)
-      .slice(0, 4);
+      .filter((p) => p.id !== product.id);
   } catch {}
 
   return (

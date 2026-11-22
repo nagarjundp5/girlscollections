@@ -25,21 +25,21 @@ export interface MasterSizeDefinition {
  * Covers Standard Retail (XS-XXL), Extended (3XL), and Plus Size (4XL-6XL), plus Free Size.
  */
 export const WOMEN_MASTER_SIZES: MasterSizeDefinition[] = [
-  { division: 'women', code: 'XS', label: 'XS (Size 32 — Bust 32")', numeric_size: '32', sort_order: 1, measurements: { chest_in: '32', waist_in: '26', hip_in: '34', length_in: '44', shoulder_in: '13.5', chest_cm: '81', waist_cm: '66', hip_cm: '86', length_cm: '112' } },
-  { division: 'women', code: 'S', label: 'S (Size 34 — Bust 34")', numeric_size: '34', sort_order: 2, measurements: { chest_in: '34', waist_in: '28', hip_in: '36', length_in: '45', shoulder_in: '14.0', chest_cm: '86', waist_cm: '71', hip_cm: '91', length_cm: '114' } },
-  { division: 'women', code: 'M', label: 'M (Size 36 — Bust 36")', numeric_size: '36', sort_order: 3, measurements: { chest_in: '36', waist_in: '30', hip_in: '38', length_in: '45', shoulder_in: '14.5', chest_cm: '91', waist_cm: '76', hip_cm: '97', length_cm: '114' } },
-  { division: 'women', code: 'L', label: 'L (Size 38 — Bust 38")', numeric_size: '38', sort_order: 4, measurements: { chest_in: '38', waist_in: '32', hip_in: '40', length_in: '46', shoulder_in: '15.0', chest_cm: '96', waist_cm: '81', hip_cm: '102', length_cm: '117' } },
-  { division: 'women', code: 'XL', label: 'XL (Size 40 — Bust 40")', numeric_size: '40', sort_order: 5, measurements: { chest_in: '40', waist_in: '34', hip_in: '42', length_in: '46', shoulder_in: '15.5', chest_cm: '101', waist_cm: '86', hip_cm: '107', length_cm: '117' } },
-  { division: 'women', code: 'XXL', label: 'XXL (Size 42 — Bust 42")', numeric_size: '42', sort_order: 6, measurements: { chest_in: '42', waist_in: '36', hip_in: '44', length_in: '46', shoulder_in: '16.0', chest_cm: '107', waist_cm: '91', hip_cm: '112', length_cm: '117' } },
-  { division: 'women', code: '3XL', label: '3XL / XXXL (Size 44 — Bust 44")', numeric_size: '44', sort_order: 7, measurements: { chest_in: '44', waist_in: '38', hip_in: '46', length_in: '46', shoulder_in: '16.5', chest_cm: '112', waist_cm: '97', hip_cm: '117', length_cm: '117' } },
+  { division: 'women', code: 'XS', label: 'XS (Size 32)', numeric_size: '32', sort_order: 1, measurements: { chest_in: '32', waist_in: '26', hip_in: '34', length_in: '44', shoulder_in: '13.5', chest_cm: '81', waist_cm: '66', hip_cm: '86', length_cm: '112' } },
+  { division: 'women', code: 'S', label: 'S (Size 34)', numeric_size: '34', sort_order: 2, measurements: { chest_in: '34', waist_in: '28', hip_in: '36', length_in: '45', shoulder_in: '14.0', chest_cm: '86', waist_cm: '71', hip_cm: '91', length_cm: '114' } },
+  { division: 'women', code: 'M', label: 'M (Size 36)', numeric_size: '36', sort_order: 3, measurements: { chest_in: '36', waist_in: '30', hip_in: '38', length_in: '45', shoulder_in: '14.5', chest_cm: '91', waist_cm: '76', hip_cm: '97', length_cm: '114' } },
+  { division: 'women', code: 'L', label: 'L (Size 38)', numeric_size: '38', sort_order: 4, measurements: { chest_in: '38', waist_in: '32', hip_in: '40', length_in: '46', shoulder_in: '15.0', chest_cm: '96', waist_cm: '81', hip_cm: '102', length_cm: '117' } },
+  { division: 'women', code: 'XL', label: 'XL (Size 40)', numeric_size: '40', sort_order: 5, measurements: { chest_in: '40', waist_in: '34', hip_in: '42', length_in: '46', shoulder_in: '15.5', chest_cm: '101', waist_cm: '86', hip_cm: '107', length_cm: '117' } },
+  { division: 'women', code: 'XXL', label: 'XXL (Size 42)', numeric_size: '42', sort_order: 6, measurements: { chest_in: '42', waist_in: '36', hip_in: '44', length_in: '46', shoulder_in: '16.0', chest_cm: '107', waist_cm: '91', hip_cm: '112', length_cm: '117' } },
+  { division: 'women', code: '3XL', label: '3XL (Size 44)', numeric_size: '44', sort_order: 7, measurements: { chest_in: '44', waist_in: '38', hip_in: '46', length_in: '46', shoulder_in: '16.5', chest_cm: '112', waist_cm: '97', hip_cm: '117', length_cm: '117' } },
   
   // Plus Size Additions
-  { division: 'women', code: '4XL', label: '4XL (Size 46 — Bust 46" Plus)', numeric_size: '46', sort_order: 8, measurements: { chest_in: '46', waist_in: '40', hip_in: '48', length_in: '46', shoulder_in: '17.0', chest_cm: '117', waist_cm: '102', hip_cm: '122', length_cm: '117' } },
-  { division: 'women', code: '5XL', label: '5XL (Size 48 — Bust 48" Plus)', numeric_size: '48', sort_order: 9, measurements: { chest_in: '48', waist_in: '42', hip_in: '50', length_in: '46', shoulder_in: '17.5', chest_cm: '122', waist_cm: '107', hip_cm: '127', length_cm: '117' } },
-  { division: 'women', code: '6XL', label: '6XL (Size 50 — Bust 50" Plus)', numeric_size: '50', sort_order: 10, measurements: { chest_in: '50', waist_in: '44', hip_in: '52', length_in: '46', shoulder_in: '18.0', chest_cm: '127', waist_cm: '112', hip_cm: '132', length_cm: '117' } },
+  { division: 'women', code: '4XL', label: '4XL (Size 46)', numeric_size: '46', sort_order: 8, measurements: { chest_in: '46', waist_in: '40', hip_in: '48', length_in: '46', shoulder_in: '17.0', chest_cm: '117', waist_cm: '102', hip_cm: '122', length_cm: '117' } },
+  { division: 'women', code: '5XL', label: '5XL (Size 48)', numeric_size: '48', sort_order: 9, measurements: { chest_in: '48', waist_in: '42', hip_in: '50', length_in: '46', shoulder_in: '17.5', chest_cm: '122', waist_cm: '107', hip_cm: '127', length_cm: '117' } },
+  { division: 'women', code: '6XL', label: '6XL (Size 50)', numeric_size: '50', sort_order: 10, measurements: { chest_in: '50', waist_in: '44', hip_in: '52', length_in: '46', shoulder_in: '18.0', chest_cm: '127', waist_cm: '112', hip_cm: '132', length_cm: '117' } },
   
   // Free Size / Semi-stitched
-  { division: 'women', code: 'FREE SIZE', label: 'Free Size (Semi-Stitched / Adjustable 32-44")', numeric_size: 'FS', sort_order: 11, measurements: { chest_in: '32-44', waist_in: '26-40', hip_in: '34-46', length_in: '46', shoulder_in: '15.0' } },
+  { division: 'women', code: 'FREE SIZE', label: 'Free Size', numeric_size: 'FS', sort_order: 11, measurements: { chest_in: '32-44', waist_in: '26-40', hip_in: '34-46', length_in: '46', shoulder_in: '15.0' } },
 ];
 
 /**
@@ -133,13 +133,25 @@ export function mapLegacyKidsSize(legacyCode: string): string {
 
 export function getSizeLabel(code: string): string {
   if (!code) return '';
-  const kidsMatch = KIDS_MASTER_SIZES.find((s) => s.code === code);
+  // Strip any legacy bust text from incoming string (e.g. "XL (Size 40 — Bust 40\")" -> "XL (Size 40)")
+  const clean = code.replace(/\s*—\s*Bust\s*[^)]*/i, '').trim();
+
+  const kidsMatch = KIDS_MASTER_SIZES.find(
+    (s) => s.code.toLowerCase() === clean.toLowerCase() || s.numeric_size === clean || s.label.toLowerCase() === clean.toLowerCase()
+  );
   if (kidsMatch) return kidsMatch.label;
-  const womenMatch = WOMEN_MASTER_SIZES.find((s) => s.code === code);
+
+  const womenMatch = WOMEN_MASTER_SIZES.find(
+    (s) => s.code.toLowerCase() === clean.toLowerCase() || s.numeric_size === clean || s.label.toLowerCase() === clean.toLowerCase()
+  );
   if (womenMatch) return womenMatch.label;
-  const numMatch = NUMERIC_MASTER_SIZES.find((s) => s.code === code);
+
+  const numMatch = NUMERIC_MASTER_SIZES.find(
+    (s) => s.code.toLowerCase() === clean.toLowerCase() || s.numeric_size === clean
+  );
   if (numMatch) return numMatch.label;
-  return code;
+
+  return clean;
 }
 
 export const ALL_MASTER_SIZES: MasterSizeDefinition[] = [

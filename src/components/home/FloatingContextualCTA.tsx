@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Sparkles, MessageCircle, X } from 'lucide-react';
+import { siteConfig } from '@/lib/siteConfig';
 
 export const FloatingContextualCTA: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -14,7 +15,7 @@ export const FloatingContextualCTA: React.FC = () => {
           <div className="text-left font-sans text-xs">
             <p className="font-semibold text-ivory">Personal Styling Concierge</p>
             <a
-              href="https://wa.me/917483848505?text=Hello!%20I%20am%20browsing%20The%20Girls%20Collections%20and%20need%20styling%20advice."
+              href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Hello! I am browsing The Girls Collections and need styling advice.')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[11px] font-medium text-zariGoldLight hover:underline"
