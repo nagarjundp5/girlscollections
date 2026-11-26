@@ -6,11 +6,11 @@ const { neon } = require('@neondatabase/serverless');
 require('dotenv').config({ path: '.env.local' });
 
 // Configuration
-const BATCH_ID = 'batch-import4-20261105';
+const BATCH_ID = 'batch-import4-20261000';
 const CONCURRENCY = 4;
 const MAX_RETRIES = 3;
 const STATE_FILE = path.join(__dirname, '..', 'import4_upload_state.json');
-const GROUPS_FILE = path.join(__dirname, '..', 'girls_import4_groups.json');
+const GROUPS_FILE = path.join(__dirname, '..', 'girls-collections-groups.json');
 
 // Configure Cloudinary server-side
 cloudinary.config({

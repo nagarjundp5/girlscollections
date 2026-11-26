@@ -6,11 +6,15 @@ const { neon } = require('@neondatabase/serverless');
 require('dotenv').config({ path: '.env.local' });
 
 // Configuration
-const BATCH_ID = 'batch-20261105';
+const BATCH_ID = 'batch-20261126';
 const CONCURRENCY = 4;
 const MAX_RETRIES = 3;
 const STATE_FILE = path.join(__dirname, '..', 'proper_order_upload_state.json');
-const GROUPS_FILE = path.join(__dirname, '..', 'proper_order_groups.json');
+const GROUPS_FILE = path.join(
+  __dirname,
+  '..',
+  'girls-collections-groups.json'
+);
 
 // Configure Cloudinary server-side
 cloudinary.config({
@@ -117,7 +121,9 @@ async function runUploadAndImport() {
         order: img.order,
         role: img.role,
         filename: img.filename,
-        filepath: path.join(__dirname, '..', img.filepath),
+        filepath: path.isAbsolute(img.filepath)
+          ? img.filepath
+          : path.resolve(__dirname, '..', img.filepath),
       });
     }
   }

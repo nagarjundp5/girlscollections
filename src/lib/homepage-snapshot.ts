@@ -159,7 +159,7 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         p.gender,
         p.created_at,
         COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
-        COALESCE(p.stock_quantity, '{}'::jsonb) AS stock_quantity,
+        COALESCE(p.stock, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
@@ -242,7 +242,7 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         p.gender,
         p.created_at,
         COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
-        COALESCE(p.stock_quantity, '{}'::jsonb) AS stock_quantity,
+        COALESCE(p.stock, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
@@ -465,7 +465,7 @@ export const getHomepageSnapshot = unstable_cache(
       };
     }
   },
-  ['homepage-snapshot-v3'],
+  ['homepage-snapshot-v4'],
   { revalidate: 600, tags: ['homepage'] }
 );
 
