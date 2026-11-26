@@ -32,30 +32,34 @@ export const ActiveFilterChips: React.FC<ActiveFilterChipsProps> = ({
   if (chips.length === 0) return null;
 
   return (
-    <div className="w-full bg-white border-b border-[#E8E2D9] px-3 sm:px-6 lg:px-8 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar font-sans select-none">
-      <span className="text-[11px] font-medium tracking-[0.05em] uppercase text-neutral-400 shrink-0">
-        Filtered by:
-      </span>
+    <div className="w-full bg-white border-b border-[#E8E2D9] px-3 sm:px-6 lg:px-8 py-2 flex items-center justify-between font-sans select-none overflow-hidden">
+      <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 min-w-0 pr-3">
+        <span className="text-[11px] font-medium tracking-[0.05em] uppercase text-neutral-400 shrink-0">
+          Filtered by:
+        </span>
 
-      {chips.map((chip, idx) => (
+        {chips.map((chip, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => onRemove(chip.type, chip.val)}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-[#1C1417] text-[12px] font-sans font-medium uppercase tracking-[0.02em] transition-colors cursor-pointer shrink-0 rounded-xs"
+          >
+            <span>{chip.label}</span>
+            <X className="w-3.5 h-3.5 text-neutral-500 hover:text-black" />
+          </button>
+        ))}
+      </div>
+
+      <div className="shrink-0 pl-3 border-l border-neutral-200">
         <button
-          key={idx}
           type="button"
-          onClick={() => onRemove(chip.type, chip.val)}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-[#1C1417] text-[12px] font-sans font-medium uppercase tracking-[0.02em] transition-colors cursor-pointer shrink-0"
+          onClick={onClearAll}
+          className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#B8924A] hover:text-[#1C1417] transition-colors cursor-pointer underline underline-offset-4 whitespace-nowrap"
         >
-          <span>{chip.label}</span>
-          <X className="w-3.5 h-3.5 text-neutral-500 hover:text-black" />
+          Clear All
         </button>
-      ))}
-
-      <button
-        type="button"
-        onClick={onClearAll}
-        className="text-[11px] font-medium uppercase tracking-[0.05em] text-[#B8924A] hover:text-[#1C1417] transition-colors cursor-pointer shrink-0 ml-1 underline underline-offset-4"
-      >
-        Clear All
-      </button>
+      </div>
     </div>
   );
 };

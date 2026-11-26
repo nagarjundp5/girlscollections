@@ -26,10 +26,10 @@ export default function Footer() {
 
           {/* Column 2: About Us */}
           <div className="space-y-3.5">
-            <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
+            <h4 className="text-xs font-sans font-medium uppercase tracking-[0.14em] text-[#1C1417]">
               About Us
             </h4>
-            <ul className="space-y-2.5 text-[#1C1417]/75">
+            <ul className="space-y-2.5 text-[#1C1417]/75 font-normal">
               <li>
                 <Link href="/about" className="hover:text-[#C5A059] transition-colors">
                   Our Story
@@ -49,7 +49,7 @@ export default function Footer() {
 
             {/* Social Line Icons (Facebook, Instagram, Pinterest, YouTube) */}
             <div className="pt-3">
-              <span className="block text-[10px] font-sans font-bold uppercase tracking-widest text-[#1C1417]/50 mb-2">
+              <span className="block text-[10px] font-sans font-medium uppercase tracking-[0.14em] text-[#1C1417]/50 mb-2">
                 Follow Us
               </span>
               <div className="flex items-center space-x-3.5 text-[#1C1417]/80">
@@ -98,10 +98,10 @@ export default function Footer() {
 
           {/* Column 3: Quick Links / Policies */}
           <div className="space-y-3.5">
-            <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
+            <h4 className="text-xs font-sans font-medium uppercase tracking-[0.14em] text-[#1C1417]">
               Customer Care &amp; Policies
             </h4>
-            <ul className="space-y-2.5 text-[#1C1417]/75">
+            <ul className="space-y-2.5 text-[#1C1417]/75 font-normal">
               <li>
                 <Link
                   href="/shipping-and-delivery"
@@ -149,10 +149,10 @@ export default function Footer() {
 
           {/* Column 4: Contact & Flagship Boutique */}
           <div className="space-y-3.5">
-            <h4 className="text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#1C1417]">
+            <h4 className="text-xs font-sans font-medium uppercase tracking-[0.14em] text-[#1C1417]">
               Flagship Boutique
             </h4>
-            <ul className="space-y-2.5 text-[#1C1417]/75">
+            <ul className="space-y-2.5 text-[#1C1417]/75 font-normal">
               <li>
                 <a
                   href={siteConfig.mapsLink}

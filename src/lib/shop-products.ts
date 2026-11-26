@@ -128,14 +128,16 @@ export async function queryShopProducts(params: QueryProductsParams): Promise<Pa
       desc(schema.products.created_at),
       desc(schema.products.id),
     ];
+  } else if (sort === 'newest') {
+    orderByClause = [desc(schema.products.created_at), desc(schema.products.id)];
   } else if (sort === 'discount') {
     orderByClause = [
       sql`(CASE WHEN ${schema.products.compare_price} > ${schema.products.price} THEN (${schema.products.compare_price} - ${schema.products.price})::float / ${schema.products.compare_price} ELSE 0 END) DESC`,
       desc(schema.products.id),
     ];
   } else {
-    // Default newest
-    orderByClause = [desc(schema.products.created_at), desc(schema.products.id)];
+    // Relevance / Featured / Default
+    orderByClause = [desc(schema.products.is_featured), desc(schema.products.created_at), desc(schema.products.id)];
   }
 
   // Query LIMIT + 1 to detect hasMore

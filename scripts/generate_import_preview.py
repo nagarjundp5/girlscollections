@@ -4,7 +4,7 @@ import json
 import urllib.parse
 
 def main():
-    folder = "girls-collections-import"
+    folder = "/Users/nagarjundp/thegirlscollections/thegirlscollections/okay"
     if not os.path.isdir(folder):
         print(f"Error: Folder '{folder}' not found.")
         return
@@ -143,7 +143,15 @@ def main():
             role_label = f"Image {img['order']} (Primary)" if img["role"] == "primary" else f"Image {img['order']}"
             size_kb = round(img["size_bytes"] / 1024, 1)
             # URL encode filename for img src
-            encoded_path = f"girls-collections-import/{urllib.parse.quote(img['filename'])}"
+            relative_path = os.path.relpath(
+                img["filepath"],
+                os.path.dirname(os.path.abspath("preview.html"))
+            )
+
+            encoded_path = urllib.parse.quote(
+                relative_path.replace(os.sep, "/"),
+                safe="/"
+            )
 
             html_lines.append("        <div class='image-card'>")
             html_lines.append("          <div class='image-thumb-wrapper'>")

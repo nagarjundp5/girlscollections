@@ -46,11 +46,11 @@ const ReviewCard: React.FC<{ review: GoogleReview }> = ({ review }) => (
       {/* Top Row: Avatar Initial, Name, Google Badge */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#FCF5F5] border border-[#B8903A]/30 flex items-center justify-center font-serif font-bold text-xs text-[#1A1E3A]">
+          <div className="w-9 h-9 rounded-full bg-[#FCF5F5] border border-[#B8903A]/30 flex items-center justify-center font-sans font-medium text-xs text-[#1A1E3A]">
             {review.initial}
           </div>
           <div>
-            <h4 className="font-serif font-bold text-xs sm:text-sm text-[#1A1E3A] leading-tight">
+            <h4 className="font-sans font-medium text-xs sm:text-sm text-[#1A1E3A] leading-tight">
               {review.authorName}
             </h4>
             <span className="text-[10px] text-gray-500 font-sans block">
@@ -59,7 +59,7 @@ const ReviewCard: React.FC<{ review: GoogleReview }> = ({ review }) => (
           </div>
         </div>
 
-        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-[#EAE5DE] text-[10px] font-medium text-gray-600 shrink-0">
+        <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-[#EAE5DE] text-[10px] font-sans font-normal text-gray-600 tracking-wide shrink-0">
           <GoogleGIcon className="w-3 h-3" />
           <span>Google</span>
         </div>
@@ -69,14 +69,14 @@ const ReviewCard: React.FC<{ review: GoogleReview }> = ({ review }) => (
       <StarRating />
 
       {/* Review Body */}
-      <p className="text-xs sm:text-[13px] font-sans text-[#1C1417]/80 leading-relaxed">
+      <p className="text-xs sm:text-[13px] font-sans font-normal text-[#1C1417]/80 leading-relaxed">
         &ldquo;{review.text}&rdquo;
       </p>
     </div>
 
     {/* Bottom Row: Heart Count */}
     <div className="pt-3 mt-3 border-t border-[#FAF5EE] flex items-center justify-between text-[11px] text-gray-400">
-      <span className="text-[10px] uppercase tracking-wider text-[#B8903A] font-semibold">
+      <span className="text-[10px] font-sans uppercase tracking-[0.14em] text-[#B8903A] font-medium">
         Verified Review
       </span>
       <div className="flex items-center gap-1 text-rose-500/80">
@@ -136,14 +136,14 @@ export const GoogleReviewsSection: React.FC = () => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#EAE5DE] shadow-2xs">
               <GoogleGIcon className="w-3.5 h-3.5" />
-              <span className="text-[11px] font-semibold text-gray-700 tracking-wide">
+              <span className="text-[11px] font-sans font-normal text-gray-700 tracking-wider uppercase">
                 Rated on Google
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-[#1A1E3A] tracking-[0.02em]">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-medium text-[#1A1E3A] uppercase tracking-[0.12em]">
               Loved by Bengaluru
             </h2>
-            <p className="text-xs sm:text-sm text-[#1C1417]/70 font-sans max-w-lg">
+            <p className="text-xs sm:text-sm text-[#1C1417]/70 font-sans font-normal max-w-lg leading-relaxed">
               Authentic experiences shared by our cherished boutique guests and online patrons.
             </p>
           </div>
@@ -210,13 +210,13 @@ export const GoogleReviewsSection: React.FC = () => {
             </div>
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#B8903A]">
+                <span className="text-[10px] font-sans font-medium uppercase tracking-[0.14em] text-[#B8903A]">
                   Flagship Boutique
                 </span>
                 <span className="text-gray-300">•</span>
                 <span className="text-xs text-gray-500 font-sans">Gandhi Bazaar, Bengaluru</span>
               </div>
-              <p className="font-serif font-bold text-sm text-[#1A1E3A]">
+              <p className="font-sans font-medium text-sm text-[#1A1E3A]">
                 {siteConfig.legalName}
               </p>
               <p className="text-xs text-[#1C1417]/75 font-sans leading-relaxed max-w-xl">

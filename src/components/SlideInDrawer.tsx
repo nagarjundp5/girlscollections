@@ -237,31 +237,32 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
             /* SCREEN 1: DIVISIONS & CURATED DISCOVERY */
             <div className="p-5 space-y-6">
               {/* Primary Division Cards */}
-              <div className="space-y-3">
+              <div className="space-y-3.5">
                 {/* WOMEN CARD */}
                 <button
+                  type="button"
                   onClick={() => setCurrentScreen('women')}
-                  className="w-full relative h-36 rounded-lg overflow-hidden group text-left cursor-pointer border border-[#EFE7E2] shadow-xs focus:outline-none touch-manipulation block"
+                  className="w-full relative h-40 sm:h-44 rounded-2xl overflow-hidden group text-left cursor-pointer border border-[#EFE7E2] shadow-sm focus:outline-none touch-manipulation block active:scale-[0.98] transition-all duration-150"
                 >
                   <Image
                     src="/categories/all-kurta-sets.webp"
                     alt="Women Collection"
                     fill
-                    sizes="360px"
-                    className="object-cover object-top brightness-[0.82] group-hover:scale-105 transition-transform duration-500 ease-out"
+                    sizes="(max-width: 640px) 100vw, 360px"
+                    className="object-cover object-[center_20%] brightness-[0.85] group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                  <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="font-serif text-2xl tracking-[0.14em] uppercase font-light text-white leading-tight">
+                        <h2 className="font-sans text-xl sm:text-2xl tracking-[0.16em] uppercase font-normal text-white leading-tight">
                           WOMEN
                         </h2>
-                        <p className="font-sans text-[11px] text-white/90 tracking-wider mt-0.5">
-                          Kurta Sets, Anarkalis & Festive Wear
+                        <p className="font-sans text-[11px] font-light text-white/85 tracking-wider mt-1">
+                          Kurta Sets, Anarkalis &amp; Festive Wear
                         </p>
                       </div>
-                      <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white group-hover:bg-[#B8924A] transition-colors shrink-0 ml-2">
+                      <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white group-hover:bg-[#B8924A] group-hover:scale-105 transition-all shrink-0 ml-2">
                         <ChevronRight className="w-4 h-4 stroke-[2]" />
                       </span>
                     </div>
@@ -270,28 +271,29 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
 
                 {/* KIDS CARD */}
                 <button
+                  type="button"
                   onClick={() => setCurrentScreen('kids')}
-                  className="w-full relative h-36 rounded-lg overflow-hidden group text-left cursor-pointer border border-[#EFE7E2] shadow-xs focus:outline-none touch-manipulation block"
+                  className="w-full relative h-40 sm:h-44 rounded-2xl overflow-hidden group text-left cursor-pointer border border-[#EFE7E2] shadow-sm focus:outline-none touch-manipulation block active:scale-[0.98] transition-all duration-150"
                 >
                   <Image
                     src="/categories/kids-lehenga-blouse-or-pattu-pavadai.webp"
                     alt="Kids Collection"
                     fill
-                    sizes="360px"
-                    className="object-cover object-top brightness-[0.82] group-hover:scale-105 transition-transform duration-500 ease-out"
+                    sizes="(max-width: 640px) 100vw, 360px"
+                    className="object-cover object-[center_20%] brightness-[0.85] group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                  <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="font-serif text-2xl tracking-[0.14em] uppercase font-light text-white leading-tight">
+                        <h2 className="font-sans text-xl sm:text-2xl tracking-[0.16em] uppercase font-normal text-white leading-tight">
                           KIDS
                         </h2>
-                        <p className="font-sans text-[11px] text-white/90 tracking-wider mt-0.5">
-                          Pattu Pavadai, Frocks & Gowns
+                        <p className="font-sans text-[11px] font-light text-white/85 tracking-wider mt-1">
+                          Pattu Pavadai, Frocks &amp; Gowns
                         </p>
                       </div>
-                      <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white group-hover:bg-[#B8924A] transition-colors shrink-0 ml-2">
+                      <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white group-hover:bg-[#B8924A] group-hover:scale-105 transition-all shrink-0 ml-2">
                         <ChevronRight className="w-4 h-4 stroke-[2]" />
                       </span>
                     </div>
@@ -300,82 +302,94 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
               </div>
 
               {/* Curated Quick Links */}
-              <div className="pt-2 border-t border-[#EFE7E2] space-y-1">
-                <span className="block font-sans text-[10px] tracking-[0.18em] uppercase text-[#6B6B7B] mb-2 font-semibold">
+              <div className="pt-3 border-t border-[#EFE7E2] space-y-1">
+                <span className="block font-sans text-[10px] tracking-[0.18em] uppercase text-[#6B6B7B] mb-2 font-medium">
                   QUICK DISCOVERY
                 </span>
                 
                 <Link
                   href="/shop?isNew=true"
                   onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
                 >
-                  <span className="flex items-center gap-2.5 font-medium">
-                    <Sparkles className="w-4 h-4 text-[#B8924A]" />
-                    New Drops
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
+                      <Sparkles className="w-3.5 h-3.5" />
+                    </span>
+                    <span>New Drops</span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
 
                 <Link
                   href="/shop?sort=popular"
                   onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
                 >
-                  <span className="flex items-center gap-2.5 font-medium">
-                    <TrendingUp className="w-4 h-4 text-[#B8924A]" />
-                    Best Sellers
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                    </span>
+                    <span>Best Sellers</span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
 
                 <Link
                   href="/track"
                   onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
                 >
-                  <span className="flex items-center gap-2.5 font-medium">
-                    <Package className="w-4 h-4 text-[#B8924A]" />
-                    Track Order
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
+                      <Package className="w-3.5 h-3.5" />
+                    </span>
+                    <span>Track Order</span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
 
                 <Link
                   href="/terms-and-conditions"
                   onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
                 >
-                  <span className="flex items-center gap-2.5 font-medium">
-                    <FileText className="w-4 h-4 text-[#B8924A]" />
-                    Terms &amp; Conditions
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
+                      <FileText className="w-3.5 h-3.5" />
+                    </span>
+                    <span>Terms &amp; Conditions</span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
 
                 <Link
                   href="/faqs"
                   onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
                 >
-                  <span className="flex items-center gap-2.5 font-medium">
-                    <HelpCircle className="w-4 h-4 text-[#B8924A]" />
-                    Help &amp; FAQs
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
+                      <HelpCircle className="w-3.5 h-3.5" />
+                    </span>
+                    <span>Help &amp; FAQs</span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
 
                 <a
                   href={siteConfig.whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-black/5 transition-colors text-sm font-sans text-[#1C1417]"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
                 >
-                  <span className="flex items-center gap-2.5 font-medium">
-                    <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                    WhatsApp Concierge
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#25D366]/10 flex items-center justify-center text-[#25D366] shrink-0">
+                      <MessageCircle className="w-3.5 h-3.5" />
+                    </span>
+                    <span>WhatsApp Concierge</span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
                 </a>
               </div>
             </div>

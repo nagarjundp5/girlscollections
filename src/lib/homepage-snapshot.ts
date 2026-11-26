@@ -81,6 +81,38 @@ export function normalizeProductGender(
   return 'unknown';
 }
 
+function parseSizes(sizes: any): string[] {
+  if (!sizes) return [];
+  if (Array.isArray(sizes)) {
+    return sizes.map((s) => (typeof s === 'object' && s !== null ? s.size || '' : String(s))).filter(Boolean);
+  }
+  if (typeof sizes === 'string') {
+    try {
+      const parsed = JSON.parse(sizes);
+      if (Array.isArray(parsed)) {
+        return parsed.map((s) => (typeof s === 'object' && s !== null ? s.size || '' : String(s))).filter(Boolean);
+      }
+      return [sizes];
+    } catch {
+      return [sizes];
+    }
+  }
+  return [];
+}
+
+function parseStockQuantity(stock: any): Record<string, number> {
+  if (!stock) return {};
+  if (typeof stock === 'object' && !Array.isArray(stock)) return stock;
+  if (typeof stock === 'string') {
+    try {
+      return JSON.parse(stock);
+    } catch {
+      return {};
+    }
+  }
+  return {};
+}
+
 function mapRowToProduct(r: any): Product {
   const priceRupees = r.price > 100000 ? Math.round(r.price / 100) : r.price;
   const compareRupees = r.compare_price
@@ -100,7 +132,8 @@ function mapRowToProduct(r: any): Product {
     gender: r.gender || normGender,
     target: normGender === 'kids' ? 'kids' : 'women',
     images: r.image ? [r.image] : [],
-    sizes: [],
+    sizes: parseSizes(r.sizes),
+    stock_quantity: parseStockQuantity(r.stock_quantity),
     created_at: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
     is_active: true,
   } as unknown as Product;
@@ -125,6 +158,8 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         p.category,
         p.gender,
         p.created_at,
+        COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
+        COALESCE(p.stock_quantity, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
@@ -182,13 +217,13 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
       FROM base_products
     )
     SELECT
-      id, name, slug, price, compare_price, category, gender, created_at, image, norm_gender,
+      id, name, slug, price, compare_price, category, gender, created_at, image, sizes, stock_quantity, norm_gender,
       'trending' AS section, rn_trend AS rn
     FROM ranked_trending
     WHERE rn_trend <= 12
     UNION ALL
     SELECT
-      id, name, slug, price, compare_price, category, gender, created_at, image, norm_gender,
+      id, name, slug, price, compare_price, category, gender, created_at, image, sizes, stock_quantity, norm_gender,
       'new' AS section, rn_new AS rn
     FROM ranked_new
     WHERE rn_new <= 12;
@@ -206,6 +241,8 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         p.category,
         p.gender,
         p.created_at,
+        COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
+        COALESCE(p.stock_quantity, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
@@ -244,7 +281,7 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         ) AS rn
       FROM base_products
     )
-    SELECT id, name, slug, price, compare_price, category, gender, created_at, image, norm_gender
+    SELECT id, name, slug, price, compare_price, category, gender, created_at, image, sizes, stock_quantity, norm_gender
     FROM ranked_cat
     WHERE rn <= 6;
   `;

@@ -29,12 +29,80 @@ export const ShopToolbar: React.FC<ShopToolbarProps> = ({
     <div
       role="toolbar"
       aria-label="Catalogue options"
-      className="sticky top-0 z-30 h-[52px] bg-white border-b border-[#E8E2D9] select-none text-[#1C1417] font-sans"
+      className="sticky top-0 z-30 bg-white border-b border-[#E8E2D9] select-none text-[#1C1417] font-sans"
     >
-      <div className="max-w-[1920px] mx-auto h-full px-3 sm:px-6 lg:px-8 flex items-center justify-between">
+      {/* MOBILE TOOLBAR (One clean row: FILTER (n) | SORT | grid toggle, each aligned and evenly spaced) */}
+      <div className="flex sm:hidden h-[48px] items-center justify-between px-3 border-b border-[#E8E2D9]/60">
+        {/* FILTER Button */}
+        <button
+          type="button"
+          onClick={onOpenFilter}
+          className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-medium tracking-[0.04em] uppercase hover:text-black transition-colors cursor-pointer focus:outline-none"
+          aria-label="Open filters"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5 stroke-[1.75]" />
+          <span>FILTER</span>
+          {activeFilterCount > 0 && (
+            <span className="text-[11px] font-semibold text-[#B8924A]">
+              ({activeFilterCount})
+            </span>
+          )}
+        </button>
+
+        {/* Divider 1 */}
+        <div className="h-4 w-[1px] bg-[#E8E2D9] shrink-0" />
+
+        {/* SORT Button */}
+        <button
+          type="button"
+          onClick={onOpenSort}
+          className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-medium tracking-[0.04em] uppercase hover:text-black transition-colors cursor-pointer focus:outline-none"
+          aria-label="Open sorting"
+        >
+          <ArrowUpDown className="w-3.5 h-3.5 stroke-[1.75]" />
+          <span>SORT</span>
+        </button>
+
+        {/* Divider 2 */}
+        <div className="h-4 w-[1px] bg-[#E8E2D9] shrink-0" />
+
+        {/* Mobile View Toggle (1-col vs 2-col) */}
+        <div className="flex-1 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setMobileColumns(1)}
+            className={`p-1.5 transition-colors cursor-pointer ${
+              mobileColumns === 1 ? 'text-[#1C1417]' : 'text-neutral-400 hover:text-neutral-700'
+            }`}
+            aria-label="1 column view"
+            title="Single Column"
+          >
+            <Square className="w-4 h-4 stroke-[1.75]" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileColumns(2)}
+            className={`p-1.5 transition-colors cursor-pointer ${
+              mobileColumns === 2 ? 'text-[#1C1417]' : 'text-neutral-400 hover:text-neutral-700'
+            }`}
+            aria-label="2 column view"
+            title="Two Columns"
+          >
+            <Grid2X2 className="w-4 h-4 stroke-[1.75]" />
+          </button>
+        </div>
+      </div>
+
+      {/* Product count on its own small line below on mobile */}
+      <div className="sm:hidden px-4 py-1.5 bg-[#FAF8F5] text-[11px] font-sans font-normal text-[#1C1417]/70 tracking-wide text-left">
+        {productCount} {productCount === 1 ? 'Product' : 'Products'}
+      </div>
+
+      {/* DESKTOP TOOLBAR */}
+      <div className="hidden sm:flex max-w-[1920px] mx-auto h-[52px] px-6 lg:px-8 items-center justify-between">
         
         {/* LEFT: Plain text FILTER & SORT buttons */}
-        <div className="flex items-center gap-5 sm:gap-7">
+        <div className="flex items-center gap-7">
           {/* FILTER Button */}
           <button
             type="button"
@@ -63,43 +131,16 @@ export const ShopToolbar: React.FC<ShopToolbarProps> = ({
           </button>
         </div>
 
-        {/* RIGHT: Product count + View toggle */}
-        <div className="flex items-center gap-3 sm:gap-6">
-          {/* Product count */}
+        {/* RIGHT: Product count + Desktop View toggle */}
+        <div className="flex items-center gap-6">
           <span className="text-[13px] font-medium tracking-[0.04em] uppercase text-[#1C1417]/70">
             {productCount} {productCount === 1 ? 'PRODUCT' : 'PRODUCTS'}
           </span>
 
-          <div className="h-4 w-[1px] bg-[#E8E2D9] hidden sm:block" />
-
-          {/* Mobile View Toggle (1-col vs 2-col) */}
-          <div className="flex items-center gap-1 sm:hidden">
-            <button
-              type="button"
-              onClick={() => setMobileColumns(1)}
-              className={`p-1.5 transition-colors cursor-pointer ${
-                mobileColumns === 1 ? 'text-[#1C1417]' : 'text-neutral-400 hover:text-neutral-700'
-              }`}
-              aria-label="1 column view"
-              title="Single Column"
-            >
-              <Square className="w-4 h-4 stroke-[1.75]" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setMobileColumns(2)}
-              className={`p-1.5 transition-colors cursor-pointer ${
-                mobileColumns === 2 ? 'text-[#1C1417]' : 'text-neutral-400 hover:text-neutral-700'
-              }`}
-              aria-label="2 column view"
-              title="Two Columns"
-            >
-              <Grid2X2 className="w-4 h-4 stroke-[1.75]" />
-            </button>
-          </div>
+          <div className="h-4 w-[1px] bg-[#E8E2D9]" />
 
           {/* Desktop View Toggle (3-col vs 4-col) */}
-          <div className="hidden sm:flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={() => setDesktopColumns(3)}

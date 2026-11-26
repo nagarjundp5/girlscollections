@@ -21,7 +21,8 @@ export async function GET(
       .select({
         id: schema.orders.id,
         order_number: schema.orders.order_number,
-        status: schema.orders.status,
+        user_id: schema.orders.user_id,
+        order_status: schema.orders.order_status,
         payment_status: schema.orders.payment_status,
       })
       .from(schema.orders)
@@ -33,7 +34,7 @@ export async function GET(
         confirmed: true,
         orderId: order.id,
         orderNumber: order.order_number,
-        status: order.status,
+        status: order.order_status,
         paymentStatus: order.payment_status,
       });
     }

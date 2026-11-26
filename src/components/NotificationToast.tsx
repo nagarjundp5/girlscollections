@@ -41,25 +41,43 @@ export default function NotificationToast() {
     setIsVisible(true);
   };
 
-  // 1. Trigger occasionally on session count
+  // Trigger after a short delay (3s) or on first interaction
   useEffect(() => {
+    // Only show on homepage and shop page
     if (!isAllowedPage) return;
+    // Only show if not already subscribed
+    if (typeof window === 'undefined' || !('Notification' in window) || Notification.permission !== 'default') return;
+    const localSub = localStorage.getItem('push_alerts_subscribed') === 'true';
+    if (localSub) return;
 
-    // Session count tracking
-    const currentSession = sessionStorage.getItem('notif_toast_session_active');
-    if (!currentSession) {
-      sessionStorage.setItem('notif_toast_session_active', 'true');
-      const sessionCountStr = localStorage.getItem('notif_toast_session_count') || '0';
-      const newCount = parseInt(sessionCountStr, 10) + 1;
-      localStorage.setItem('notif_toast_session_count', newCount.toString());
-
-      // Show every 3 sessions after 8 seconds
-      if (newCount % 3 === 0) {
-        const timer = setTimeout(triggerToast, 8000);
-        return () => clearTimeout(timer);
-      }
+    // Dismissal cooldown (24 hours instead of 3 days)
+    const dismissedAt = localStorage.getItem('notification_toast_dismissed_at');
+    if (dismissedAt) {
+      const dismissTime = parseInt(dismissedAt, 10);
+      if (Date.now() - dismissTime < 24 * 60 * 60 * 1000) return;
     }
-  }, [pathname, isAllowedPage]);
+
+    // Short delay: 3.5 seconds
+    const timer = setTimeout(() => {
+      triggerToast();
+    }, 3500);
+
+    // Or on first user scroll / click interaction
+    const handleFirstInteraction = () => {
+      triggerToast();
+      window.removeEventListener('scroll', handleFirstInteraction);
+      window.removeEventListener('click', handleFirstInteraction);
+    };
+
+    window.addEventListener('scroll', handleFirstInteraction, { once: true, passive: true });
+    window.addEventListener('click', handleFirstInteraction, { once: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleFirstInteraction);
+      window.removeEventListener('click', handleFirstInteraction);
+    };
+  }, [pathname]);
 
   // 2. Trigger on adding to bag
   useEffect(() => {

@@ -1,17 +1,29 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/admin';
+import { firestoreService } from '@/lib/firestore';
 import { db } from '@/db';
+import { notificationLogs } from '@/db/schema';
+import { desc } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
-import { notificationLogs, products } from '@/db/schema';
-import { desc, eq } from 'drizzle-orm';
 
 export async function GET() {
   const authRes = await requireAdmin();
   if (authRes instanceof NextResponse) return authRes;
 
   try {
-    const logs = await db
+    // 1. Fetch from Firestore history first
+    const firestoreLogs = await firestoreService.queryDocs('notification_history', {});
+
+    if (firestoreLogs && firestoreLogs.length > 0) {
+      const sorted = firestoreLogs.sort(
+        (a: any, b: any) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime()
+      );
+      return NextResponse.json({ logs: sorted });
+    }
+
+    // 2. Fallback to Neon DB notificationLogs
+    const dbLogs = await db
       .select({
         id: notificationLogs.id,
         title: notificationLogs.title,
@@ -27,9 +39,9 @@ export async function GET() {
       .orderBy(desc(notificationLogs.sent_at))
       .limit(50);
 
-    return NextResponse.json({ logs });
+    return NextResponse.json({ logs: dbLogs });
   } catch (error) {
-    console.error('Notification logs error:', error);
-    return NextResponse.json({ error: 'Failed to fetch logs' }, { status: 500 });
+    console.error('[Notification logs] Error:', error);
+    return NextResponse.json({ logs: [] });
   }
 }

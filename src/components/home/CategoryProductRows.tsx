@@ -131,8 +131,12 @@ const CategoryCarouselRow: React.FC<{
               const optimizedPrimary = getOptimizedImageUrl(primaryImg, { width: 700, quality: 85 });
               const optimizedSecondary = getOptimizedImageUrl(secondaryImg, { width: 700, quality: 85 });
 
-              const productSizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['FREE SIZE'];
-              const stockMap = product.stock_quantity || {};
+              const rawSizes = (Array.isArray(product.sizes) ? product.sizes : [])
+                .map((s: any) => typeof s === 'string' ? s : (s?.size || String(s)))
+                .filter(Boolean);
+              const isActualFreeSize = rawSizes.length === 0 || (rawSizes.length === 1 && /^(free\s*size|fs)$/i.test(rawSizes[0].trim()));
+              const productSizes = isActualFreeSize ? ['Free Size'] : rawSizes;
+              const stockMap: Record<string, any> = product.stock_quantity || {};
 
               const price = product.price > 10000 ? Math.round(product.price / 100) : product.price;
               const comparePrice =
@@ -225,28 +229,29 @@ const CategoryCarouselRow: React.FC<{
 
                       {/* Desktop Hover Slide-Up Sizes Drawer */}
                       <div
-                        className={`hidden md:flex absolute inset-x-0 bottom-0 z-20 bg-white/90 backdrop-blur-md px-2 py-2.5 items-center justify-center gap-1.5 transition-transform duration-300 ease-out ${
+                        className={`hidden md:flex absolute inset-x-0 bottom-0 z-20 bg-white/95 backdrop-blur-md px-2.5 py-2 items-center justify-center transition-transform duration-300 ease-out ${
                           isHovered ? 'translate-y-0' : 'translate-y-full'
                         }`}
                       >
-                        <span className="text-[10px] uppercase font-bold text-[#1C1417]/60 tracking-wider mr-1">
-                          Sizes:
-                        </span>
-                        <div className="flex flex-wrap items-center justify-center gap-1">
-                          {productSizes.map((size) => {
-                            const isSoldOut = stockMap[size] !== undefined && stockMap[size] <= 0;
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 text-[11px] font-sans">
+                          {productSizes.map((size, sIdx) => {
+                            const isSoldOut = !isActualFreeSize && stockMap[size] !== undefined && Number(stockMap[size]) <= 0;
                             return (
-                              <Link
-                                key={size}
-                                href={`/shop/${product.slug}?size=${encodeURIComponent(size)}&target=${targetPref}`}
-                                className={`text-[11px] font-sans px-1.5 py-0.5 rounded-xs transition-colors ${
-                                  isSoldOut
-                                    ? 'line-through text-black/30 cursor-not-allowed pointer-events-none'
-                                    : 'font-medium text-[#1C1417] hover:bg-black hover:text-white'
-                                }`}
-                              >
-                                {size}
-                              </Link>
+                              <React.Fragment key={size}>
+                                {sIdx > 0 && (
+                                  <span className="text-black/30 select-none">·</span>
+                                )}
+                                <Link
+                                  href={`/shop/${product.slug}?size=${encodeURIComponent(size)}&target=${targetPref}`}
+                                  className={`px-1 py-0.5 rounded-xs transition-colors ${
+                                    isSoldOut
+                                      ? 'line-through text-black/30 cursor-not-allowed pointer-events-none'
+                                      : 'font-medium text-[#1C1417] hover:bg-black hover:text-white'
+                                  }`}
+                                >
+                                  {size}
+                                </Link>
+                              </React.Fragment>
                             );
                           })}
                         </div>

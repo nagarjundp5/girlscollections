@@ -20,6 +20,15 @@ interface NotificationLog {
 
 type AudienceType = 'general' | 'product';
 
+interface SubscriberItem {
+  id: string;
+  token: string;
+  device: string;
+  userId: string;
+  createdAt: string;
+  active: boolean;
+}
+
 export default function AdminNotificationsPage() {
   const { addToast } = useToast();
 
@@ -27,12 +36,14 @@ export default function AdminNotificationsPage() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [targetUrl, setTargetUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [audienceType, setAudienceType] = useState<AudienceType>('general');
   const [selectedProductId, setSelectedProductId] = useState('');
 
   // Data state
   const [products, setProducts] = useState<Product[]>([]);
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
+  const [subscribersList, setSubscribersList] = useState<SubscriberItem[]>([]);
   const [logs, setLogs] = useState<NotificationLog[]>([]);
 
   // UI state
@@ -88,29 +99,21 @@ export default function AdminNotificationsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fetch subscriber count whenever audience changes
+  // Fetch subscriber count and list from Firestore
   const fetchCount = useCallback(async () => {
-    setSubscriberCount(null);
     setIsLoadingCount(true);
     try {
-      let url = '';
-      if (audienceType === 'general') {
-        url = '/api/admin/push/announce-drop';
-      } else if (audienceType === 'product' && selectedProductId) {
-        url = `/api/admin/push/announce-product?productId=${selectedProductId}`;
-      } else {
-        setIsLoadingCount(false);
-        return;
-      }
-      const res = await fetch(url);
+      const res = await fetch('/api/admin/push/subscribers');
       const data = await res.json();
       setSubscriberCount(data.count ?? 0);
+      setSubscribersList(data.subscribers ?? []);
     } catch {
       setSubscriberCount(0);
+      setSubscribersList([]);
     } finally {
       setIsLoadingCount(false);
     }
-  }, [audienceType, selectedProductId]);
+  }, []);
 
   useEffect(() => {
     fetchCount();
@@ -203,6 +206,9 @@ export default function AdminNotificationsPage() {
         url: targetUrl.trim() || '/',
         audienceType,
       };
+      if (imageUrl.trim()) {
+        payload.image = imageUrl.trim();
+      }
       if (audienceType === 'product') {
         payload.productId = selectedProductId;
       }
@@ -295,7 +301,7 @@ export default function AdminNotificationsPage() {
             </div>
 
             {/* Target URL */}
-            <div className="space-y-1 mb-6">
+            <div className="space-y-1 mb-4">
               <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block">
                 Target URL (on notification click)
               </label>
@@ -303,7 +309,21 @@ export default function AdminNotificationsPage() {
                 type="url"
                 value={targetUrl}
                 onChange={(e) => setTargetUrl(e.target.value)}
-                placeholder="https://drftn.in/shop (leave blank for homepage)"
+                placeholder="/shop or https://thegirlscollections.com/shop"
+                className="w-full border border-zinc-200 rounded-lg px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition"
+              />
+            </div>
+
+            {/* Optional Image URL */}
+            <div className="space-y-1 mb-6">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block">
+                Image URL (optional banner image)
+              </label>
+              <input
+                type="url"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://res.cloudinary.com/... or /hero/banner.jpg"
                 className="w-full border border-zinc-200 rounded-lg px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition"
               />
             </div>
@@ -640,6 +660,102 @@ export default function AdminNotificationsPage() {
             </ul>
           </div>
         </div>
+      </div>
+
+      {/* === Active Subscribers List (Firestore) === */}
+      <div className="bg-white border border-zinc-200/60 rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden">
+        <div className="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-zinc-500" />
+            <h2 className="text-sm font-extrabold uppercase tracking-widest text-zinc-800">
+              Subscribers ({subscribersList.length})
+            </h2>
+          </div>
+          <button
+            onClick={() => fetchCount()}
+            className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors"
+          >
+            Refresh List
+          </button>
+        </div>
+        {isLoadingCount ? (
+          <div className="p-8 space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-10 bg-zinc-100 rounded animate-pulse" />
+            ))}
+          </div>
+        ) : subscribersList.length === 0 ? (
+          <div className="p-10 text-center text-zinc-400 text-sm">
+            No active subscribers yet in Firestore. Use &ldquo;Subscribe This Browser&rdquo; or visit storefront to opt in.
+          </div>
+        ) : (
+          <div className="overflow-x-auto max-h-80">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-zinc-100 bg-zinc-50 sticky top-0 z-10">
+                  <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                    Device / Platform
+                  </th>
+                  <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                    User
+                  </th>
+                  <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                    Token Preview
+                  </th>
+                  <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                    Date
+                  </th>
+                  <th className="text-right px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {subscribersList.map((sub) => (
+                  <tr key={sub.id} className="hover:bg-zinc-50 transition-colors">
+                    <td className="px-5 py-3">
+                      <span className="font-bold text-xs text-zinc-800">{sub.device}</span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className="text-xs text-zinc-600 font-mono">
+                        {sub.userId ? sub.userId : 'Anonymous Guest'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className="text-[11px] text-zinc-400 font-mono truncate max-w-xs block">
+                        {sub.token}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 text-xs text-zinc-500">
+                      {new Date(sub.createdAt).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                          sub.active
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'bg-zinc-100 text-zinc-500'
+                        }`}
+                      >
+                        {sub.active ? (
+                          <>
+                            <CheckCircle2 className="w-3 h-3" /> Active
+                          </>
+                        ) : (
+                          'Stale'
+                        )}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* === Send History === */}

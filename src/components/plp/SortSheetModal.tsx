@@ -11,12 +11,11 @@ export interface SortOption {
 }
 
 export const SORT_OPTIONS: SortOption[] = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'newest', label: 'Newest Arrivals' },
-  { value: 'price-low', label: 'Price: Low to High' },
-  { value: 'price-high', label: 'Price: High to Low' },
+  { value: 'relevance', label: 'Relevance' },
+  { value: 'newest', label: 'New Arrivals' },
+  { value: 'price-low', label: 'Price Low→High' },
+  { value: 'price-high', label: 'Price High→Low' },
   { value: 'popular', label: 'Best Sellers' },
-  { value: 'discount', label: 'Discount %' },
 ];
 
 interface SortSheetModalProps {
@@ -63,11 +62,16 @@ export const SortSheetModal: React.FC<SortSheetModalProps> = ({
 
       {/* Modal / Sheet Container */}
       <div
-        className="relative z-10 w-full sm:max-w-md bg-white border border-[#E8E2D9] shadow-2xl rounded-t-2xl sm:rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200 pb-[env(safe-area-inset-bottom,0px)]"
+        className="relative z-10 w-full sm:max-w-md bg-white border-t sm:border border-[#E8E2D9] shadow-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom duration-250 pb-[env(safe-area-inset-bottom,16px)]"
       >
+        {/* Mobile handle indicator */}
+        <div className="sm:hidden flex justify-center pt-2.5 pb-1">
+          <div className="w-10 h-1 rounded-full bg-neutral-300" />
+        </div>
+
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-200">
-          <h3 className="text-[15px] font-medium tracking-[0.04em] uppercase text-[#1C1417]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
+          <h3 className="text-[14px] font-sans font-medium tracking-[0.06em] uppercase text-[#1C1417]">
             Sort By
           </h3>
           <button
@@ -81,9 +85,9 @@ export const SortSheetModal: React.FC<SortSheetModalProps> = ({
         </div>
 
         {/* Options list */}
-        <div className="py-2">
+        <div className="py-1">
           {SORT_OPTIONS.map((opt) => {
-            const isSelected = currentSort === opt.value;
+            const isSelected = currentSort === opt.value || (opt.value === 'relevance' && (currentSort === 'featured' || !currentSort));
             return (
               <button
                 key={opt.value}
@@ -92,14 +96,14 @@ export const SortSheetModal: React.FC<SortSheetModalProps> = ({
                   onSelectSort(opt.value);
                   onClose();
                 }}
-                className={`w-full flex items-center justify-between px-6 py-3.5 text-left text-[14px] transition-colors cursor-pointer ${
+                className={`w-full flex items-center justify-between px-6 py-3.5 text-left text-[14px] font-sans transition-colors cursor-pointer ${
                   isSelected
-                    ? 'font-semibold text-[#1C1417] bg-neutral-50'
+                    ? 'font-medium text-[#1C1417] bg-neutral-50'
                     : 'font-normal text-neutral-600 hover:text-black hover:bg-neutral-50'
                 }`}
               >
                 <span>{opt.label}</span>
-                {isSelected && <Check className="w-4 h-4 text-[#1C1417]" />}
+                {isSelected && <Check className="w-4 h-4 text-[#B8924A]" />}
               </button>
             );
           })}

@@ -83,6 +83,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Checkout session not found' }, { status: 404 });
     }
 
+    // Ownership check (IDOR prevention)
+    if (checkout.user_id && finalUserId && checkout.user_id !== finalUserId) {
+      return NextResponse.json({ error: 'Unauthorized: Order does not belong to current user' }, { status: 403 });
+    }
+
     // 3. Prevent double processing (check Neon DB)
     const [existingNeonOrder] = await db
       .select()
