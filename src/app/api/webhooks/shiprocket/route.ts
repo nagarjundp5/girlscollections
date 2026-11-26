@@ -169,6 +169,34 @@ export async function POST(request: Request) {
       }
     }
 
+    // Fire idempotent delivery status email (shipped, out_for_delivery, delivered)
+    if (canonicalStatus === 'shipped' || canonicalStatus === 'out_for_delivery') {
+      const { sendDeliveryStatusEmail } = await import('@/lib/email');
+      sendDeliveryStatusEmail({
+        orderNumber: order.order_number,
+        customerName: order.customer_name,
+        customerEmail: order.customer_email,
+        status: canonicalStatus,
+        items: (order.items as any[]) || [],
+        totalPaise: order.total,
+        courierPartner: courier_name || order.courier_name,
+        trackingNumber: awb || order.awb_code,
+        trackingUrl,
+      }).catch((e) => console.error('[Shiprocket Webhook] Email send note:', e));
+    } else if (canonicalStatus === 'delivered') {
+      const { sendDeliverySuccessEmail } = await import('@/lib/email');
+      sendDeliverySuccessEmail({
+        orderNumber: order.order_number,
+        customerName: order.customer_name,
+        customerEmail: order.customer_email,
+        items: (order.items as any[]) || [],
+        totalPaise: order.total,
+        courierPartner: courier_name || order.courier_name,
+        trackingNumber: awb || order.awb_code,
+        trackingUrl,
+      }).catch((e) => console.error('[Shiprocket Webhook] Delivered email note:', e));
+    }
+
     await db
       .update(schema.webhookEvents)
       .set({ processed: true, processed_at: new Date() })

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/BrandIcons';
 import { Plus, Minus, ArrowRight, ShieldCheck, Tag, Check } from 'lucide-react';
 import { useScrollLock } from '@/lib/useScrollLock';
+import { formatSizeLabel } from '@/lib/formatSizeLabel';
 
 // In-memory cache for Cart Drawer recommendations (0 DB and 0 network hits on repeated opens)
 let memoryRecommendedCache: any[] | null = null;
@@ -310,7 +311,7 @@ export const CartDrawer: React.FC = () => {
                               </div>
                               <div className="text-[11px] text-[#1C1417]/65 space-x-1.5 mt-0.5 font-sans">
                                 <span>
-                                  Size: <strong className="text-[#1C1417] font-semibold">{item.selectedSize}</strong>
+                                  Size: <strong className="text-[#1C1417] font-semibold">{formatSizeLabel(item.selectedSize)}</strong>
                                 </span>
                                 {item.selectedColor && (
                                   <>
@@ -556,11 +557,11 @@ export const CartDrawer: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Primary Checkout Button: 52px solid wine #3B1230, full width with total */}
+                  {/* Primary Checkout Button: 48px+ warm rose-pink var(--cta) */}
                   <Link
                     href="/checkout"
                     onClick={() => setIsCartOpen(false)}
-                    className="w-full h-[52px] rounded-xl bg-[#3B1230] hover:bg-[#4E1A40] text-white text-xs font-sans font-bold uppercase tracking-[0.2em] shadow-lg flex items-center justify-center space-x-2 transition-transform active:scale-[0.98] cursor-pointer"
+                    className="w-full min-h-[48px] py-3 rounded-[12px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white text-sm font-sans font-bold uppercase tracking-[0.14em] flex items-center justify-center space-x-2 transition-transform active:scale-[0.96] cursor-pointer"
                   >
                     <span>
                       Checkout •{' '}

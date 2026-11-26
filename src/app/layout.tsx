@@ -11,18 +11,19 @@ import QuickViewModal from '@/components/QuickViewModal';
 import ToastContainer from '@/components/ToastContainer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import FloatingLuxuryDock from '@/components/FloatingLuxuryDock';
-import { Cormorant_Garamond, Jost } from 'next/font/google';
+import { Lora, Nunito_Sans } from 'next/font/google';
 
-const cormorant = Cormorant_Garamond({
+const lora = Lora({
   subsets: ['latin'],
-  variable: '--font-cormorant',
-  weight: ['300', '400', '500', '600'],
+  variable: '--font-lora',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
-const jost = Jost({
+const nunitoSans = Nunito_Sans({
   subsets: ['latin'],
-  variable: '--font-jost',
+  variable: '--font-nunito',
+  weight: ['400', '600', '700'],
   display: 'swap',
 });
 
@@ -65,7 +66,7 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className={`${cormorant.variable} ${jost.variable}`}
+        className={`${lora.variable} ${nunitoSans.variable}`}
       >
         <head>
           <script

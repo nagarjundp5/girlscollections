@@ -35,7 +35,7 @@ export const siteConfig: SiteConfig = {
   resendFromEmail: "The Girls Collections <order@thegirlscollections.com>",
   hours: "Mon - Sat: 10:30 AM - 9:00 PM | Sun: 11:00 AM - 8:30 PM",
   instagram: "@thegirlscollections",
-  freeShippingThreshold: 1000,
+  freeShippingThreshold: 1999,
 };
 
 export default siteConfig;

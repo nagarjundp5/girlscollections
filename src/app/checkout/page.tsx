@@ -10,6 +10,7 @@ import { useToast } from '@/components/ToastContainer';
 import { useAuthSession } from '@/context/AuthContext';
 import CheckoutCoupon from '@/components/CheckoutCoupon';
 import TermsAndConditionsBox from '@/components/TermsAndConditionsBox';
+import ImportantOrderTerms from '@/components/ImportantOrderTerms';
 import { ButterflyMotif } from '@/components/ui/Motifs';
 import { useRouter } from 'next/navigation';
 import { useLocationAutofill } from '@/hooks/useLocationAutofill';
@@ -1073,6 +1074,9 @@ export default function CheckoutPage() {
                 </section>
               )}
 
+              {/* Compact Important Order Terms Box */}
+              <ImportantOrderTerms />
+
               {/* Terms & Conditions Checkbox Row */}
               <div className="bg-white border border-zariGold/30 rounded-2xl p-4 shadow-sm flex items-start gap-3">
                 <input
@@ -1080,20 +1084,16 @@ export default function CheckoutPage() {
                   id="main-checkout-terms"
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="mt-0.5 h-4.5 w-4.5 rounded border-zariGold/40 text-zariGold focus:ring-zariGold accent-zariGold cursor-pointer"
+                  className="mt-0.5 h-5 w-5 rounded border-zariGold/40 text-[var(--cta)] focus:ring-[var(--cta)] accent-[var(--cta)] cursor-pointer"
                 />
-                <label htmlFor="main-checkout-terms" className="text-xs text-navy leading-relaxed cursor-pointer select-none">
-                  By placing the order you agree to The Girls Collections{' '}
-                  <Link href="/terms-and-conditions" target="_blank" className="font-bold underline text-zariGold">
+                <label htmlFor="main-checkout-terms" className="text-[14px] text-navy leading-relaxed cursor-pointer select-none">
+                  I agree to the{' '}
+                  <Link href="/terms-and-conditions" target="_blank" className="font-bold underline text-navy">
                     Terms &amp; Conditions
-                  </Link>
-                  ,{' '}
-                  <Link href="/privacy-policy" target="_blank" className="font-bold underline text-zariGold">
-                    Privacy Policy
-                  </Link>
-                  , and{' '}
-                  <Link href="/returns-and-exchange" target="_blank" className="font-bold underline text-zariGold">
-                    Returns Policy
+                  </Link>{' '}
+                  and{' '}
+                  <Link href="/returns-and-exchange" target="_blank" className="font-bold underline text-navy">
+                    Returns policy
                   </Link>.
                 </label>
               </div>
@@ -1103,10 +1103,10 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={!verifiedPhone || !termsAccepted}
-                  className="w-full bg-navy hover:bg-navy/90 text-ivory py-4 rounded-xl font-bold uppercase tracking-widest text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full min-h-[48px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white py-3.5 rounded-[12px] font-bold uppercase tracking-[0.14em] text-sm transition-transform active:scale-[0.96] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>Proceed to Payment Method</span>
-                  <ArrowRight className="w-4 h-4 text-zariGold" />
+                  <ArrowRight className="w-4 h-4 text-white" />
                 </button>
 
                 {/* Single Compact Horizontal Trust Strip */}
@@ -1179,12 +1179,15 @@ export default function CheckoutPage() {
                 </div>
               </section>
 
+              {/* Compact Important Order Terms Box above Pay button */}
+              <ImportantOrderTerms />
+
               {/* Final Place Order Button & Single Compact Trust Strip */}
               <div className="space-y-3">
                 <button
                   onClick={handlePlaceOrder}
-                  disabled={isProcessing}
-                  className="w-full bg-navy hover:bg-navy/90 text-ivory py-4 rounded-xl font-bold uppercase tracking-widest text-xs transition-all shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isProcessing || !termsAccepted}
+                  className="w-full min-h-[48px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white py-3.5 rounded-[12px] font-bold uppercase tracking-[0.14em] text-sm transition-transform active:scale-[0.96] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isProcessing ? (
                     'Processing Order...'
@@ -1193,7 +1196,7 @@ export default function CheckoutPage() {
                   ) : (
                     'Confirm & Place Order'
                   )}
-                  {!isProcessing && <Lock className="w-4 h-4 text-zariGold" />}
+                  {!isProcessing && <Lock className="w-4 h-4 text-white" />}
                 </button>
 
                 {/* Single Compact Horizontal Trust Strip */}

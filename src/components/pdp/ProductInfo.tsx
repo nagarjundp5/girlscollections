@@ -6,74 +6,85 @@ import { useShop } from '@/context/ShopContext';
 import { useToast } from '@/components/ToastContainer';
 import { useRouter } from 'next/navigation';
 import {
-  HeartIcon,
-  ShoppingBagIcon,
-  RulerIcon,
-  TruckIcon,
-} from '@/components/ui/BrandIcons';
-import {
+  ShoppingBag,
   Plus,
   Minus,
+  Check,
+  Copy,
+  Tag,
+  Truck,
   ShieldCheck,
   RefreshCw,
   Video,
-  Share2,
-  Tag,
-  Check,
-  Copy,
-  MessageCircle,
+  Ruler,
 } from 'lucide-react';
 import { SizeChartModal } from './SizeChartModal';
 import { ProductAccordions } from './ProductAccordions';
-import { getSizeLabel } from '@/data/masterSizes';
+import { formatSizeLabel, getSizeAgeSubtitle, getWomenSizeSubtitle } from '@/lib/formatSizeLabel';
 import { siteConfig } from '@/lib/siteConfig';
+import { haptic } from '@/lib/haptics';
 
 interface ProductInfoProps {
   product: Product;
+  selectedSize: string;
+  onSizeChange: (size: string) => void;
+  activePrice: number;
 }
 
-export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
+export const ProductInfo: React.FC<ProductInfoProps> = ({
+  product,
+  selectedSize,
+  onSizeChange,
+  activePrice,
+}) => {
   const router = useRouter();
-  const { addToCart, toggleWishlist, isInWishlist, setIsCartOpen } = useShop();
+  const { addToCart, setIsCartOpen } = useShop();
   const { addToast } = useToast();
 
-  const [selectedSize, setSelectedSize] = useState<string>('');
   const [sizeError, setSizeError] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>(
-    product.colors[0]?.name || 'Standard'
-  );
   const [quantity, setQuantity] = useState(1);
-  const [needsAlteration, setNeedsAlteration] = useState<'No' | 'Yes'>('No');
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [copiedCoupon, setCopiedCoupon] = useState(false);
   const [pincodeInput, setPincodeInput] = useState('');
-  const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
+  const [pincodeStatus, setPincodeStatus] = useState<{ message: string; isSuccess: boolean } | null>(null);
+  const [addedFeedback, setAddedFeedback] = useState(false);
 
   const sizeSectionRef = useRef<HTMLDivElement>(null);
-  const inWishlist = isInWishlist(product.id);
+  const isKids = product.target === 'kids';
 
-  // Active pricing calculations
-  const currentSizeObj = product.sizes.find((s) => s.size === selectedSize) as any;
-  const activePrice = currentSizeObj?.price ?? product.price;
+  // Pricing calculations
+  const currentSizeObj = (product.sizes as any[]).find((s) => s.size === selectedSize);
   const activeOriginalPrice = currentSizeObj?.originalPrice ?? product.originalPrice;
   const hasMultiplePrices =
     (product as any).has_different_prices ||
-    product.sizes.some((s: any) => s.price && s.price !== (product.sizes[0] as any)?.price);
+    (product.sizes as any[]).some(
+      (s: any) => s.price && s.price !== (product.sizes[0] as any)?.price
+    );
 
   const discountPercent =
     activeOriginalPrice && activeOriginalPrice > activePrice
       ? Math.round(((activeOriginalPrice - activePrice) / activeOriginalPrice) * 100)
       : 0;
 
-  // Short SKU display (e.g. TGC-43D1378D)
+  // Short SKU display (e.g. TGC-A4385536)
   const shortSku = `TGC-${product.id.replace(/-/g, '').slice(0, 8).toUpperCase()}`;
 
-  // Trigger size error animation & scroll
+  // Clean category label for pill (e.g. "Kids · Party wear" or "Women · Kurta sets")
+  const categoryPillLabel = useMemo(() => {
+    const targetLabel = isKids ? 'Kids' : 'Women';
+    const sub = (product.subcategory || product.category || '')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    return `${targetLabel} · ${sub}`;
+  }, [isKids, product.subcategory, product.category]);
+
+  // Trigger size error animation & scroll without annoying alert popups
   const triggerSizePrompt = () => {
     setSizeError(true);
     setIsShaking(true);
-    setTimeout(() => setIsShaking(false), 600);
+    haptic('warn');
+    setTimeout(() => setIsShaking(false), 300);
     sizeSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
@@ -83,8 +94,15 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       return;
     }
     setSizeError(false);
-    addToCart(product, selectedSize, selectedColor, quantity);
-    addToast('Added to your bag ✨', 'success');
+    haptic('success');
+    // Default color payload preserved for backend compatibility
+    const defaultColor = product.colors[0]?.name || 'Standard';
+    addToCart(product, selectedSize, defaultColor, quantity);
+    setAddedFeedback(true);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('tgc-cart-bounce'));
+    }
+    setTimeout(() => setAddedFeedback(false), 1400);
   };
 
   const handleBuyNow = () => {
@@ -93,392 +111,426 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       return;
     }
     setSizeError(false);
-    addToCart(product, selectedSize, selectedColor, quantity);
+    haptic('tap');
+    const defaultColor = product.colors[0]?.name || 'Standard';
+    addToCart(product, selectedSize, defaultColor, quantity);
     setIsCartOpen(false);
     router.push('/checkout');
-  };
-
-  // SHARE Button with Web Share API and Clipboard Copy Fallback
-  const handleShare = async () => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.thegirlscollections.com';
-    const canonicalUrl = `${origin}/shop/${product.slug}${selectedSize ? `?size=${encodeURIComponent(selectedSize)}` : ''}`;
-
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({
-          title: `${product.name} | The Girls Collections`,
-          text: `Check out ${product.name} on The Girls Collections - handcrafted ethnic wear.`,
-          url: canonicalUrl,
-        });
-        return;
-      } catch (err: any) {
-        if (err.name === 'AbortError') return;
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(canonicalUrl);
-      addToast('Link copied to clipboard! 📋', 'success');
-    } catch {
-      addToast('Could not copy link', 'error');
-    }
   };
 
   // Copy FESTIVE10 coupon
   const handleCopyCoupon = () => {
     navigator.clipboard.writeText('FESTIVE10');
     setCopiedCoupon(true);
-    addToast('Coupon code FESTIVE10 copied!', 'success');
-    setTimeout(() => setCopiedCoupon(false), 2500);
+    haptic('success');
+    setTimeout(() => setCopiedCoupon(false), 1500);
   };
 
   // Pincode delivery estimate check
   const handleCheckPincode = (e: React.FormEvent) => {
     e.preventDefault();
+    haptic('tap');
     if (!/^\d{6}$/.test(pincodeInput.trim())) {
-      setPincodeStatus('Please enter a valid 6-digit Indian PIN code');
+      setPincodeStatus({
+        message: 'Please enter a valid 6-digit Indian PIN code',
+        isSuccess: false,
+      });
       return;
     }
-    setPincodeStatus('Delivery available in 3-5 business days • COD available');
+    setPincodeStatus({
+      message: 'Delivery available in 3-5 business days • COD available with ₹200 advance',
+      isSuccess: true,
+    });
   };
 
+  // Video call request link
+  const videoCallMessage = useMemo(() => {
+    const origin =
+      typeof window !== 'undefined'
+        ? window.location.origin
+        : 'https://www.thegirlscollections.com';
+    const currentUrl = `${origin}/shop/${product.slug}${selectedSize ? `?size=${encodeURIComponent(selectedSize)}` : ''}`;
+    const sizeDisplay = selectedSize ? formatSizeLabel(selectedSize) : 'not selected';
+
+    return (
+      `Hi The Girls Collections, I'd like a video call to see this product.\n` +
+      `Product: ${product.name}\n` +
+      `Style code: ${shortSku}\n` +
+      `Size: ${sizeDisplay}\n` +
+      `Price: ₹${activePrice.toLocaleString('en-IN')}\n` +
+      `Link: ${currentUrl}\n` +
+      `Please let me know a convenient time. Thank you!`
+    );
+  }, [product.name, product.slug, shortSku, selectedSize, activePrice]);
+
   return (
-    <div className="space-y-6 text-[#1C1417] font-sans select-none">
-      {/* Category Eyebrow & Short SKU */}
-      <div className="space-y-1">
-        <div className="flex items-center justify-between">
-          <span className="text-xs uppercase tracking-[0.18em] font-semibold text-[#B8903A]">
-            TGC LUXE • {product.target}&apos;S {product.subcategory || product.category}
+    <div className="space-y-6 text-[var(--ink)] font-sans select-none">
+      {/* ── 2) TITLE AND PRICE BLOCK ── */}
+      <div className="space-y-2.5">
+        {/* Category Pill & Style Code */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#F5EBE1] text-[var(--ink)]">
+            {categoryPillLabel}
           </span>
-          <span className="text-[11px] font-mono text-gray-400 uppercase tracking-wider">
-            {shortSku}
+          <span className="text-xs text-[var(--muted)] font-mono">
+            Style code: {shortSku}
           </span>
         </div>
-      </div>
 
-      {/* Title & Share / Wishlist Row */}
-      <div className="flex items-start justify-between gap-4">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-[#1C1417] leading-tight">
+        {/* Title: Lora 600, 22px mobile / 30px desktop, full width */}
+        <h1 className="font-serif font-semibold text-[22px] sm:text-[26px] lg:text-[30px] leading-[1.3] text-[var(--ink)]">
           {product.name}
         </h1>
 
-        {/* 44px Outlined Square Buttons: Wishlist & Share */}
-        <div className="flex items-center gap-2 shrink-0 pt-1">
-          <button
-            onClick={() => toggleWishlist(product.id)}
-            className={`w-[44px] h-[44px] rounded-[6px] border-[1.5px] flex items-center justify-center transition-all cursor-pointer active:scale-95 ${
-              inWishlist
-                ? 'border-[#3B1230] bg-[#3B1230] text-white shadow-xs'
-                : 'border-[#3B1230]/40 text-[#3B1230] bg-white hover:border-[#3B1230]'
-            }`}
-            title="Wishlist"
-            aria-label="Save to Wishlist"
-          >
-            <HeartIcon
-              className="w-5 h-5"
-              filled={inWishlist}
-              color={inWishlist ? '#FFFFFF' : '#3B1230'}
-            />
-          </button>
-
-          <button
-            onClick={handleShare}
-            className="w-[44px] h-[44px] rounded-[6px] border-[1.5px] border-[#3B1230]/40 text-[#3B1230] bg-white hover:border-[#3B1230] flex items-center justify-center transition-all cursor-pointer active:scale-95"
-            title="Share Product"
-            aria-label="Share product"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Pricing Row */}
-      <div className="border-b border-[#EFE7E2] pb-5 space-y-1">
-        <div className="flex items-baseline gap-3">
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#1C1417] font-sans">
-            {!selectedSize && hasMultiplePrices ? 'From ' : ''}₹{activePrice.toLocaleString('en-IN')}
-          </span>
-          {activeOriginalPrice && activeOriginalPrice > activePrice && (
-            <>
-              <span className="text-base text-gray-400 line-through">
-                ₹{activeOriginalPrice.toLocaleString('en-IN')}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-[#3B1230] text-white text-[10px] font-bold uppercase tracking-wider">
-                Save {discountPercent}%
-              </span>
-            </>
+        {/* Price Row (Baseline aligned, tabular-nums) */}
+        <div className="pt-1 border-b border-[#EADFD6] pb-4 space-y-1">
+          {/* Starting price label if size not chosen and has variable pricing */}
+          {!selectedSize && hasMultiplePrices && (
+            <p className="text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wide">
+              Starting price
+            </p>
           )}
-          <span className="text-xs text-gray-500 block ml-auto font-medium">
+
+          <div className="flex items-baseline flex-wrap gap-2.5 sm:gap-3">
+            <span className="text-[26px] sm:text-[28px] font-bold text-[var(--ink)] tabular-nums">
+              ₹{activePrice.toLocaleString('en-IN')}
+            </span>
+
+            {activeOriginalPrice && activeOriginalPrice > activePrice && (
+              <>
+                <span className="text-[16px] text-[var(--muted)] line-through tabular-nums">
+                  ₹{activeOriginalPrice.toLocaleString('en-IN')}
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-[#EAF7ED] text-[var(--success)] text-xs font-bold tabular-nums">
+                  {discountPercent}% OFF
+                </span>
+              </>
+            )}
+          </div>
+
+          <p className="text-xs text-[var(--muted)] font-normal pt-0.5">
             Inclusive of all taxes
-          </span>
+          </p>
         </div>
       </div>
 
-      {/* Color Variant Selector */}
-      {product.colors.length > 0 && (
-        <div className="space-y-2 pt-1">
-          <label className="text-xs font-semibold text-[#1C1417] uppercase tracking-[0.14em] block">
-            Color: <span className="text-[#B8903A] font-normal">{selectedColor}</span>
-          </label>
-          <div className="flex items-center gap-3">
-            {product.colors.map((col) => (
-              <button
-                key={col.name}
-                onClick={() => setSelectedColor(col.name)}
-                title={col.name}
-                className={`w-7 h-7 rounded-full border transition-all p-0.5 cursor-pointer ${
-                  selectedColor === col.name
-                    ? 'border-[#3B1230] scale-110 shadow-sm'
-                    : 'border-transparent opacity-75 hover:opacity-100'
-                }`}
-              >
-                <span
-                  className="w-full h-full rounded-full block border border-black/10"
-                  style={{ backgroundColor: col.hex }}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Size Selector with 44px Size Chips & Wiggle Error State */}
+      {/* ── 4) SIZE AND AGE DISPLAY ── */}
       <div
+        id="pdp-size-section"
         ref={sizeSectionRef}
-        className={`space-y-3 pt-1 rounded-2xl p-3 transition-all ${
-          sizeError ? 'bg-rose-50/70 border border-rose-300' : ''
+        className={`space-y-3 pt-1 rounded-2xl p-3 sm:p-4 bg-white border border-[#EADFD6] transition-all ${
+          sizeError ? 'ring-2 ring-[var(--cta)] bg-rose-50/40' : ''
         }`}
       >
         <div className="flex items-center justify-between">
-          <label
-            className={`text-xs font-semibold uppercase tracking-[0.14em] ${
-              isShaking ? 'animate-wiggle text-rose-700' : 'text-[#1C1417]'
-            }`}
-          >
-            Select Size:{' '}
+          <div className="flex items-center gap-2">
+            <h3 className="font-serif font-semibold text-[18px] text-[var(--ink)]">
+              Select size
+            </h3>
             {selectedSize ? (
-              <span className="text-[#B8903A] font-bold normal-case">{selectedSize}</span>
+              <span className="text-sm font-semibold text-[var(--ink)]">
+                : {formatSizeLabel(selectedSize)}
+              </span>
             ) : (
-              <span className="text-rose-600 font-semibold normal-case ml-1">
-                {sizeError ? '— Please tap a size below' : '(Required)'}
+              <span className="text-xs font-semibold text-[var(--cta)]">
+                (Required)
               </span>
             )}
-          </label>
+          </div>
 
           <button
-            onClick={() => setSizeChartOpen(true)}
-            className="flex items-center gap-1.5 text-xs text-[#B8903A] hover:text-[#1C1417] transition-colors font-medium cursor-pointer"
+            type="button"
+            onClick={() => {
+              haptic('tap');
+              setSizeChartOpen(true);
+            }}
+            className="flex items-center gap-1.5 text-xs text-[var(--ink)] hover:text-[var(--cta)] transition-colors font-medium cursor-pointer"
           >
-            <RulerIcon className="w-3.5 h-3.5 text-[#B8903A]" />
-            <span className="underline decoration-[#B8903A]/50 underline-offset-4">Size Guide</span>
+            <Ruler className="w-3.5 h-3.5 text-[var(--cta)]" />
+            <span className="underline decoration-[var(--line)] underline-offset-4">Size guide</span>
           </button>
         </div>
 
-        {/* 44px Size Chips */}
-        <div className="flex flex-wrap gap-2.5">
+        {/* 3-Column Grid on Mobile, 4-Column on Desktop */}
+        <div
+          className={`grid grid-cols-3 sm:grid-cols-4 gap-2.5 ${
+            isShaking ? 'animate-shake-chips' : ''
+          }`}
+        >
           {product.sizes.map((s) => {
             const isSelected = selectedSize === s.size;
             const inStock = s.inStock !== false;
+            const sizeNum = formatSizeLabel(s.size);
+            const subtitle = isKids
+              ? getSizeAgeSubtitle(s.size, true)
+              : getWomenSizeSubtitle(s.size);
 
             return (
               <button
                 key={s.size}
+                type="button"
                 disabled={!inStock}
                 onClick={() => {
-                  setSelectedSize(s.size);
+                  haptic('tap');
+                  onSizeChange(s.size);
                   setSizeError(false);
                 }}
-                className={`h-[44px] min-w-[44px] px-3.5 rounded-[6px] text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center cursor-pointer ${
+                className={`relative h-[64px] rounded-[14px] p-1.5 flex flex-col items-center justify-center transition-all cursor-pointer select-none ${
                   !inStock
-                    ? 'bg-gray-100 text-gray-400 border border-gray-200 line-through opacity-50 cursor-not-allowed'
+                    ? 'bg-gray-50 text-gray-400 border border-gray-200 opacity-60 cursor-not-allowed overflow-hidden'
                     : isSelected
-                    ? 'bg-[#3B1230] text-white border border-[#3B1230] shadow-sm'
-                    : 'bg-white text-[#1C1417] border border-[#3B1230]/30 hover:border-[#3B1230]'
+                    ? 'bg-[var(--cta)] text-white border border-[var(--cta)] shadow-xs animate-chip-spring'
+                    : 'bg-white text-[var(--ink)] border border-[#EADFD6] hover:border-[var(--cta)]/60'
                 }`}
+                aria-label={`Size ${sizeNum}`}
               >
-                {getSizeLabel(s.size)}
+                {/* Out of stock diagonal strike line */}
+                {!inStock && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none flex items-center justify-center"
+                  >
+                    <span className="w-[120%] h-[1.5px] bg-gray-400 rotate-[-28deg]" />
+                  </span>
+                )}
+
+                {/* Selected Check Icon Top-Right */}
+                {isSelected && (
+                  <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-white/25 flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
+                  </span>
+                )}
+
+                {/* Large Size Number (20px, 700) */}
+                <span className="text-[20px] font-bold leading-tight tabular-nums">
+                  {sizeNum}
+                </span>
+
+                {/* Small Age or Label Below (13px, muted or white on selected) */}
+                {subtitle && (
+                  <span
+                    className={`text-[12px] sm:text-[13px] font-normal leading-none mt-0.5 ${
+                      isSelected ? 'text-white/90' : 'text-[var(--muted)]'
+                    }`}
+                  >
+                    {subtitle}
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
+
+        {/* 3) Colour disclaimer line */}
+        <p className="text-xs text-[var(--muted)] pt-1 italic">
+          Actual colour may vary slightly from the photos.
+        </p>
       </div>
 
-      {/* Custom Fitting / Alteration Toggle (Segmented control with visible borders) */}
-      <div className="space-y-2 pt-1">
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-[#1C1417] uppercase tracking-[0.14em]">
-            Custom Fitting / Alteration:
-          </label>
-          <span className="text-[11px] text-gray-500 font-normal">Complimentary service</span>
-        </div>
-        <div className="inline-flex p-1 bg-white rounded-xl border border-[#D6C7BE] w-full sm:w-auto">
-          <button
-            onClick={() => setNeedsAlteration('No')}
-            className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-              needsAlteration === 'No'
-                ? 'bg-[#3B1230] text-white border-[#3B1230] shadow-xs'
-                : 'bg-white text-[#1C1417] border-transparent hover:bg-gray-50'
-            }`}
-          >
-            No (Standard Ready Size)
-          </button>
-          <button
-            onClick={() => setNeedsAlteration('Yes')}
-            className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-              needsAlteration === 'Yes'
-                ? 'bg-[#3B1230] text-white border-[#3B1230] shadow-xs'
-                : 'bg-white text-[#1C1417] border-transparent hover:bg-gray-50'
-            }`}
-          >
-            Yes (Custom Measurements)
-          </button>
-        </div>
-      </div>
-
-      {/* Quantity Stepper & Buttons Row */}
-      <div className="space-y-4 pt-2">
-        <div className="flex items-center gap-4">
-          <label className="text-xs font-semibold text-[#1C1417] uppercase tracking-[0.14em]">
-            Quantity:
-          </label>
-          {/* 44px Quantity Stepper */}
-          <div className="flex items-center border border-[#3B1230]/30 rounded-[6px] bg-white h-[44px]">
+      {/* ── 6) BUY BUTTONS, QUANTITY & ACTIONS ── */}
+      <div id="pdp-main-actions" className="space-y-3.5 pt-1">
+        {/* Compact Stepper (44px buttons) */}
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-[var(--ink)]">Quantity:</span>
+          <div className="flex items-center border border-[#EADFD6] rounded-[12px] bg-white h-[44px]">
             <button
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="w-[44px] h-[44px] text-[#1C1417] hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer"
+              type="button"
+              onClick={() => {
+                haptic('tap');
+                setQuantity((q) => Math.max(1, q - 1));
+              }}
+              className="w-[44px] h-[44px] text-[var(--ink)] hover:bg-black/5 active:scale-90 flex items-center justify-center transition-all cursor-pointer"
               aria-label="Decrease quantity"
             >
-              <Minus className="w-3.5 h-3.5" />
+              <Minus className="w-4 h-4" />
             </button>
-            <span className="px-4 text-xs font-bold text-[#1C1417]">{quantity}</span>
+            <span className="px-3 text-sm font-bold text-[var(--ink)] tabular-nums">
+              {quantity}
+            </span>
             <button
-              onClick={() => setQuantity((q) => q + 1)}
-              className="w-[44px] h-[44px] text-[#1C1417] hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer"
+              type="button"
+              onClick={() => {
+                haptic('tap');
+                setQuantity((q) => q + 1);
+              }}
+              className="w-[44px] h-[44px] text-[var(--ink)] hover:bg-black/5 active:scale-90 flex items-center justify-center transition-all cursor-pointer"
               aria-label="Increase quantity"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Primary CTA (Add to Bag: 52px, wine #3B1230, radius 6px) + Secondary Buy Now (gold #B08D57) */}
-        <div className="space-y-2.5">
+        {/* Primary Add to Cart (52px, --cta, rounded 14px) & Secondary Buy Now (52px, --buy, rounded 14px) */}
+        <div className="flex flex-col sm:flex-row gap-2.5">
           <button
+            type="button"
             onClick={handleAdd}
-            className="w-full h-[52px] rounded-[6px] bg-[#3B1230] hover:bg-[#2A0D22] text-white font-sans text-xs font-bold uppercase tracking-[0.2em] shadow-md flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-[0.99]"
+            className={`relative overflow-hidden w-full h-[52px] rounded-[14px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white font-sans text-[15px] font-bold flex items-center justify-center gap-2.5 transition-transform duration-150 cursor-pointer active:scale-[0.97] shadow-xs select-none ${
+              addedFeedback ? 'animate-cta-press' : ''
+            }`}
           >
-            <ShoppingBagIcon className="w-4 h-4 text-white" />
-            <span>{selectedSize ? 'ADD TO BAG' : 'Select a size'}</span>
+            {/* CSS light sweep on add */}
+            {addedFeedback && (
+              <span
+                className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -skew-x-12 animate-shine-sweep pointer-events-none"
+                aria-hidden="true"
+              />
+            )}
+            {addedFeedback ? (
+              <>
+                <Check className="w-4 h-4 text-white stroke-[3]" />
+                <span>Added to bag ✓</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-4 h-4 text-white" />
+                <span>Add to Cart</span>
+              </>
+            )}
           </button>
 
           <button
+            type="button"
             onClick={handleBuyNow}
-            className="w-full h-[52px] rounded-[6px] bg-[#B08D57] hover:bg-[#9B7A49] text-[#1C1417] font-sans text-xs font-bold uppercase tracking-[0.2em] shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.99]"
+            className="w-full h-[52px] rounded-[14px] bg-[var(--buy)] hover:opacity-95 text-white font-sans text-[15px] font-semibold flex items-center justify-center gap-2 transition-transform duration-150 cursor-pointer active:scale-[0.97] shadow-xs select-none"
           >
-            <span>BUY NOW</span>
+            <span>Buy Now</span>
           </button>
         </div>
       </div>
 
-      {/* Offer Banner Card (Blush #F4E4E2, 1px gold border, code FESTIVE10 dark pill, fully visible) */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#F4E4E2] border border-[#B8903A] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+      {/* ── 8) FIRST-ORDER OFFER BANNER ── */}
+      <div
+        className="p-4 sm:p-5 rounded-[16px] border border-[#EADFD6] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
+        style={{ backgroundColor: 'var(--accent-soft)' }}
+      >
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-white/70 border border-[#B8903A]/40 flex items-center justify-center text-[#B8903A] shrink-0 mt-0.5">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[var(--accent-color)] shrink-0 mt-0.5 shadow-2xs">
             <Tag className="w-4 h-4" />
           </div>
-          <div className="space-y-1">
-            <p className="text-sm font-bold text-[#1C1417] font-sans">
+          <div className="space-y-0.5">
+            <h4 className="font-serif font-semibold text-[17px] text-[var(--ink)] leading-snug">
               10% off your first order
-            </p>
-            <p className="text-xs text-gray-600 font-sans leading-relaxed">
-              Valid sitewide across Women &amp; Kids collections on all prepaid and COD orders.
+            </h4>
+            <p className="text-[14px] sm:text-[15px] text-[var(--muted)]">
+              Valid on all prepaid and COD orders.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
-          <span className="bg-[#3B1230] text-white font-mono text-xs font-bold px-3 py-1.5 rounded-full tracking-wider shadow-2xs">
+          <span className="bg-white border border-[#EADFD6] text-[var(--ink)] font-mono text-xs font-bold px-3 py-1.5 rounded-full tracking-wider shadow-2xs">
             FESTIVE10
           </span>
           <button
+            type="button"
             onClick={handleCopyCoupon}
-            className="px-3 py-1.5 rounded-lg border border-[#3B1230] bg-white hover:bg-[#3B1230] text-[#3B1230] hover:text-white text-xs font-semibold tracking-wider transition-colors cursor-pointer flex items-center gap-1.5 min-h-[36px]"
+            className="px-3.5 py-1.5 rounded-full border border-[var(--ink)]/20 bg-white hover:bg-[var(--ink)] hover:text-white text-[var(--ink)] text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center gap-1.5 min-h-[36px] active:scale-95"
           >
             {copiedCoupon ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copiedCoupon ? 'Copied' : 'Copy'}</span>
+            <span>{copiedCoupon ? 'Copied ✓' : 'Copy'}</span>
           </button>
         </div>
       </div>
 
-      {/* Delivery Estimate Card with Pincode Check Input */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#EFE7E2] space-y-3 shadow-xs">
-        <div className="flex items-center gap-2.5 text-xs font-semibold text-[#1C1417]">
-          <TruckIcon className="w-4 h-4 text-[#B8903A]" />
-          <span>Check Delivery Estimate &amp; COD Availability</span>
+      {/* ── 9) VIDEO CALL REQUEST CARD ── */}
+      <div className="p-4 sm:p-5 rounded-[16px] bg-white border border-[#EADFD6] space-y-3 shadow-2xs">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0 mt-0.5">
+            <Video className="w-4 h-4" />
+          </div>
+          <div className="space-y-0.5">
+            <h4 className="font-serif font-semibold text-[17px] text-[var(--ink)]">
+              See it live in our store
+            </h4>
+            <p className="text-[14px] text-[var(--muted)] leading-relaxed">
+              Request a video call and our team will show you this piece.
+            </p>
+          </div>
+        </div>
+
+        <a
+          href={`https://wa.me/919844371705?text=${encodeURIComponent(videoCallMessage)}`}
+          target="_blank"
+          rel="noopener"
+          onClick={() => haptic('tap')}
+          className="w-full min-h-[48px] rounded-[12px] border-2 border-[#25D366] bg-white hover:bg-emerald-50/50 text-[#128C7E] font-sans text-sm font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-[0.98]"
+        >
+          {/* Inline WhatsApp glyph */}
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.964 9.964 0 0 0 1.333 4.993L2 22l5.233-1.237a9.994 9.994 0 0 0 4.779 1.217h.004c5.505 0 9.988-4.478 9.989-9.984 0-2.669-1.037-5.176-2.925-7.062A9.925 9.925 0 0 0 12.012 2zm0 18.314h-.003a8.318 8.318 0 0 1-4.241-1.157l-.304-.18-3.155.746.757-3.078-.198-.315a8.272 8.272 0 0 1-1.267-4.346c.001-4.577 3.731-8.303 8.313-8.303 2.217 0 4.302.863 5.869 2.428a8.248 8.248 0 0 1 2.43 5.867c-.002 4.578-3.732 8.304-8.311 8.304zm4.556-6.223c-.25-.125-1.477-.728-1.706-.811-.228-.083-.395-.125-.562.125-.166.25-.645.811-.79 1-.146.187-.291.208-.541.083-.25-.125-1.054-.388-2.008-1.238-.742-.662-1.243-1.48-1.389-1.73-.146-.25-.016-.385.109-.509.113-.112.25-.291.375-.437.125-.146.166-.25.25-.416.083-.167.042-.313-.021-.438-.063-.125-.562-1.354-.77-1.854-.203-.487-.41-.421-.562-.429-.146-.007-.312-.009-.479-.009-.166 0-.437.063-.666.313-.229.25-.874.854-.874 2.083s.895 2.417 1.02 2.583c.125.167 1.761 2.689 4.267 3.771.596.257 1.061.411 1.424.526.598.19 1.143.163 1.573.099.48-.071 1.477-.604 1.686-1.187.208-.583.208-1.083.146-1.187-.063-.105-.229-.167-.479-.292z" />
+          </svg>
+          <span>Request video call on WhatsApp</span>
+        </a>
+
+        <p className="text-[12px] text-[var(--muted)] text-center">
+          Store hours: Mon-Sat 10:30 AM-9:00 PM, Sun 11:00 AM-8:30 PM.
+        </p>
+      </div>
+
+      {/* ── 10) DELIVERY CHECK CARD ── */}
+      <div className="p-4 sm:p-5 rounded-[16px] bg-white border border-[#EADFD6] space-y-3 shadow-2xs">
+        <div className="flex items-center gap-2 text-sm font-semibold text-[var(--ink)]">
+          <Truck className="w-4 h-4 text-[var(--cta)]" />
+          <span>Check delivery estimate &amp; COD</span>
         </div>
 
         <form onSubmit={handleCheckPincode} className="flex gap-2">
           <input
             type="text"
+            inputMode="numeric"
             maxLength={6}
             value={pincodeInput}
             onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
-            placeholder="Enter 6-digit Indian PIN code"
-            className="flex-1 px-3.5 py-2.5 rounded-[6px] border border-[#D6C7BE] text-xs focus:outline-none focus:border-[#3B1230] bg-[#FBF7F1]/30 font-sans min-h-[44px]"
+            placeholder="Enter 6-digit PIN code"
+            className="flex-1 px-3.5 py-2.5 rounded-[10px] border border-[#EADFD6] text-sm focus:outline-none focus:border-[var(--buy)] bg-[#FBF8F4]/30 font-sans min-h-[44px]"
           />
           <button
             type="submit"
-            className="px-5 py-2.5 rounded-[6px] bg-[#3B1230] hover:bg-[#2A0D22] text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer min-h-[44px]"
+            className="px-5 py-2.5 rounded-[10px] bg-[var(--buy)] hover:opacity-95 text-white text-xs font-semibold uppercase tracking-wider transition-opacity cursor-pointer min-h-[44px]"
           >
             Check
           </button>
         </form>
 
         {pincodeStatus && (
-          <p className="text-xs text-[#3B1230] font-medium pt-0.5">
-            {pincodeStatus}
+          <p
+            className={`text-xs font-medium pt-0.5 ${
+              pincodeStatus.isSuccess ? 'text-[var(--success)]' : 'text-rose-600'
+            }`}
+          >
+            {pincodeStatus.message}
           </p>
         )}
       </div>
 
-      {/* 3 Equal Columns Trust Row */}
-      <div className="grid grid-cols-3 gap-2 py-4 px-2 text-center border-t border-b border-[#EFE7E2]">
+      {/* ── TRUST ROW OF 3 ICONS (Pan-India dispatch, COD available with ₹200 advance, Easy returns) ── */}
+      <div className="grid grid-cols-3 gap-2 py-4 px-1 text-center border-y border-[#EADFD6]">
         <div className="flex flex-col items-center justify-center gap-1.5">
-          <TruckIcon className="w-4 h-4 text-[#B8903A]" />
-          <span className="text-[11px] font-semibold text-[#1C1417]">Pan-India Dispatch</span>
+          <Truck className="w-5 h-5 text-[var(--cta)]" />
+          <span className="text-[12px] font-semibold text-[var(--ink)] leading-tight">
+            Pan-India Dispatch
+          </span>
+          <span className="text-[11px] text-[var(--muted)]">1-2 business days</span>
         </div>
-        <div className="flex flex-col items-center justify-center gap-1.5 border-x border-[#EFE7E2] px-1">
-          <ShieldCheck className="w-4 h-4 text-[#B8903A]" />
-          <span className="text-[11px] font-semibold text-[#1C1417]">COD Available</span>
+        <div className="flex flex-col items-center justify-center gap-1.5 border-x border-[#EADFD6] px-1">
+          <ShieldCheck className="w-5 h-5 text-[var(--cta)]" />
+          <span className="text-[12px] font-semibold text-[var(--ink)] leading-tight">
+            COD Available
+          </span>
+          <span className="text-[11px] text-[var(--muted)]">₹200 advance</span>
         </div>
         <div className="flex flex-col items-center justify-center gap-1.5">
-          <RefreshCw className="w-4 h-4 text-[#B8903A]" />
-          <span className="text-[11px] font-semibold text-[#1C1417]">7-Day Returns</span>
+          <RefreshCw className="w-5 h-5 text-[var(--cta)]" />
+          <span className="text-[12px] font-semibold text-[var(--ink)] leading-tight">
+            Easy Returns
+          </span>
+          <span className="text-[11px] text-[var(--muted)]">7-day window</span>
         </div>
       </div>
 
-      {/* Equal-Width Concierge Buttons: WhatsApp & Video Consultation */}
-      <div className="grid grid-cols-2 gap-3 pt-1">
-        <a
-          href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Hi The Girls Collections, I would like to inquire about this outfit.')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="h-[44px] rounded-[6px] border border-emerald-600 bg-white hover:bg-emerald-50 text-emerald-700 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
-        >
-          <MessageCircle className="w-4 h-4 text-emerald-600" />
-          <span>WhatsApp Inquiry</span>
-        </a>
-
-        <button
-          onClick={() => addToast('Video consultation requested! Our stylist will message you on WhatsApp.', 'success')}
-          className="h-[44px] rounded-[6px] border border-[#3B1230] bg-white hover:bg-[#FAF6EE] text-[#3B1230] text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
-        >
-          <Video className="w-4 h-4 text-[#3B1230]" />
-          <span>Video Consultation</span>
-        </button>
-      </div>
-
-      {/* Product Details & Specifications Accordions */}
+      {/* ── ACCORDIONS (Product details, Size guide, Delivery & returns) ── */}
       <ProductAccordions
         description={product.description}
         fabric={product.fabric}

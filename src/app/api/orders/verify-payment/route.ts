@@ -211,9 +211,10 @@ export async function POST(request: Request) {
 
     // 7. Send Order Success Email or COD Deposit Confirmation Email (Fire-and-forget)
     if (confirmedOrder.payment_type === 'cod_with_deposit') {
-      sendDepositConfirmationEmail({
+      sendOrderSuccessEmail({
         orderNumber: confirmedOrder.order_number,
         customerName: confirmedOrder.customer_name,
+        customerPhone: confirmedOrder.customer_phone,
         customerEmail: confirmedOrder.customer_email,
         items: confirmedOrder.items as any[],
         totalPaise: confirmedOrder.total,
@@ -222,11 +223,15 @@ export async function POST(request: Request) {
         fulfillmentType: confirmedOrder.fulfillment_type,
         pickupCode: confirmedOrder.pickup_code,
         shippingAddress: confirmedOrder.shipping_address,
-      }).catch((err) => console.error('Failed to send COD deposit confirmation email:', err));
+        paymentMode: 'cod',
+        advancePaid: confirmedOrder.advance_paid || 20000,
+        codBalance: confirmedOrder.cod_balance || Math.max(0, confirmedOrder.total - (confirmedOrder.advance_paid || 20000)),
+      }).catch((err) => console.error('Failed to send COD order confirmation email:', err));
     } else {
       sendOrderSuccessEmail({
         orderNumber: confirmedOrder.order_number,
         customerName: confirmedOrder.customer_name,
+        customerPhone: confirmedOrder.customer_phone,
         customerEmail: confirmedOrder.customer_email,
         items: confirmedOrder.items as any[],
         totalPaise: confirmedOrder.total,
@@ -235,6 +240,7 @@ export async function POST(request: Request) {
         fulfillmentType: confirmedOrder.fulfillment_type,
         pickupCode: confirmedOrder.pickup_code,
         shippingAddress: confirmedOrder.shipping_address,
+        paymentMode: 'prepaid',
       }).catch((err) => console.error('Failed to send order success email:', err));
     }
 

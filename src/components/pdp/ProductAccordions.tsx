@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { TruckIcon, ShieldCheckIcon, RefreshCwIcon } from '@/components/ui/BrandIcons';
+import { ChevronDown, Truck, ShieldCheck, RefreshCw, Ruler, Info } from 'lucide-react';
+import { siteConfig } from '@/lib/siteConfig';
 
 interface ProductAccordionsProps {
   description: string;
@@ -35,8 +35,8 @@ export const ProductAccordions: React.FC<ProductAccordionsProps> = ({
 }) => {
   const [openSections, setOpenSections] = useState({
     details: true,
-    shipping: false,
-    fit: false,
+    sizeGuide: false,
+    delivery: false,
   });
 
   const toggle = (sec: keyof typeof openSections) => {
@@ -46,115 +46,160 @@ export const ProductAccordions: React.FC<ProductAccordionsProps> = ({
   const specs = [
     { label: 'Category', value: subcategory },
     { label: 'Fabric Composition', value: fabric },
-    ...(work_type ? [{ label: 'Work & Embroidery', value: work_type }] : [{ label: 'Work & Embroidery', value: 'Handwoven Gold Zari & Needlework' }]),
+    ...(work_type ? [{ label: 'Work & Embroidery', value: work_type }] : []),
     ...(style_silhouette ? [{ label: 'Style & Silhouette', value: style_silhouette }] : []),
     ...(sleeve ? [{ label: 'Sleeve Styling', value: sleeve }] : []),
     ...(neckline ? [{ label: 'Neckline', value: neckline }] : []),
     ...(set_type ? [{ label: 'Set Includes', value: set_type }] : []),
-    { label: 'Chest Pads', value: target === 'women' ? 'Included (Padded Blouse)' : 'Not Applicable (Kids Soft Cotton)' },
-    { label: 'Bottom Type', value: target === 'women' ? 'Flared Lehenga Skirt / Elasticated Pants' : 'Pre-stitched Elasticated Dhoti / Frock' },
     { label: 'Care Instructions', value: careInstructions.length > 0 ? careInstructions.join(' • ') : 'Dry Clean Recommended' },
     { label: 'Country of Origin', value: 'Handcrafted in India' },
   ];
 
   return (
-    <div className="divide-y divide-roseGold/20 border-y border-roseGold/20 font-sans text-xs text-navy my-8 select-none">
-      {/* ACCORDION 1: PRODUCT DETAILS & SPECS */}
-      <div className="py-4">
+    <div className="divide-y divide-[#EADFD6] border-y border-[#EADFD6] font-sans text-sm select-none my-6">
+      {/* ── ACCORDION 1: PRODUCT DETAILS ── */}
+      <div className="py-3.5">
         <button
+          type="button"
           onClick={() => toggle('details')}
-          className="w-full flex items-center justify-between font-serif font-bold text-sm sm:text-base text-navy text-left cursor-pointer"
+          className="w-full flex items-center justify-between text-left font-serif font-semibold text-[17px] text-[var(--ink)] cursor-pointer"
+          aria-expanded={openSections.details}
         >
-          <span>Product Details &amp; Specifications</span>
-          {openSections.details ? (
-            <ChevronUp className="w-4 h-4 text-roseGold" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-roseGold" />
-          )}
+          <span className="flex items-center gap-2.5">
+            <Info className="w-4 h-4 text-[var(--cta)]" />
+            <span>Product details</span>
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 text-[var(--muted)] transition-transform duration-260 ease-out ${
+              openSections.details ? 'rotate-180' : 'rotate-0'
+            }`}
+          />
         </button>
 
-        {openSections.details && (
-          <div className="mt-3 space-y-4">
-            <p className="text-navy/80 leading-relaxed font-normal">
-              {description}
-            </p>
+        <div
+          className={`grid transition-[grid-template-rows] duration-260 ease-out ${
+            openSections.details ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="pt-3 pb-2 space-y-3.5 text-[var(--ink)]/85 text-[15px] leading-relaxed">
+              {description && <p>{description}</p>}
 
-            {/* Clean Two-Column Key-Value Spec List with Fine Gold Hairline Dividers */}
-            <div className="rounded-xl border border-roseGold/25 bg-white/70 overflow-hidden shadow-2xs divide-y divide-roseGold/15">
-              {specs.map((spec, i) => (
-                <div key={i} className="grid grid-cols-1 sm:grid-cols-3 p-3 gap-1 sm:gap-4 text-xs">
-                  <span className="font-semibold text-navy/70 uppercase tracking-wider text-[10.5px]">
-                    {spec.label}
-                  </span>
-                  <span className="sm:col-span-2 font-medium text-navy">
-                    {spec.value}
-                  </span>
-                </div>
-              ))}
+              <div className="rounded-xl border border-[#EADFD6] bg-[#FBF8F4]/50 divide-y divide-[#EADFD6] text-xs">
+                {specs.map((spec, i) => (
+                  <div key={i} className="grid grid-cols-1 sm:grid-cols-3 p-2.5 gap-1 text-xs">
+                    <span className="font-semibold text-[var(--muted)]">{spec.label}</span>
+                    <span className="sm:col-span-2 font-medium text-[var(--ink)]">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* ACCORDION 2: SHIPPING & RETURNS */}
-      <div className="py-4">
+      {/* ── ACCORDION 2: SIZE GUIDE ── */}
+      <div className="py-3.5">
         <button
-          onClick={() => toggle('shipping')}
-          className="w-full flex items-center justify-between font-serif font-bold text-sm sm:text-base text-navy text-left cursor-pointer"
+          type="button"
+          onClick={() => toggle('sizeGuide')}
+          className="w-full flex items-center justify-between text-left font-serif font-semibold text-[17px] text-[var(--ink)] cursor-pointer"
+          aria-expanded={openSections.sizeGuide}
         >
-          <span>Shipping, COD &amp; Returns Policy</span>
-          {openSections.shipping ? (
-            <ChevronUp className="w-4 h-4 text-roseGold" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-roseGold" />
-          )}
+          <span className="flex items-center gap-2.5">
+            <Ruler className="w-4 h-4 text-[var(--cta)]" />
+            <span>Size guide</span>
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 text-[var(--muted)] transition-transform duration-260 ease-out ${
+              openSections.sizeGuide ? 'rotate-180' : 'rotate-0'
+            }`}
+          />
         </button>
 
-        {openSections.shipping && (
-          <div className="mt-3 space-y-3 text-navy/80">
-            <div className="flex items-start space-x-3 p-2.5 rounded-lg bg-sand/20 border border-roseGold/20">
-              <TruckIcon className="w-4 h-4 text-roseGold shrink-0 mt-0.5" />
-              <span>Complimentary Pan-India express shipping on orders above ₹1,999. Dispatch within 24-48 business hours.</span>
-            </div>
-            <div className="flex items-start space-x-3 p-2.5 rounded-lg bg-sand/20 border border-roseGold/20">
-              <ShieldCheckIcon className="w-4 h-4 text-roseGold shrink-0 mt-0.5" />
-              <span>Cash on Delivery (COD) available nationwide with secure OTP phone verification at checkout.</span>
-            </div>
-            <div className="flex items-start space-x-3 p-2.5 rounded-lg bg-sand/20 border border-roseGold/20">
-              <RefreshCwIcon className="w-4 h-4 text-roseGold shrink-0 mt-0.5" />
-              <span>Hassle-free 7-day doorstep return and size exchange policy for 100% fit assurance.</span>
+        <div
+          className={`grid transition-[grid-template-rows] duration-260 ease-out ${
+            openSections.sizeGuide ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="pt-3 pb-2 space-y-2 text-[var(--ink)]/85 text-[14px] leading-relaxed">
+              {target === 'kids' ? (
+                <>
+                  <p>
+                    • <strong>Kids Sizing:</strong> Garment numbers correspond to approximate age (e.g. Size 16 fits ~1.5 years, Size 20 fits ~3 years).
+                  </p>
+                  <p>
+                    • <strong>Comfort Fit:</strong> If your child is between sizes or taller than average, we recommend selecting one size up for lasting comfort.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    • <strong>Women&apos;s Sizing:</strong> Fits true to standard Indian ready-to-wear sizing (XS/32 to 3XL/44).
+                  </p>
+                  <p>
+                    • <strong>Relaxed Fit:</strong> For a more relaxed drape or if you fall between two sizes, choose the larger size.
+                  </p>
+                </>
+              )}
+              <p className="text-xs text-[var(--muted)] pt-1">
+                Have questions regarding measurements? You can also request a quick WhatsApp video call to see the fit live.
+              </p>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* ACCORDION 3: SIZE & FIT NOTES */}
-      <div className="py-4">
+      {/* ── ACCORDION 3: DELIVERY & RETURNS ── */}
+      <div className="py-3.5">
         <button
-          onClick={() => toggle('fit')}
-          className="w-full flex items-center justify-between font-serif font-bold text-sm sm:text-base text-navy text-left cursor-pointer"
+          type="button"
+          onClick={() => toggle('delivery')}
+          className="w-full flex items-center justify-between text-left font-serif font-semibold text-[17px] text-[var(--ink)] cursor-pointer"
+          aria-expanded={openSections.delivery}
         >
-          <span>Size &amp; Fit Notes</span>
-          {openSections.fit ? (
-            <ChevronUp className="w-4 h-4 text-roseGold" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-roseGold" />
-          )}
+          <span className="flex items-center gap-2.5">
+            <Truck className="w-4 h-4 text-[var(--cta)]" />
+            <span>Delivery &amp; returns</span>
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 text-[var(--muted)] transition-transform duration-260 ease-out ${
+              openSections.delivery ? 'rotate-180' : 'rotate-0'
+            }`}
+          />
         </button>
 
-        {openSections.fit && (
-          <div className="mt-3 space-y-2 text-navy/80 leading-relaxed font-normal">
-            <p>
-              • <strong>Fit Recommendation:</strong> True to standard Indian size charts. If between sizes, we recommend selecting one size up for comfort.
-            </p>
-            <p>
-              • <strong>Model Context:</strong> Model is 5&apos;8&quot; (173cm) wearing Size Small (S).
-            </p>
-            <p>
-              • <strong>Alteration Support:</strong> 2-inch inner margin provided in all side seams for easy home/tailor alterations if required.
-            </p>
+        <div
+          className={`grid transition-[grid-template-rows] duration-260 ease-out ${
+            openSections.delivery ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="pt-3 pb-2 space-y-2 text-[var(--ink)]/85 text-[14px] leading-relaxed">
+              <p>
+                • <strong>Pan-India Dispatch:</strong> Orders dispatched within {siteConfig.dispatchDays}. Delivery within {siteConfig.deliveryDays}. Free shipping on orders above ₹{siteConfig.freeShippingThreshold.toLocaleString('en-IN')}.
+              </p>
+              <p>
+                • <strong>Cash on Delivery (COD):</strong> Available across India with a ₹{siteConfig.codAdvance} advance confirmation.
+              </p>
+              <p>
+                • <strong>Returns &amp; Exchange:</strong> We do NOT offer reverse pickup. To request a return or exchange, you must email{' '}
+                <a href={`mailto:${siteConfig.email}`} className="underline text-[var(--ink)] font-medium">
+                  {siteConfig.email}
+                </a>{' '}
+                or call{' '}
+                <a href={`tel:${siteConfig.telLink}`} className="underline text-[var(--ink)] font-medium">
+                  +91 {siteConfig.phone}
+                </a>{' '}
+                within {siteConfig.returnWindowDays} days of delivery.
+              </p>
+              <p>
+                • <strong>Item Condition:</strong> Garment must be unused, unwashed, and in original packaging with tags intact. In-person exchanges are also welcome at our Gandhi Bazaar, Bengaluru boutique.
+              </p>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { formatSizeLabel } from '@/lib/formatSizeLabel';
+
 export interface MasterSizeDefinition {
   division: 'women' | 'kids';
   code: string;
@@ -151,7 +153,7 @@ export function getSizeLabel(code: string): string {
   );
   if (numMatch) return numMatch.label;
 
-  return clean;
+  return formatSizeLabel(clean);
 }
 
 export const ALL_MASTER_SIZES: MasterSizeDefinition[] = [

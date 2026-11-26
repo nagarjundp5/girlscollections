@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import LuxuryHeartButton from '@/components/LuxuryHeartButton';
 import { Product } from '@/types';
 import { useShop } from '@/context/ShopContext';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
@@ -209,23 +210,13 @@ const CategoryCarouselRow: React.FC<{
                       )}
 
                       {/* Heart Wishlist button */}
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toggleWishlist(product.id);
-                        }}
-                        className="absolute top-2.5 right-2.5 z-20 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#1C1417] hover:bg-white hover:scale-105 transition-all shadow-xs"
-                        aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                      >
-                        <Heart
-                          className={`w-4 h-4 md:w-4.5 md:h-4.5 transition-colors ${
-                            isWishlisted
-                              ? 'fill-[#7A1F2B] text-[#7A1F2B]'
-                              : 'text-[#1C1417]'
-                          }`}
+                      <div className="absolute top-1.5 right-1.5 z-20">
+                        <LuxuryHeartButton
+                          isLiked={isWishlisted}
+                          onToggle={() => toggleWishlist(product.id)}
+                          size="md"
                         />
-                      </button>
+                      </div>
 
                       {/* Desktop Hover Slide-Up Sizes Drawer */}
                       <div

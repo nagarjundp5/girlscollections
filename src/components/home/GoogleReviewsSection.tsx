@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { googleReviews, GOOGLE_MAPS_REVIEWS_URL, GoogleReview } from '@/content/reviews';
 import { siteConfig } from '@/lib/siteConfig';
-import { Heart, ExternalLink, MapPin, Phone, Navigation } from 'lucide-react';
+import { Heart, ExternalLink } from 'lucide-react';
 
 // Google "G" Mark as inline SVG (standard brand colors)
 export const GoogleGIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
@@ -50,7 +50,7 @@ const ReviewCard: React.FC<{ review: GoogleReview }> = ({ review }) => (
             {review.initial}
           </div>
           <div>
-            <h4 className="font-sans font-medium text-xs sm:text-sm text-[#1A1E3A] leading-tight">
+            <h4 className="font-sans font-semibold text-sm text-[#1A1E3A] leading-tight">
               {review.authorName}
             </h4>
             <span className="text-[10px] text-gray-500 font-sans block">
@@ -69,7 +69,7 @@ const ReviewCard: React.FC<{ review: GoogleReview }> = ({ review }) => (
       <StarRating />
 
       {/* Review Body */}
-      <p className="text-xs sm:text-[13px] font-sans font-normal text-[#1C1417]/80 leading-relaxed">
+      <p className="text-[16px] font-sans font-normal text-[#1C1417]/80 leading-relaxed">
         &ldquo;{review.text}&rdquo;
       </p>
     </div>
@@ -140,7 +140,7 @@ export const GoogleReviewsSection: React.FC = () => {
                 Rated on Google
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-medium text-[#1A1E3A] uppercase tracking-[0.12em]">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-semibold text-[#1A1E3A] tracking-tight">
               Loved by Bengaluru
             </h2>
             <p className="text-xs sm:text-sm text-[#1C1417]/70 font-sans font-normal max-w-lg leading-relaxed">
@@ -199,50 +199,6 @@ export const GoogleReviewsSection: React.FC = () => {
                 <ReviewCard key={`${rev.id}-${i}`} review={rev} />
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* ── COMPACT "Visit our store" strip directly below reviews ── */}
-        <div className="bg-white rounded-2xl border border-[#B8903A]/25 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-full bg-[#FCF5F5] border border-[#B8903A]/30 flex items-center justify-center text-[#B8903A] shrink-0 mt-0.5">
-              <MapPin className="w-5 h-5 text-[#B8903A]" />
-            </div>
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-sans font-medium uppercase tracking-[0.14em] text-[#B8903A]">
-                  Flagship Boutique
-                </span>
-                <span className="text-gray-300">•</span>
-                <span className="text-xs text-gray-500 font-sans">Gandhi Bazaar, Bengaluru</span>
-              </div>
-              <p className="font-sans font-medium text-sm text-[#1A1E3A]">
-                {siteConfig.legalName}
-              </p>
-              <p className="text-xs text-[#1C1417]/75 font-sans leading-relaxed max-w-xl">
-                {siteConfig.address}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
-            <a
-              href={`tel:${siteConfig.telLink}`}
-              className="flex-1 md:flex-none h-[44px] px-5 rounded-xl border border-[#EAE5DE] hover:border-[#B8903A] bg-[#FAF8F5] text-[#1A1E3A] text-xs font-semibold uppercase tracking-[0.1em] transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Phone className="w-3.5 h-3.5 text-[#B8903A]" />
-              <span>Tap to Call</span>
-            </a>
-
-            <a
-              href={siteConfig.mapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 md:flex-none h-[44px] px-6 rounded-xl bg-[#1A1E3A] hover:bg-[#121528] text-white text-xs font-semibold uppercase tracking-[0.1em] transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-            >
-              <Navigation className="w-3.5 h-3.5 text-[#B8903A]" />
-              <span>Directions</span>
-            </a>
           </div>
         </div>
       </div>

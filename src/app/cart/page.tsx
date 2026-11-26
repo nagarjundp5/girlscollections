@@ -13,6 +13,7 @@ import { MOCK_PRODUCTS } from '@/data/shopData';
 import { ButterflyMotif } from '@/components/ui/Motifs';
 import { siteConfig } from '@/lib/siteConfig';
 import { getSizeLabel } from '@/data/masterSizes';
+import ImportantOrderTerms from '@/components/ImportantOrderTerms';
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
@@ -413,10 +414,10 @@ export default function CartPage() {
             {/* Checkout CTA */}
             <Link
               href="/checkout"
-              className="w-full bg-navy hover:bg-navy/90 text-ivory text-center py-4 rounded-xl font-bold uppercase tracking-widest text-xs transition-all shadow-lg flex items-center justify-center gap-2 group"
+              className="w-full min-h-[48px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white text-center py-3.5 rounded-[12px] font-bold uppercase tracking-[0.14em] text-sm transition-transform active:scale-[0.96] flex items-center justify-center gap-2 group"
             >
               <span>Proceed to Checkout</span>
-              <ArrowRight className="w-4 h-4 text-zariGold group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
@@ -445,6 +446,8 @@ export default function CartPage() {
               Use code <strong className="text-navy">FESTIVE10</strong> for 10% off your first order!
             </p>
           </div>
+
+          <ImportantOrderTerms />
         </div>
       </div>
     </div>

@@ -1,62 +1,51 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, ChevronRight, ChevronLeft, MessageCircle, Package, User, Heart, Sparkles, TrendingUp, FileText, HelpCircle } from 'lucide-react';
-import { WOMEN_CATEGORIES, KIDS_CATEGORIES, getCategoryHref } from '@/data/categoryTaxonomy';
+import {
+  X,
+  ChevronRight,
+  Package,
+  User,
+  Heart,
+  Sparkles,
+  TrendingUp,
+  FileText,
+  HelpCircle,
+  ArrowRight,
+} from 'lucide-react';
+import {
+  WOMEN_CIRCLE_CATEGORIES,
+  KIDS_CIRCLE_CATEGORIES,
+} from '@/components/home/CircularCategoryScroller';
 import { useAuthSession } from '@/context/AuthContext';
 import { useShop } from '@/context/ShopContext';
-import { siteConfig } from '@/lib/siteConfig';
 
 interface SlideInDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type DrawerScreen = 'divisions' | 'women' | 'kids';
-
 export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose }) => {
   const { isSignedIn, openAuthModal } = useAuthSession();
   const { wishlist } = useShop();
-  const [currentScreen, setCurrentScreen] = useState<DrawerScreen>('divisions');
+  const [selectedDivision, setSelectedDivision] = useState<'women' | 'kids'>('women');
   const [mounted, setMounted] = useState(false);
-  const [publishedCategorySlugs, setPublishedCategorySlugs] = useState<Set<string> | null>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    if (publishedCategorySlugs) return;
-
-    fetch('/api/search/index')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.items)) {
-          const set = new Set<string>();
-          data.items.forEach((item: any) => {
-            if (item.cat) {
-              set.add(`${item.div || 'women'}:${item.cat.toLowerCase()}`);
-            }
-          });
-          setPublishedCategorySlugs(set);
-        }
-      })
-      .catch(() => {});
-  }, [isOpen, publishedCategorySlugs]);
-
-  const handleClose = React.useCallback(() => {
-    setCurrentScreen('divisions');
+  const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
 
-  // iOS-safe scroll lock on body while drawer is open:
-  // Sets position: fixed with saved scrollY, and restores original scrollY on close.
+  // iOS-safe scroll lock on body while drawer is open + set data attributes for child components
   useEffect(() => {
     if (!isOpen) return;
 
@@ -75,6 +64,9 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
     body.style.right = '0';
     body.style.overflow = 'hidden';
     body.style.width = '100%';
+    body.setAttribute('data-drawer-open', 'true');
+    body.setAttribute('data-menu-open', 'true');
+    window.dispatchEvent(new CustomEvent('tgc-drawer-open'));
 
     return () => {
       body.style.position = originalPosition;
@@ -83,6 +75,9 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
       body.style.right = originalRight;
       body.style.overflow = originalOverflow;
       body.style.width = originalWidth;
+      body.removeAttribute('data-drawer-open');
+      body.removeAttribute('data-menu-open');
+      window.dispatchEvent(new CustomEvent('tgc-drawer-close'));
       window.scrollTo(0, scrollY);
     };
   }, [isOpen]);
@@ -147,16 +142,33 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
         previousActiveElement.current.focus();
       }
     };
-  }, [isOpen, currentScreen]);
+  }, [isOpen]);
+
+  // Swipe-left gesture to close
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (diff > 50) {
+      handleClose();
+    }
+    touchStartX.current = null;
+  };
 
   if (!mounted || !isOpen) return null;
+
+  const currentCategories =
+    selectedDivision === 'women' ? WOMEN_CIRCLE_CATEGORIES : KIDS_CIRCLE_CATEGORIES;
 
   const content = (
     <>
       {/* 
         OVERLAY:
         - Fixed, inset 0, full viewport coverage
-        - z-index: 990 (above announcement bar, header, pill, WhatsApp, bottom nav)
+        - z-index: 990
         - Background: rgba(28,20,23,0.5)
         - Fade in 200ms (opacity only)
       */}
@@ -178,7 +190,7 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
         - height: 100dvh
         - safe-area padding top and bottom
         - overflow-y: auto with overscroll-behavior: contain
-        - slide in 250ms ease-out (transform translateX)
+        - slide in 260ms ease-out (transform translateX)
       */}
       <aside
         id="navigation-drawer"
@@ -186,294 +198,204 @@ export const SlideInDrawer: React.FC<SlideInDrawerProps> = ({ isOpen, onClose })
         role="dialog"
         aria-modal="true"
         aria-label="Navigation Menu"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         style={{
           width: 'min(88vw, 380px)',
           height: '100dvh',
           paddingTop: 'env(safe-area-inset-top, 0px)',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
           overscrollBehavior: 'contain',
-          animation: 'drawerSlideIn 250ms ease-out forwards',
+          animation: 'drawerSlideIn 260ms ease-out forwards',
         }}
-        className="fixed top-0 left-0 bottom-0 z-[1000] bg-[#FBF7F1] text-[#1C1417] border-r border-[#EFE7E2] shadow-2xl flex flex-col justify-between overflow-y-auto"
+        className="fixed top-0 left-0 bottom-0 z-[1000] bg-[#FAF8F5] text-[#1A1E3A] border-r border-[#EFE7E2] shadow-2xl flex flex-col justify-between overflow-hidden font-sans"
       >
-        {/* ── HEADER BAR ────────────────────────────────────── */}
-        <div className="px-5 py-4 border-b border-[#EFE7E2] flex items-center justify-between bg-[#FBF7F1] shrink-0 min-h-[58px]">
-          {currentScreen === 'divisions' ? (
-            <Link href="/" onClick={handleClose} className="flex items-center gap-2.5">
-              <span className="font-serif text-base tracking-[0.16em] uppercase text-[#1C1417] font-semibold">
-                THE GIRLS COLLECTIONS
-              </span>
-            </Link>
-          ) : (
-            <button
-              onClick={() => setCurrentScreen('divisions')}
-              className="flex items-center gap-1.5 text-xs font-sans tracking-[0.12em] uppercase font-semibold text-[#1C1417] hover:text-[#B8924A] transition-colors cursor-pointer py-1 -ml-1 min-h-[44px]"
-              aria-label="Back to divisions"
-            >
-              <ChevronLeft className="w-4 h-4 stroke-[2]" />
-              <span>{currentScreen === 'women' ? 'WOMEN' : 'KIDS'}</span>
-            </button>
-          )}
+        {/* ── HEADER BAR ──────────────────────────────────────
+            - Brand LOGO image (no uppercase letter-spaced serif wordmark text)
+            - Close button 44px
+        */}
+        <div className="px-5 py-3 border-b border-[#EAE5DE] flex items-center justify-between bg-[#FAF8F5] shrink-0 min-h-[58px]">
+          <Link href="/" onClick={handleClose} className="flex items-center gap-2">
+            <Image
+              src="/logo-120.webp"
+              alt="The Girls Collections"
+              width={110}
+              height={36}
+              className="h-8 w-auto object-contain"
+              priority
+            />
+          </Link>
 
           <button
             onClick={handleClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-[#1C1417]/75 hover:text-[#1C1417] hover:bg-black/5 transition-colors cursor-pointer focus:outline-none min-w-[36px] min-h-[36px]"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-[#1A1E3A] hover:bg-black/5 active:scale-95 transition-all cursor-pointer focus:outline-none"
             aria-label="Close navigation"
           >
-            <X className="w-5 h-5 stroke-[1.8]" />
+            <X className="w-5 h-5 stroke-[2]" />
           </button>
         </div>
 
-        {/* ── SCREENS WITH INTERNAL ONLY SCROLLER & OVERSCROLL CONTAINMENT ───────────── */}
+        {/* ── SCROLLABLE BODY ─────────────────────────────────── */}
         <div
-          className="flex-1 overflow-y-auto no-scrollbar relative"
+          className="flex-1 overflow-y-auto no-scrollbar p-5 space-y-6"
           style={{
             overscrollBehavior: 'contain',
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
           }}
         >
-          {currentScreen === 'divisions' ? (
-            /* SCREEN 1: DIVISIONS & CURATED DISCOVERY */
-            <div className="p-5 space-y-6">
-              {/* Primary Division Cards */}
-              <div className="space-y-3.5">
-                {/* WOMEN CARD */}
-                <button
-                  type="button"
-                  onClick={() => setCurrentScreen('women')}
-                  className="w-full relative h-40 sm:h-44 rounded-2xl overflow-hidden group text-left cursor-pointer border border-[#EFE7E2] shadow-sm focus:outline-none touch-manipulation block active:scale-[0.98] transition-all duration-150"
-                >
-                  <Image
-                    src="/categories/all-kurta-sets.webp"
-                    alt="Women Collection"
-                    fill
-                    sizes="(max-width: 640px) 100vw, 360px"
-                    className="object-cover object-[center_20%] brightness-[0.85] group-hover:scale-105 transition-transform duration-500 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-                  <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h2 className="font-sans text-xl sm:text-2xl tracking-[0.16em] uppercase font-normal text-white leading-tight">
-                          WOMEN
-                        </h2>
-                        <p className="font-sans text-[11px] font-light text-white/85 tracking-wider mt-1">
-                          Kurta Sets, Anarkalis &amp; Festive Wear
-                        </p>
-                      </div>
-                      <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white group-hover:bg-[#B8924A] group-hover:scale-105 transition-all shrink-0 ml-2">
-                        <ChevronRight className="w-4 h-4 stroke-[2]" />
-                      </span>
-                    </div>
-                  </div>
-                </button>
-
-                {/* KIDS CARD */}
-                <button
-                  type="button"
-                  onClick={() => setCurrentScreen('kids')}
-                  className="w-full relative h-40 sm:h-44 rounded-2xl overflow-hidden group text-left cursor-pointer border border-[#EFE7E2] shadow-sm focus:outline-none touch-manipulation block active:scale-[0.98] transition-all duration-150"
-                >
-                  <Image
-                    src="/categories/kids-lehenga-blouse-or-pattu-pavadai.webp"
-                    alt="Kids Collection"
-                    fill
-                    sizes="(max-width: 640px) 100vw, 360px"
-                    className="object-cover object-[center_20%] brightness-[0.85] group-hover:scale-105 transition-transform duration-500 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-                  <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h2 className="font-sans text-xl sm:text-2xl tracking-[0.16em] uppercase font-normal text-white leading-tight">
-                          KIDS
-                        </h2>
-                        <p className="font-sans text-[11px] font-light text-white/85 tracking-wider mt-1">
-                          Pattu Pavadai, Frocks &amp; Gowns
-                        </p>
-                      </div>
-                      <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white group-hover:bg-[#B8924A] group-hover:scale-105 transition-all shrink-0 ml-2">
-                        <ChevronRight className="w-4 h-4 stroke-[2]" />
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              {/* Curated Quick Links */}
-              <div className="pt-3 border-t border-[#EFE7E2] space-y-1">
-                <span className="block font-sans text-[10px] tracking-[0.18em] uppercase text-[#6B6B7B] mb-2 font-medium">
-                  QUICK DISCOVERY
-                </span>
-                
-                <Link
-                  href="/shop?isNew=true"
-                  onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
-                      <Sparkles className="w-3.5 h-3.5" />
-                    </span>
-                    <span>New Drops</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-
-                <Link
-                  href="/shop?sort=popular"
-                  onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                    </span>
-                    <span>Best Sellers</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-
-                <Link
-                  href="/track"
-                  onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
-                      <Package className="w-3.5 h-3.5" />
-                    </span>
-                    <span>Track Order</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-
-                <Link
-                  href="/terms-and-conditions"
-                  onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
-                      <FileText className="w-3.5 h-3.5" />
-                    </span>
-                    <span>Terms &amp; Conditions</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-
-                <Link
-                  href="/faqs"
-                  onClick={handleClose}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-[#B8924A]/10 flex items-center justify-center text-[#B8924A] shrink-0">
-                      <HelpCircle className="w-3.5 h-3.5" />
-                    </span>
-                    <span>Help &amp; FAQs</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-
-                <a
-                  href={siteConfig.whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-black/5 transition-colors text-[13px] font-sans font-medium text-[#1C1417] group active:scale-[0.99]"
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-[#25D366]/10 flex items-center justify-center text-[#25D366] shrink-0">
-                      <MessageCircle className="w-3.5 h-3.5" />
-                    </span>
-                    <span>WhatsApp Concierge</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#6B6B7B]/70 group-hover:translate-x-0.5 transition-transform" />
-                </a>
-              </div>
-            </div>
-          ) : (
-            /* SCREEN 2: DIVISION SUBCATEGORIES LIST */
-            <div className="p-5 space-y-4">
-              {/* View All Button */}
-              <Link
-                href={currentScreen === 'women' ? '/shop?target=women' : '/shop?target=kids'}
-                onClick={handleClose}
-                className="w-full block py-2.5 text-center rounded-md bg-[#1C1417] text-white font-sans text-xs uppercase tracking-[0.16em] font-medium hover:bg-black transition-colors"
-              >
-                View All {currentScreen === 'women' ? "Women's Collection" : "Kids' Collection"}
-              </Link>
-
-              {/* Category List */}
-              <div className="divide-y divide-[#EFE7E2] pt-1">
-                {(currentScreen === 'women' ? WOMEN_CATEGORIES : KIDS_CATEGORIES)
-                  .filter((cat) => {
-                    if (!publishedCategorySlugs) return true;
-                    return (
-                      publishedCategorySlugs.has(`${currentScreen}:${cat.slug.toLowerCase()}`) ||
-                      publishedCategorySlugs.has(`${currentScreen}:${cat.id.toLowerCase()}`)
-                    );
-                  })
-                  .map((cat) => (
-                  <Link
-                    key={cat.id}
-                    href={getCategoryHref(cat)}
-                    onClick={handleClose}
-                    className="flex items-center justify-between py-3 px-1 hover:text-[#B8924A] transition-colors group"
-                  >
-                    <div>
-                      <span className="block font-sans text-sm text-[#1C1417] group-hover:text-[#B8924A] transition-colors font-medium">
-                        {cat.name}
-                      </span>
-                      {cat.description && (
-                        <span className="block font-sans text-[11px] text-[#6B6B7B] mt-0.5 line-clamp-1">
-                          {cat.description}
-                        </span>
-                      )}
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-[#6B6B7B]/60 group-hover:text-[#B8924A] group-hover:translate-x-0.5 transition-all shrink-0 ml-3" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ── FOOTER BAR ────────────────────────────────────── */}
-        <div className="p-4 border-t border-[#EFE7E2] bg-[#FBF7F1] shrink-0">
-          <div className="grid grid-cols-2 gap-2 text-xs font-sans">
-            {isSignedIn ? (
-              <Link
-                href="/account/orders"
-                onClick={handleClose}
-                className="flex items-center gap-2 py-2 px-2.5 rounded-sm hover:bg-black/5 text-[#1C1417] font-medium"
-              >
-                <User className="w-4 h-4 text-[#6B6B7B]" />
-                <span>My Account</span>
-              </Link>
-            ) : (
-              <button
-                onClick={() => {
-                  handleClose();
-                  openAuthModal('google');
-                }}
-                className="flex items-center gap-2 py-2 px-2.5 rounded-sm hover:bg-black/5 text-[#1C1417] text-left cursor-pointer font-medium"
-              >
-                <User className="w-4 h-4 text-[#6B6B7B]" />
-                <span>Sign In</span>
-              </button>
-            )}
-
-            <Link
-              href="/wishlist"
-              onClick={handleClose}
-              className="flex items-center gap-2 py-2 px-2.5 rounded-sm hover:bg-black/5 text-[#1C1417] font-medium"
+          {/* Segmented toggle "Women | Kids" (pill, sliding indicator with transform, rose-pink active) */}
+          <div className="relative flex rounded-full bg-[#EFE7E2] p-1 border border-[#E8DFD8]">
+            <div
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-[#C44D6C] shadow-xs transition-transform duration-260 ease-out"
+              style={{
+                transform: selectedDivision === 'women' ? 'translateX(0)' : 'translateX(100%)',
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setSelectedDivision('women')}
+              className={`relative z-10 flex-1 py-2 text-center text-sm font-semibold rounded-full transition-colors duration-200 select-none cursor-pointer ${
+                selectedDivision === 'women'
+                  ? 'text-white'
+                  : 'text-[#1A1E3A]/80 hover:text-[#1A1E3A]'
+              }`}
             >
-              <Heart className="w-4 h-4 text-[#6B6B7B]" />
-              <span>Wishlist ({wishlist.length})</span>
+              Women
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedDivision('kids')}
+              className={`relative z-10 flex-1 py-2 text-center text-sm font-semibold rounded-full transition-colors duration-200 select-none cursor-pointer ${
+                selectedDivision === 'kids'
+                  ? 'text-white'
+                  : 'text-[#1A1E3A]/80 hover:text-[#1A1E3A]'
+              }`}
+            >
+              Kids
+            </button>
+          </div>
+
+          {/* 2-Column Grid of Category Tiles (Rounded white cards with circular images) */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {/* 1. First Tile: New Arrivals */}
+            <Link
+              href={`/shop?isNew=true&target=${selectedDivision}`}
+              onClick={handleClose}
+              className="bg-white rounded-xl border border-[#EFE7E2] p-3 flex flex-col items-center justify-center text-center shadow-2xs hover:border-[#C44D6C]/50 active:scale-[0.97] transition-all cursor-pointer group"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#FFF0F3] border border-[#F3DDE0] flex items-center justify-center mb-2 shrink-0 group-hover:scale-105 transition-transform">
+                <Sparkles className="w-5 h-5 text-[#C44D6C]" />
+              </div>
+              <span className="text-[13px] sm:text-[14px] font-semibold text-[#1A1E3A] leading-tight">
+                New Arrivals
+              </span>
+            </Link>
+
+            {/* Category tiles */}
+            {currentCategories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/shop?category=${encodeURIComponent(cat.slug)}&target=${selectedDivision}`}
+                onClick={handleClose}
+                className="bg-white rounded-xl border border-[#EFE7E2] p-3 flex flex-col items-center justify-center text-center shadow-2xs hover:border-[#B8903A]/50 active:scale-[0.97] transition-all cursor-pointer group"
+              >
+                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#FAF6EE] border border-[#B8903A]/20 flex items-center justify-center mb-2 shrink-0 group-hover:scale-105 transition-transform">
+                  <Image
+                    src={cat.image}
+                    alt={cat.name}
+                    fill
+                    sizes="48px"
+                    className="object-contain p-0.5"
+                    loading="lazy"
+                  />
+                </div>
+                <span className="text-[13px] sm:text-[14px] font-semibold text-[#1A1E3A] line-clamp-1 leading-tight">
+                  {cat.name}
+                </span>
+              </Link>
+            ))}
+
+            {/* Last Tile: View All */}
+            <Link
+              href={`/shop?target=${selectedDivision}`}
+              onClick={handleClose}
+              className="bg-white rounded-xl border border-[#EFE7E2] p-3 flex flex-col items-center justify-center text-center shadow-2xs hover:border-[#1A1E3A]/50 active:scale-[0.97] transition-all cursor-pointer group"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#FAF6EE] border border-[#B8903A]/20 flex items-center justify-center mb-2 shrink-0 group-hover:scale-105 transition-transform">
+                <ArrowRight className="w-5 h-5 text-[#1A1E3A]" />
+              </div>
+              <span className="text-[13px] sm:text-[14px] font-semibold text-[#1A1E3A] leading-tight">
+                View All
+              </span>
             </Link>
           </div>
+
+          {/* Quick links list */}
+          <div className="pt-2 border-t border-[#EAE5DE] space-y-1">
+            <h3 className="text-[18px] font-bold text-[#1A1E3A] mb-2 px-1">
+              Quick Links
+            </h3>
+            <div className="space-y-0.5">
+              {[
+                { href: '/shop?isNew=true', label: 'New Drops', icon: Sparkles },
+                { href: '/shop?sort=popular', label: 'Best Sellers', icon: TrendingUp },
+                { href: '/track', label: 'Track Order', icon: Package },
+                { href: '/terms-and-conditions', label: 'Terms & Conditions', icon: FileText },
+                { href: '/faqs', label: 'Help & FAQs', icon: HelpCircle },
+              ].map(({ href, label, icon: Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={handleClose}
+                  className="flex items-center justify-between min-h-[44px] py-2 px-2.5 rounded-lg text-[16px] sm:text-[17px] font-semibold text-[#1A1E3A] hover:bg-black/5 active:scale-[0.99] transition-all"
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-[#FFF0F3] flex items-center justify-center text-[#C44D6C] shrink-0">
+                      <Icon className="w-3.5 h-3.5" />
+                    </span>
+                    <span>{label}</span>
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-[#1A1E3A]/40" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── BOTTOM BAR (Sign In and Wishlist count) ──────────── */}
+        <div className="p-4 border-t border-[#EAE5DE] bg-white flex items-center justify-between text-sm font-semibold shrink-0">
+          {isSignedIn ? (
+            <Link
+              href="/account/orders"
+              onClick={handleClose}
+              className="flex items-center gap-2 min-h-[44px] px-2 rounded-lg hover:bg-black/5 text-[#1A1E3A]"
+            >
+              <User className="w-4 h-4 text-[#C44D6C]" />
+              <span>My Account</span>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                handleClose();
+                openAuthModal('google');
+              }}
+              className="flex items-center gap-2 min-h-[44px] px-2 rounded-lg hover:bg-black/5 text-[#1A1E3A] cursor-pointer"
+            >
+              <User className="w-4 h-4 text-[#C44D6C]" />
+              <span>Sign In</span>
+            </button>
+          )}
+
+          <Link
+            href="/wishlist"
+            onClick={handleClose}
+            className="flex items-center gap-2 min-h-[44px] px-2 rounded-lg hover:bg-black/5 text-[#1A1E3A]"
+          >
+            <Heart className="w-4 h-4 text-[#C44D6C]" />
+            <span>Wishlist ({wishlist.length})</span>
+          </Link>
         </div>
       </aside>
     </>

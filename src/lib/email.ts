@@ -19,6 +19,75 @@ const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || 'The Girls Collections <or
 const REPLY_TO_EMAIL = siteConfig.email;
 const ADMIN_CC_EMAIL = siteConfig.email;
 
+async function hasEmailBeenSent(lockKey: string): Promise<boolean> {
+  try {
+    const { redis } = await import('@/lib/redis');
+    const cached = await redis.get(lockKey);
+    if (cached) return true;
+  } catch {
+    // fallback to Neon check
+  }
+  try {
+    const { db } = await import('@/db');
+    const schema = await import('@/db/schema');
+    const { eq } = await import('drizzle-orm');
+    const [existing] = await db
+      .select({ processed: schema.webhookEvents.processed })
+      .from(schema.webhookEvents)
+      .where(eq(schema.webhookEvents.event_id, lockKey))
+      .limit(1);
+    return Boolean(existing?.processed);
+  } catch {
+    return false;
+  }
+}
+
+async function markEmailSent(lockKey: string, eventType: string): Promise<void> {
+  try {
+    const { redis } = await import('@/lib/redis');
+    await redis.set(lockKey, 'true');
+  } catch {
+    // ignore redis error
+  }
+  try {
+    const { db } = await import('@/db');
+    const schema = await import('@/db/schema');
+    await db
+      .insert(schema.webhookEvents)
+      .values({
+        provider: 'resend',
+        event_type: eventType,
+        event_id: lockKey,
+        payload: { sentAt: new Date().toISOString() },
+        processed: true,
+        processed_at: new Date(),
+      })
+      .onConflictDoNothing();
+  } catch (err) {
+    console.warn('[Email] Neon sent-flag write note:', err);
+  }
+}
+
+async function enqueueEmailRetry(emailJob: Record<string, any>): Promise<void> {
+  try {
+    const token = process.env.QSTASH_TOKEN;
+    if (!token || token.includes('placeholder') || token.includes('mock')) return;
+    const { Client } = await import('@upstash/qstash');
+    const { getSiteUrl, getQStashPublishHeaders } = await import('@/lib/getSiteUrl');
+    const client = new Client({ token });
+    await client.publishJSON({
+      url: `${getSiteUrl()}/api/webhooks/qstash/email-retry`,
+      body: emailJob,
+      retries: 3,
+      delay: 30,
+      headers: getQStashPublishHeaders(),
+    });
+    console.log(`[Email] Enqueued QStash retry for ${emailJob.type} (${emailJob.orderNumber})`);
+  } catch (qErr) {
+    console.error('[Email] QStash retry enqueue failed:', qErr);
+  }
+}
+
 /**
  * Sends a refund notification email to the customer by rendering a React component to static HTML.
  */
@@ -84,7 +153,9 @@ export async function sendRefundEmail({
  */
 export async function sendOrderSuccessEmail({
   orderNumber,
+  orderDate,
   customerName,
+  customerPhone,
   customerEmail,
   items,
   totalPaise,
@@ -98,11 +169,14 @@ export async function sendOrderSuccessEmail({
   codBalance,
   awb,
   courierName,
+  skipRetryEnqueue,
 }: {
   orderNumber: string;
+  orderDate?: string;
   customerName: string;
+  customerPhone?: string | null;
   customerEmail: string | null | undefined;
-  items: Array<{ name: string; size: string; quantity: number; price: number }>;
+  items: Array<{ name: string; size: string; quantity: number; price: number; image?: string }>;
   totalPaise: number;
   shippingChargePaise: number;
   discountAmountPaise: number;
@@ -120,6 +194,7 @@ export async function sendOrderSuccessEmail({
   codBalance?: number;
   awb?: string;
   courierName?: string;
+  skipRetryEnqueue?: boolean;
 }): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set — skipping order success email.');
@@ -133,9 +208,7 @@ export async function sendOrderSuccessEmail({
 
   try {
     const lockKey = `email:confirmed:${orderNumber}`;
-    const { redis } = await import('@/lib/redis');
-    const alreadySent = await redis.get(lockKey);
-    if (alreadySent) {
+    if (await hasEmailBeenSent(lockKey)) {
       console.log(`[Email] Order success email already sent for order ${orderNumber} - skipping.`);
       return;
     }
@@ -145,7 +218,9 @@ export async function sendOrderSuccessEmail({
     const htmlString = renderToStaticMarkup(
       React.createElement(OrderConfirmationEmail, {
         orderNumber,
+        orderDate,
         customerName,
+        customerPhone,
         items,
         totalPaise,
         shippingChargePaise,
@@ -153,6 +228,11 @@ export async function sendOrderSuccessEmail({
         fulfillmentType,
         pickupCode,
         shippingAddress,
+        paymentMode,
+        advancePaid,
+        codBalance,
+        awb,
+        courierName,
       })
     );
 
@@ -169,12 +249,33 @@ export async function sendOrderSuccessEmail({
       console.error(`[Email] Resend error for success email on order ${orderNumber}:`, error);
       throw new Error(`Resend API Error: ${error.name} - ${error.message} (Code: ${(error as any).code || 'N/A'})`);
     } else {
-      await redis.set(lockKey, 'true');
+      await markEmailSent(lockKey, 'email_order_confirmed');
       console.log(`[Email] Order success email sent successfully for order ${orderNumber} to ${customerEmail}`);
     }
   } catch (err: any) {
     console.error(`[Email] Failed to send order success email for order ${orderNumber}:`, err);
-    throw err;
+    if (!skipRetryEnqueue) {
+      await enqueueEmailRetry({
+        type: 'order_confirmed',
+        orderNumber,
+        orderDate,
+        customerName,
+        customerPhone,
+        customerEmail,
+        items,
+        totalPaise,
+        shippingChargePaise,
+        discountAmountPaise,
+        fulfillmentType,
+        pickupCode,
+        shippingAddress,
+        paymentMode,
+        advancePaid,
+        codBalance,
+        awb,
+        courierName,
+      });
+    }
   }
 }
 
@@ -247,6 +348,8 @@ export async function sendDeliverySuccessEmail({
   totalPaise,
   courierPartner,
   trackingNumber,
+  trackingUrl,
+  skipRetryEnqueue,
 }: {
   orderNumber: string;
   customerName: string;
@@ -255,6 +358,8 @@ export async function sendDeliverySuccessEmail({
   totalPaise: number;
   courierPartner?: string | null;
   trackingNumber?: string | null;
+  trackingUrl?: string | null;
+  skipRetryEnqueue?: boolean;
 }): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set — skipping delivery success email.');
@@ -268,9 +373,7 @@ export async function sendDeliverySuccessEmail({
 
   try {
     const lockKey = `email:delivery:${orderNumber}:delivered`;
-    const { redis } = await import('@/lib/redis');
-    const alreadySent = await redis.get(lockKey);
-    if (alreadySent) {
+    if (await hasEmailBeenSent(lockKey)) {
       console.log(`[Email] Delivery success email already sent for order ${orderNumber} - skipping.`);
       return;
     }
@@ -284,6 +387,7 @@ export async function sendDeliverySuccessEmail({
         totalPaise,
         courierPartner,
         trackingNumber,
+        trackingUrl,
       })
     );
 
@@ -300,12 +404,24 @@ export async function sendDeliverySuccessEmail({
       console.error(`[Email] Resend error for delivery success email on order ${orderNumber}:`, error);
       throw new Error(`Resend API Error: ${error.name} - ${error.message}`);
     } else {
-      await redis.set(lockKey, 'true');
+      await markEmailSent(lockKey, 'email_order_delivered');
       console.log(`[Email] Delivery success email sent successfully for order ${orderNumber} to ${customerEmail}`);
     }
   } catch (err: any) {
     console.error(`[Email] Failed to send delivery success email for order ${orderNumber}:`, err);
-    throw err;
+    if (!skipRetryEnqueue) {
+      await enqueueEmailRetry({
+        type: 'delivered',
+        orderNumber,
+        customerName,
+        customerEmail,
+        items,
+        totalPaise,
+        courierPartner,
+        trackingNumber,
+        trackingUrl,
+      });
+    }
   }
 }
 
@@ -628,6 +744,8 @@ export async function sendDeliveryStatusEmail({
   totalPaise,
   courierPartner,
   trackingNumber,
+  trackingUrl,
+  skipRetryEnqueue,
 }: {
   orderNumber: string;
   customerName: string;
@@ -637,6 +755,8 @@ export async function sendDeliveryStatusEmail({
   totalPaise: number;
   courierPartner?: string | null;
   trackingNumber?: string | null;
+  trackingUrl?: string | null;
+  skipRetryEnqueue?: boolean;
 }): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     console.warn(`[Email] RESEND_API_KEY not set — skipping delivery status email for ${status}.`);
@@ -650,9 +770,7 @@ export async function sendDeliveryStatusEmail({
 
   try {
     const lockKey = `email:delivery:${orderNumber}:${status}`;
-    const { redis } = await import('@/lib/redis');
-    const alreadySent = await redis.get(lockKey);
-    if (alreadySent) {
+    if (await hasEmailBeenSent(lockKey)) {
       console.log(`[Email] Delivery status email for ${status} already sent for order ${orderNumber} - skipping.`);
       return;
     }
@@ -667,6 +785,7 @@ export async function sendDeliveryStatusEmail({
         totalPaise,
         courierPartner,
         trackingNumber,
+        trackingUrl,
       })
     );
 
@@ -674,7 +793,7 @@ export async function sendDeliveryStatusEmail({
     if (status === 'shipped') {
       subject = `Your order has shipped! – Order ${orderNumber} | The Girls Collections`;
     } else if (status === 'out_for_delivery') {
-      subject = `Out for delivery ⚡ – Order ${orderNumber} | The Girls Collections`;
+      subject = `Out for delivery – Order ${orderNumber} | The Girls Collections`;
     } else if (status === 'cancelled') {
       subject = `Cancelled: Order ${orderNumber} | The Girls Collections`;
     }
@@ -692,12 +811,24 @@ export async function sendDeliveryStatusEmail({
       console.error(`[Email] Resend error for delivery status email (${status}) on order ${orderNumber}:`, error);
       throw new Error(`Resend API Error: ${error.name} - ${error.message}`);
     } else {
-      await redis.set(lockKey, 'true');
+      await markEmailSent(lockKey, `email_order_${status}`);
       console.log(`[Email] Delivery status email (${status}) sent successfully for order ${orderNumber} to ${customerEmail}`);
     }
   } catch (err: any) {
     console.error(`[Email] Failed to send delivery status email (${status}) for order ${orderNumber}:`, err);
-    throw err;
+    if (!skipRetryEnqueue) {
+      await enqueueEmailRetry({
+        type: status,
+        orderNumber,
+        customerName,
+        customerEmail,
+        items,
+        totalPaise,
+        courierPartner,
+        trackingNumber,
+        trackingUrl,
+      });
+    }
   }
 }
 

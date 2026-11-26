@@ -10,6 +10,7 @@ interface DeliveryStatusEmailProps {
   totalPaise: number;
   courierPartner?: string | null;
   trackingNumber?: string | null;
+  trackingUrl?: string | null;
 }
 
 export function DeliveryStatusEmail({
@@ -20,111 +21,135 @@ export function DeliveryStatusEmail({
   totalPaise,
   courierPartner,
   trackingNumber,
+  trackingUrl,
 }: DeliveryStatusEmailProps) {
   const totalRupees = (totalPaise / 100).toFixed(2);
+  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://www.instagram.com/thegirlscollections';
+  const resolvedTrackingUrl =
+    trackingUrl ||
+    (trackingNumber ? `https://shiprocket.co/tracking/${trackingNumber}` : 'https://www.thegirlscollections.com/track');
 
   let title = 'Order Update';
   let message = 'There is an update regarding your order.';
 
   if (status === 'shipped') {
-    title = 'Your order is on the way!';
+    title = 'Your order has shipped!';
     message = 'Good news! Your order has been packed and handed over to our courier partner. It is now on its way to you.';
   } else if (status === 'out_for_delivery') {
-    title = 'Out for delivery ⚡';
-    message = 'Get ready! Our delivery partner is out with your package and will arrive at your address today.';
+    title = 'Out for Delivery Today';
+    message = 'Get ready! Our delivery partner is out with your parcel and will arrive at your address today.';
   } else if (status === 'cancelled') {
     title = 'Order Cancelled';
-    message = 'Your order has been cancelled. If this payment was prepaid, your refund has been automatically initiated and will be credited to your original payment method in 5-7 business days.';
+    message = 'Your order has been cancelled. If a refund applies, our team will process it manually after verification.';
   }
 
   return (
-    <div style={{
-      margin: 0,
-      padding: 0,
-      background: '#0a0a0a',
-      fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif",
-      color: '#e8e8e8'
-    }}>
-      <table width="100%" cellPadding="0" cellSpacing="0" style={{ background: '#0a0a0a', padding: '40px 20px' }}>
+    <div
+      style={{
+        margin: 0,
+        padding: 0,
+        backgroundColor: '#FAF6EE',
+        fontFamily: "'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        color: '#1A1A2E',
+      }}
+    >
+      <table width="100%" cellPadding="0" cellSpacing="0" style={{ backgroundColor: '#FAF6EE', padding: '24px 12px' }}>
         <tr>
           <td align="center">
-            <table width="580" cellPadding="0" cellSpacing="0" style={{ background: '#111111', borderRadius: '12px', overflow: 'hidden', border: '1px solid #2a2a2a' }}>
-
-              {/* Header */}
+            <table
+              width="600"
+              cellPadding="0"
+              cellSpacing="0"
+              style={{
+                maxWidth: '600px',
+                width: '100%',
+                backgroundColor: '#FFFFFF',
+                borderRadius: '14px',
+                overflow: 'hidden',
+                border: '1px solid #E8DCC8',
+              }}
+            >
               <tr>
-                <td style={{ padding: '36px 40px 28px', borderBottom: '1px solid #1e1e1e' }}>
-                  <img src="https://www.thegirlscollections.com/logo.png?v=3" alt="The Girls Collections" width="130" style={{ display: 'block', border: 'none', outline: 'none' }} />
+                <td style={{ backgroundColor: '#1A1E3A', padding: '24px 28px', textAlign: 'center' }}>
+                  <img src="https://www.thegirlscollections.com/logo.png?v=3" alt="The Girls Collections" width="120" style={{ display: 'inline-block', border: 'none' }} />
                 </td>
               </tr>
 
-              {/* Body */}
               <tr>
-                <td style={{ padding: '36px 40px' }}>
-                  <h1 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 600, color: status === 'cancelled' ? '#ff4d4d' : '#ffffff' }}>{title}</h1>
-                  <p style={{ margin: '0 0 28px', fontSize: '14px', color: '#888', lineHeight: 1.5 }}>Order <strong style={{ color: '#ccc' }}>{orderNumber}</strong></p>
-
-                  <p style={{ margin: '0 0 20px', fontSize: '15px', lineHeight: 1.7, color: '#ccc' }}>
-                    Hi {customerName},
+                <td style={{ padding: '28px' }}>
+                  <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 700, color: status === 'cancelled' ? '#B91C1C' : '#1A1E3A' }}>
+                    {title}
+                  </h1>
+                  <p style={{ margin: '0 0 18px', fontSize: '14px', color: '#4A4A5A' }}>
+                    Order <strong style={{ color: '#1A1E3A' }}>{orderNumber}</strong>
                   </p>
-                  <p style={{ margin: '0 0 24px', fontSize: '15px', lineHeight: 1.7, color: '#ccc' }}>
-                    {message}
-                  </p>
+                  <p style={{ margin: '0 0 12px', fontSize: '15px', color: '#1A1A2E' }}>Hi {customerName},</p>
+                  <p style={{ margin: '0 0 22px', fontSize: '15px', lineHeight: 1.6, color: '#4A4A5A' }}>{message}</p>
 
-                  {/* Delivery details if available */}
                   {status !== 'cancelled' && (courierPartner || trackingNumber) && (
-                    <table width="100%" cellPadding="0" cellSpacing="0" style={{ margin: '0 0 28px' }}>
+                    <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '22px' }}>
                       <tr>
-                        <td style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '8px', padding: '16px 20px' }}>
-                          <p style={{ margin: '0 0 4px', fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#888', fontWeight: 'bold' }}>Tracking Details</p>
-                          <p style={{ margin: 0, fontSize: '13px', color: '#ccc', lineHeight: '1.6' }}>
-                            {courierPartner && <span><strong>Carrier:</strong> {courierPartner}<br /></span>}
-                            {trackingNumber && <span><strong>AWB Tracking ID:</strong> {trackingNumber}<br /></span>}
-                            <span>You can track your order status live anytime at <a href="https://www.thegirlscollections.com/track" style={{ color: '#ffffff', textDecoration: 'underline' }}>thegirlscollections.com/track</a>.</span>
+                        <td style={{ backgroundColor: '#FAF6EE', border: '1px solid #E8DCC8', borderRadius: '10px', padding: '16px 18px' }}>
+                          <p style={{ margin: '0 0 6px', fontSize: '11px', letterSpacing: '1.4px', textTransform: 'uppercase', color: '#6B6B7B', fontWeight: 700 }}>
+                            Tracking Details
                           </p>
+                          <p style={{ margin: '0 0 12px', fontSize: '14px', color: '#1A1A2E', lineHeight: 1.6 }}>
+                            {courierPartner && <span><strong>Courier:</strong> {courierPartner}<br /></span>}
+                            {trackingNumber && <span><strong>AWB Number:</strong> {trackingNumber}</span>}
+                          </p>
+                          <a
+                            href={resolvedTrackingUrl}
+                            style={{
+                              display: 'inline-block',
+                              backgroundColor: '#E0527F',
+                              color: '#FFFFFF',
+                              padding: '10px 18px',
+                              borderRadius: '10px',
+                              fontSize: '13px',
+                              fontWeight: 700,
+                              textDecoration: 'none',
+                            }}
+                          >
+                            Track Your Parcel →
+                          </a>
                         </td>
                       </tr>
                     </table>
                   )}
 
-                  {/* Summary of Items */}
-                  <p style={{ margin: '0 0 12px', fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#666', fontWeight: 'bold', borderBottom: '1px solid #1e1e1e', paddingBottom: '6px' }}>Order details</p>
-                  <table width="100%" cellPadding="0" cellSpacing="0" style={{ margin: '0 0 28px' }}>
-                    {items.map((item, index) => (
-                      <tr key={index}>
-                        <td style={{ padding: '10px 0', fontSize: '14px', color: '#ccc' }}>
-                          {item.name} ({getSizeLabel(item.size)}) <span style={{ color: '#666', fontSize: '12px' }}>x{item.quantity}</span>
+                  <p style={{ margin: '0 0 10px', fontSize: '11px', letterSpacing: '1.6px', textTransform: 'uppercase', color: '#6B6B7B', fontWeight: 700, borderBottom: '1px solid #EAE5DE', paddingBottom: '6px' }}>
+                    Order Summary
+                  </p>
+                  <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '16px' }}>
+                    {items.map((item, idx) => (
+                      <tr key={idx}>
+                        <td style={{ padding: '8px 0', fontSize: '14px', color: '#1A1A2E' }}>
+                          {item.name} ({getSizeLabel(item.size)}) × {item.quantity}
                         </td>
-                        <td align="right" style={{ padding: '10px 0', fontSize: '14px', color: '#ffffff', fontWeight: 'bold' }}>
+                        <td align="right" style={{ padding: '8px 0', fontSize: '14px', fontWeight: 700, color: '#1A1E3A' }}>
                           ₹{((item.price * item.quantity) / 100).toFixed(2)}
                         </td>
                       </tr>
                     ))}
-                  </table>
-
-                  {/* Total Paid */}
-                  <table width="100%" cellPadding="0" cellSpacing="0" style={{ borderTop: '1px solid #1e1e1e', paddingTop: '16px' }}>
                     <tr>
-                      <td style={{ padding: '12px 0 0', fontSize: '15px', fontWeight: 'bold', color: '#ffffff' }}>Total</td>
-                      <td align="right" style={{ padding: '12px 0 0', fontSize: '18px', fontWeight: 'bold', color: '#ffffff' }}>₹{totalRupees}</td>
+                      <td style={{ padding: '10px 0 0', fontSize: '15px', fontWeight: 700, borderTop: '1px solid #EAE5DE' }}>Total</td>
+                      <td align="right" style={{ padding: '10px 0 0', fontSize: '17px', fontWeight: 800, borderTop: '1px solid #EAE5DE' }}>₹{totalRupees}</td>
                     </tr>
                   </table>
-
                 </td>
               </tr>
 
-              {/* Footer */}
               <tr>
-                <td style={{ padding: '24px 40px', borderTop: '1px solid #1e1e1e' }}>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#444', lineHeight: 1.6 }}>
-                    Questions? Reply to this email or reach us at{' '}
-                    <a href={`mailto:${siteConfig.email}`} style={{ color: '#888', textDecoration: 'none' }}>{siteConfig.email}</a>
+                <td style={{ backgroundColor: '#FCFAF8', padding: '18px 28px', borderTop: '1px solid #EAE5DE', fontSize: '12px', color: '#4A4A5A', lineHeight: 1.6 }}>
+                  <p style={{ margin: '0 0 4px' }}>
+                    Need help? Email <a href={`mailto:${siteConfig.email}`} style={{ color: '#1A1E3A' }}>{siteConfig.email}</a> or call{' '}
+                    <a href={`tel:${siteConfig.telLink}`} style={{ color: '#1A1E3A' }}>+91 {siteConfig.phone}</a>
                   </p>
-                  <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#333' }}>
-                    © {new Date().getFullYear()} The Girls Collections. Bengaluru, India.
+                  <p style={{ margin: 0 }}>
+                    Instagram: <a href={instagramUrl} style={{ color: '#E0527F', fontWeight: 700, textDecoration: 'none' }}>@thegirlscollections</a>
                   </p>
                 </td>
               </tr>
-
             </table>
           </td>
         </tr>

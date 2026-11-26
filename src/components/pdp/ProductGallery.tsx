@@ -2,21 +2,37 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
-import { cl, clBlur } from '@/lib/cloudinary';
+import { X, ZoomIn, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { cl } from '@/lib/cloudinary';
+import { LuxuryHeartButton } from '@/components/LuxuryHeartButton';
 
 interface ProductGalleryProps {
   images: string[];
   productName: string;
+  productId?: string;
+  inWishlist?: boolean;
+  onToggleWishlist?: (e: React.MouseEvent) => void;
+  onShare?: () => void;
 }
 
-export const ProductGallery: React.FC<ProductGalleryProps> = ({ images = [], productName }) => {
+export const ProductGallery: React.FC<ProductGalleryProps> = ({
+  images = [],
+  productName,
+  productId,
+  inWishlist = false,
+  onToggleWishlist,
+  onShare,
+}) => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
-  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
+  const [desktopHoverPos, setDesktopHoverPos] = useState({ x: 50, y: 50 });
+  const [isDesktopHovered, setIsDesktopHovered] = useState(false);
 
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
   const safeImages = images && images.length > 0 ? images : ['/logo.png'];
-  const hasMultipleImages = safeImages.length > 1;
+  const hasMultiple = safeImages.length > 1;
 
   // Jump to specific slide
   const goToSlide = useCallback((idx: number) => {
@@ -30,31 +46,6 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images = [], pro
     }
   }, [safeImages.length]);
 
-  const handlePrev = useCallback(() => {
-    goToSlide(selectedIdx === 0 ? safeImages.length - 1 : selectedIdx - 1);
-  }, [goToSlide, selectedIdx, safeImages.length]);
-
-  const handleNext = useCallback(() => {
-    goToSlide(selectedIdx === safeImages.length - 1 ? 0 : selectedIdx + 1);
-  }, [goToSlide, selectedIdx, safeImages.length]);
-
-  // Arrow key navigation on desktop
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (isZoomOpen) {
-        if (e.key === 'Escape') setIsZoomOpen(false);
-        if (e.key === 'ArrowLeft') handlePrev();
-        if (e.key === 'ArrowRight') handleNext();
-        return;
-      }
-      if (e.key === 'ArrowLeft') handlePrev();
-      if (e.key === 'ArrowRight') handleNext();
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [handlePrev, handleNext, isZoomOpen]);
-
   // Mobile scroll-snap listener
   const handleMobileScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -67,292 +58,284 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images = [], pro
     }
   };
 
-  // Preload next image link element dynamically
+  // Desktop mouse follow hover zoom (scale 1.6)
+  const handleDesktopMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    setDesktopHoverPos({ x, y });
+  };
+
+  // Fullscreen modal zoom double-tap / click toggle
+  const handleModalImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomOrigin({ x, y });
+    setZoomScale((s) => (s > 1 ? 1 : 2.2));
+  };
+
+  // Close zoom modal on ESC
   useEffect(() => {
-    if (safeImages.length > 1) {
-      const nextIdx = (selectedIdx + 1) % safeImages.length;
-      const nextUrl = cl(safeImages[nextIdx], { w: 960, q: 'auto:good' });
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = nextUrl;
-      document.head.appendChild(link);
-      return () => {
-        try {
-          document.head.removeChild(link);
-        } catch {}
-      };
-    }
-  }, [selectedIdx, safeImages]);
+    if (!isZoomOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsZoomOpen(false);
+        setZoomScale(1);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isZoomOpen]);
 
   return (
     <div id="pdp-primary-gallery" className="w-full select-none">
-      {/* ── DESKTOP GALLERY (Vertical Thumbnails on Left + Big Image Right) ── */}
-      <div className="hidden lg:flex gap-4 items-start">
-        {/* Left Vertical Thumbnails */}
-        {hasMultipleImages && (
-          <div className="flex flex-col space-y-3 w-20 shrink-0 max-h-[640px] overflow-y-auto no-scrollbar">
+      {/* ── MOBILE GALLERY (Scroll-snap, aspect 4/5, rounded bottom 24px) ── */}
+      <div className="lg:hidden w-full">
+        <div className="relative w-full aspect-[4/5] rounded-b-[24px] overflow-hidden bg-[#FBF8F4]">
+          {/* "1/4" Counter Top-Left */}
+          {hasMultiple && (
+            <span className="absolute top-4 left-4 z-20 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-xs font-sans font-medium tracking-wide">
+              {selectedIdx + 1}/{safeImages.length}
+            </span>
+          )}
+
+          {/* Overlaid Top-Right: 44px Heart & Share buttons */}
+          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+            {onToggleWishlist && (
+              <LuxuryHeartButton
+                isLiked={inWishlist}
+                onToggle={onToggleWishlist}
+                size="md"
+              />
+            )}
+            {onShare && (
+              <button
+                type="button"
+                onClick={onShare}
+                className="w-11 h-11 rounded-full bg-white border border-[#EADFD6]/80 shadow-[0_3px_12px_rgba(26,30,58,0.08)] flex items-center justify-center text-[var(--ink)] hover:text-[var(--cta)] active:scale-95 transition-all select-none cursor-pointer focus:outline-none"
+                aria-label="Share product"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
+          {/* CSS Scroll-Snap Horizontal Reel */}
+          <div
+            ref={mobileScrollRef}
+            onScroll={handleMobileScroll}
+            className="w-full h-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+            style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
+          >
+            {safeImages.map((img, idx) => {
+              const url = cl(img, { w: 900, q: 'auto:good' });
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setIsZoomOpen(true)}
+                  className="w-full h-full shrink-0 snap-center relative cursor-zoom-in"
+                >
+                  <Image
+                    src={url}
+                    alt={`${productName} view ${idx + 1}`}
+                    fill
+                    priority={idx === 0}
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                    sizes="100vw"
+                    className="object-cover object-top"
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Small Pill Dots at Bottom */}
+          {hasMultiple && (
+            <div className="absolute bottom-3 inset-x-0 z-20 flex items-center justify-center gap-1.5 pointer-events-none">
+              {safeImages.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-200 ${
+                    i === selectedIdx
+                      ? 'w-5 bg-white shadow-xs'
+                      : 'w-1.5 bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Thumbnails Row Below: 64x80 rounded 12px */}
+        {hasMultiple && (
+          <div className="flex gap-2.5 overflow-x-auto no-scrollbar pt-3 px-4 pb-1">
             {safeImages.map((img, idx) => {
               const isActive = idx === selectedIdx;
+              const thumbUrl = cl(img, { w: 160, h: 200, c: 'fill', q: 'auto:low' });
               return (
                 <button
                   key={idx}
+                  type="button"
                   onClick={() => goToSlide(idx)}
-                  className={`relative aspect-[3/4] w-full rounded-xl overflow-hidden border-2 transition-all duration-150 cursor-pointer bg-[#FAF8F5] ${
+                  className={`relative w-[64px] h-[80px] rounded-[12px] overflow-hidden shrink-0 border transition-all cursor-pointer ${
                     isActive
-                      ? 'border-[#3B1230] ring-2 ring-[#3B1230]/20 shadow-md scale-[1.02]'
-                      : 'border-[#EFE7E2] opacity-75 hover:opacity-100 hover:border-[#B8903A]'
+                      ? 'ring-2 ring-[var(--cta)] ring-offset-1 border-transparent shadow-xs'
+                      : 'border-[#EADFD6] opacity-75 hover:opacity-100'
                   }`}
-                  aria-label={`View thumbnail ${idx + 1}`}
+                  aria-label={`View photo ${idx + 1}`}
                 >
                   <Image
-                    src={cl(img, { w: 160, q: 'auto:good' })}
+                    src={thumbUrl}
                     alt={`${productName} thumbnail ${idx + 1}`}
                     fill
-                    className="object-contain"
-                    sizes="80px"
+                    sizes="64px"
+                    className="object-cover object-top"
+                    loading="lazy"
                   />
                 </button>
               );
             })}
           </div>
         )}
-
-        {/* Main Display Image */}
-        <div className="relative flex-1 aspect-[3/4] max-h-[680px] rounded-3xl overflow-hidden shadow-sm bg-[#FAF8F5] border border-[#EFE7E2] group">
-          <div
-            onClick={() => setIsZoomOpen(true)}
-            className="w-full h-full cursor-zoom-in relative"
-          >
-            <Image
-              src={cl(safeImages[selectedIdx], { w: 1280, q: 'auto:good' })}
-              alt={productName}
-              fill
-              priority
-              placeholder="blur"
-              blurDataURL={clBlur(safeImages[selectedIdx])}
-              className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-              sizes="(max-width: 1024px) 100vw, 55vw"
-            />
-          </div>
-
-          {/* Desktop Arrow Buttons */}
-          {hasMultipleImages && (
-            <>
-              <button
-                type="button"
-                onClick={handlePrev}
-                aria-label="Previous image"
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-zinc-900 border border-white/60 shadow-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer focus:opacity-100"
-              >
-                <ChevronLeft className="w-5 h-5 stroke-[2]" />
-              </button>
-
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next image"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-zinc-900 border border-white/60 shadow-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer focus:opacity-100"
-              >
-                <ChevronRight className="w-5 h-5 stroke-[2]" />
-              </button>
-            </>
-          )}
-
-          {/* Click to Zoom Pill */}
-          <button
-            onClick={() => setIsZoomOpen(true)}
-            className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs font-sans flex items-center gap-1.5 backdrop-blur-xs transition-colors cursor-pointer"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-            <span>Click to zoom</span>
-          </button>
-        </div>
       </div>
 
-      {/* ── MOBILE GALLERY (Scroll-Snap Carousel + Arrows + Dots + Counter + Thumbnail Strip) ── */}
-      <div className="lg:hidden w-full flex flex-col items-center space-y-3">
-        <div className="relative w-full aspect-[3/4] max-h-[520px] rounded-3xl overflow-hidden shadow-xs bg-[#FAF8F5] border border-[#EFE7E2]">
-          <div
-            ref={mobileScrollRef}
-            onScroll={handleMobileScroll}
-            className="flex w-full h-full overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth"
-            style={{
-              WebkitOverflowScrolling: 'touch',
-              scrollSnapType: 'x mandatory',
-            }}
-          >
-            {safeImages.map((img, idx) => (
-              <div
-                key={idx}
-                className="relative w-full h-full shrink-0 snap-start bg-[#FAF8F5] flex items-center justify-center cursor-zoom-in"
-                onClick={() => setIsZoomOpen(true)}
-              >
-                <Image
-                  src={cl(img, { w: 960, q: 'auto:good' })}
-                  alt={`${productName} slide ${idx + 1}`}
-                  fill
-                  priority={idx === 0}
-                  placeholder="blur"
-                  blurDataURL={clBlur(img)}
-                  className="object-contain"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Round prev/next arrow buttons (36px, white translucent) visible on mobile */}
-          {hasMultipleImages && (
-            <>
-              <button
-                type="button"
-                onClick={handlePrev}
-                aria-label="Previous slide"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/85 hover:bg-white text-zinc-900 border border-white/60 shadow-md backdrop-blur-xs flex items-center justify-center transition-all cursor-pointer z-10 active:scale-95"
-              >
-                <ChevronLeft className="w-5 h-5 stroke-[2]" />
-              </button>
-
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next slide"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/85 hover:bg-white text-zinc-900 border border-white/60 shadow-md backdrop-blur-xs flex items-center justify-center transition-all cursor-pointer z-10 active:scale-95"
-              >
-                <ChevronRight className="w-5 h-5 stroke-[2]" />
-              </button>
-            </>
-          )}
-
-          {/* Dots + "2 / 5" Counter Badge */}
-          {hasMultipleImages && (
-            <div className="absolute bottom-3 inset-x-0 flex items-center justify-between px-4 z-10 pointer-events-none">
-              <div className="flex items-center gap-1.5 pointer-events-auto bg-black/30 backdrop-blur-xs px-2 py-1 rounded-full">
-                {safeImages.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => goToSlide(idx)}
-                    aria-label={`Jump to slide ${idx + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                      idx === selectedIdx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <span className="px-2.5 py-1 rounded-full bg-black/60 text-white font-mono text-[11px] font-semibold backdrop-blur-xs">
-                {selectedIdx + 1} / {safeImages.length}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Horizontal Thumbnail Strip (Tap to jump, active has dark border) */}
-        {hasMultipleImages && (
-          <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
+      {/* ── DESKTOP GALLERY (Two Columns, Sticky, Vertical 72px Thumbs, Cursor Zoom) ── */}
+      <div className="hidden lg:flex gap-4 items-start w-full">
+        {/* Vertical Thumbnails (72px wide, beside main image) */}
+        {hasMultiple && (
+          <div className="flex flex-col space-y-2.5 w-[72px] shrink-0 max-h-[640px] overflow-y-auto no-scrollbar">
             {safeImages.map((img, idx) => {
               const isActive = idx === selectedIdx;
+              const thumbUrl = cl(img, { w: 160, h: 200, c: 'fill', q: 'auto:low' });
               return (
                 <button
                   key={idx}
-                  onClick={() => goToSlide(idx)}
-                  className={`relative aspect-[3/4] w-14 shrink-0 rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-[#FAF8F5] ${
+                  type="button"
+                  onClick={() => setSelectedIdx(idx)}
+                  className={`relative w-[72px] h-[90px] rounded-[12px] overflow-hidden shrink-0 border transition-all cursor-pointer ${
                     isActive
-                      ? 'border-[#3B1230] ring-1 ring-[#3B1230] scale-105 shadow-sm'
-                      : 'border-[#EFE7E2] opacity-70 hover:opacity-100'
+                      ? 'ring-2 ring-[var(--cta)] ring-offset-1 border-transparent shadow-xs'
+                      : 'border-[#EADFD6] opacity-75 hover:opacity-100'
                   }`}
                   aria-label={`Select photo ${idx + 1}`}
                 >
                   <Image
-                    src={cl(img, { w: 120, q: 'auto:good' })}
-                    alt={`${productName} mini thumb ${idx + 1}`}
+                    src={thumbUrl}
+                    alt={`${productName} thumb ${idx + 1}`}
                     fill
-                    className="object-contain"
-                    sizes="56px"
+                    sizes="72px"
+                    className="object-cover object-top"
+                    loading="lazy"
                   />
                 </button>
               );
             })}
           </div>
         )}
+
+        {/* Main Image with Hover Cursor Zoom scale 1.6 */}
+        <div
+          onClick={() => setIsZoomOpen(true)}
+          onMouseEnter={() => setIsDesktopHovered(true)}
+          onMouseLeave={() => setIsDesktopHovered(false)}
+          onMouseMove={handleDesktopMouseMove}
+          className="relative flex-1 aspect-[4/5] rounded-[20px] overflow-hidden bg-[#FBF8F4] border border-[#EADFD6]/60 cursor-zoom-in"
+        >
+          {/* Overlaid Top-Right: 44px Heart & Share buttons on desktop image */}
+          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+            {onToggleWishlist && (
+              <LuxuryHeartButton
+                isLiked={inWishlist}
+                onToggle={onToggleWishlist}
+                size="md"
+              />
+            )}
+            {onShare && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onShare();
+                }}
+                className="w-11 h-11 rounded-full bg-white border border-[#EADFD6]/80 shadow-[0_3px_12px_rgba(26,30,58,0.08)] flex items-center justify-center text-[var(--ink)] hover:text-[var(--cta)] active:scale-95 transition-all select-none cursor-pointer focus:outline-none"
+                aria-label="Share product"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
+          <div
+            className="w-full h-full relative will-change-transform"
+            style={{
+              transform: isDesktopHovered ? 'scale(1.6)' : 'scale(1)',
+              transformOrigin: `${desktopHoverPos.x}% ${desktopHoverPos.y}%`,
+              transition: isDesktopHovered
+                ? 'transform 100ms ease-out'
+                : 'transform 240ms ease-out',
+            }}
+          >
+            <Image
+              src={cl(safeImages[selectedIdx], { w: 1200, q: 'auto:good' })}
+              alt={`${productName} main view`}
+              fill
+              priority={selectedIdx === 0}
+              loading={selectedIdx === 0 ? 'eager' : 'lazy'}
+              sizes="(min-width: 1024px) 580px, 100vw"
+              className="object-cover object-top pointer-events-none"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* ── FULL-SCREEN ZOOM MODAL (Desktop & Mobile Pinch/Zoom) ── */}
+      {/* ── FULLSCREEN ZOOM VIEWER (Tap image to open, pinch/double-tap zoom with transform) ── */}
       {isZoomOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[120] bg-black/95 flex flex-col justify-between p-4 backdrop-blur-md animate-fade-in"
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-2 sm:p-6 select-none"
         >
-          {/* Top Bar */}
-          <div className="flex items-center justify-between text-white z-10 px-2 pt-2">
-            <span className="text-xs uppercase tracking-wider font-sans text-gray-300">
-              {productName} ({selectedIdx + 1} of {safeImages.length})
-            </span>
-            <button
-              onClick={() => setIsZoomOpen(false)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-              aria-label="Close zoom viewer"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => {
+              setIsZoomOpen(false);
+              setZoomScale(1);
+            }}
+            className="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer focus:outline-none"
+            aria-label="Close fullscreen zoom"
+          >
+            <X className="w-6 h-6 stroke-[2]" />
+          </button>
 
-          {/* Zoom Image Viewport */}
-          <div className="relative flex-1 w-full flex items-center justify-center p-2 overflow-hidden">
-            <div className="relative w-full h-full max-w-4xl max-h-[85vh]">
+          {/* Hint */}
+          <span className="absolute bottom-4 inset-x-0 text-center text-xs text-white/70 font-sans pointer-events-none">
+            Tap or double-tap to zoom in/out
+          </span>
+
+          {/* Large image with transform scale toggle */}
+          <div
+            onClick={handleModalImageClick}
+            className="relative w-full max-w-4xl h-[85vh] flex items-center justify-center overflow-hidden cursor-zoom-in"
+          >
+            <div
+              className="relative w-full h-full will-change-transform"
+              style={{
+                transform: `scale(${zoomScale})`,
+                transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                transition: 'transform 260ms cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+            >
               <Image
                 src={cl(safeImages[selectedIdx], { w: 1600, q: 'auto:best' })}
-                alt={`${productName} zoomed`}
+                alt={`${productName} zoomed view`}
                 fill
-                className="object-contain"
                 sizes="100vw"
-                priority
+                className="object-contain"
               />
             </div>
-
-            {hasMultipleImages && (
-              <>
-                <button
-                  onClick={handlePrev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer"
-                  aria-label="Previous image"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer"
-                  aria-label="Next image"
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-              </>
-            )}
           </div>
-
-          {/* Bottom Thumbnails */}
-          {hasMultipleImages && (
-            <div className="flex justify-center gap-2 overflow-x-auto py-2 z-10">
-              {safeImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedIdx(idx)}
-                  className={`relative aspect-[3/4] w-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                    idx === selectedIdx ? 'border-white scale-110 shadow-md' : 'border-white/30 opacity-60'
-                  }`}
-                >
-                  <Image
-                    src={cl(img, { w: 100, q: 'auto:good' })}
-                    alt={`Zoom thumb ${idx + 1}`}
-                    fill
-                    className="object-contain"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </div>

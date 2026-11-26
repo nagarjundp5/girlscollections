@@ -37,6 +37,7 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartBouncing, setCartBouncing] = useState(false);
 
   const userDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -66,11 +67,20 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
     const handleOpenCategoryMenu = () => {
       setMobileMenuOpen(true);
     };
+    let bounceTimer: ReturnType<typeof setTimeout> | null = null;
+    const handleCartBounce = () => {
+      setCartBouncing(true);
+      if (bounceTimer) clearTimeout(bounceTimer);
+      bounceTimer = setTimeout(() => setCartBouncing(false), 400);
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('open-category-menu', handleOpenCategoryMenu);
+    window.addEventListener('tgc-cart-bounce', handleCartBounce);
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('open-category-menu', handleOpenCategoryMenu);
+      window.removeEventListener('tgc-cart-bounce', handleCartBounce);
+      if (bounceTimer) clearTimeout(bounceTimer);
     };
   }, []);
 
@@ -254,7 +264,9 @@ export default function Navbar({ isFloating = false }: NavbarProps) {
             {/* Shopping Bag Icon */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="w-10 h-10 flex items-center justify-center hover:opacity-75 transition-opacity relative cursor-pointer focus:outline-none touch-manipulation"
+              className={`w-10 h-10 flex items-center justify-center hover:opacity-75 transition-opacity relative cursor-pointer focus:outline-none touch-manipulation ${
+                cartBouncing ? 'animate-cart-bounce' : ''
+              }`}
               title="Shopping Bag"
               aria-label="Cart"
             >
