@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { getAuthUserId } from '@/lib/auth/getAuthUserId';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { rateLimitCheckoutFlow } from '@/lib/rateLimit';
 
@@ -57,6 +57,57 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const parsed = syncCartSchema.parse(body);
+
+    // Validate requested quantities against current DB stock
+    if (parsed.items.length > 0) {
+      const productIds = Array.from(new Set(parsed.items.map((i) => i.productId)));
+      const dbProducts = await db
+        .select({
+          id: schema.products.id,
+          name: schema.products.name,
+          stock_quantity: schema.products.stock_quantity,
+        })
+        .from(schema.products)
+        .where(inArray(schema.products.id, productIds));
+
+      const dbSizes = await db
+        .select({
+          product_id: schema.productSizes.product_id,
+          size_key: schema.productSizes.size_key,
+          stock: schema.productSizes.stock,
+        })
+        .from(schema.productSizes)
+        .where(inArray(schema.productSizes.product_id, productIds));
+
+      type DbProductRow = typeof dbProducts[number];
+      type DbSizeRow = typeof dbSizes[number];
+      const prodMap = new Map<string, DbProductRow>(dbProducts.map((p: DbProductRow) => [p.id, p]));
+      for (const item of parsed.items) {
+        const sizeRow = dbSizes.find(
+          (s: DbSizeRow) => s.product_id === item.productId && s.size_key === item.size
+        );
+        const prod = prodMap.get(item.productId);
+        const stockMap = (prod?.stock_quantity as Record<string, any>) || {};
+        const available =
+          sizeRow?.stock !== undefined && sizeRow?.stock !== null
+            ? Number(sizeRow.stock)
+            : stockMap[item.size] !== undefined
+            ? Number(stockMap[item.size])
+            : undefined;
+
+        if (available !== undefined && item.quantity > available) {
+          return NextResponse.json(
+            {
+              error:
+                available <= 0
+                  ? `"${item.title}" (${item.size}) is out of stock.`
+                  : `Only ${available} available for "${item.title}" (${item.size}).`,
+            },
+            { status: 400 }
+          );
+        }
+      }
+    }
 
     // Compute total in paise (sum of price * qty — price should already be in paise)
     const total = parsed.items.reduce((sum, i) => sum + i.price * i.quantity, 0);

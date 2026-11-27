@@ -58,20 +58,23 @@ export default async function ProfileOrdersPage() {
       <ProfileLocationCard />
 
       <div className="flex items-center justify-between pt-2">
-        <h2 className="text-xl font-medium text-[#0F172A]">Order History</h2>
-        <span className="text-sm text-gray-500">{orders.length} orders</span>
+        <div>
+          <h2 className="text-xl font-serif font-semibold text-[#1A1E3A]">My orders</h2>
+          <p className="text-sm text-[#6B6F85] mt-0.5">View details and track your orders.</p>
+        </div>
+        <span className="text-sm font-medium text-[#6B6F85]">Total orders: {orders.length}</span>
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-200/80 p-12 text-center shadow-sm">
-          <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No orders found</h3>
-          <p className="text-sm text-gray-500 mb-6">Looks like you haven&apos;t placed any orders yet.</p>
+        <div className="bg-white rounded-2xl border border-[#EADFD6] p-12 text-center shadow-2xs">
+          <Package className="w-12 h-12 text-[#EADFD6] mx-auto mb-3" />
+          <h3 className="text-lg font-serif font-semibold text-[#1A1E3A] mb-1">No orders yet</h3>
+          <p className="text-sm text-[#6B6F85] mb-6">When you place an order, it will appear here for easy tracking.</p>
           <Link
             href="/shop"
-            className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium rounded-xl bg-[#0F172A] text-white hover:bg-black transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-xl bg-[#D94F7E] text-white hover:bg-[#C23F6D] transition-colors"
           >
-            Start Shopping
+            Start shopping
           </Link>
         </div>
       ) : (
@@ -86,12 +89,12 @@ export default async function ProfileOrdersPage() {
             return (
               <div
                 key={order.id}
-                className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white border border-[#EADFD6] rounded-2xl p-5 sm:p-6 shadow-2xs hover:shadow-sm transition-shadow"
               >
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#EADFD6]/70 pb-4">
                   <div>
-                    <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Order Number</span>
-                    <p className="text-base font-semibold text-gray-900">#{order.order_number}</p>
+                    <span className="text-xs text-[#6B6F85] font-medium">Order number</span>
+                    <p className="text-base font-semibold text-[#1A1E3A]">#{order.order_number}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     {getStatusBadge(order.status || order.order_status, order.refund_status)}
@@ -145,9 +148,9 @@ export default async function ProfileOrdersPage() {
 
                   <Link
                     href={`/profile/orders/${order.id}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium bg-[#F1F5F9] text-[#0F172A] hover:bg-[#E2E8F0] transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-[#FBF8F4] border border-[#EADFD6] text-[#1A1E3A] hover:border-[#D94F7E] hover:text-[#D94F7E] transition-colors"
                   >
-                    View Details
+                    View details
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

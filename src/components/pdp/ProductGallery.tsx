@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { X, ZoomIn, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cl } from '@/lib/cloudinary';
@@ -29,10 +30,31 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const [desktopHoverPos, setDesktopHoverPos] = useState({ x: 50, y: 50 });
   const [isDesktopHovered, setIsDesktopHovered] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
   const safeImages = images && images.length > 0 ? images : ['/logo.png'];
   const hasMultiple = safeImages.length > 1;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const openZoom = useCallback(() => {
+    if (typeof document !== 'undefined') {
+      lastFocusedRef.current = document.activeElement as HTMLElement | null;
+    }
+    setIsZoomOpen(true);
+  }, []);
+
+  const closeZoom = useCallback(() => {
+    setIsZoomOpen(false);
+    setZoomScale(1);
+    if (lastFocusedRef.current && typeof lastFocusedRef.current.focus === 'function') {
+      setTimeout(() => lastFocusedRef.current?.focus(), 0);
+    }
+  }, []);
 
   // Jump to specific slide
   const goToSlide = useCallback((idx: number) => {
@@ -75,18 +97,29 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
     setZoomScale((s) => (s > 1 ? 1 : 2.2));
   };
 
-  // Close zoom modal on ESC
+  // Close zoom modal on ESC, navigate with ArrowLeft/ArrowRight, and lock body scroll
   useEffect(() => {
     if (!isZoomOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setIsZoomOpen(false);
+        closeZoom();
+      } else if (e.key === 'ArrowRight' && safeImages.length > 1) {
         setZoomScale(1);
+        setSelectedIdx((prev) => (prev + 1) % safeImages.length);
+      } else if (e.key === 'ArrowLeft' && safeImages.length > 1) {
+        setZoomScale(1);
+        setSelectedIdx((prev) => (prev - 1 + safeImages.length) % safeImages.length);
       }
     };
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isZoomOpen]);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isZoomOpen, closeZoom, safeImages.length]);
 
   return (
     <div id="pdp-primary-gallery" className="w-full select-none">
@@ -133,7 +166,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
               return (
                 <div
                   key={idx}
-                  onClick={() => setIsZoomOpen(true)}
+                  onClick={openZoom}
                   className="w-full h-full shrink-0 snap-center relative cursor-zoom-in"
                 >
                   <Image
@@ -236,7 +269,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
 
         {/* Main Image with Hover Cursor Zoom scale 1.6 */}
         <div
-          onClick={() => setIsZoomOpen(true)}
+          onClick={openZoom}
           onMouseEnter={() => setIsDesktopHovered(true)}
           onMouseLeave={() => setIsDesktopHovered(false)}
           onMouseMove={handleDesktopMouseMove}
@@ -289,34 +322,77 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
         </div>
       </div>
 
-      {/* ── FULLSCREEN ZOOM VIEWER (Tap image to open, pinch/double-tap zoom with transform) ── */}
-      {isZoomOpen && (
+      {/* ── FULLSCREEN ZOOM VIEWER (Portaled to body above header/nav/sticky bar) ── */}
+      {mounted && isZoomOpen && createPortal(
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-2 sm:p-6 select-none"
+          aria-label={`${productName} fullscreen image viewer`}
+          onClick={closeZoom}
+          className="fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center p-2 sm:p-6 select-none"
         >
-          {/* Close button */}
+          {/* Close button (44px) */}
           <button
             type="button"
-            onClick={() => {
-              setIsZoomOpen(false);
-              setZoomScale(1);
+            autoFocus
+            onClick={(e) => {
+              e.stopPropagation();
+              closeZoom();
             }}
-            className="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer focus:outline-none"
+            className="fixed top-4 right-4 z-[100001] w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             aria-label="Close fullscreen zoom"
           >
             <X className="w-6 h-6 stroke-[2]" />
           </button>
 
+          {/* Counter */}
+          {hasMultiple && (
+            <span className="fixed top-5 left-5 z-[100001] px-3 py-1 rounded-full bg-white/15 text-white text-xs font-sans font-medium">
+              {selectedIdx + 1} / {safeImages.length}
+            </span>
+          )}
+
+          {/* Prev / Next arrows */}
+          {hasMultiple && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomScale(1);
+                  setSelectedIdx((prev) => (prev - 1 + safeImages.length) % safeImages.length);
+                }}
+                className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-[100001] w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer focus:outline-none"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomScale(1);
+                  setSelectedIdx((prev) => (prev + 1) % safeImages.length);
+                }}
+                className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-[100001] w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer focus:outline-none"
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+
           {/* Hint */}
-          <span className="absolute bottom-4 inset-x-0 text-center text-xs text-white/70 font-sans pointer-events-none">
+          <span className="fixed bottom-4 inset-x-0 text-center text-xs text-white/70 font-sans pointer-events-none z-[100001]">
             Tap or double-tap to zoom in/out
           </span>
 
           {/* Large image with transform scale toggle */}
           <div
-            onClick={handleModalImageClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleModalImageClick(e);
+            }}
             className="relative w-full max-w-4xl h-[85vh] flex items-center justify-center overflow-hidden cursor-zoom-in"
           >
             <div
@@ -336,7 +412,8 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

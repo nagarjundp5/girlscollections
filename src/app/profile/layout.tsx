@@ -28,19 +28,19 @@ export default async function ProfileLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#1E293B]">
+    <div className="min-h-screen bg-[#FBF8F4] text-[#1A1E3A] font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="mb-8 border-b border-[#E2E8F0] pb-4 flex items-center justify-between">
+        <div className="mb-8 border-b border-[#EADFD6] pb-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-serif text-[#0F172A]">My Account</h1>
-            <p className="text-sm text-gray-500 mt-1">Manage your orders and saved details</p>
+            <h1 className="text-2xl sm:text-3xl font-serif font-semibold text-[#1A1E3A]">My account</h1>
+            <p className="text-sm text-[#6B6F85] mt-1">View details and track your orders.</p>
           </div>
-          <nav className="flex space-x-4">
+          <nav className="flex space-x-3">
             <Link
               href="/profile/orders"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-[#0F172A] text-white"
+              className="px-4 py-2 text-sm font-semibold rounded-xl bg-[#D94F7E] hover:bg-[#C23F6D] text-white transition-colors"
             >
-              Orders
+              My orders
             </Link>
           </nav>
         </div>

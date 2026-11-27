@@ -27,6 +27,16 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'thegirlscollections.com' }],
+        destination: 'https://www.thegirlscollections.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

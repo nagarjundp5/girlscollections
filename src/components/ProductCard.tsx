@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/data/shopData';
 import { useShop } from '@/context/ShopContext';
 import { LuxuryHeartButton } from '@/components/LuxuryHeartButton';
 import { cl, clBlur } from '@/lib/cloudinary';
+import { formatSizeLabel } from '@/lib/formatSizeLabel';
 
 interface ProductCardProps {
   product: Product;
@@ -16,43 +17,26 @@ interface ProductCardProps {
   index?: number;
 }
 
+function formatCategoryLabel(cat?: string): string {
+  if (!cat) return '';
+  return cat
+    .replace(/[-_]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+}
+
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   priorityImage = false,
   variant = 'grid',
   archShape = false,
-  index = 0,
 }) => {
   const { toggleWishlist, isInWishlist } = useShop();
   const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
 
   const inWishlist = isInWishlist(product.id);
-
-  // Viewport entrance stagger-fade animation (fires ONCE to prevent scroll-jitter)
-  useEffect(() => {
-    const node = cardRef.current;
-    if (!node) return;
-
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setIsVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(node);
-        }
-      },
-      { threshold: 0.08, rootMargin: '50px' }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -77,19 +61,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     return { size: s?.size || String(s), inStock: s?.inStock ?? true };
   });
   const availableSizes = normalizedSizes.filter((s) => s.inStock);
-  const staggerDelay = (index % 6) * 50;
 
   return (
     <div
-      ref={cardRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(18px)',
-        transition: `opacity 0.45s cubic-bezier(0.16,1,0.3,1) ${staggerDelay}ms, transform 0.45s cubic-bezier(0.16,1,0.3,1) ${staggerDelay}ms`,
-      }}
-      className={`group relative flex flex-col bg-transparent overflow-hidden select-none p-0 transition-all duration-300 ${
+      className={`group relative flex flex-col bg-transparent overflow-hidden select-none p-0 transition-opacity duration-300 ${
         variant === 'rail' ? 'w-full h-full justify-between' : 'w-full h-full justify-between'
       }`}
     >
@@ -139,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 priority={priorityImage}
                 placeholder="blur"
                 blurDataURL={clBlur(product.images[0])}
-                className={`object-contain transition-transform duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
+                className={`object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.04] ${
                   isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'
                 }`}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -152,7 +129,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   alt={`${product.name} hover view`}
                   fill
                   loading="lazy"
-                  className={`object-contain transition-all duration-[5000ms] cubic-bezier(0.25,0.46,0.45,0.94) ease-out group-hover:scale-[1.05] ${
+                  className={`object-cover object-top transition-opacity duration-300 ease-out ${
                     isHovered ? 'opacity-100' : 'opacity-0'
                   }`}
                   sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
@@ -160,9 +137,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               )}
             </>
           ) : (
-            <div className="w-full h-full bg-navy-silk flex flex-col items-center justify-center p-4 text-center text-ivory">
-              <span className="eyebrow-text text-zariGoldLight text-[11px]">{product.category}</span>
-              <p className="text-sm font-sans font-medium text-ivory mt-1">{product.name}</p>
+            <div className="w-full h-full bg-[#F6E4E4]/40 flex flex-col items-center justify-center p-4 text-center text-[#1A1E3A]">
+              <span className="text-xs font-medium text-[#6B6F85]">{formatCategoryLabel(product.category)}</span>
+              <p className="text-sm font-sans font-semibold text-[#1A1E3A] mt-1">{product.name}</p>
             </div>
           )}
         </Link>
@@ -177,13 +154,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {availableSizes.slice(0, 3).map((s) => (
               <span
                 key={s.size}
-                className="text-[10px] sm:text-[11px] font-sans font-semibold text-inkNavy/80 bg-sand/20 border border-zariGold/35 hover:border-zariGold hover:text-zariGold px-2.5 py-0.5 rounded-full uppercase tracking-wider transition-colors duration-200"
+                className="text-[11px] font-sans font-semibold text-[#1A1E3A]/80 bg-[#FBF8F4] border border-[#EADFD6] px-2 py-0.5 rounded-full transition-colors duration-200"
               >
-                {s.size}
+                {formatSizeLabel(s.size)}
               </span>
             ))}
             {availableSizes.length > 3 && (
-              <span className="text-[10px] sm:text-[11px] font-sans text-zariGold font-bold">
+              <span className="text-[11px] font-sans text-[#6B6F85] font-semibold">
                 +{availableSizes.length - 3}
               </span>
             )}
@@ -192,7 +169,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Title */}
         <Link href={`/shop/${product.slug}`}>
-          <h3 className="text-sm sm:text-base font-serif font-medium text-inkNavy group-hover:text-zariGold tracking-[-0.015em] transition-colors leading-snug">
+          <h3 className="text-sm sm:text-base font-sans font-semibold text-[#1A1E3A] group-hover:text-[#D94F7E] transition-colors leading-snug line-clamp-2">
             {product.name}
           </h3>
         </Link>

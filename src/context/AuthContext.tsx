@@ -360,7 +360,7 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
   };
 
   return (
-    <AuthContext.Provider value={{ user: effectiveUser, isSignedIn: !!effectiveUser, isLoaded, openAuthModal, closeAuthModal, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user: effectiveUser, isSignedIn: (clerkAuthLoaded && clerkIsSignedIn) || !!effectiveUser, isLoaded: isLoaded || clerkAuthLoaded, openAuthModal, closeAuthModal, logout, refreshUser }}>
       {children}
       {mounted && createPortal(
         <AnimatePresence>

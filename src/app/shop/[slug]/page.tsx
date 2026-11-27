@@ -28,22 +28,34 @@ function formatDbProductToShopProduct(p: any): ShopProduct {
       .map((s: any) => {
         const pRup = s.price > 100000 ? Math.round(s.price / 100) : s.price;
         const mrpRup = s.mrp ? (s.mrp > 100000 ? Math.round(s.mrp / 100) : s.mrp) : undefined;
+        const stockNum = Number(s.stock ?? 0);
         return {
           size: s.size_key,
           price: pRup,
           originalPrice: mrpRup,
-          inStock: Number(s.stock ?? 0) > 0,
+          stock: stockNum,
+          inStock: stockNum > 0,
         };
       });
   } else if (Array.isArray(p.sizes)) {
-    sizesList = p.sizes.map((s: any) =>
-      typeof s === 'string' ? { size: s, inStock: true } : s
-    );
+    const stockMap = p.stock_quantity && typeof p.stock_quantity === 'object' ? p.stock_quantity : null;
+    sizesList = p.sizes.map((s: any) => {
+      if (typeof s === 'string') {
+        const stockNum = stockMap && stockMap[s] !== undefined ? Number(stockMap[s]) : undefined;
+        return { size: s, stock: stockNum, inStock: stockNum !== undefined ? stockNum > 0 : true };
+      }
+      const stockNum = s.stock !== undefined ? Number(s.stock) : (stockMap && stockMap[s.size] !== undefined ? Number(stockMap[s.size]) : undefined);
+      return { ...s, stock: stockNum, inStock: stockNum !== undefined ? stockNum > 0 : (s.inStock ?? true) };
+    });
   } else if (p.stock_quantity && typeof p.stock_quantity === 'object') {
-    sizesList = Object.entries(p.stock_quantity).map(([size, qty]) => ({
-      size,
-      inStock: Number(qty) > 0,
-    }));
+    sizesList = Object.entries(p.stock_quantity).map(([size, qty]) => {
+      const stockNum = Number(qty ?? 0);
+      return {
+        size,
+        stock: stockNum,
+        inStock: stockNum > 0,
+      };
+    });
   }
 
   if (sizesList.length === 0) {

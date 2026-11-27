@@ -62,8 +62,8 @@ export default async function OrderDetailPage({
       {/* Header Banner */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Order Details</span>
-          <h2 className="text-xl sm:text-2xl font-serif text-gray-900 font-medium">#{order.order_number}</h2>
+          <span className="text-xs text-[#6B6F85] font-medium">Order details</span>
+          <h2 className="text-xl sm:text-2xl font-serif text-[#1A1E3A] font-semibold">#{order.order_number}</h2>
           <p className="text-xs text-gray-500 mt-1">
             Placed on {order.created_at ? new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
           </p>
@@ -115,8 +115,8 @@ export default async function OrderDetailPage({
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold mb-2 ${
                     step.done
-                      ? 'bg-[#0F172A] text-white'
-                      : 'bg-gray-100 text-gray-400'
+                      ? 'bg-[#D94F7E] text-white'
+                      : 'bg-[#FBF8F4] border border-[#EADFD6] text-[#6B6F85]'
                   }`}
                 >
                   {step.done ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}
@@ -140,9 +140,9 @@ export default async function OrderDetailPage({
                 href={order.tracking_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#0F172A] text-white hover:bg-black transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#D94F7E] text-white hover:bg-[#C23F6D] transition-colors"
               >
-                Track Shipment
+                Track shipment
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>

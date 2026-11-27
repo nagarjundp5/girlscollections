@@ -53,8 +53,34 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const sizeSectionRef = useRef<HTMLDivElement>(null);
   const isKids = product.target === 'kids';
 
-  // Pricing calculations
+  // Pricing & stock calculations
   const currentSizeObj = (product.sizes as any[]).find((s) => s.size === selectedSize);
+  const maxStock: number = useMemo(() => {
+    if (!selectedSize || !currentSizeObj) {
+      return 99;
+    }
+    if (currentSizeObj.inStock === false) return 0;
+    if (typeof currentSizeObj.stock === 'number' && !Number.isNaN(currentSizeObj.stock)) {
+      return Math.max(0, currentSizeObj.stock);
+    }
+    const stockMap = (product as any).stock_quantity;
+    if (stockMap && typeof stockMap === 'object' && stockMap[selectedSize] !== undefined) {
+      return Math.max(0, Number(stockMap[selectedSize]) || 0);
+    }
+    return 99;
+  }, [selectedSize, currentSizeObj, product]);
+
+  // Reset quantity when selected size changes or maxStock drops below current quantity
+  React.useEffect(() => {
+    setQuantity(1);
+  }, [selectedSize]);
+
+  React.useEffect(() => {
+    if (maxStock > 0 && quantity > maxStock) {
+      setQuantity(maxStock);
+    }
+  }, [maxStock, quantity]);
+
   const activeOriginalPrice = currentSizeObj?.originalPrice ?? product.originalPrice;
   const hasMultiplePrices =
     (product as any).has_different_prices ||
@@ -330,16 +356,17 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
       {/* ── 6) BUY BUTTONS, QUANTITY & ACTIONS ── */}
       <div id="pdp-main-actions" className="space-y-3.5 pt-1">
         {/* Compact Stepper (44px buttons) */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm font-semibold text-[var(--ink)]">Quantity:</span>
           <div className="flex items-center border border-[#EADFD6] rounded-[12px] bg-white h-[44px]">
             <button
               type="button"
+              disabled={quantity <= 1}
               onClick={() => {
                 haptic('tap');
                 setQuantity((q) => Math.max(1, q - 1));
               }}
-              className="w-[44px] h-[44px] text-[var(--ink)] hover:bg-black/5 active:scale-90 flex items-center justify-center transition-all cursor-pointer"
+              className="w-[44px] h-[44px] text-[var(--ink)] hover:bg-black/5 active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer"
               aria-label="Decrease quantity"
             >
               <Minus className="w-4 h-4" />
@@ -349,16 +376,22 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             </span>
             <button
               type="button"
+              disabled={selectedSize ? quantity >= maxStock : false}
               onClick={() => {
                 haptic('tap');
-                setQuantity((q) => q + 1);
+                setQuantity((q) => (selectedSize ? Math.min(maxStock, q + 1) : q + 1));
               }}
-              className="w-[44px] h-[44px] text-[var(--ink)] hover:bg-black/5 active:scale-90 flex items-center justify-center transition-all cursor-pointer"
+              className="w-[44px] h-[44px] text-[var(--ink)] hover:bg-black/5 active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer"
               aria-label="Increase quantity"
             >
               <Plus className="w-4 h-4" />
             </button>
           </div>
+          {selectedSize && maxStock > 0 && maxStock <= 5 && (
+            <span className="text-xs font-semibold text-[var(--cta)]">
+              Only {maxStock} available
+            </span>
+          )}
         </div>
 
         {/* Primary Add to Cart (52px, --cta, rounded 14px) & Secondary Buy Now (52px, --buy, rounded 14px) */}

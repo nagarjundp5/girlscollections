@@ -50,10 +50,6 @@ export default function OnboardingPage() {
 
     setLoading(true);
 
-    if (pushOptIn) {
-      await subscribeUserToPush({ topicOrders: true, topicOffers: true });
-    }
-
     try {
       const res = await fetch('/api/user/onboarding', {
         method: 'POST',
@@ -74,6 +70,10 @@ export default function OnboardingPage() {
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || 'Failed to complete profile');
+      }
+
+      if (pushOptIn) {
+        void subscribeUserToPush({ topicOrders: true, topicOffers: true }).catch(() => {});
       }
 
       addToast('Profile setup complete! Welcome to The Girls Collections ✨', 'success');

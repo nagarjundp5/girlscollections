@@ -30,18 +30,52 @@ interface CategoryRowData {
 const CategoryCarouselRow: React.FC<{
   row: CategoryRowData;
   bgClass: string;
-}> = ({ row, bgClass }) => {
+  isFirstSection?: boolean;
+}> = ({ row, bgClass, isFirstSection = false }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const { isInWishlist, toggleWishlist } = useShop();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [swipeHintActive, setSwipeHintActive] = useState(false);
+  const [activeCardIdx, setActiveCardIdx] = useState(0);
 
   const checkScroll = React.useCallback(() => {
     if (!scrollRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
     setCanScrollLeft(scrollLeft > 6);
     setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6);
+    const firstCard = scrollRef.current.firstElementChild as HTMLElement | null;
+    if (firstCard && firstCard.offsetWidth > 0) {
+      const idx = Math.round(scrollLeft / (firstCard.offsetWidth + 14));
+      setActiveCardIdx(Math.max(0, idx));
+    }
+  }, []);
+
+  // Mobile swipe hint: once when section enters viewport, translate 28px and back over 900ms
+  useEffect(() => {
+    const sec = sectionRef.current;
+    if (!sec || typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.innerWidth >= 768) return;
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSwipeHintActive(true);
+          timer = setTimeout(() => setSwipeHintActive(false), 900);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(sec);
+    return () => {
+      observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   React.useEffect(() => {
@@ -75,13 +109,18 @@ const CategoryCarouselRow: React.FC<{
   const cleanTitle = row.category.name.replace(/–\s*1\s*Pc/i, '').trim();
 
   return (
-    <section className={`w-full py-10 md:py-14 select-none ${bgClass}`}>
+    <section ref={sectionRef} className={`w-full py-10 md:py-14 select-none ${bgClass}`}>
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Left-aligned heading: “{Category} | Top Picks”, bold, in existing heading font */}
-        <div className="mb-6 md:mb-8 text-left">
+        <div className="mb-6 md:mb-8 text-left flex items-center justify-between gap-2">
           <h3 className="text-[20px] md:text-[26px] font-sans font-semibold tracking-[0.05em] text-[#1C1417]">
             {cleanTitle} | Top Picks
           </h3>
+          {canScrollRight && (
+            <span className="md:hidden inline-flex items-center gap-0.5 text-xs font-medium text-[#6B6F85] animate-pulse">
+              Swipe <ChevronRight className="w-3.5 h-3.5" />
+            </span>
+          )}
         </div>
 
         {/* Carousel Container with Left/Right Scroll Buttons */}
@@ -116,13 +155,14 @@ const CategoryCarouselRow: React.FC<{
           */}
           <div
             ref={scrollRef}
-            className="flex items-stretch gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth"
+            className="flex items-stretch gap-[14px] md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth transition-transform duration-[450ms] ease-out"
             style={{
               scrollSnapType: 'x mandatory',
               WebkitOverflowScrolling: 'touch',
+              transform: swipeHintActive ? 'translateX(-28px)' : 'translateX(0)',
             }}
           >
-            {displayProducts.map((product) => {
+            {displayProducts.map((product, cardIdx) => {
               const isWishlisted = isInWishlist(product.id);
               const isHovered = hoveredId === product.id;
               const hasSecondImage = product.images && product.images.length > 1;
@@ -161,14 +201,16 @@ const CategoryCarouselRow: React.FC<{
               return (
                 <div
                   key={product.id}
-                  className="shrink-0 snap-start select-none w-[calc((100%-20px)/2.2)] sm:w-[calc((100%-36px)/3)] md:w-[calc(25%-18px)] min-w-[150px]"
+                  className={`shrink-0 snap-start select-none w-[min(74vw,300px)] sm:w-[calc((100%-36px)/3)] md:w-[calc(25%-18px)] transition-transform duration-300 ease-out md:scale-100 ${
+                    cardIdx === activeCardIdx ? 'scale-100' : 'scale-[0.97] md:scale-100'
+                  }`}
                   onMouseEnter={() => setHoveredId(product.id)}
                   onMouseLeave={() => setHoveredId(null)}
                 >
                   {/* Borderless Product Card */}
                   <div className="group relative flex flex-col w-full">
                     {/* 3:4 Portrait Image Container */}
-                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-white/60 rounded-none">
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-white/60 rounded-2xl md:rounded-none">
                       <Link
                         href={productUrl}
                         className="block w-full h-full relative"
@@ -179,11 +221,12 @@ const CategoryCarouselRow: React.FC<{
                           src={optimizedPrimary}
                           alt={product.name}
                           fill
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
+                          priority={isFirstSection && cardIdx === 0}
+                          sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
                           className={`object-cover transition-opacity duration-500 ease-in-out ${
                             isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
                           }`}
-                          loading="lazy"
+                          loading={isFirstSection && cardIdx === 0 ? 'eager' : 'lazy'}
                         />
 
                         {hasSecondImage && (
@@ -252,22 +295,25 @@ const CategoryCarouselRow: React.FC<{
                     {/* Text Under Image: Name and Price, borderless */}
                     <div className="pt-3 pb-1 text-left">
                       <Link href={productUrl} className="block group/title">
-                        <h4 className="text-[13px] md:text-[14px] font-sans font-normal uppercase tracking-[0.04em] text-[#1C1417] line-clamp-2 leading-tight">
+                        <h4 className="text-[15px] md:text-[14px] font-sans font-semibold md:font-normal normal-case md:uppercase md:tracking-[0.04em] text-[#1A1E3A] md:text-[#1C1417] line-clamp-2 leading-snug">
                           {product.name}
                         </h4>
                       </Link>
 
                       <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-                        <span className="text-[15px] md:text-[16px] font-sans font-bold text-[#1C1417]">
+                        <span className="text-[18px] md:text-[16px] font-sans font-bold text-[#1A1E3A] md:text-[#1C1417] tabular-nums">
                           {formatPrice(price)}
                         </span>
 
                         {hasDiscount && comparePrice && (
                           <>
-                            <span className="text-[12px] md:text-[13px] font-sans text-[#595959] line-through font-normal">
+                            <span className="text-[13px] font-sans text-[#6B6F85] md:text-[#595959] line-through font-normal tabular-nums">
                               {formatPrice(comparePrice)}
                             </span>
-                            <span className="text-[12px] md:text-[13px] font-sans font-semibold text-[#B8283B]">
+                            <span className="md:hidden text-[12px] font-sans font-semibold text-[#2E8B6A]">
+                              Save ₹{(comparePrice - price).toLocaleString('en-IN')}
+                            </span>
+                            <span className="hidden md:inline text-[13px] font-sans font-semibold text-[#B8283B]">
                               ({discountPercent}% OFF)
                             </span>
                           </>
@@ -281,13 +327,13 @@ const CategoryCarouselRow: React.FC<{
           </div>
         </div>
 
-        {/* Centered “VIEW ALL” button (navy fill, white text) linking to /shop?category={slug}&target={women|kids} */}
-        <div className="mt-8 md:mt-10 text-center">
+        {/* Mobile full-width 48px rose-pink View all; Desktop centered navy VIEW ALL */}
+        <div className="mt-6 md:mt-10 text-center">
           <Link
             href={`/shop?category=${encodeURIComponent(row.category.slug)}&target=${row.category.group}`}
-            className="inline-flex items-center justify-center px-8 py-3 bg-[#1A1E3A] text-white hover:bg-[#121528] text-xs md:text-[13px] font-sans font-semibold uppercase tracking-[0.1em] transition-colors rounded-none shadow-sm"
+            className="inline-flex items-center justify-center w-full sm:w-auto min-h-[48px] px-8 py-3 bg-[#D94F7E] hover:bg-[#C23F6D] md:bg-[#1A1E3A] md:hover:bg-[#121528] text-white text-sm md:text-[13px] font-sans font-semibold normal-case md:uppercase md:tracking-[0.1em] transition-colors rounded-xl md:rounded-none shadow-sm"
           >
-            VIEW ALL
+            View all
           </Link>
         </div>
       </div>
@@ -460,6 +506,7 @@ export const CategoryProductRows: React.FC<CategoryProductRowsProps> = ({ filter
         <CategoryCarouselRow
           key={`${row.category.group}-${row.category.slug}-${idx}`}
           row={row}
+          isFirstSection={idx === 0}
           // Alternate row backgrounds between white (#FFF) and the site's ivory (#FAF8F5)
           bgClass={idx % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]'}
         />
