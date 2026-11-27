@@ -9,7 +9,7 @@ import PaymentBadges from './PaymentBadges';
 
 const INSTAGRAM_URL =
   process.env.NEXT_PUBLIC_INSTAGRAM_URL ||
-  'https://www.instagram.com/thegirlscollections';
+  'https://www.instagram.com/thegirlscollections.official/';
 
 /**
  * Animated Instagram Row:
@@ -50,9 +50,8 @@ const InstagramCard: React.FC<{ className?: string }> = ({ className = '' }) => 
       href={INSTAGRAM_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative overflow-hidden rounded-2xl border border-[#F3DDE0] bg-gradient-to-r from-[#FAF8F5] via-[#FFF5F6] to-[#FCE8EB] p-4 sm:p-5 shadow-xs transition-shadow duration-300 hover:shadow-md block ${
-        inView ? 'animate-fade-up-once' : 'opacity-0'
-      } ${className}`}
+      className={`group relative overflow-hidden rounded-2xl border border-[#F3DDE0] bg-gradient-to-r from-[#FAF8F5] via-[#FFF5F6] to-[#FCE8EB] p-4 sm:p-5 shadow-xs transition-shadow duration-300 hover:shadow-md block ${inView ? 'animate-fade-up-once' : 'opacity-0'
+        } ${className}`}
       aria-label="Follow us on Instagram @thegirlscollections"
     >
       <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -93,13 +92,12 @@ const InstagramCard: React.FC<{ className?: string }> = ({ className = '' }) => 
             </span>
             <div className="relative inline-block mt-0.5">
               <span className="font-serif font-semibold text-[16px] sm:text-[17px] text-[#1A1E3A] tracking-[0.01em] group-hover:text-[#B83A5A] transition-colors">
-                @thegirlscollections
+                @thegirlscollections.official
               </span>
               {/* Gold underline drawn in on view once */}
               <span
-                className={`absolute -bottom-0.5 left-0 right-0 h-[2px] bg-[#C5A059] transition-transform duration-700 ease-out origin-left ${
-                  inView ? 'scale-x-100' : 'scale-x-0'
-                }`}
+                className={`absolute -bottom-0.5 left-0 right-0 h-[2px] bg-[#C5A059] transition-transform duration-700 ease-out origin-left ${inView ? 'scale-x-100' : 'scale-x-0'
+                  }`}
                 aria-hidden="true"
               />
             </div>
@@ -149,7 +147,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-[#FCFAF8] text-[#1A1E3A] border-t border-[#EAE5DE] select-none">
       <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-10 md:py-16">
-        
+
         {/* a) "Follow us on Instagram" row */}
         <div className="mb-8 md:mb-12">
           <InstagramCard />
@@ -165,7 +163,7 @@ export default function Footer() {
 
         {/* ── MOBILE ACCORDION (Collapsible, generous tap targets, 16-17px text) ── */}
         <div className="md:hidden divide-y divide-[#EAE5DE] border-y border-[#EAE5DE] mb-8">
-          
+
           {/* Section 1: About Us */}
           <div>
             <button
@@ -176,15 +174,13 @@ export default function Footer() {
             >
               <span>About Us</span>
               <ChevronDown
-                className={`w-5 h-5 text-[#1A1E3A]/70 transition-transform duration-300 ease-out ${
-                  openSection === 'about' ? 'rotate-180' : 'rotate-0'
-                }`}
+                className={`w-5 h-5 text-[#1A1E3A]/70 transition-transform duration-300 ease-out ${openSection === 'about' ? 'rotate-180' : 'rotate-0'
+                  }`}
               />
             </button>
             <div
-              className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-                openSection === 'about' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-              }`}
+              className={`grid transition-[grid-template-rows] duration-300 ease-out ${openSection === 'about' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                }`}
             >
               <div className="overflow-hidden">
                 <ul className="pb-3.5 space-y-0.5">
@@ -210,15 +206,13 @@ export default function Footer() {
             >
               <span>Quick Links</span>
               <ChevronDown
-                className={`w-5 h-5 text-[#1A1E3A]/70 transition-transform duration-300 ease-out ${
-                  openSection === 'links' ? 'rotate-180' : 'rotate-0'
-                }`}
+                className={`w-5 h-5 text-[#1A1E3A]/70 transition-transform duration-300 ease-out ${openSection === 'links' ? 'rotate-180' : 'rotate-0'
+                  }`}
               />
             </button>
             <div
-              className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-                openSection === 'links' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-              }`}
+              className={`grid transition-[grid-template-rows] duration-300 ease-out ${openSection === 'links' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                }`}
             >
               <div className="overflow-hidden">
                 <ul className="pb-3.5 space-y-0.5">
@@ -244,15 +238,13 @@ export default function Footer() {
             >
               <span>Contact</span>
               <ChevronDown
-                className={`w-5 h-5 text-[#1A1E3A]/70 transition-transform duration-300 ease-out ${
-                  openSection === 'contact' ? 'rotate-180' : 'rotate-0'
-                }`}
+                className={`w-5 h-5 text-[#1A1E3A]/70 transition-transform duration-300 ease-out ${openSection === 'contact' ? 'rotate-180' : 'rotate-0'
+                  }`}
               />
             </button>
             <div
-              className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-                openSection === 'contact' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-              }`}
+              className={`grid transition-[grid-template-rows] duration-300 ease-out ${openSection === 'contact' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                }`}
             >
               <div className="overflow-hidden">
                 <ul className="pb-4 space-y-2 text-[16px] sm:text-[17px] font-sans text-[#1A1E3A]/85">

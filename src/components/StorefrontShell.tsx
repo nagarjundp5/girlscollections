@@ -26,9 +26,6 @@ const WhatsAppButton = dynamic(() => import('@/components/WhatsAppButton'), {
 const LoginIncentivePopup = dynamic(() => import('@/components/LoginIncentivePopup'), {
   ssr: false,
 });
-const PushPrompt = dynamic(() => import('@/components/PushPrompt'), {
-  ssr: false,
-});
 
 export default function StorefrontShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -141,7 +138,6 @@ export default function StorefrontShell({ children }: { children: React.ReactNod
         <>
           <WhatsAppButton />
           <LoginIncentivePopup />
-          <PushPrompt />
         </>
       )}
     </>

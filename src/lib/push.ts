@@ -101,7 +101,7 @@ export async function notifyAdminOfNewOrder(order: {
     const isPreOrder = order.payment_type === 'cod_with_deposit';
 
     const payload = {
-      title: isPreOrder ? '🕒 New Pre-Order — DRFTN' : '🛒 New Order — DRFTN',
+      title: isPreOrder ? '🕒 New Pre-Order — The Girls Collections' : '🛒 New Order — The Girls Collections',
       body: `${order.customer_name} · ${itemSummary} · ${totalRupees}`,
       url: `/admin/orders/${order.id}`,
       type: 'order', // distinguisher for the service worker
@@ -119,5 +119,71 @@ export async function notifyAdminOfNewOrder(order: {
   } catch (err) {
     // Never throw — this must not surface to the checkout caller
     console.error('[notifyAdminOfNewOrder] Failed to send order notification:', err);
+  }
+}
+
+/**
+ * Sends order lifecycle push notification to a customer (runs even if offers are off,
+ * as long as topic_orders is enabled).
+ */
+export async function sendOrderStatusPush(params: {
+  userId?: string | null;
+  orderId: string;
+  orderNumber: string;
+  status: string;
+  awb?: string | null;
+}): Promise<void> {
+  if (!params.userId) return;
+  try {
+    const { and } = await import('drizzle-orm');
+    const subs = await db
+      .select()
+      .from(pushSubscriptions)
+      .where(and(eq(pushSubscriptions.user_id, params.userId), eq(pushSubscriptions.topic_orders, true)));
+
+    if (subs.length === 0) return;
+
+    const statusMap: Record<string, { title: string; body: string }> = {
+      confirmed: {
+        title: `Order ${params.orderNumber} Confirmed`,
+        body: 'Thank you for shopping with The Girls Collections! We are preparing your order.',
+      },
+      shipped: {
+        title: `Order ${params.orderNumber} Shipped`,
+        body: params.awb
+          ? `Your order is on the way! Tracking AWB: ${params.awb}`
+          : 'Your order has been dispatched and is on the way.',
+      },
+      out_for_delivery: {
+        title: `Out for Delivery — ${params.orderNumber}`,
+        body: 'Your order is out for delivery today. Please keep your phone handy.',
+      },
+      delivered: {
+        title: `Delivered — ${params.orderNumber}`,
+        body: 'Your order has been delivered! We hope you love it.',
+      },
+      ready_for_pickup: {
+        title: `Ready for Pickup — ${params.orderNumber}`,
+        body: 'Your order is ready for collection at our Gandhi Bazaar boutique.',
+      },
+      refunded: {
+        title: `Refund Processed — ${params.orderNumber}`,
+        body: 'Your refund has been initiated and will reflect in 5-7 business days.',
+      },
+    };
+
+    const msg = statusMap[params.status];
+    if (!msg) return;
+
+    const payload = {
+      title: msg.title,
+      body: msg.body,
+      url: `/account/orders/${params.orderId}`,
+      type: 'order_update',
+    };
+
+    await Promise.allSettled(subs.map((sub: typeof subs[number]) => sendPushNotification(sub, payload)));
+  } catch (err) {
+    console.error('[sendOrderStatusPush] Error:', err);
   }
 }

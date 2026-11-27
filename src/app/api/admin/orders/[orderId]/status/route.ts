@@ -140,36 +140,19 @@ export async function PATCH(
       return NextResponse.json({ error: 'Failed to update order status' }, { status: 500 });
     }
 
-    // 4b. Send push notification to user if order is ready for pickup
-    if (newStatus === 'ready_for_pickup' && order.user_id) {
+    // 4b. Send push notification to customer for order updates (confirmed, shipped, out_for_delivery, delivered, ready_for_pickup, refunded)
+    if (order.user_id) {
       try {
-        const { pushSubscriptions } = await import('@/db/schema');
-        const { isNull, and } = await import('drizzle-orm');
-        const { sendPushNotification } = await import('@/lib/push');
-
-        const subs = await db
-          .select()
-          .from(pushSubscriptions)
-          .where(
-            and(
-              eq(pushSubscriptions.product_id, null as any), // general sub OR find via user sub
-              isNull(pushSubscriptions.notified_at)
-            )
-          );
-
-        if (subs.length > 0) {
-          const payload = {
-            title: 'Order Ready for Pickup! 📦',
-            body: `Your order ${updatedOrder.order_number} is ready to collect. Pickup Code: ${updatedOrder.pickup_code}.`,
-            url: `/account/orders/${orderId}`,
-          };
-          // Broadcast to matching endpoints (simplified filter here or direct match if subscriptions stored endpoint)
-          await Promise.allSettled(
-            subs.map((sub: any) => sendPushNotification(sub, payload))
-          );
-        }
+        const { sendOrderStatusPush } = await import('@/lib/push');
+        await sendOrderStatusPush({
+          userId: order.user_id,
+          orderId,
+          orderNumber: updatedOrder.order_number,
+          status: newStatus,
+          awb: (updatedOrder as any).awb_code || (updatedOrder as any).tracking_number || null,
+        });
       } catch (pushErr) {
-        console.error('Failed to trigger pickup push notification:', pushErr);
+        console.error('Failed to trigger order status push notification:', pushErr);
       }
     }
 

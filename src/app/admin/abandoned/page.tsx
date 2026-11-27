@@ -16,7 +16,8 @@ import {
   ExternalLink,
   Loader2,
   RefreshCw,
-  ArrowRight
+  ArrowRight,
+  Bell
 } from 'lucide-react';
 import { useToast } from '@/components/ToastContainer';
 
@@ -68,6 +69,28 @@ export default function AbandonedPage() {
     const converted = items.filter(i => i.status === 'converted' || i.isCompleted).length;
     return { total, contacted, converted };
   }, [items]);
+
+  const handleSendPushReminder = async (item: any) => {
+    try {
+      const res = await fetch('/api/admin/abandoned', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send_reminder', userId: item.userId, tab: 'bags' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast(`Push reminder sent to ${data.sentTo ?? 1} device(s)`, 'success');
+        setItems(prev => prev.map(i => (i.userId === item.userId ? { ...i, reminderCount: (i.reminderCount || 0) + 1, status: 'abandoned' } : i)));
+        if (selectedDrawerItem?.userId === item.userId) {
+          setSelectedDrawerItem((prev: any) => prev ? { ...prev, reminderCount: (prev.reminderCount || 0) + 1 } : prev);
+        }
+      } else {
+        addToast(data.error || 'Failed to send reminder', 'error');
+      }
+    } catch {
+      addToast('Error sending push reminder', 'error');
+    }
+  };
 
   const handleMarkContacted = async (item: any) => {
     const id = item.cartId || item.sessionId;
@@ -278,7 +301,7 @@ export default function AbandonedPage() {
                         </div>
                       </td>
                       <td className="py-3 px-4 font-bold font-mono text-zinc-900">
-                        ₹{total.toLocaleString('en-IN')}
+                        ₹{(item.totalAmount || (item.cartTotal || item.total || 0) / 100).toLocaleString('en-IN')}
                       </td>
                       <td className="py-3 px-4">
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
@@ -308,6 +331,15 @@ export default function AbandonedPage() {
                               className="px-2.5 py-1 bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-100 rounded-lg text-[11px] font-bold transition-colors"
                             >
                               Done
+                            </button>
+                          )}
+                          {tab === 'bags' && item.userId && (
+                            <button
+                              onClick={() => handleSendPushReminder(item)}
+                              className="px-2.5 py-1 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
+                              title="Send push reminder"
+                            >
+                              <Bell className="w-3 h-3" /> Push
                             </button>
                           )}
                         </div>

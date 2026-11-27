@@ -12,9 +12,10 @@ import {
   ShoppingBagIcon,
   TruckIcon,
 } from '@/components/ui/BrandIcons';
-import { Plus, Minus, ArrowRight, ShieldCheck, Tag, Check } from 'lucide-react';
+import { Plus, Minus, ArrowRight, ShieldCheck, Tag, Check, Heart, RotateCcw, CreditCard } from 'lucide-react';
 import { useScrollLock } from '@/lib/useScrollLock';
 import { formatSizeLabel } from '@/lib/formatSizeLabel';
+import { haptic } from '@/lib/haptics';
 
 // In-memory cache for Cart Drawer recommendations (0 DB and 0 network hits on repeated opens)
 let memoryRecommendedCache: any[] | null = null;
@@ -31,6 +32,7 @@ export const CartDrawer: React.FC = () => {
     freeShippingProgress,
     amountNeededForFreeShipping,
     addToCart,
+    toggleWishlist,
   } = useShop();
 
   useScrollLock(isCartOpen);
@@ -175,6 +177,13 @@ export const CartDrawer: React.FC = () => {
     .filter((p) => !cartProductKeys.has(String(p.id)) && !cartProductKeys.has(String(p.slug)))
     .slice(0, 4);
 
+  const totalSavings = cart.reduce((sum, item) => {
+    const mrp = item.product.originalPrice && item.product.originalPrice > item.product.price
+      ? item.product.originalPrice
+      : item.product.price;
+    return sum + (mrp - item.product.price) * item.quantity;
+  }, 0);
+
   return (
     <AnimatePresence>
       {isCartOpen && (
@@ -225,22 +234,28 @@ export const CartDrawer: React.FC = () => {
               </div>
 
               {/* FREE SHIPPING PROGRESS BAR */}
-              <div className="px-5 sm:px-6 py-2.5 bg-[#F4EDE5] border-b border-[#EFE7E2] shrink-0">
+              <div className={`px-5 sm:px-6 py-2.5 border-b border-[#EFE7E2] shrink-0 transition-colors ${amountNeededForFreeShipping === 0 ? 'bg-emerald-50/70' : 'bg-[#F4EDE5]'}`}>
                 <div className="flex items-center justify-between text-xs font-sans text-[#1C1417] mb-1.5">
                   <div className="flex items-center space-x-1.5 font-medium truncate mr-2">
-                    <TruckIcon className="w-3.5 h-3.5 text-[#B8903A] shrink-0" />
-                    <span className="truncate">
+                    <TruckIcon className={`w-3.5 h-3.5 shrink-0 ${amountNeededForFreeShipping === 0 ? 'text-emerald-600' : 'text-[#B8903A]'}`} />
+                    <span className={`truncate ${amountNeededForFreeShipping === 0 ? 'text-emerald-700 font-semibold' : ''}`}>
                       {amountNeededForFreeShipping > 0
-                        ? `Add ₹${amountNeededForFreeShipping.toLocaleString('en-IN')} more for FREE Shipping!`
-                        : '🎉 Unlocked FREE Pan-India Shipping!'}
+                        ? `Add ₹${amountNeededForFreeShipping.toLocaleString('en-IN')} more for free shipping`
+                        : "You've unlocked free shipping"}
                     </span>
                   </div>
-                  <span className="font-bold text-[#B8903A] shrink-0">{freeShippingProgress}%</span>
+                  <span className={`font-bold shrink-0 ${amountNeededForFreeShipping === 0 ? 'text-emerald-700' : 'text-[#B8903A]'}`}>
+                    {freeShippingProgress}%
+                  </span>
                 </div>
                 <div className="w-full bg-white rounded-full h-1.5 overflow-hidden border border-[#E5D7CE]">
                   <div
-                    className="bg-gradient-to-r from-[#B8903A] to-[#D4AF37] h-full rounded-full transition-all duration-500"
-                    style={{ width: `${freeShippingProgress}%` }}
+                    className={`h-full rounded-full origin-left transition-transform duration-500 ${
+                      amountNeededForFreeShipping === 0
+                        ? 'bg-emerald-600'
+                        : 'bg-gradient-to-r from-[#B8903A] to-[#D4AF37]'
+                    }`}
+                    style={{ transform: `scaleX(${Math.min(1, Math.max(0, freeShippingProgress / 100))})` }}
                   />
                 </div>
               </div>
@@ -271,88 +286,119 @@ export const CartDrawer: React.FC = () => {
                   <>
                     {/* 2. LINE ITEMS LIST */}
                     <div className="space-y-3.5">
-                      {cart.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex space-x-3.5 p-3 rounded-xl bg-white border border-[#EFE7E2] shadow-2xs transition-all hover:border-[#D5C2B6]"
-                        >
-                          {/* Product Thumbnail */}
-                          <div className="relative w-18 h-22 sm:w-20 sm:h-24 rounded-xl overflow-hidden shrink-0 border border-[#EFE7E2] bg-[#F7F2EC]">
-                            {item.product.images && item.product.images[0] ? (
-                              <Image
-                                src={item.product.images[0]}
-                                alt={item.product.name}
-                                fill
-                                className="object-cover object-top"
-                                sizes="80px"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-[#B8903A] font-serif font-bold text-lg">
-                                TGC
-                              </div>
-                            )}
-                          </div>
+                      <AnimatePresence initial={false}>
+                        {cart.map((item) => {
+                          const stockForSize = (item.product as any).stock_quantity?.[item.selectedSize];
+                          const maxStock = typeof stockForSize === 'number' && stockForSize > 0 ? stockForSize : undefined;
+                          const isLowStock = typeof stockForSize === 'number' && stockForSize > 0 && stockForSize <= 3;
 
-                          <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
-                            <div>
-                              <div className="flex justify-between items-start gap-1">
-                                <h4 className="text-xs sm:text-sm font-sans font-medium text-[#1C1417] line-clamp-1">
-                                  {item.product.name}
-                                </h4>
-                                {/* 44px Hit Target Remove Button */}
-                                <button
-                                  onClick={() => removeFromCart(item.id)}
-                                  className="w-8 h-8 -mr-1 -mt-1 flex items-center justify-center text-[#1C1417]/40 hover:text-[#9A1F2A] transition-colors active:scale-90 cursor-pointer"
-                                  title="Remove item"
-                                  aria-label="Remove item"
-                                >
-                                  <TrashIcon className="w-4 h-4" />
-                                </button>
-                              </div>
-                              <div className="text-[11px] text-[#1C1417]/65 space-x-1.5 mt-0.5 font-sans">
-                                <span>
-                                  Size: <strong className="text-[#1C1417] font-semibold">{formatSizeLabel(item.selectedSize)}</strong>
-                                </span>
-                                {item.selectedColor && (
-                                  <>
-                                    <span>•</span>
-                                    <span>
-                                      Color: <strong className="text-[#1C1417] font-semibold">{item.selectedColor}</strong>
-                                    </span>
-                                  </>
+                          return (
+                            <motion.div
+                              key={item.id}
+                              initial={{ opacity: 0, scaleY: 0.95 }}
+                              animate={{ opacity: 1, scaleY: 1 }}
+                              exit={{ opacity: 0, scaleY: 0.85 }}
+                              transition={{ duration: 0.2 }}
+                              className="origin-top flex space-x-3.5 p-3 rounded-xl bg-white border border-[#EFE7E2] shadow-2xs transition-colors hover:border-[#D5C2B6]"
+                            >
+                              {/* Product Thumbnail */}
+                              <div className="relative w-18 h-22 sm:w-20 sm:h-24 rounded-xl overflow-hidden shrink-0 border border-[#EFE7E2] bg-[#F7F2EC]">
+                                {item.product.images && item.product.images[0] ? (
+                                  <Image
+                                    src={item.product.images[0]}
+                                    alt={item.product.name}
+                                    fill
+                                    className="object-cover object-top"
+                                    sizes="80px"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-[#B8903A] font-serif font-bold text-lg">
+                                    TGC
+                                  </div>
                                 )}
                               </div>
-                            </div>
 
-                            <div className="flex justify-between items-center mt-2">
-                              {/* 44px Quantity Stepper */}
-                              <div className="flex items-center border border-[#E5D7CE] rounded-lg h-[44px] bg-[#FBF7F1] px-1">
-                                <button
-                                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                  className="w-9 h-9 flex items-center justify-center text-[#1C1417] hover:text-[#3B1230] hover:bg-black/5 rounded-md transition-colors active:scale-95 cursor-pointer"
-                                  aria-label="Decrease quantity"
-                                >
-                                  <Minus className="w-3.5 h-3.5" />
-                                </button>
-                                <span className="w-8 text-center text-xs font-bold text-[#1C1417] font-tnum">
-                                  {item.quantity}
-                                </span>
-                                <button
-                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                  className="w-9 h-9 flex items-center justify-center text-[#1C1417] hover:text-[#3B1230] hover:bg-black/5 rounded-md transition-colors active:scale-95 cursor-pointer"
-                                  aria-label="Increase quantity"
-                                >
-                                  <Plus className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
+                              <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
+                                <div>
+                                  <div className="flex justify-between items-start gap-1">
+                                    <h4 className="text-xs sm:text-sm font-sans font-medium text-[#1C1417] line-clamp-1">
+                                      {item.product.name}
+                                    </h4>
+                                    {/* 44px Hit Target Remove Button */}
+                                    <button
+                                      onClick={() => removeFromCart(item.id)}
+                                      className="w-8 h-8 -mr-1 -mt-1 flex items-center justify-center text-[#1C1417]/40 hover:text-[#9A1F2A] transition-colors active:scale-90 cursor-pointer"
+                                      title="Remove item"
+                                      aria-label="Remove item"
+                                    >
+                                      <TrashIcon className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                  <div className="text-[11px] text-[#1C1417]/65 space-x-1.5 mt-0.5 font-sans">
+                                    <span>
+                                      Size: <strong className="text-[#1C1417] font-semibold">{formatSizeLabel(item.selectedSize)}</strong>
+                                    </span>
+                                    {item.selectedColor && (
+                                      <>
+                                        <span>•</span>
+                                        <span>
+                                          Color: <strong className="text-[#1C1417] font-semibold">{item.selectedColor}</strong>
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
+                                  {isLowStock && (
+                                    <p className="text-[11px] font-semibold text-[var(--cta)] mt-1">
+                                      Only {stockForSize} left
+                                    </p>
+                                  )}
+                                </div>
 
-                              <div className="text-xs sm:text-sm font-bold text-[#1C1417] font-tnum">
-                                {formatPrice(item.product.price * item.quantity)}
+                                <div className="flex justify-between items-center mt-2">
+                                  {/* 44px Quantity Stepper */}
+                                  <div className="flex items-center border border-[#E5D7CE] rounded-lg h-[44px] bg-[#FBF7F1] px-1">
+                                    <button
+                                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                      className="w-9 h-9 flex items-center justify-center text-[#1C1417] hover:text-[#3B1230] hover:bg-black/5 rounded-md transition-colors active:scale-95 cursor-pointer"
+                                      aria-label="Decrease quantity"
+                                    >
+                                      <Minus className="w-3.5 h-3.5" />
+                                    </button>
+                                    <span className="w-8 text-center text-xs font-bold text-[#1C1417] font-tnum">
+                                      {item.quantity}
+                                    </span>
+                                    <button
+                                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                      disabled={maxStock !== undefined && item.quantity >= maxStock}
+                                      className="w-9 h-9 flex items-center justify-center text-[#1C1417] hover:text-[#3B1230] hover:bg-black/5 rounded-md transition-colors active:scale-95 cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed"
+                                      aria-label="Increase quantity"
+                                    >
+                                      <Plus className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+
+                                  <div className="text-right">
+                                    <div className="text-xs sm:text-sm font-bold text-[#1C1417] font-tnum">
+                                      {formatPrice(item.product.price * item.quantity)}
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        toggleWishlist(item.product.id);
+                                        removeFromCart(item.id);
+                                      }}
+                                      className="inline-flex items-center gap-1 text-[11px] text-[#6B6F85] hover:text-[var(--cta)] transition-colors mt-0.5 cursor-pointer"
+                                    >
+                                      <Heart className="w-3 h-3" />
+                                      <span>Move to wishlist</span>
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                            </motion.div>
+                          );
+                        })}
+                      </AnimatePresence>
                     </div>
 
                     {/* 4. COUPON INPUT */}
@@ -535,6 +581,12 @@ export const CartDrawer: React.FC = () => {
                       <span>Subtotal</span>
                       <span className="font-bold text-[#1C1417] font-tnum">{formatPrice(cartSubtotal)}</span>
                     </div>
+                    {totalSavings > 0 && (
+                      <div className="flex justify-between text-emerald-700 font-semibold">
+                        <span>You&apos;re saving</span>
+                        <span className="font-bold font-tnum">{formatPrice(totalSavings)}</span>
+                      </div>
+                    )}
                     {appliedCoupon && (
                       <div className="flex justify-between text-emerald-700">
                         <span>Coupon ({appliedCoupon})</span>
@@ -560,11 +612,14 @@ export const CartDrawer: React.FC = () => {
                   {/* Primary Checkout Button: 48px+ warm rose-pink var(--cta) */}
                   <Link
                     href="/checkout"
-                    onClick={() => setIsCartOpen(false)}
+                    onClick={() => {
+                      haptic('success');
+                      setIsCartOpen(false);
+                    }}
                     className="w-full min-h-[48px] py-3 rounded-[12px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white text-sm font-sans font-bold uppercase tracking-[0.14em] flex items-center justify-center space-x-2 transition-transform active:scale-[0.96] cursor-pointer"
                   >
                     <span>
-                      Checkout •{' '}
+                      Checkout ·{' '}
                       {formatPrice(
                         appliedCoupon ? Math.round(cartSubtotal * 0.9) : cartSubtotal
                       )}
@@ -580,9 +635,24 @@ export const CartDrawer: React.FC = () => {
                     Continue Shopping
                   </button>
 
-                  <div className="flex items-center justify-center space-x-1.5 text-[10.5px] text-[#1C1417]/60 pt-0.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#B8903A]" />
-                    <span>100% Secure Checkout • Cash on Delivery Available</span>
+                  {/* Trust Strip */}
+                  <div className="grid grid-cols-2 gap-1.5 pt-1 text-[10.5px] text-[#1C1417]/70">
+                    <div className="flex items-center gap-1.5">
+                      <CreditCard className="w-3.5 h-3.5 text-[#B8903A] shrink-0" />
+                      <span>COD available (₹200 advance)</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <RotateCcw className="w-3.5 h-3.5 text-[#B8903A] shrink-0" />
+                      <span>Easy 7-day returns</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#B8903A] shrink-0" />
+                      <span>100% secure payments</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <TruckIcon className="w-3.5 h-3.5 text-[#B8903A] shrink-0" />
+                      <span>Pan-India delivery</span>
+                    </div>
                   </div>
                 </div>
               )}

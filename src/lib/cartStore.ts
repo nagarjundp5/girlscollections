@@ -91,7 +91,7 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: 'drftn-cart-storage',
+      name: 'tgc-cart-storage',
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

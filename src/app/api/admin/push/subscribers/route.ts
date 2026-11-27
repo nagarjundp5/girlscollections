@@ -2,30 +2,61 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/admin';
+import { db } from '@/db';
+import { pushSubscriptions } from '@/db/schema';
 import { firestoreService } from '@/lib/firestore';
+import { desc } from 'drizzle-orm';
 
 export async function GET() {
   const authRes = await requireAdmin();
   if (authRes instanceof NextResponse) return authRes;
 
   try {
-    const rawSubscribers = await firestoreService.queryDocs('pushSubscribers', {});
-    
-    const subscribers = rawSubscribers.map((s: any) => ({
-      id: s.id,
-      token: s.token ? `${s.token.slice(0, 16)}...${s.token.slice(-8)}` : 'Unknown Token',
-      device: s.device || 'Web Browser',
-      userId: s.userId || 'Guest Visitor',
-      createdAt: s.createdAt || s.updatedAt || new Date().toISOString(),
-      active: s.active !== false,
-      productId: s.productId || null,
-    }));
+    const [neonSubs, rawFirestore] = await Promise.all([
+      db.select().from(pushSubscriptions).orderBy(desc(pushSubscriptions.created_at)).catch(() => []),
+      firestoreService.queryDocs('pushSubscribers', {}).catch(() => []),
+    ]);
 
-    const activeCount = subscribers.filter((s) => s.active).length;
+    const byEndpoint = new Map<string, any>();
+
+    for (const fs of rawFirestore) {
+      const ep = fs.endpoint || fs.token;
+      if (!ep || fs.active === false) continue;
+      byEndpoint.set(ep, {
+        id: fs.id || ep,
+        token: `${ep.slice(0, 16)}...${ep.slice(-8)}`,
+        device: fs.device || 'Web Browser',
+        userId: fs.userId || 'Guest Visitor',
+        createdAt: fs.createdAt || fs.updatedAt || new Date().toISOString(),
+        active: true,
+        topicOrders: fs.topicOrders !== false,
+        topicOffers: fs.topicOffers !== false,
+      });
+    }
+
+    for (const ns of neonSubs) {
+      byEndpoint.set(ns.endpoint, {
+        id: ns.id,
+        token: `${ns.endpoint.slice(0, 16)}...${ns.endpoint.slice(-8)}`,
+        device: ns.user_agent?.includes('Mobile') ? 'Mobile Browser' : 'Web Browser',
+        userId: ns.user_id || 'Guest Visitor',
+        createdAt: ns.created_at?.toISOString() || new Date().toISOString(),
+        active: true,
+        topicOrders: ns.topic_orders,
+        topicOffers: ns.topic_offers,
+      });
+    }
+
+    const subscribers = Array.from(byEndpoint.values());
+    const total = subscribers.length;
+    const offersOn = subscribers.filter((s) => s.topicOffers).length;
+    const ordersOn = subscribers.filter((s) => s.topicOrders).length;
 
     return NextResponse.json({
-      count: activeCount,
-      totalCount: subscribers.length,
+      count: total,
+      total,
+      offersOn,
+      ordersOn,
       subscribers,
     });
   } catch (error: any) {

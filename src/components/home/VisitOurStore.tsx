@@ -40,7 +40,7 @@ export const VisitOurStore: React.FC = () => {
           {/* Right Column: Soft blush background, heading, tagline, pin icon + address, buttons */}
           <div className="bg-[#FCF5F5] p-6 sm:p-10 md:p-12 lg:p-14 flex flex-col justify-center items-start">
             <span className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#C5A059] mb-2">
-              Physical Boutique • Gandhi Bazaar
+              Physical Shop • Gandhi Bazaar
             </span>
             <h2 className="text-[24px] sm:text-[28px] md:text-[34px] font-serif font-bold text-[#1A1E3A] tracking-[0.02em] leading-tight mb-3">
               {STORE_HEADING}

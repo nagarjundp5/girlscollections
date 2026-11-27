@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Sparkles, Loader2, ArrowRight, ShieldCheck, Check } from 'lucide-react';
 import LocationFields, { LocationValues } from '@/components/location/LocationFields';
 import { useToast } from '@/components/ToastContainer';
+import { PushConsentCheckbox } from '@/components/PushConsentCheckbox';
+import { subscribeUserToPush } from '@/lib/pushClient';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -25,6 +27,7 @@ export default function OnboardingPage() {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [pushOptIn, setPushOptIn] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +49,10 @@ export default function OnboardingPage() {
     }
 
     setLoading(true);
+
+    if (pushOptIn) {
+      await subscribeUserToPush({ topicOrders: true, topicOffers: true });
+    }
 
     try {
       const res = await fetch('/api/user/onboarding', {
@@ -166,6 +173,10 @@ export default function OnboardingPage() {
               onChange={(e) => setLine2(e.target.value)}
               className="w-full bg-[#FDFBF7] border border-gray-200 text-[#0F172A] px-4 py-2.5 text-xs rounded-xl focus:outline-none focus:border-[#D4AF37]"
             />
+          </div>
+
+          <div className="mt-4">
+            <PushConsentCheckbox checked={pushOptIn} onChange={setPushOptIn} />
           </div>
 
           <button

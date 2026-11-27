@@ -301,6 +301,10 @@ export const pushSubscriptions = pgTable('push_subscriptions', {
   p256dh: text('p256dh').notNull(),
   auth: text('auth').notNull(),
   product_id: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }),
+  user_id: text('user_id'),
+  topic_orders: boolean('topic_orders').notNull().default(true),
+  topic_offers: boolean('topic_offers').notNull().default(true),
+  user_agent: text('user_agent'),
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   notified_at: timestamp('notified_at', { withTimezone: true }),
 });
@@ -311,10 +315,11 @@ export const notificationLogs = pgTable('notification_logs', {
   title: text('title').notNull(),
   body: text('body').notNull(),
   url: text('url'),
-  audience_type: text('audience_type').$type<'general' | 'product'>().notNull(),
+  audience_type: text('audience_type').$type<'general' | 'product' | 'all' | 'women' | 'kids' | 'specific'>().notNull(),
   product_id: uuid('product_id').references(() => products.id, { onDelete: 'set null' }),
   sent_count: integer('sent_count').notNull().default(0),
   failed_count: integer('failed_count').notNull().default(0),
+  clicked_count: integer('clicked_count').notNull().default(0),
   sent_at: timestamp('sent_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -374,9 +379,14 @@ export const userCarts = pgTable('user_carts', {
     image: string;
     slug?: string;
   }>>().notNull().default(sql`'[]'::jsonb`),
+  total: integer('total').notNull().default(0),
+  status: text('status').$type<'active' | 'purchased' | 'abandoned'>().notNull().default('active'),
+  reminder_sent_at: timestamp('reminder_sent_at', { withTimezone: true }),
+  reminder_count: integer('reminder_count').notNull().default(0),
   updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   index('user_carts_user_id_idx').on(t.user_id),
+  index('user_carts_status_idx').on(t.status),
 ]);
 
 // 12. Wishlist Table (Lightweight, scalable, single row per item, zero duplicated product data)

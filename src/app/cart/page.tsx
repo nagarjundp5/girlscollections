@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { Plus, Minus, Trash2, Tag, ShoppingBag, ArrowRight, ArrowLeft, Truck, ShieldCheck, Sparkles, Check } from 'lucide-react';
+import { Plus, Minus, Trash2, Tag, ShoppingBag, ArrowRight, ArrowLeft, Truck, ShieldCheck, Check, Heart, RotateCcw, CreditCard } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
+import { useShop } from '@/context/ShopContext';
 import { dbService } from '@/lib/db';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { toast } from '@/lib/toast';
@@ -12,7 +13,8 @@ import { StoreSettings } from '@/types';
 import { MOCK_PRODUCTS } from '@/data/shopData';
 import { ButterflyMotif } from '@/components/ui/Motifs';
 import { siteConfig } from '@/lib/siteConfig';
-import { getSizeLabel } from '@/data/masterSizes';
+import { formatSizeLabel } from '@/lib/formatSizeLabel';
+import { haptic } from '@/lib/haptics';
 import ImportantOrderTerms from '@/components/ImportantOrderTerms';
 
 export default function CartPage() {
@@ -23,6 +25,7 @@ export default function CartPage() {
   const getCartTotal = useCartStore((state) => state.getCartTotal);
   const discountCode = useCartStore((state) => state.discountCode);
   const applyDiscount = useCartStore((state) => state.applyDiscount);
+  const { toggleWishlist } = useShop();
 
   const [promoInput, setPromoInput] = useState('');
   const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null);
@@ -165,7 +168,12 @@ export default function CartPage() {
         <div className="lg:col-span-7 space-y-8">
           {/* Cart Item Cards */}
           <div className="space-y-4" role="list" aria-label="Shopping bag items">
-            {items.map((item) => (
+            {items.map((item) => {
+              const stockForSize = item.stock_quantity?.[item.size];
+              const maxStock = typeof stockForSize === 'number' && stockForSize > 0 ? stockForSize : undefined;
+              const isLowStock = typeof stockForSize === 'number' && stockForSize > 0 && stockForSize <= 3;
+
+              return (
               <div
                 key={`${item.id}-${item.size}`}
                 className="p-4 sm:p-5 rounded-2xl border border-zariGold/30 bg-white shadow-md flex gap-4 sm:gap-6 items-start"
@@ -194,8 +202,13 @@ export default function CartPage() {
                           {item.name}
                         </h3>
                         <p className="text-xs text-charcoal-muted font-medium mt-1">
-                          Size: <span className="font-bold text-navy">{getSizeLabel(item.size)}</span>
+                          Size: <span className="font-bold text-navy">{formatSizeLabel(item.size)}</span>
                         </p>
+                        {isLowStock && (
+                          <p className="text-xs font-semibold text-[var(--cta)] mt-1">
+                            Only {stockForSize} left
+                          </p>
+                        )}
                       </div>
                       <span className="text-base font-bold text-navy shrink-0 font-sans">
                         ₹{((item.price * item.quantity) / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
@@ -203,12 +216,12 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-zariGold/10">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mt-4 pt-3 border-t border-zariGold/10">
                     {/* Quantity Selector */}
                     <div className="flex items-center border border-zariGold/30 rounded-lg bg-ivory/60" role="group" aria-label="Quantity controls">
                       <button
                         onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
-                        className="w-7 h-7 flex items-center justify-center text-navy hover:text-zariGold transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-navy hover:text-zariGold transition-colors"
                         aria-label={`Decrease quantity of ${item.name}`}
                       >
                         <Minus className="w-3 h-3" />
@@ -218,29 +231,46 @@ export default function CartPage() {
                       </span>
                       <button
                         onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
-                        className="w-7 h-7 flex items-center justify-center text-navy hover:text-zariGold transition-colors"
+                        disabled={maxStock !== undefined && item.quantity >= maxStock}
+                        className="w-8 h-8 flex items-center justify-center text-navy hover:text-zariGold transition-colors disabled:opacity-35 disabled:cursor-not-allowed"
                         aria-label={`Increase quantity of ${item.name}`}
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
 
-                    {/* Remove item button */}
-                    <button
-                      onClick={() => {
-                        removeItem(item.id, item.size);
-                        toast.info(`Removed ${item.name} from bag.`);
-                      }}
-                      className="text-rose-700 hover:text-rose-900 transition-colors flex items-center gap-1 text-xs font-semibold"
-                      aria-label={`Remove ${item.name} from bag`}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Remove</span>
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          toggleWishlist(item.id);
+                          removeItem(item.id, item.size);
+                          toast.info(`Moved ${item.name} to wishlist.`);
+                        }}
+                        className="text-charcoal-muted hover:text-[var(--cta)] transition-colors flex items-center gap-1 text-xs font-semibold cursor-pointer"
+                      >
+                        <Heart className="w-3.5 h-3.5" />
+                        <span>Move to wishlist</span>
+                      </button>
+
+                      {/* Remove item button */}
+                      <button
+                        onClick={() => {
+                          removeItem(item.id, item.size);
+                          toast.info(`Removed ${item.name} from bag.`);
+                        }}
+                        className="text-rose-700 hover:text-rose-900 transition-colors flex items-center gap-1 text-xs font-semibold cursor-pointer"
+                        aria-label={`Remove ${item.name} from bag`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Continue Shopping low-friction link */}
@@ -332,23 +362,23 @@ export default function CartPage() {
             </h2>
 
             {/* Free Shipping Progress & Delivery Estimate */}
-            <div className="space-y-3 bg-blush/15 p-3.5 rounded-xl border border-zariGold/20">
+            <div className={`space-y-3 p-3.5 rounded-xl border transition-colors ${hasEarnedFreeShipping ? 'bg-emerald-50/70 border-emerald-200' : 'bg-blush/15 border-zariGold/20'}`}>
               <div className="space-y-1.5">
                 {hasEarnedFreeShipping ? (
                   <p className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
-                    <Check className="w-4 h-4 text-emerald-600" /> Free Shipping Unlocked!
+                    <Check className="w-4 h-4 text-emerald-600" /> You&apos;ve unlocked free shipping
                   </p>
                 ) : (
                   <p className="text-xs font-medium text-navy">
                     Add <span className="font-bold text-zariGold">
                       ₹{(amountToFreeShipping / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
-                    </span> more for FREE insured delivery
+                    </span> more for free shipping
                   </p>
                 )}
                 <div className="w-full bg-sand/40 h-2 rounded-full overflow-hidden">
                   <div
-                    className="bg-zariGold h-full transition-all duration-500 rounded-full"
-                    style={{ width: `${shippingProgress}%` }}
+                    className={`h-full origin-left transition-transform duration-500 rounded-full ${hasEarnedFreeShipping ? 'bg-emerald-600' : 'bg-zariGold'}`}
+                    style={{ transform: `scaleX(${Math.min(1, Math.max(0, shippingProgress / 100))})` }}
                   />
                 </div>
               </div>
@@ -414,11 +444,32 @@ export default function CartPage() {
             {/* Checkout CTA */}
             <Link
               href="/checkout"
+              onClick={() => haptic('success')}
               className="w-full min-h-[48px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white text-center py-3.5 rounded-[12px] font-bold uppercase tracking-[0.14em] text-sm transition-transform active:scale-[0.96] flex items-center justify-center gap-2 group"
             >
-              <span>Proceed to Checkout</span>
+              <span>Checkout · ₹{(finalTotal / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}</span>
               <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
             </Link>
+
+            {/* Trust Strip */}
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zariGold/10 text-[11px] text-navy/80">
+              <div className="flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-zariGold shrink-0" />
+                <span>COD available (₹200 advance)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <RotateCcw className="w-3.5 h-3.5 text-zariGold shrink-0" />
+                <span>Easy 7-day returns</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-zariGold shrink-0" />
+                <span>100% secure payments</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5 text-zariGold shrink-0" />
+                <span>Pan-India delivery</span>
+              </div>
+            </div>
           </div>
 
           {/* Expandable Promo Code Box */}
@@ -442,13 +493,52 @@ export default function CartPage() {
                 Apply
               </button>
             </form>
-            <p className="text-[11px] text-charcoal-muted leading-relaxed">
-              Use code <strong className="text-navy">FESTIVE10</strong> for 10% off your first order!
-            </p>
+            {!discountCode && (
+              <p className="text-[11px] text-charcoal-muted leading-relaxed">
+                First order?{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    applyDiscount({
+                      id: 'festive10',
+                      code: 'FESTIVE10',
+                      discount_type: 'percent',
+                      discount_value: 10,
+                      min_order_value: 0,
+                      used_count: 0,
+                      is_active: true,
+                    });
+                    toast.success('FESTIVE10 applied! 10% discount added.');
+                  }}
+                  className="font-bold text-[var(--cta)] underline underline-offset-2 cursor-pointer"
+                >
+                  Tap to apply FESTIVE10
+                </button>{' '}
+                for 10% off!
+              </p>
+            )}
           </div>
 
           <ImportantOrderTerms />
         </div>
+      </div>
+
+      {/* Sticky Mobile Checkout Bar above bottom nav */}
+      <div className="fixed bottom-[64px] inset-x-0 z-40 lg:hidden bg-[#FBF8F4]/95 backdrop-blur-md border-t border-[#EADFD6] px-4 py-3 flex items-center justify-between gap-3 shadow-lg">
+        <div>
+          <span className="text-[11px] text-[#6B6F85] block">Total</span>
+          <span className="text-base font-bold text-navy">
+            ₹{(finalTotal / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+          </span>
+        </div>
+        <Link
+          href="/checkout"
+          onClick={() => haptic('success')}
+          className="flex-1 min-h-[48px] bg-[var(--cta)] hover:bg-[var(--cta-hover)] text-white rounded-[12px] font-bold uppercase tracking-[0.12em] text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.96]"
+        >
+          <span>Checkout · ₹{(finalTotal / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </div>
   );

@@ -194,6 +194,13 @@ export async function confirmAndWriteOrder(checkout: any, razorpayPaymentId: str
           .returning();
 
         newOrder = inserted;
+        if (checkout.user_id) {
+          await tx
+            .update(schema.userCarts)
+            .set({ status: 'purchased', updated_at: new Date() })
+            .where(eq(schema.userCarts.user_id, checkout.user_id))
+            .catch(() => {});
+        }
         break;
       } catch (err: any) {
         // Only retry on order_number unique collision (code 23505).

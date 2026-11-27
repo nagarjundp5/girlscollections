@@ -1,8 +1,10 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { Product, MOCK_PRODUCTS } from '@/data/shopData';
 import { useCartStore } from '@/lib/cartStore';
+import { haptic } from '@/lib/haptics';
 
 export interface CartItem {
   id: string; // unique cart item id: product.id + size + color
@@ -39,11 +41,14 @@ const FREE_SHIPPING_LIMIT = 1999; // ₹1,999 free shipping threshold
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isSignedIn } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasHydratedRef = useRef(false);
 
   // Load cart and wishlist from localStorage on initial render
   useEffect(() => {
@@ -85,10 +90,32 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       useCartStore.setState({ items: cartStoreItems, hasHydrated: true });
+
+      // Debounced DB sync (1.5s) for logged-in users only
+      if (isSignedIn && hasHydratedRef.current) {
+        if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+        syncTimerRef.current = setTimeout(() => {
+          const payloadItems = cartStoreItems.map((ci) => ({
+            productId: ci.id,
+            size: ci.size,
+            quantity: ci.quantity,
+            price: ci.price,
+            title: ci.name,
+            image: ci.image,
+            slug: ci.slug,
+          }));
+          fetch('/api/cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: payloadItems }),
+          }).catch(() => {});
+        }, 1500);
+      }
+      hasHydratedRef.current = true;
     } catch (e) {
       console.error('Failed to save cart to localStorage', e);
     }
-  }, [cart]);
+  }, [cart, isSignedIn]);
 
   // Save wishlist to localStorage
   useEffect(() => {
@@ -136,7 +163,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ];
     });
 
-    // Auto open cart drawer when adding item
+    // Auto open cart drawer when adding item + haptic feedback
+    haptic('success');
     setIsCartOpen(true);
   };
 

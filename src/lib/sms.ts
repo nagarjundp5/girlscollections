@@ -54,7 +54,7 @@ async function sendSMS({
   }
 
   const route = process.env.FAST2SMS_ROUTE || 'q';
-  const senderId = process.env.FAST2SMS_SENDER_ID || 'DRFTNC';
+  const senderId = process.env.FAST2SMS_SENDER_ID || 'TGCAPP';
 
   // Build query params
   const params = new URLSearchParams({

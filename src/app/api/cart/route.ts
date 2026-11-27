@@ -58,21 +58,47 @@ export async function POST(request: Request) {
     const body = await request.json();
     const parsed = syncCartSchema.parse(body);
 
+    // Compute total in paise (sum of price * qty — price should already be in paise)
+    const total = parsed.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
     const [updated] = await db
       .insert(schema.userCarts)
       .values({
         user_id: userId,
         items: parsed.items,
+        total,
+        status: 'active',
         updated_at: new Date(),
       })
       .onConflictDoUpdate({
         target: schema.userCarts.user_id,
         set: {
           items: parsed.items,
+          total,
+          status: 'active',
           updated_at: new Date(),
         },
       })
       .returning();
+
+    // Schedule QStash abandon reminder if QSTASH_TOKEN is set and cart is non-empty
+    if (parsed.items.length > 0 && process.env.QSTASH_TOKEN) {
+      try {
+        const { Client } = await import('@upstash/qstash');
+        const { getSiteUrl } = await import('@/lib/getSiteUrl');
+        const qClient = new Client({ token: process.env.QSTASH_TOKEN });
+        const baseUrl = getSiteUrl();
+        // Delay 2 hours = 7200s. QStash deduplication key: cart-{userId}
+        await qClient.publishJSON({
+          url: `${baseUrl}/api/qstash/cart-reminder`,
+          body: { userId, reminderIndex: 1 },
+          delay: 7200,
+          deduplicationId: `cart-remind-1-${userId}`,
+        }).catch(() => {}); // Fire and forget
+      } catch {
+        // Never block cart save for reminder scheduling
+      }
+    }
 
     return NextResponse.json({ items: updated.items });
   } catch (err: any) {
@@ -83,4 +109,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to update cart' }, { status: 500 });
   }
 }
-

@@ -189,6 +189,33 @@ export async function POST(request: Request) {
       payment_type: confirmedOrder.payment_type,
     }).catch((err) => console.error('[verify-payment] Admin order push notification failed:', err));
 
+    // 6b. Mark user's cart as 'purchased' & send customer order confirmed push (fire-and-forget)
+    if (confirmedOrder.user_id) {
+      import('@/db')
+        .then(({ db }) =>
+          import('@/db/schema').then(({ userCarts }) =>
+            import('drizzle-orm').then(({ eq }) =>
+              db
+                .update(userCarts)
+                .set({ status: 'purchased', updated_at: new Date() })
+                .where(eq(userCarts.user_id, confirmedOrder.user_id!))
+            )
+          )
+        )
+        .catch(() => {});
+
+      import('@/lib/push')
+        .then(({ sendOrderStatusPush }) =>
+          sendOrderStatusPush({
+            userId: confirmedOrder.user_id,
+            orderId: confirmedOrder.id,
+            orderNumber: confirmedOrder.order_number,
+            status: 'confirmed',
+          })
+        )
+        .catch(() => {});
+    }
+
     // 7. Fire Make.com WhatsApp Webhook (Fire-and-forget)
     if (MAKE_WHATSAPP_WEBHOOK && MAKE_WHATSAPP_WEBHOOK.startsWith('http')) {
       const itemsList = confirmedOrder.items

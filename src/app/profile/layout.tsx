@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { NotificationPreferencesCard } from '@/components/NotificationPreferencesCard';
 
 export default async function ProfileLayout({
   children,
@@ -42,6 +43,9 @@ export default async function ProfileLayout({
               Orders
             </Link>
           </nav>
+        </div>
+        <div className="mb-8">
+          <NotificationPreferencesCard />
         </div>
         {children}
       </div>

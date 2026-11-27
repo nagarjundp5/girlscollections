@@ -1,154 +1,169 @@
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { requireAdmin } from '@/lib/auth/admin';
-import { firestoreService } from '@/lib/firestore';
+import { db } from '@/db';
+import { pushSubscriptions, notificationLogs, orders, userCarts } from '@/db/schema';
+import { eq, inArray } from 'drizzle-orm';
 import { sendPushNotification } from '@/lib/push';
+import { rateLimit } from '@/lib/rateLimit';
+import { getSiteUrl } from '@/lib/getSiteUrl';
+
+export async function executeCustomPushSend(params: {
+  title: string;
+  body: string;
+  url?: string;
+  image?: string;
+  audience: 'all' | 'women' | 'kids' | 'specific';
+  specificUserIds?: string[];
+}) {
+  const { title, body, url, image, audience, specificUserIds } = params;
+
+  // Fetch all offer-opted-in subscriptions from Neon
+  let subs = await db
+    .select()
+    .from(pushSubscriptions)
+    .where(eq(pushSubscriptions.topic_offers, true));
+
+  type SubType = typeof subs[number];
+
+  if (audience === 'specific' && Array.isArray(specificUserIds) && specificUserIds.length > 0) {
+    const idSet = new Set(specificUserIds.map((s) => s.trim()).filter(Boolean));
+    subs = subs.filter((s: SubType) => s.user_id && idSet.has(s.user_id));
+  } else if (audience === 'women' || audience === 'kids') {
+    // Match users who ordered or carted products in that target
+    const targetUserIds = new Set<string>();
+    const [recentOrders, activeCarts] = await Promise.all([
+      db.select({ user_id: orders.user_id, items: orders.items }).from(orders).limit(500).catch(() => []),
+      db.select({ user_id: userCarts.user_id, items: userCarts.items }).from(userCarts).limit(500).catch(() => []),
+    ]);
+
+    const matchesTarget = (item: any) => {
+      const str = `${item?.title || item?.name || ''} ${item?.slug || ''} ${item?.category || ''}`.toLowerCase();
+      if (audience === 'kids') return str.includes('kid') || str.includes('frock') || str.includes('pattu');
+      return !str.includes('kid');
+    };
+
+    for (const o of recentOrders) {
+      if (o.user_id && Array.isArray(o.items) && o.items.some(matchesTarget)) {
+        targetUserIds.add(o.user_id);
+      }
+    }
+    for (const c of activeCarts) {
+      if (c.user_id && Array.isArray(c.items) && c.items.some(matchesTarget)) {
+        targetUserIds.add(c.user_id);
+      }
+    }
+
+    if (targetUserIds.size > 0) {
+      subs = subs.filter((s: SubType) => s.user_id && targetUserIds.has(s.user_id));
+    }
+  }
+
+  // Insert log first so we get logId for click tracking
+  const [logRow] = await db
+    .insert(notificationLogs)
+    .values({
+      title: title.trim(),
+      body: body.trim(),
+      url: url || '/',
+      audience_type: audience,
+      sent_count: 0,
+      failed_count: 0,
+      clicked_count: 0,
+    })
+    .returning();
+
+  const payload = {
+    title: title.trim(),
+    body: body.trim(),
+    url: url || '/',
+    image: image || undefined,
+    logId: logRow?.id || null,
+  };
+
+  let successful = 0;
+  let failed = 0;
+
+  // Send in batches of 25
+  const BATCH_SIZE = 25;
+  for (let i = 0; i < subs.length; i += BATCH_SIZE) {
+    const batch = subs.slice(i, i + BATCH_SIZE);
+    const results = await Promise.allSettled(
+      batch.map((sub: SubType) => sendPushNotification(sub, payload))
+    );
+    for (const r of results) {
+      if (r.status === 'fulfilled') successful++;
+      else failed++;
+    }
+  }
+
+  if (logRow) {
+    await db
+      .update(notificationLogs)
+      .set({ sent_count: successful, failed_count: failed })
+      .where(eq(notificationLogs.id, logRow.id))
+      .catch(() => {});
+  }
+
+  return { successful, failed, totalTargeted: subs.length, logId: logRow?.id };
+}
 
 export async function POST(req: Request) {
   const authResult = await requireAdmin();
   if (authResult instanceof NextResponse) return authResult;
 
+  const ip = req.headers.get('x-forwarded-for') || 'admin';
+  const rateCheck = await rateLimit(`admin:push:send:${ip}`, 10, 60000);
+  if (!rateCheck.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded. Try again in a minute.' }, { status: 429 });
+  }
+
   try {
-    const { title, body, url, image } = await req.json();
+    const { title, body, url, image, audience = 'all', specificUserIds, scheduleAt } = await req.json();
 
     if (!title?.trim() || !body?.trim()) {
       return NextResponse.json({ error: 'Title and body are required' }, { status: 400 });
     }
 
-    // 1. Fetch all active subscribers from Firestore
-    const allDocs = await firestoreService.queryDocs('pushSubscribers', {});
-    const activeSubscribers = allDocs.filter((d: any) => d.active !== false);
-
-    if (activeSubscribers.length === 0) {
-      return NextResponse.json({
-        success: true,
-        count: 0,
-        successful: 0,
-        failed: 0,
-        message: 'No active subscribers found',
-      });
-    }
-
-    let successful = 0;
-    let failed = 0;
-
-    // Initialize Firebase Admin Messaging if credentials exist
-    let adminMessaging: any = null;
-    try {
-      if (
-        process.env.FIREBASE_PROJECT_ID &&
-        process.env.FIREBASE_CLIENT_EMAIL &&
-        process.env.FIREBASE_PRIVATE_KEY
-      ) {
-        const { getApps, getApp } = require('firebase-admin/app');
-        const { getMessaging } = require('firebase-admin/messaging');
-        const app = getApps().length > 0 ? getApp() : null;
-        if (app) {
-          adminMessaging = getMessaging(app);
+    // If scheduled in the future, queue via QStash
+    if (scheduleAt) {
+      const targetTs = new Date(scheduleAt).getTime();
+      const delaySec = Math.max(0, Math.floor((targetTs - Date.now()) / 1000));
+      if (delaySec > 5) {
+        if (!process.env.QSTASH_TOKEN) {
+          return NextResponse.json({ error: 'QSTASH_TOKEN not configured for scheduling' }, { status: 400 });
         }
+        const { Client } = await import('@upstash/qstash');
+        const client = new Client({ token: process.env.QSTASH_TOKEN });
+        await client.publishJSON({
+          url: `${getSiteUrl()}/api/qstash/send-push`,
+          body: { title, body, url, image, audience, specificUserIds },
+          delay: delaySec,
+        });
+        return NextResponse.json({
+          success: true,
+          scheduled: true,
+          scheduledFor: new Date(targetTs).toISOString(),
+        });
       }
-    } catch (e) {
-      console.warn('[Push Send] Firebase messaging init notice:', e);
     }
 
-    const payload = {
-      title: title.trim(),
-      body: body.trim(),
-      url: url || '/',
-      image: image || undefined,
-      icon: 'https://www.thegirlscollections.com/logo.png',
-    };
-
-    // 2. Dispatch to each subscriber
-    await Promise.allSettled(
-      activeSubscribers.map(async (sub: any) => {
-        try {
-          const token = sub.token || sub.endpoint;
-          const isWebPushEndpoint = typeof token === 'string' && token.startsWith('http');
-
-          if (isWebPushEndpoint && sub.keys?.p256dh && sub.keys?.auth) {
-            // Standard Web Push via VAPID
-            await sendPushNotification(
-              {
-                endpoint: token,
-                p256dh: sub.keys.p256dh,
-                auth: sub.keys.auth,
-              },
-              payload
-            );
-            successful++;
-          } else if (adminMessaging && typeof token === 'string' && !token.startsWith('http')) {
-            // Native FCM device token via Firebase Admin SDK
-            await adminMessaging.send({
-              token,
-              notification: {
-                title: payload.title,
-                body: payload.body,
-                imageUrl: payload.image,
-              },
-              data: {
-                url: payload.url,
-              },
-            });
-            successful++;
-          } else if (isWebPushEndpoint) {
-            // Web push endpoint without stored keys, send mock/silent or standard
-            successful++;
-          } else {
-            failed++;
-          }
-        } catch (err: any) {
-          failed++;
-          const errCode = err?.errorInfo?.code || err?.code || '';
-          const isInvalidToken =
-            errCode === 'messaging/invalid-registration-token' ||
-            errCode === 'messaging/registration-token-not-registered' ||
-            err?.statusCode === 404 ||
-            err?.statusCode === 410;
-
-          if (isInvalidToken) {
-            console.log(`[Push Send] Deactivating invalid token for doc: ${sub.id}`);
-            await firestoreService.updateDoc('pushSubscribers', sub.id, {
-              active: false,
-              deactivatedAt: new Date().toISOString(),
-            }).catch(() => {});
-          }
-        }
-      })
-    );
-
-    // 3. Save notification history in Firestore
-    const historyId = crypto.randomUUID();
-    const historyEntry = {
-      id: historyId,
-      title: payload.title,
-      body: payload.body,
-      url: payload.url,
-      image: payload.image || null,
-      sent_count: successful,
-      failed_count: failed,
-      total_subscribers: activeSubscribers.length,
-      sent_at: new Date().toISOString(),
-    };
-
-    await firestoreService.setDoc('notification_history', historyId, historyEntry).catch((err) =>
-      console.warn('[Push Send] Failed to write history in Firestore:', err)
-    );
+    const result = await executeCustomPushSend({
+      title,
+      body,
+      url,
+      image,
+      audience,
+      specificUserIds,
+    });
 
     return NextResponse.json({
       success: true,
-      count: activeSubscribers.length,
-      successful,
-      failed,
-      historyId,
+      ...result,
     });
-  } catch (error: any) {
-    console.error('[send-custom push] Error:', error);
-    return NextResponse.json(
-      { error: error?.message || 'Failed to dispatch push notification' },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    console.error('[admin/push/send-custom] Error:', err);
+    return NextResponse.json({ error: 'Failed to send push notification' }, { status: 500 });
   }
 }

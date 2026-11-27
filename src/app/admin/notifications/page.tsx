@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { Bell, Send, Users, Package, Clock, CheckCircle2, XCircle, AlertCircle, ChevronDown, Smartphone, ShoppingBag } from 'lucide-react';
+import { Bell, Send, Users, Package, Clock, CheckCircle2, XCircle, AlertCircle, ChevronDown, Smartphone, ShoppingBag, MousePointerClick } from 'lucide-react';
 import { useToast } from '@/components/ToastContainer';
 import { dbService } from '@/lib/db';
 import { Product } from '@/types';
@@ -11,14 +11,15 @@ interface NotificationLog {
   title: string;
   body: string;
   url: string | null;
-  audience_type: 'general' | 'product';
+  audience_type: 'general' | 'product' | 'all' | 'women' | 'kids' | 'specific';
   product_id: string | null;
   sent_count: number;
   failed_count: number;
+  clicked_count?: number;
   sent_at: string;
 }
 
-type AudienceType = 'general' | 'product';
+type AudienceType = 'all' | 'general' | 'women' | 'kids' | 'specific' | 'product';
 
 interface SubscriberItem {
   id: string;
@@ -37,12 +38,16 @@ export default function AdminNotificationsPage() {
   const [body, setBody] = useState('');
   const [targetUrl, setTargetUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [audienceType, setAudienceType] = useState<AudienceType>('general');
+  const [audienceType, setAudienceType] = useState<AudienceType>('all');
   const [selectedProductId, setSelectedProductId] = useState('');
+  const [specificUserIds, setSpecificUserIds] = useState('');
+  const [scheduleAt, setScheduleAt] = useState('');
 
   // Data state
   const [products, setProducts] = useState<Product[]>([]);
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
+  const [offersOnCount, setOffersOnCount] = useState<number | null>(null);
+  const [ordersOnCount, setOrdersOnCount] = useState<number | null>(null);
   const [subscribersList, setSubscribersList] = useState<SubscriberItem[]>([]);
   const [logs, setLogs] = useState<NotificationLog[]>([]);
 
@@ -99,13 +104,15 @@ export default function AdminNotificationsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fetch subscriber count and list from Firestore
+  // Fetch subscriber count and list from Firestore/Neon
   const fetchCount = useCallback(async () => {
     setIsLoadingCount(true);
     try {
       const res = await fetch('/api/admin/push/subscribers');
       const data = await res.json();
-      setSubscriberCount(data.count ?? 0);
+      setSubscriberCount(data.total ?? data.count ?? 0);
+      setOffersOnCount(data.offersOn ?? null);
+      setOrdersOnCount(data.ordersOn ?? null);
       setSubscribersList(data.subscribers ?? []);
     } catch {
       setSubscriberCount(0);
@@ -204,13 +211,19 @@ export default function AdminNotificationsPage() {
         title: title.trim(),
         body: body.trim(),
         url: targetUrl.trim() || '/',
-        audienceType,
+        audience: audienceType,
       };
       if (imageUrl.trim()) {
         payload.image = imageUrl.trim();
       }
       if (audienceType === 'product') {
         payload.productId = selectedProductId;
+      }
+      if (audienceType === 'specific' && specificUserIds.trim()) {
+        payload.specificUserIds = specificUserIds.trim();
+      }
+      if (scheduleAt) {
+        payload.scheduleAt = new Date(scheduleAt).toISOString();
       }
 
       const res = await fetch(endpoint, {
@@ -222,13 +235,18 @@ export default function AdminNotificationsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Send failed');
 
-      setResult({ successful: data.successful ?? 0, failed: data.failed ?? 0 });
-      addToast(`Sent to ${data.successful} subscribers!`, 'success');
+      if (scheduleAt) {
+        addToast(`Scheduled for ${new Date(scheduleAt).toLocaleString('en-IN')}!`, 'success');
+      } else {
+        setResult({ successful: data.successful ?? 0, failed: data.failed ?? 0 });
+        addToast(`Sent to ${data.successful} subscribers!`, 'success');
+      }
 
       // Clear form
       setTitle('');
       setBody('');
       setTargetUrl('');
+      setScheduleAt('');
 
       // Refresh logs and count
       await Promise.all([refreshLogs(), fetchCount()]);
@@ -329,84 +347,64 @@ export default function AdminNotificationsPage() {
             </div>
 
             {/* Audience Selector */}
-            <div className="space-y-3 mb-6">
+            <div className="space-y-3 mb-4">
               <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block">
                 Audience *
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* General drop subscribers */}
-                <label
-                  className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
-                    audienceType === 'general'
-                      ? 'border-zinc-900 bg-zinc-50 shadow-sm'
-                      : 'border-zinc-200 hover:border-zinc-300'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="audience"
-                    value="general"
-                    checked={audienceType === 'general'}
-                    onChange={() => { setAudienceType('general'); setSelectedProductId(''); }}
-                    className="mt-0.5 accent-zinc-900"
-                  />
-                  <div>
-                    <div className="flex items-center gap-1.5 text-sm font-bold text-zinc-800">
-                      <Users className="w-3.5 h-3.5" />
-                      General Drop Subscribers
+              <div className="grid grid-cols-2 gap-2">
+                {([
+                  { value: 'all', label: 'All subscribers', desc: 'Everyone who opted in' },
+                  { value: 'women', label: 'Women buyers', desc: 'Purchased from women category' },
+                  { value: 'kids', label: 'Kids buyers', desc: 'Purchased from kids category' },
+                  { value: 'specific', label: 'Specific users', desc: 'Paste Clerk user IDs' },
+                ] as const).map(opt => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-start gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
+                      audienceType === opt.value
+                        ? 'border-zinc-900 bg-zinc-50 shadow-sm'
+                        : 'border-zinc-200 hover:border-zinc-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="audience"
+                      value={opt.value}
+                      checked={audienceType === opt.value}
+                      onChange={() => { setAudienceType(opt.value); setSelectedProductId(''); }}
+                      className="mt-0.5 accent-zinc-900"
+                    />
+                    <div>
+                      <div className="text-xs font-bold text-zinc-800">{opt.label}</div>
+                      <p className="text-[10px] text-zinc-400">{opt.desc}</p>
                     </div>
-                    <p className="text-[10px] text-zinc-400 mt-0.5">
-                      All users who opted in for new drop alerts
-                    </p>
-                  </div>
-                </label>
-
-                {/* Product-specific subscribers */}
-                <label
-                  className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
-                    audienceType === 'product'
-                      ? 'border-zinc-900 bg-zinc-50 shadow-sm'
-                      : 'border-zinc-200 hover:border-zinc-300'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="audience"
-                    value="product"
-                    checked={audienceType === 'product'}
-                    onChange={() => setAudienceType('product')}
-                    className="mt-0.5 accent-zinc-900"
-                  />
-                  <div>
-                    <div className="flex items-center gap-1.5 text-sm font-bold text-zinc-800">
-                      <Package className="w-3.5 h-3.5" />
-                      Back-in-Stock Subscribers
-                    </div>
-                    <p className="text-[10px] text-zinc-400 mt-0.5">
-                      Users waiting for a specific product
-                    </p>
-                  </div>
-                </label>
+                  </label>
+                ))}
               </div>
 
-              {/* Product dropdown */}
-              {audienceType === 'product' && (
-                <div className="relative">
-                  <select
-                    value={selectedProductId}
-                    onChange={(e) => setSelectedProductId(e.target.value)}
-                    className="w-full appearance-none border border-zinc-200 rounded-lg px-3 py-2.5 text-sm text-zinc-900 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition pr-8"
-                  >
-                    <option value="">— Select a product —</option>
-                    {products.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-                </div>
+              {audienceType === 'specific' && (
+                <textarea
+                  value={specificUserIds}
+                  onChange={(e) => setSpecificUserIds(e.target.value)}
+                  placeholder="Paste Clerk user IDs, one per line or comma-separated&#10;e.g. user_2abc...&#10;user_2def..."
+                  rows={3}
+                  className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-xs font-mono text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 resize-none"
+                />
               )}
+            </div>
+
+            {/* Schedule (optional) */}
+            <div className="space-y-1 mb-6">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block">
+                Schedule (optional — leave blank to send now)
+              </label>
+              <input
+                type="datetime-local"
+                value={scheduleAt}
+                onChange={(e) => setScheduleAt(e.target.value)}
+                min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                className="w-full border border-zinc-200 rounded-lg px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition"
+              />
             </div>
 
             {/* Send Button + Result */}
@@ -472,32 +470,31 @@ export default function AdminNotificationsPage() {
           <div className="bg-white border border-zinc-200/60 rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] p-6">
             <h2 className="text-sm font-extrabold uppercase tracking-widest text-zinc-800 mb-4 flex items-center gap-2">
               <Users className="w-4 h-4" />
-              Audience Reach
+              Subscriber Stats
             </h2>
-            <div className="text-center py-6">
-              {isLoadingCount ? (
-                <div className="space-y-2">
-                  <div className="h-10 w-20 bg-zinc-100 rounded animate-pulse mx-auto" />
-                  <div className="h-3 w-28 bg-zinc-100 rounded animate-pulse mx-auto" />
+            {isLoadingCount ? (
+              <div className="space-y-2">
+                {[1,2,3].map(i => <div key={i} className="h-10 bg-zinc-100 rounded animate-pulse" />)}
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3">
+                  <div className="text-2xl font-black text-zinc-900 tabular-nums">{subscriberCount?.toLocaleString() ?? '—'}</div>
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">Total</div>
                 </div>
-              ) : (
-                <>
-                  <p className="text-5xl font-black text-zinc-900 tabular-nums">
-                    {subscriberCount?.toLocaleString() ?? '—'}
-                  </p>
-                  <p className="text-xs text-zinc-400 mt-2 uppercase tracking-widest font-bold">
-                    {audienceType === 'general'
-                      ? 'General drop subscribers'
-                      : selectedProductId
-                      ? `Waiting for ${selectedProduct?.name ?? 'this product'}`
-                      : 'Select a product to see count'}
-                  </p>
-                </>
-              )}
-            </div>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                  <div className="text-2xl font-black text-emerald-700 tabular-nums">{offersOnCount?.toLocaleString() ?? '—'}</div>
+                  <div className="text-[10px] text-emerald-600 uppercase tracking-wider font-bold mt-0.5">Offers on</div>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
+                  <div className="text-2xl font-black text-blue-700 tabular-nums">{ordersOnCount?.toLocaleString() ?? '—'}</div>
+                  <div className="text-[10px] text-blue-600 uppercase tracking-wider font-bold mt-0.5">Orders on</div>
+                </div>
+              </div>
+            )}
             {subscriberCount === 0 && !isLoadingCount && (
-              <p className="text-[11px] text-zinc-400 text-center border-t border-zinc-100 pt-4 mt-2">
-                No subscribers in this audience yet. Subscribers opt in via the website prompt or a sold-out product page.
+              <p className="text-[11px] text-zinc-400 text-center border-t border-zinc-100 pt-4 mt-3">
+                No subscribers yet. Users opt in at sign-in/sign-up.
               </p>
             )}
           </div>
@@ -793,6 +790,9 @@ export default function AdminNotificationsPage() {
                   <th className="text-center px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hidden sm:table-cell">
                     Failed
                   </th>
+                  <th className="text-center px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hidden md:table-cell">
+                    Clicked
+                  </th>
                   <th className="text-right px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hidden lg:table-cell">
                     Sent At
                   </th>
@@ -831,6 +831,16 @@ export default function AdminNotificationsPage() {
                         <div className="flex items-center justify-center gap-1 text-amber-600 font-bold text-xs">
                           <XCircle className="w-3.5 h-3.5" />
                           {log.failed_count}
+                        </div>
+                      ) : (
+                        <span className="text-zinc-300 text-xs">—</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5 text-center hidden md:table-cell">
+                      {(log.clicked_count ?? 0) > 0 ? (
+                        <div className="flex items-center justify-center gap-1 text-blue-600 font-bold text-xs">
+                          <MousePointerClick className="w-3.5 h-3.5" />
+                          {log.clicked_count}
                         </div>
                       ) : (
                         <span className="text-zinc-300 text-xs">—</span>

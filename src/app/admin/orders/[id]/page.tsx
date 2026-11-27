@@ -217,7 +217,7 @@ export default function AdminOrderDetail() {
             window.open(
               `https://wa.me/${phoneWithCountry}?text=Hello%20${encodeURIComponent(
                 order.customer_name
-              )},%20this%20is%20DRFTN%20CLOTHING%20regarding%20your%20order%20${order.order_number}.`,
+              )},%20this%20is%20The%20Girls%20Collections%20regarding%20your%20order%20${order.order_number}.`,
               '_blank'
             );
           }}
