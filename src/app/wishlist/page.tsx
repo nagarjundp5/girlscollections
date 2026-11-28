@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@clerk/nextjs';
+import { useAuthSession } from '@/context/AuthContext';
 import { ArrowRight, ShoppingBag, Trash2 } from 'lucide-react';
 import { useShop } from '@/context/ShopContext';
 import { ProductCard } from '@/components/ProductCard';
@@ -10,7 +10,7 @@ import { useToast } from '@/components/ToastContainer';
 import { formatSizeLabel } from '@/lib/formatSizeLabel';
 
 export default function WishlistPage() {
-  const { isSignedIn, isLoaded: authLoaded } = useAuth();
+  const { isSignedIn, isLoaded: authLoaded } = useAuthSession();
   const { wishlist, toggleWishlist, addToCart } = useShop();
   const { addToast } = useToast();
 
@@ -25,10 +25,11 @@ export default function WishlistPage() {
     async function loadWishlistProducts() {
       setLoading(true);
       try {
+        const idsParam = wishlist.length > 0 ? `guestIds=${encodeURIComponent(wishlist.join(','))}` : '';
         const url = isSignedIn
-          ? '/api/wishlist'
-          : wishlist.length > 0
-          ? `/api/wishlist?guestIds=${encodeURIComponent(wishlist.join(','))}`
+          ? `/api/wishlist${idsParam ? `?${idsParam}` : ''}`
+          : idsParam
+          ? `/api/wishlist?${idsParam}`
           : '';
 
         if (!url) {

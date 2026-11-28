@@ -289,29 +289,26 @@ const CategoryCarouselRow: React.FC<{
                       </div>
                     </div>
 
-                    {/* Text Under Image: Name and Price, borderless */}
-                    <div className="pt-3 pb-1 text-left">
+                    {/* Text Under Image: matching Trending card layout (12px compact padding) */}
+                    <div className="p-3 text-left">
                       <Link href={productUrl} className="block group/title">
-                        <h4 className="text-[15px] md:text-[14px] font-sans font-semibold md:font-normal normal-case md:uppercase md:tracking-[0.04em] text-[#1A1E3A] md:text-[#1C1417] line-clamp-2 leading-snug">
+                        <h4 className="text-[15px] font-sans font-semibold text-[#1A1E3A] line-clamp-2 min-h-[42px] leading-snug">
                           {product.name}
                         </h4>
                       </Link>
 
                       <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-                        <span className="text-[18px] md:text-[16px] font-sans font-bold text-[#1A1E3A] md:text-[#1C1417] tabular-nums">
+                        <span className="text-[17px] md:text-[16px] font-sans font-bold text-[#1A1E3A] tabular-nums">
                           {formatPrice(price)}
                         </span>
 
                         {hasDiscount && comparePrice && (
                           <>
-                            <span className="text-[13px] font-sans text-[#6B6F85] md:text-[#595959] line-through font-normal tabular-nums">
+                            <span className="text-[13px] font-sans text-[#6B6F85] line-through font-normal tabular-nums">
                               {formatPrice(comparePrice)}
                             </span>
-                            <span className="md:hidden text-[12px] font-sans font-semibold text-[#2E8B6A]">
+                            <span className="text-[12px] font-sans font-semibold text-[#2E8B6A]">
                               Save ₹{(comparePrice - price).toLocaleString('en-IN')}
-                            </span>
-                            <span className="hidden md:inline text-[13px] font-sans font-semibold text-[#B8283B]">
-                              ({discountPercent}% OFF)
                             </span>
                           </>
                         )}

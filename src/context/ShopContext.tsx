@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuthSession } from '@/context/AuthContext';
 import { Product } from '@/data/shopData';
 import { useCartStore } from '@/lib/cartStore';
 import { haptic } from '@/lib/haptics';
@@ -42,7 +42,7 @@ const FREE_SHIPPING_LIMIT = 1999; // ₹1,999 free shipping threshold
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isSignedIn, isLoaded: authLoaded } = useAuth();
+  const { isSignedIn, isLoaded: authLoaded } = useAuthSession();
   const { addToast } = useToast();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -237,12 +237,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (!isSignedIn) return;
 
-    // Debounce rapid taps per product before syncing to Firestore API
-    if (wishlistTimersRef.current[productId]) {
-      clearTimeout(wishlistTimersRef.current[productId]);
-    }
-
-    wishlistTimersRef.current[productId] = setTimeout(async () => {
+    // Sync immediately to Firestore API so navigating to /wishlist right after tapping never races
+    (async () => {
       try {
         const res = await fetch('/api/wishlist', {
           method: nextLiked ? 'POST' : 'DELETE',
@@ -257,7 +253,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
         addToast('Could not update wishlist. Please try again.', 'error');
       }
-    }, 250);
+    })();
   };
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);

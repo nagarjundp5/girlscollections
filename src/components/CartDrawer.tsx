@@ -46,7 +46,7 @@ export const CartDrawer: React.FC = () => {
   const [couponMessage, setCouponMessage] = useState<{ text: string; isError?: boolean } | null>(null);
 
   const formatPrice = (priceInPaiseOrRupees: number) => {
-    const rupees = priceInPaiseOrRupees > 100000 ? Math.round(priceInPaiseOrRupees / 100) : priceInPaiseOrRupees;
+    const rupees = priceInPaiseOrRupees > 10000 ? Math.round(priceInPaiseOrRupees / 100) : priceInPaiseOrRupees;
     return `₹${rupees.toLocaleString('en-IN')}`;
   };
 
@@ -68,7 +68,7 @@ export const CartDrawer: React.FC = () => {
     if (memoryRecommendedCache[bagDivision]?.length > 0) return memoryRecommendedCache[bagDivision];
     if (typeof window !== 'undefined') {
       try {
-        const stored = sessionStorage.getItem(`tgc_cart_recommended_v3_${bagDivision}`);
+        const stored = sessionStorage.getItem(`tgc_cart_recommended_v4_${bagDivision}`);
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
@@ -91,7 +91,7 @@ export const CartDrawer: React.FC = () => {
     }
 
     try {
-      const stored = sessionStorage.getItem(`tgc_cart_recommended_v3_${bagDivision}`);
+      const stored = sessionStorage.getItem(`tgc_cart_recommended_v4_${bagDivision}`);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -130,7 +130,7 @@ export const CartDrawer: React.FC = () => {
           memoryRecommendedCache[bagDivision] = curated;
           setRecommendedProducts(curated);
           try {
-            sessionStorage.setItem(`tgc_cart_recommended_v3_${bagDivision}`, JSON.stringify(curated));
+            sessionStorage.setItem(`tgc_cart_recommended_v4_${bagDivision}`, JSON.stringify(curated));
           } catch { }
         }
       } catch (err) {

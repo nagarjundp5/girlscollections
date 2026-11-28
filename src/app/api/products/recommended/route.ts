@@ -28,10 +28,10 @@ export async function GET(request: Request) {
       division === 'kids'
         ? sql`(lower(coalesce(${schema.products.gender}, '')) IN ('kids', 'girls', 'boys', 'children') OR lower(coalesce(${schema.products.category}, '')) LIKE '%kid%' OR lower(coalesce(${schema.products.category}, '')) LIKE '%frock%' OR lower(coalesce(${schema.products.category}, '')) LIKE '%pattu%')`
         : division === 'women'
-        ? sql`(lower(coalesce(${schema.products.gender}, '')) IN ('women', 'ladies', 'womens') OR (lower(coalesce(${schema.products.gender}, '')) NOT IN ('kids', 'girls', 'boys', 'children') AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%kid%' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%frock%'))`
+        ? sql`(lower(coalesce(${schema.products.gender}, '')) IN ('women', 'ladies', 'womens') OR (coalesce(${schema.products.gender}, '') = '' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%kid%' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%girl%' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%boy%' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%frock%' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%pattu%' AND lower(coalesce(${schema.products.name}, '')) NOT LIKE '%kid%' AND lower(coalesce(${schema.products.name}, '')) NOT LIKE '%girl%'))`
         : undefined;
 
-    // Query max 8 recommended products with slim columns
+    // Query max 8 recommended products with slim columns + product_images fallback
     const rows = await dbHttp
       .select({
         id: schema.products.id,
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
         compare_price: schema.products.compare_price,
         category: schema.products.category,
         gender: schema.products.gender,
-        image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+        image: sql<string>`coalesce(nullif(${schema.products.images}[1], ''), (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = ${schema.products.id} ORDER BY pi.sort_order ASC LIMIT 1), '')`,
       })
       .from(schema.products)
       .where(divisionFilter ? and(eq(schema.products.is_active, true), divisionFilter) : eq(schema.products.is_active, true))
@@ -49,9 +49,9 @@ export async function GET(request: Request) {
       .limit(8);
 
     const recommended = rows.map((p: any) => {
-      const priceRupees = p.price > 100000 ? Math.round(p.price / 100) : p.price;
+      const priceRupees = p.price > 10000 ? Math.round(p.price / 100) : p.price;
       const originalPriceRupees = p.compare_price
-        ? (p.compare_price > 100000 ? Math.round(p.compare_price / 100) : p.compare_price)
+        ? (p.compare_price > 10000 ? Math.round(p.compare_price / 100) : p.compare_price)
         : undefined;
 
       return {

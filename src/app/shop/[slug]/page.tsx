@@ -16,9 +16,9 @@ interface PDPPageProps {
 }
 
 function formatDbProductToShopProduct(p: any): ShopProduct {
-  const priceRupees = p.price > 100000 ? Math.round(p.price / 100) : p.price;
+  const priceRupees = p.price > 10000 ? Math.round(p.price / 100) : p.price;
   const originalPriceRupees = p.compare_price
-    ? (p.compare_price > 100000 ? Math.round(p.compare_price / 100) : p.compare_price)
+    ? (p.compare_price > 10000 ? Math.round(p.compare_price / 100) : p.compare_price)
     : undefined;
 
   let sizesList: any[] = [];

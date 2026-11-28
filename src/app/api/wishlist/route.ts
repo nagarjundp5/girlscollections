@@ -56,7 +56,7 @@ async function fetchActiveProductsByIds(ids: string[]) {
       stock: schema.products.stock_quantity,
       created_at: schema.products.created_at,
       is_active: schema.products.is_active,
-      image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+      image: sql<string>`coalesce(nullif(${schema.products.images}[1], ''), (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = ${schema.products.id} ORDER BY pi.sort_order ASC LIMIT 1), '')`,
       images: schema.products.images,
     })
     .from(schema.products)
@@ -67,9 +67,9 @@ async function fetchActiveProductsByIds(ids: string[]) {
     .map((id) => rowMap.get(id))
     .filter(Boolean)
     .map((r: any) => {
-      const priceRupees = r.price > 100000 ? Math.round(r.price / 100) : r.price;
+      const priceRupees = r.price > 10000 ? Math.round(r.price / 100) : r.price;
       const originalPriceRupees = r.compare_price
-        ? (r.compare_price > 100000 ? Math.round(r.compare_price / 100) : r.compare_price)
+        ? (r.compare_price > 10000 ? Math.round(r.compare_price / 100) : r.compare_price)
         : undefined;
       return {
         id: r.id,
@@ -125,8 +125,16 @@ export async function GET(req: NextRequest) {
       .map((d: any) => d.productId || d.id)
       .filter((id: any) => typeof id === 'string' && z.string().uuid().safeParse(id).success);
 
+    const extraIds = guestIdsParam
+      ? guestIdsParam
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => z.string().uuid().safeParse(s).success && !savedIds.includes(s))
+      : [];
+    const combinedIds = Array.from(new Set([...savedIds, ...extraIds])).slice(0, 100);
+
     const idsOnly = searchParams.get('idsOnly') === 'true';
-    const products = await fetchActiveProductsByIds(savedIds);
+    const products = await fetchActiveProductsByIds(idsOnly ? savedIds : combinedIds);
     const validIds = products.map((p: any) => p.id);
 
     if (idsOnly) {

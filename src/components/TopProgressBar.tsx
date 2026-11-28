@@ -25,14 +25,14 @@ export function TopProgressBar() {
   const start = () => {
     clearTimers();
     setVisible(true);
-    setProgress(0.22);
+    setProgress(0.32);
 
     trickleRef.current = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 0.84) return prev;
-        return Math.min(0.84, prev + (0.84 - prev) * 0.28);
+        if (prev >= 0.88) return prev;
+        return Math.min(0.88, prev + (0.88 - prev) * 0.32);
       });
-    }, 120);
+    }, 90);
 
     // Safety finish in case navigation errors or aborts
     safetyRef.current = setTimeout(() => {
@@ -108,19 +108,19 @@ export function TopProgressBar() {
   return (
     <div
       aria-hidden="true"
-      className="fixed top-0 left-0 right-0 h-[3px] z-[99999] pointer-events-none"
+      className="fixed top-0 left-0 right-0 h-[4px] z-[99999] pointer-events-none bg-[#D94F7E]/15"
       style={{
         opacity: visible ? 1 : 0,
-        transition: 'opacity 200ms ease-out',
+        transition: 'opacity 180ms ease-out',
       }}
     >
       <div
         className="h-full origin-left rounded-r-full"
         style={{
-          background: 'linear-gradient(90deg, #D94F7E 0%, #C9A15D 100%)',
-          boxShadow: '0 0 8px rgba(217, 79, 126, 0.55)',
+          background: 'linear-gradient(90deg, #D94F7E 0%, #E8A838 55%, #D94F7E 100%)',
+          boxShadow: '0 0 12px rgba(217, 79, 126, 0.75)',
           transform: reducedMotion ? 'scaleX(1)' : `scaleX(${progress})`,
-          transition: reducedMotion ? 'opacity 180ms ease' : 'transform 160ms cubic-bezier(0.22, 1, 0.36, 1)',
+          transition: reducedMotion ? 'opacity 160ms ease' : 'transform 120ms cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       />
     </div>

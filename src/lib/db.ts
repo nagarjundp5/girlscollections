@@ -679,19 +679,43 @@ export const dbService = {
           category: schema.products.category,
           gender: schema.products.gender,
           created_at: schema.products.created_at,
-          image: sql<string>`coalesce(${schema.products.images}[1], '')`,
+          image: sql<string>`coalesce(nullif(${schema.products.images}[1], ''), (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = ${schema.products.id} ORDER BY pi.sort_order ASC LIMIT 1), '')`,
         })
         .from(schema.products)
-        .where(and(eq(schema.products.is_active, true), ne(schema.products.id, currentProductId)))
+        .where(
+          category
+            ? and(eq(schema.products.is_active, true), ne(schema.products.id, currentProductId), eq(schema.products.category, category))
+            : and(eq(schema.products.is_active, true), ne(schema.products.id, currentProductId))
+        )
         .orderBy(desc(schema.products.created_at))
         .limit(safeLimit);
 
-      return rows.map((r: any) => ({
+      const finalRows =
+        rows.length > 0
+          ? rows
+          : await dbHttp
+              .select({
+                id: schema.products.id,
+                name: schema.products.name,
+                slug: schema.products.slug,
+                price: schema.products.price,
+                compare_price: schema.products.compare_price,
+                category: schema.products.category,
+                gender: schema.products.gender,
+                created_at: schema.products.created_at,
+                image: sql<string>`coalesce(nullif(${schema.products.images}[1], ''), (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = ${schema.products.id} ORDER BY pi.sort_order ASC LIMIT 1), '')`,
+              })
+              .from(schema.products)
+              .where(and(eq(schema.products.is_active, true), ne(schema.products.id, currentProductId)))
+              .orderBy(desc(schema.products.created_at))
+              .limit(safeLimit);
+
+      return finalRows.map((r: any) => ({
         id: r.id,
         name: r.name,
         slug: r.slug,
-        price: r.price > 100000 ? Math.round(r.price / 100) : r.price,
-        compare_price: r.compare_price ? (r.compare_price > 100000 ? Math.round(r.compare_price / 100) : r.compare_price) : undefined,
+        price: r.price > 10000 ? Math.round(r.price / 100) : r.price,
+        compare_price: r.compare_price ? (r.compare_price > 10000 ? Math.round(r.compare_price / 100) : r.compare_price) : undefined,
         category: r.category,
         gender: r.gender,
         images: r.image ? [r.image] : [],
