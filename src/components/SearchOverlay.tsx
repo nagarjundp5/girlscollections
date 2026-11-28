@@ -74,7 +74,7 @@ export const SearchOverlay: React.FC = () => {
 
     if (catalogIndex.length === 0 && !isLoadingIndex) {
       setIsLoadingIndex(true);
-      fetch('/api/search/index')
+      fetch('/api/search/index?v=2')
         .then((res) => res.json())
         .then((data) => {
           if (Array.isArray(data.items)) {
@@ -287,7 +287,9 @@ export const SearchOverlay: React.FC = () => {
           <Search className="w-4 h-4 text-[#8C7A70] absolute left-3.5 pointer-events-none" />
           <input
             ref={inputRef}
-            type="search"
+            type="text"
+            inputMode="search"
+            enterKeyHint="search"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -295,7 +297,7 @@ export const SearchOverlay: React.FC = () => {
             }}
             onKeyDown={handleInputKeyDown}
             placeholder="Search kurtas, lehengas, frocks..."
-            className="w-full h-[48px] pl-10 pr-10 rounded-full bg-white border border-[#EFE7E2] text-[16px] font-sans text-[#1C1417] placeholder:text-[#8C7A70] outline-none focus:border-[#3B1230] focus:ring-1 focus:ring-[#3B1230] transition-all"
+            className="w-full h-[48px] pl-10 pr-10 rounded-full bg-white border border-[#EFE7E2] text-[16px] font-sans text-[#1C1417] placeholder:text-[#8C7A70] outline-none focus:border-[#3B1230] focus:ring-1 focus:ring-[#3B1230] transition-all [&::-webkit-search-cancel-button]:hidden"
             autoComplete="off"
             autoCorrect="off"
             spellCheck="false"
@@ -419,13 +421,19 @@ export const SearchOverlay: React.FC = () => {
                   >
                     {/* 56px Thumbnail */}
                     <div className="relative w-[56px] h-[56px] rounded-lg overflow-hidden bg-[#FAF6EE] shrink-0 border border-[#EFE7E2]">
-                      <Image
-                        src={prod.img || '/hero/hero-saree-1.png'}
-                        alt={prod.name}
-                        fill
-                        className="object-cover object-top"
-                        sizes="56px"
-                      />
+                      {prod.img ? (
+                        <Image
+                          src={prod.img}
+                          alt={prod.name}
+                          fill
+                          className="object-cover object-top"
+                          sizes="56px"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#B8924A]/50">
+                          <Search className="w-4 h-4" />
+                        </div>
+                      )}
                     </div>
 
                     {/* Details */}

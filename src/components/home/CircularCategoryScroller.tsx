@@ -943,6 +943,8 @@ export interface CategoryCircleItem {
   topOffset?: string;
 }
 
+
+
 export const WOMEN_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
   {
     id: 'anarkali-kurta-suit-sets',
@@ -979,7 +981,7 @@ export const WOMEN_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     name: 'Langa Blouse',
     slug: 'lehenga-blouse-pattu-pavadai',
     group: 'women',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/langadavani.jpg',
+    image: '/categories/circles/landablousewomen.png',
     line1: 'LANGA',
     line2: 'BLOUSE',
     topOffset: '8%',
@@ -999,17 +1001,27 @@ export const WOMEN_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     name: 'A-Line Kurta',
     slug: 'a-line-kurta',
     group: 'women',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/alinekurta.jpg',
+    image: '/categories/circles/alinekurtawomen.png',
     line1: 'A-LINE',
     line2: 'KURTA',
     topOffset: '8%',
+  },
+  {
+    id: 'all-kurta-sets',
+    name: 'All Kurta Sets',
+    slug: 'all-kurta-sets',
+    group: 'women',
+    image: '/categories/cutouts/all-kurta-sets.webp',
+    line1: 'KURTA',
+    line2: 'SETS',
+    topOffset: '7.7%',
   },
   {
     id: 'straight-cut-kurta-suit-sets',
     name: 'Straight Cut Kurta',
     slug: 'straight-cut-kurta-suit-sets',
     group: 'women',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/straightcutkurta.jpg',
+    image: '/categories/circles/straightkurtasetwomen.png',
     line1: 'STRAIGHT',
     line2: 'KURTA SET',
     topOffset: '8%',
@@ -1024,6 +1036,16 @@ export const WOMEN_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     line2: 'SETS',
     topOffset: '8%',
   },
+  {
+    id: 'skirt-and-top',
+    name: 'Skirt and Top',
+    slug: 'skirt-and-top',
+    group: 'women',
+    image: '/categories/cutouts/skirt-and-top.webp',
+    line1: 'SKIRT &',
+    line2: 'TOP',
+    topOffset: '7.7%',
+  },
 ];
 
 export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
@@ -1032,18 +1054,9 @@ export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     name: 'Langa Blouse / Pattu Pavadai',
     slug: 'lehenga-blouse-pattu-pavadai',
     group: 'kids',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/lenehenga.jpg',
+    image: '/categories/circles/langablousekids.png',
     line1: 'LEHENGA &',
     line2: 'PATTU',
-    topOffset: '8%',
-  }, {
-    id: 'kids-ghaghra',
-    name: 'Ghaghra',
-    slug: 'ghaghra',
-    group: 'kids',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/ghagha.jpg',
-    line1: 'GHAGHRA',
-    line2: '& CHOLI',
     topOffset: '8%',
   },
   {
@@ -1061,7 +1074,7 @@ export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     name: 'Children Saree',
     slug: 'children-saree',
     group: 'kids',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/childrenssaree.jpg',
+    image: '/categories/circles/sareechildrenskids.png',
     line1: 'CHILDREN',
     line2: 'SAREE',
     topOffset: '8%',
@@ -1071,7 +1084,7 @@ export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     name: 'Sharara Set',
     slug: 'kids-sharara-set',
     group: 'kids',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/sharara.jpg',
+    image: '/categories/circles/shararasetkids.png',
     line1: 'SHARARA',
     line2: 'SET',
     topOffset: '8%',
@@ -1091,7 +1104,7 @@ export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     name: 'Traditional Gowns',
     slug: 'kids-traditional-gown-1-pc',
     group: 'kids',
-    image: '/Users/nagarjundp/thegirlscollections/thegirlscollections/newcircle/traditionalgown.jpg',
+    image: '/categories/cutouts/kids-traditional-gown-1-pc.webp',
     line1: 'TRADITIONAL',
     line2: 'GOWNS',
     topOffset: '7.7%',
@@ -1107,6 +1120,8 @@ export const KIDS_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
     topOffset: '7.7%',
   },
 ];
+
+
 
 // ─── Curated Category Circles with Cutout Images (Head pops out of circle) ───
 // export const WOMEN_CIRCLE_CATEGORIES: CategoryCircleItem[] = [
@@ -1331,38 +1346,54 @@ const CategoryCircle: React.FC<{ category: CategoryCircleItem }> = ({ category }
           )}
         </div>
 
-        {/* ── Pop-out cutout ──
-            Wrapper starts 28px ABOVE the ring (headroom) and is only rounded at the
-            bottom, so the head can never be clipped but the legs still follow the rim. */}
+        {/* ── Pop-out cutout (or full-bleed circle for white-bg .jpg photos) ── */}
         {category.image && (
-          <div
-            className="absolute left-[2.5px] right-[2.5px] bottom-[2.5px] overflow-hidden pointer-events-none z-10 rounded-b-full"
-            style={{
-              top: '-28px',
-              WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-              isolation: 'isolate',
-            }}
-            aria-hidden="true"
-          >
+          category.image.endsWith('.jpg') ? (
             <div
-              className="absolute left-0 w-full"
-              style={{
-                top: `calc(22px - ${topOffset})`,
-                height: 'calc(var(--cat-size) * 1.18)',
-              }}
+              className="absolute inset-[3px] rounded-full overflow-hidden pointer-events-none z-10 bg-white"
+              aria-hidden="true"
             >
               <Image
                 src={category.image}
                 alt={category.name}
                 fill
                 sizes="(max-width: 640px) 110px, (max-width: 1024px) 124px, 130px"
-                className="object-contain origin-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.18)] transition-transform duration-300 [@media(hover:hover)]:group-hover:scale-105"
+                className="object-cover object-top transition-transform duration-300 [@media(hover:hover)]:group-hover:scale-105"
                 priority={false}
                 loading="lazy"
                 draggable={false}
               />
             </div>
-          </div>
+          ) : (
+            <div
+              className="absolute left-[2.5px] right-[2.5px] bottom-[2.5px] overflow-hidden pointer-events-none z-10 rounded-b-full"
+              style={{
+                top: '-28px',
+                WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+                isolation: 'isolate',
+              }}
+              aria-hidden="true"
+            >
+              <div
+                className="absolute left-0 w-full"
+                style={{
+                  top: `calc(22px - ${topOffset})`,
+                  height: 'calc(var(--cat-size) * 1.18)',
+                }}
+              >
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  fill
+                  sizes="(max-width: 640px) 110px, (max-width: 1024px) 124px, 130px"
+                  className="object-contain origin-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.18)] transition-transform duration-300 [@media(hover:hover)]:group-hover:scale-105"
+                  priority={false}
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
+            </div>
+          )
         )}
       </div>
 

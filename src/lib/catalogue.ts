@@ -64,7 +64,7 @@ async function fetchSlimCatalogueRaw(): Promise<SlimCatalogueProduct[]> {
       .from(schema.products)
       .where(eq(schema.products.is_active, true))
       .orderBy(desc(schema.products.is_featured), desc(schema.products.created_at))
-      .limit(250);
+      .limit(500);
 
     return rows.map((r: any) => {
       const stockMap = r.stock_quantity && typeof r.stock_quantity === 'object' ? r.stock_quantity : {};
@@ -127,9 +127,9 @@ async function fetchSlimCatalogueRaw(): Promise<SlimCatalogueProduct[]> {
  */
 export const getCachedSlimCatalogue = unstable_cache(
   fetchSlimCatalogueRaw,
-  ['tgc-slim-catalogue-v2'],
+  ['tgc-slim-catalogue-v3'],
   {
-    revalidate: 3600,
+    revalidate: 300,
     tags: ['products'],
   }
 );

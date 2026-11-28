@@ -3,7 +3,7 @@ import { getCachedSlimCatalogue } from '@/lib/catalogue';
 import { rateLimitSearch } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export interface CompactSearchItem {
   id: string;
@@ -75,10 +75,10 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json(
-      { version: '1', items },
+      { version: '2', items },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
           'Content-Type': 'application/json',
           'X-Content-Type-Options': 'nosniff',
         },

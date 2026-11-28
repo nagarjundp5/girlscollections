@@ -41,7 +41,14 @@ export async function GET(request: Request) {
         compare_price: schema.products.compare_price,
         category: schema.products.category,
         gender: schema.products.gender,
+        sizes: schema.products.sizes,
+        stock_quantity: schema.products.stock_quantity,
+        is_featured: schema.products.is_featured,
+        is_best_seller: schema.products.is_best_seller,
+        is_new_arrival: schema.products.is_new_arrival,
+        created_at: schema.products.created_at,
         image: sql<string>`coalesce(nullif(${schema.products.images}[1], ''), (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = ${schema.products.id} ORDER BY pi.sort_order ASC LIMIT 1), '')`,
+        images: schema.products.images,
       })
       .from(schema.products)
       .where(divisionFilter ? and(eq(schema.products.is_active, true), divisionFilter) : eq(schema.products.is_active, true))
@@ -53,18 +60,26 @@ export async function GET(request: Request) {
       const originalPriceRupees = p.compare_price
         ? (p.compare_price > 10000 ? Math.round(p.compare_price / 100) : p.compare_price)
         : undefined;
+      const rawImgs = Array.isArray(p.images) ? p.images.filter(Boolean) : [];
+      const finalImgs = rawImgs.length > 0 ? rawImgs.slice(0, 2) : (p.image ? [p.image] : []);
 
       return {
         id: p.id,
         name: p.name,
         slug: p.slug,
         price: priceRupees,
+        originalPrice: originalPriceRupees,
         compare_price: originalPriceRupees,
-        images: p.image ? [p.image] : [],
-        sizes: [],
+        images: finalImgs,
+        sizes: Array.isArray(p.sizes) ? p.sizes : [],
+        stock_quantity: p.stock_quantity || {},
         colors: [],
         category: p.category,
         gender: p.gender,
+        target: p.gender === 'kids' ? 'kids' : 'women',
+        isNew: p.is_new_arrival ?? true,
+        isBestSeller: p.is_best_seller ?? p.is_featured,
+        isSale: !!originalPriceRupees,
       };
     });
 

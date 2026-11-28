@@ -16,6 +16,7 @@ import { Plus, Minus, ArrowRight, ShieldCheck, Tag, Check, Heart, RotateCcw, Cre
 import { useScrollLock } from '@/lib/useScrollLock';
 import { formatSizeLabel } from '@/lib/formatSizeLabel';
 import { haptic } from '@/lib/haptics';
+import { ProductCard } from '@/components/ProductCard';
 
 // In-memory cache for Cart Drawer recommendations keyed by division (women | kids | all)
 const memoryRecommendedCache: Record<string, any[]> = {};
@@ -80,7 +81,7 @@ export const CartDrawer: React.FC = () => {
     if (memoryRecommendedCache[bagDivision]?.length > 0) return memoryRecommendedCache[bagDivision];
     if (typeof window !== 'undefined') {
       try {
-        const stored = sessionStorage.getItem(`tgc_cart_recommended_v5_${bagDivision}`);
+        const stored = sessionStorage.getItem(`tgc_cart_recommended_v6_${bagDivision}`);
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
@@ -142,7 +143,7 @@ export const CartDrawer: React.FC = () => {
           memoryRecommendedCache[bagDivision] = curated;
           setRecommendedProducts(curated);
           try {
-            sessionStorage.setItem(`tgc_cart_recommended_v5_${bagDivision}`, JSON.stringify(curated));
+            sessionStorage.setItem(`tgc_cart_recommended_v6_${bagDivision}`, JSON.stringify(curated));
           } catch { }
         }
       } catch (err) {
@@ -487,7 +488,7 @@ export const CartDrawer: React.FC = () => {
 
                 {/* 6. "YOU MAY ALSO LIKE" RECOMMENDATIONS */}
                 {(visibleRecommendations.length > 0 || isLoadingRecommended) && (
-                  <div className="pt-3 border-t border-[#EFE7E2] space-y-3">
+                  <div className="pt-4 border-t border-[#EFE7E2] space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-xs font-sans font-bold uppercase tracking-[0.14em] text-[#1C1417]">
                         You May Also Like
@@ -496,63 +497,29 @@ export const CartDrawer: React.FC = () => {
                     </div>
 
                     {visibleRecommendations.length > 0 ? (
-                      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-1">
-                        {visibleRecommendations.map((prod, idx) => (
-                          <motion.div
-                            key={prod.id || prod.slug}
-                            initial={{ opacity: 0, y: 16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              delay: 0.1 + idx * 0.05,
-                              type: 'spring',
-                              stiffness: 260,
-                              damping: 20,
-                            }}
-                            className="snap-start shrink-0 w-[125px] sm:w-[135px] bg-white rounded-xl p-2.5 border border-[#EFE7E2] shadow-2xs flex flex-col justify-between group"
-                          >
-                            <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-2 bg-[#F7F2EC]">
-                              <Image
-                                src={prod.images?.[0] || '/hero/hero-saree-1.png'}
-                                alt={prod.name}
-                                fill
-                                className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
-                                sizes="135px"
-                              />
-                            </div>
-
-                            <div className="space-y-1.5">
-                              <h4 className="text-[11px] font-sans font-medium text-[#1C1417] line-clamp-1 group-hover:text-[#3B1230] transition-colors">
-                                {prod.name}
-                              </h4>
-                              <div className="flex items-center justify-between gap-1">
-                                <span className="text-[11px] font-bold text-[#1C1417] font-tnum">
-                                  ₹{(prod.price > 100000 ? Math.round(prod.price / 100) : prod.price).toLocaleString('en-IN')}
-                                </span>
-                                {/* 44px Outlined + ADD Button with Quick Size Picker */}
-                                <button
-                                  onClick={() => handleAddRecommended(prod)}
-                                  className="h-[44px] min-w-[54px] px-2.5 rounded-lg border border-[#3B1230] text-[#3B1230] hover:bg-[#3B1230] hover:text-white text-[11px] font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer flex items-center justify-center"
-                                  title="Add to bag"
-                                >
-                                  + ADD
-                                </button>
-                              </div>
-                            </div>
-                          </motion.div>
+                      <div
+                        className="grid grid-cols-2 gap-3"
+                        onClick={(e) => {
+                          if ((e.target as HTMLElement).closest('a')) {
+                            setIsCartOpen(false);
+                          }
+                        }}
+                      >
+                        {visibleRecommendations.map((prod) => (
+                          <ProductCard key={prod.id || prod.slug} product={prod} />
                         ))}
                       </div>
                     ) : (
-                      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-                        {[1, 2, 3].map((i) => (
+                      <div className="grid grid-cols-2 gap-3">
+                        {[1, 2].map((i) => (
                           <div
                             key={i}
-                            className="shrink-0 w-[125px] sm:w-[135px] bg-white rounded-xl p-2.5 border border-[#EFE7E2] shadow-2xs space-y-2 animate-pulse"
+                            className="bg-white rounded-2xl border border-[#EADFD6] overflow-hidden animate-pulse"
                           >
-                            <div className="aspect-[3/4] w-full rounded-lg bg-[#F7F2EC]" />
-                            <div className="h-3 bg-[#F7F2EC] rounded w-3/4" />
-                            <div className="flex justify-between items-center pt-1">
-                              <div className="h-3 bg-[#F7F2EC] rounded w-1/3" />
-                              <div className="h-8 w-12 bg-[#F7F2EC] rounded-lg" />
+                            <div className="aspect-[3/4] w-full bg-[#F7F2EC]" />
+                            <div className="p-3 space-y-2">
+                              <div className="h-3 bg-[#F7F2EC] rounded w-3/4" />
+                              <div className="h-4 bg-[#F7F2EC] rounded w-1/3" />
                             </div>
                           </div>
                         ))}
