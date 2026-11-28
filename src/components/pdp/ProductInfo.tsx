@@ -144,9 +144,9 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
     router.push('/checkout');
   };
 
-  // Copy FESTIVE10 coupon
+  // Copy TGC10 coupon
   const handleCopyCoupon = () => {
-    navigator.clipboard.writeText('FESTIVE10');
+    navigator.clipboard.writeText('TGC10');
     setCopiedCoupon(true);
     haptic('success');
     setTimeout(() => setCopiedCoupon(false), 1500);
@@ -444,7 +444,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
           </div>
           <div className="space-y-0.5">
             <h4 className="font-serif font-semibold text-[17px] text-[var(--ink)] leading-snug">
-              10% off your first order
+              Launch offer · 10% off your first order
             </h4>
             <p className="text-[14px] sm:text-[15px] text-[var(--muted)]">
               Valid on all prepaid and COD orders.
@@ -454,7 +454,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
 
         <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
           <span className="bg-white border border-[#EADFD6] text-[var(--ink)] font-mono text-xs font-bold px-3 py-1.5 rounded-full tracking-wider shadow-2xs">
-            FESTIVE10
+            TGC10
           </span>
           <button
             type="button"

@@ -280,6 +280,14 @@ export default function AdminOrderDetail() {
                 <span className="text-zinc-900">Total Amount</span>
                 <span className="font-mono text-zinc-900 text-lg">₹{(order.total / 100).toFixed(2)}</span>
               </div>
+              {(order.payment_mode === 'cod' || order.payment_type === 'cod' || order.payment_status === 'partially_paid') && (
+                <div className="pt-1 flex justify-between items-center text-xs font-mono text-amber-700 bg-amber-50 px-3 py-2 rounded">
+                  <span>COD Breakdown</span>
+                  <span className="font-bold">
+                    Paid online ₹{((order.advance_paid || 20000) / 100).toFixed(0)} · To pay on delivery ₹{((order.cod_balance ?? order.remaining_amount ?? Math.max(0, order.total - (order.advance_paid || 20000))) / 100).toFixed(0)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -364,7 +372,7 @@ export default function AdminOrderDetail() {
                       disabled={isBookingShipment}
                       className="bg-zinc-900 hover:bg-zinc-800 text-white px-6 py-3 font-bold uppercase tracking-widest text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                     >
-                      {isBookingShipment ? 'Booking on Shiprocket...' : 'Book Automatic Shipment'}
+                      {isBookingShipment ? 'Booking on Shiprocket...' : order.needs_attention ? 'Retry shipment' : 'Book Automatic Shipment'}
                     </button>
                   </div>
                 ) : (

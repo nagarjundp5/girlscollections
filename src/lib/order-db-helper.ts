@@ -83,30 +83,7 @@ export async function confirmAndWriteOrder(checkout: any, razorpayPaymentId: str
 
       const rows = (result as any).rows ?? result ?? [];
       if (!Array.isArray(rows) || rows.length === 0) {
-        // Fallback: check if product exists in database, decrement without failing if size key was unpopulated
-        const [prodCheck] = await tx
-          .select({ id: schema.products.id })
-          .from(schema.products)
-          .where(eq(schema.products.id, item.id))
-          .limit(1);
-
-        if (prodCheck) {
-          await tx.execute(
-            sql`
-              UPDATE products
-              SET stock = jsonb_set(
-                COALESCE(stock, '{}'::jsonb),
-                ${sql.raw(`'{${sizeKey}}'`)},
-                to_jsonb(GREATEST(0, (COALESCE(stock->>'${sql.raw(sizeKey)}', '10'))::int - ${item.quantity}))
-              )
-              WHERE id = ${item.id}
-            `
-          );
-        } else {
-          throw new Error(
-            `OUT_OF_STOCK: insufficient stock for product ${item.id} size ${sizeKey}`
-          );
-        }
+        throw new Error(`OUT_OF_STOCK_REFUND:${item.name || item.id}`);
       }
     }
 

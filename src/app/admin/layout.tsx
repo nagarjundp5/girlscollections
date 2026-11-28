@@ -83,7 +83,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     document.cookie = 'tgc_admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     try {
       await fetch('/api/admin/login', { method: 'DELETE' });
-      await signOut();
+      await signOut({ redirectUrl: '/admin' });
     } catch (e) {}
     router.push('/admin');
   };

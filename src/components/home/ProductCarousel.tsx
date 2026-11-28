@@ -106,10 +106,10 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
           {/* CAROUSEL TRACK */}
           <div
             ref={scrollRef}
-            className="flex items-stretch gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth"
+            className="flex items-stretch gap-[14px] md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth"
             style={{ WebkitOverflowScrolling: 'touch' }}
           >
-            {filteredProducts.map((product) => {
+            {filteredProducts.map((product, cardIdx) => {
               const isWishlisted = isInWishlist(product.id);
               const isHovered = hoveredId === product.id;
               const hasSecondImage = product.images && product.images.length > 1;
@@ -143,40 +143,41 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
               return (
                 <div
                   key={product.id}
-                  className="shrink-0 snap-start select-none w-[calc(50%-8px)] sm:w-[calc(50%-12px)] md:w-[calc(25%-18px)] min-w-[160px] md:min-w-[280px] max-w-[340px]"
+                  className="shrink-0 snap-start select-none w-[min(74vw,300px)] sm:w-[calc(50%-12px)] md:w-[calc(25%-18px)] md:min-w-[260px] max-w-[340px]"
                   onMouseEnter={() => setHoveredId(product.id)}
                   onMouseLeave={() => setHoveredId(null)}
                 >
-                  {/* CARD CONTAINER (No border, no shadow, no inner padding) */}
-                  <div className="group relative flex flex-col w-full">
+                  {/* CARD CONTAINER */}
+                  <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6]/60 p-2">
                     
-                    {/* 3:4 PORTRAIT IMAGE CONTAINER */}
-                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#FAF8F5] rounded-none">
+                    {/* 2:3 PORTRAIT IMAGE CONTAINER (object-contain, full image visible) */}
+                    <div className="relative w-full aspect-[2/3] overflow-hidden bg-[#FBF8F4] rounded-xl">
                       <Link
                         href={productUrl}
                         className="block w-full h-full relative"
                         aria-label={product.name}
                       >
-                        {/* Primary Image - fixed aspect-[3/4] object-cover */}
+                        {/* Primary Image - fixed aspect-[2/3] object-contain */}
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
                           fill
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                          className={`object-cover transition-opacity duration-500 ease-in-out ${
+                          priority={cardIdx === 0}
+                          sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
+                          className={`object-contain object-center transition-opacity duration-500 ease-in-out ${
                             isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
                           }`}
-                          loading="lazy"
+                          loading={cardIdx === 0 ? 'eager' : 'lazy'}
                         />
 
-                        {/* Secondary Image (Hover Swap on Desktop) - fixed aspect-[3/4] object-cover */}
+                        {/* Secondary Image (Hover Swap on Desktop) - fixed aspect-[2/3] object-contain */}
                         {hasSecondImage && (
                           <Image
                             src={optimizedSecondary}
                             alt={`${product.name} alternate view`}
                             fill
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                            className={`object-cover transition-opacity duration-500 ease-in-out ${
+                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
+                            className={`object-contain object-center transition-opacity duration-500 ease-in-out ${
                               isHovered ? 'opacity-100' : 'opacity-0'
                             }`}
                             loading="lazy"
@@ -184,9 +185,9 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
                         )}
                       </Link>
 
-                      {/* Black small tag top-left (11px, white text, square corners) */}
+                      {/* Small rose-pink pill tag top-left */}
                       <div className="absolute top-2.5 left-2.5 z-20 pointer-events-none">
-                        <span className="inline-block bg-black text-white text-[10px] md:text-[11px] font-sans font-medium uppercase tracking-[0.08em] px-2 py-0.5 rounded-none">
+                        <span className="inline-block bg-[#D94F7E] text-white text-[11px] font-sans font-semibold px-2.5 py-0.5 rounded-full shadow-xs">
                           {badgeText}
                         </span>
                       </div>
@@ -232,27 +233,26 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
                     </div>
 
                     {/* TEXT UNDER IMAGE: Left-aligned, high contrast */}
-                    <div className="pt-3 pb-1 text-left">
+                    <div className="pt-3 pb-1 px-1 text-left">
                       <Link href={productUrl} className="block group/title">
-                        {/* Product Name in uppercase 14px, weight 400, dark, max 2 lines */}
-                        <h3 className="text-[13px] md:text-[14px] font-sans font-normal uppercase tracking-[0.04em] text-[#1C1417] line-clamp-2 leading-tight">
+                        <h3 className="text-[15px] font-sans font-semibold text-[#1A1E3A] line-clamp-2 leading-snug">
                           {product.name}
                         </h3>
                       </Link>
 
-                      {/* Price in bold 15-16px, MRP struck through, discount % in sale colour */}
+                      {/* Price in bold, MRP struck through, Save ₹X in green */}
                       <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-                        <span className="text-[15px] md:text-[16px] font-sans font-bold text-[#1C1417]">
+                        <span className="text-[17px] md:text-[16px] font-sans font-bold text-[#1A1E3A] tabular-nums">
                           {formatPrice(price)}
                         </span>
 
                         {hasDiscount && comparePrice && (
                           <>
-                            <span className="text-[12px] md:text-[13px] font-sans text-[#595959] line-through font-normal">
+                            <span className="text-[13px] font-sans text-[#6B6F85] line-through font-normal tabular-nums">
                               {formatPrice(comparePrice)}
                             </span>
-                            <span className="text-[12px] md:text-[13px] font-sans font-semibold text-[#B8283B]">
-                              ({discountPercent}% OFF)
+                            <span className="text-[12px] font-sans font-semibold text-[#2E8B6A]">
+                              Save ₹{(comparePrice - price).toLocaleString('en-IN')}
                             </span>
                           </>
                         )}
@@ -265,14 +265,18 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
           </div>
         </div>
 
-        {/* SOLID "VIEW ALL" BUTTON (Dark colour, white text, 44px high, 180px wide, tracking 0.12em) Centred Below */}
+        {/* Full-width rose-pink View all button */}
         {targetViewAllHref && (
-          <div className="mt-8 md:mt-12 text-center">
+          <div className="mt-8 md:mt-10 text-center">
             <Link
               href={targetViewAllHref}
-              className="inline-flex items-center justify-center w-[180px] h-[44px] bg-[#1C1417] hover:bg-black text-white text-[12px] md:text-[13px] font-sans font-medium tracking-[0.12em] uppercase transition-colors"
+              className="inline-flex items-center justify-center w-full sm:w-auto min-h-[48px] px-8 py-3 bg-[#D94F7E] hover:bg-[#C23F6D] text-white text-sm font-sans font-semibold rounded-xl transition-colors shadow-sm"
             >
-              {viewAllLabel}
+              {viewAllLabel === 'VIEW ALL WOMEN'
+                ? 'View all women'
+                : viewAllLabel === 'VIEW ALL KIDS'
+                ? 'View all kids'
+                : 'View all'}
             </Link>
           </div>
         )}

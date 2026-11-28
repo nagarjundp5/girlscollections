@@ -123,9 +123,9 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
 
   return (
     <div id="pdp-primary-gallery" className="w-full select-none">
-      {/* ── MOBILE GALLERY (Scroll-snap, aspect 4/5, rounded bottom 24px) ── */}
+      {/* ── MOBILE GALLERY (Scroll-snap, full image contain, rounded bottom 24px) ── */}
       <div className="lg:hidden w-full">
-        <div className="relative w-full aspect-[4/5] rounded-b-[24px] overflow-hidden bg-[#FBF8F4]">
+        <div className="relative w-full aspect-[2/3] max-h-[82vh] rounded-b-[24px] overflow-hidden bg-[#FBF8F4]">
           {/* "1/4" Counter Top-Left */}
           {hasMultiple && (
             <span className="absolute top-4 left-4 z-20 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-xs font-sans font-medium tracking-wide">
@@ -176,7 +176,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
                     priority={idx === 0}
                     loading={idx === 0 ? 'eager' : 'lazy'}
                     sizes="100vw"
-                    className="object-cover object-top"
+                    className="object-contain object-center"
                   />
                 </div>
               );
@@ -267,13 +267,13 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
           </div>
         )}
 
-        {/* Main Image with Hover Cursor Zoom scale 1.6 */}
+        {/* Main Image with Hover Cursor Zoom scale 1.6 (full image contain, max-h 85vh) */}
         <div
           onClick={openZoom}
           onMouseEnter={() => setIsDesktopHovered(true)}
           onMouseLeave={() => setIsDesktopHovered(false)}
           onMouseMove={handleDesktopMouseMove}
-          className="relative flex-1 aspect-[4/5] rounded-[20px] overflow-hidden bg-[#FBF8F4] border border-[#EADFD6]/60 cursor-zoom-in"
+          className="relative flex-1 aspect-[2/3] max-h-[85vh] rounded-[20px] overflow-hidden bg-[#FBF8F4] border border-[#EADFD6]/60 cursor-zoom-in"
         >
           {/* Overlaid Top-Right: 44px Heart & Share buttons on desktop image */}
           <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
@@ -316,7 +316,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
               priority={selectedIdx === 0}
               loading={selectedIdx === 0 ? 'eager' : 'lazy'}
               sizes="(min-width: 1024px) 580px, 100vw"
-              className="object-cover object-top pointer-events-none"
+              className="object-contain object-center pointer-events-none"
             />
           </div>
         </div>

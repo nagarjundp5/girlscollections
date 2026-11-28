@@ -143,10 +143,90 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, message: 'Pending checkout not found; logged for review' });
       }
 
+      // ── Amount check: captured amount must equal expected amount ──
+      const expectedAmount = checkout.payment_type === 'cod_with_deposit' ? 20000 : checkout.total;
+      if (typeof payment.amount === 'number' && payment.amount !== expectedAmount) {
+        console.error(
+          `[Razorpay Webhook] Amount mismatch for ${checkout.order_number}: got ${payment.amount}, expected ${expectedAmount}`
+        );
+        await firestoreService.updateDoc('pending_checkouts', checkout.id, {
+          status: 'payment_mismatch',
+          payment_id: payment.id,
+          updated_at: new Date().toISOString(),
+        }).catch(() => {});
+
+        await writeAuditLog({
+          orderId: checkout.id,
+          action: 'WEBHOOK:RAZORPAY_AMOUNT_MISMATCH',
+          details: { eventId, paymentId: payment.id, received: payment.amount, expected: expectedAmount },
+        });
+
+        await db
+          .update(schema.webhookEvents)
+          .set({ processed: true, processed_at: new Date() })
+          .where(eq(schema.webhookEvents.event_id, eventId));
+
+        return NextResponse.json({ success: true, message: 'Amount mismatch flagged; order not shipped' });
+      }
+
       // ── Confirm the order using the shared function ──
       // confirmAndWriteOrder is idempotent — if the browser just committed,
       // the function returns the existing order without inserting again.
-      const confirmedOrder = await confirmAndWriteOrder(checkout, payment.id);
+      let confirmedOrder;
+      try {
+        confirmedOrder = await confirmAndWriteOrder(checkout, payment.id);
+      } catch (confirmErr: any) {
+        if (confirmErr?.message?.startsWith('OUT_OF_STOCK_REFUND:')) {
+          const productName = confirmErr.message.split('OUT_OF_STOCK_REFUND:')[1] || 'Item';
+          if (checkout.status !== 'REFUNDED_OUT_OF_STOCK' && checkout.payment_status !== 'refunded') {
+            try {
+              const { razorpay } = await import('@/lib/razorpay');
+              if (razorpay) {
+                await razorpay.payments.refund(payment.id, {
+                  amount: expectedAmount,
+                  notes: {
+                    reason: `Stock sold out before payment capture (late payment for ${productName})`,
+                    order_id: checkout.id,
+                    order_number: checkout.order_number,
+                  },
+                });
+              }
+            } catch (refundErr) {
+              console.error('[Razorpay Webhook] Auto-refund failed:', refundErr);
+            }
+
+            await firestoreService.updateDoc('pending_checkouts', checkout.id, {
+              status: 'REFUNDED_OUT_OF_STOCK',
+              payment_status: 'refunded',
+              payment_id: payment.id,
+              updated_at: new Date().toISOString(),
+            }).catch(() => {});
+
+            const { sendRefundEmail } = await import('@/lib/email');
+            sendRefundEmail({
+              orderNumber: checkout.order_number,
+              customerName: checkout.customer_name,
+              customerEmail: checkout.customer_email,
+              productName,
+              refundAmountPaise: expectedAmount,
+            }).catch(() => {});
+
+            await writeAuditLog({
+              orderId: checkout.id,
+              action: 'WEBHOOK:REFUNDED_OUT_OF_STOCK',
+              details: { eventId, paymentId: payment.id, productName, refundAmount: expectedAmount },
+            });
+          }
+
+          await db
+            .update(schema.webhookEvents)
+            .set({ processed: true, processed_at: new Date() })
+            .where(eq(schema.webhookEvents.event_id, eventId));
+
+          return NextResponse.json({ success: true, refunded: true, code: 'REFUNDED_OUT_OF_STOCK' });
+        }
+        throw confirmErr;
+      }
 
       if (!confirmedOrder) {
         return NextResponse.json({ error: 'Order confirmation failed' }, { status: 500 });

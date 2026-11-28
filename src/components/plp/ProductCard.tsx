@@ -118,7 +118,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                           imgIdx === 0 && blurPlaceholder ? `url(${blurPlaceholder})` : undefined,
                         backgroundSize: 'cover',
                       }}
-                      className="w-full h-full object-cover object-top transition-transform duration-500 ease-out sm:group-hover:scale-[1.02]"
+                      className="w-full h-full object-contain object-center transition-transform duration-500 ease-out sm:group-hover:scale-[1.02]"
                     />
                   </Link>
                 </div>
@@ -143,7 +143,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 backgroundImage: blurPlaceholder ? `url(${blurPlaceholder})` : undefined,
                 backgroundSize: 'cover',
               }}
-              className="w-full h-full object-cover object-top transition-transform duration-500 ease-out sm:group-hover:scale-[1.02]"
+              className="w-full h-full object-contain object-center transition-transform duration-500 ease-out sm:group-hover:scale-[1.02]"
             />
           </Link>
         ) : (

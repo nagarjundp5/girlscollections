@@ -621,12 +621,12 @@ export async function POST(request: Request) {
       }
 
       // Calculate discount amount (paise)
-      if (dbCode.discount_type === 'percent') {
+      if (dbCode.discount_type === 'percent' || dbCode.discount_type === 'percentage') {
         discountAmount = Math.round(calculatedSubtotal * (dbCode.discount_value / 100));
         if (dbCode.max_discount_amount && dbCode.max_discount_amount > 0) {
           discountAmount = Math.min(discountAmount, dbCode.max_discount_amount);
         }
-      } else if (dbCode.discount_type === 'flat') {
+      } else if (dbCode.discount_type === 'flat' || dbCode.discount_type === 'fixed_amount') {
         discountAmount = dbCode.discount_value;
       }
 
@@ -737,9 +737,10 @@ export async function POST(request: Request) {
         const rzOrder = await razorpay!.orders.create({
           amount: rzAmount, // ₹200 for COD deposit, or finalTotal
           currency: 'INR',
-          receipt: orderNumber,
+          receipt: orderId,
           notes: {
             order_id: orderId,
+            order_number: orderNumber,
             customer_name: customerInfo.name,
             customer_email: customerInfo.email,
             discount_code: validatedCode || 'NONE',

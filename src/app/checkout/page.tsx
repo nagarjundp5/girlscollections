@@ -8,7 +8,6 @@ import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { ChevronLeft, Lock, CheckCircle, Package, ArrowRight, ShieldCheck, MapPin, Truck, RotateCcw, Check, UserCheck, Smartphone, Navigation, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ToastContainer';
 import { useAuthSession } from '@/context/AuthContext';
-import CheckoutCoupon from '@/components/CheckoutCoupon';
 import TermsAndConditionsBox from '@/components/TermsAndConditionsBox';
 import ImportantOrderTerms from '@/components/ImportantOrderTerms';
 import { ButterflyMotif } from '@/components/ui/Motifs';
@@ -17,9 +16,11 @@ import { useLocationAutofill } from '@/hooks/useLocationAutofill';
 import { siteConfig } from '@/lib/siteConfig';
 import { getSizeLabel } from '@/data/masterSizes';
 
+const ENABLE_STORE_PICKUP = false;
+
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, getCartTotal, discountCode, clearCart, hasHydrated } = useCartStore();
+  const { items, getCartTotal, discountCode, applyDiscount, clearCart, hasHydrated } = useCartStore();
   const { addToast } = useToast();
   const { isSignedIn, isLoaded, user, openAuthModal, refreshUser } = useAuthSession();
 
@@ -881,6 +882,7 @@ export default function CheckoutPage() {
               </section>
 
               {/* 2. Fulfillment Method */}
+              {ENABLE_STORE_PICKUP && (
               <section className="bg-white border border-zariGold/30 rounded-2xl p-6 shadow-sm space-y-4">
                 <h2 className="text-base font-serif font-bold text-navy border-b border-zariGold/20 pb-3">
                   2. Fulfillment Method
@@ -912,6 +914,7 @@ export default function CheckoutPage() {
                   </button>
                 </div>
               </section>
+              )}
 
               {/* 3. Shipping Address */}
               {fulfillmentType === 'delivery' ? (
@@ -1172,7 +1175,7 @@ export default function CheckoutPage() {
                         Cash on Delivery (COD)
                       </span>
                       <span className="text-xs text-charcoal-muted mt-1 block">
-                        Pay in cash upon doorstep delivery across India.
+                        Pay ₹200 advance online via Razorpay; remaining balance in cash/UPI on delivery.
                       </span>
                     </div>
                   </label>
@@ -1191,6 +1194,8 @@ export default function CheckoutPage() {
                 >
                   {isProcessing ? (
                     'Processing Order...'
+                  ) : paymentMethod === 'cod' && storeConfig.razorpayActive ? (
+                    'Pay ₹200 Advance & Place Order'
                   ) : paymentMethod === 'razorpay' && storeConfig.razorpayActive ? (
                     `Pay ₹${(total / 100).toFixed(2)}`
                   ) : (
@@ -1261,18 +1266,33 @@ export default function CheckoutPage() {
               })}
             </div>
 
-            <CheckoutCoupon subtotal={subtotal} />
-
             <div className="border-t border-zariGold/20 pt-4 space-y-2.5 text-xs font-sans">
               <div className="flex justify-between text-charcoal-muted">
                 <span>Subtotal</span>
                 <span className="font-bold text-navy">₹{(subtotal / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}</span>
               </div>
 
-              {discount > 0 && (
-                <div className="flex justify-between text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-md">
-                  <span>Discount ({discountCode?.code})</span>
-                  <span className="font-bold">-₹{(discount / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}</span>
+              {discount > 0 && discountCode ? (
+                <div className="flex items-center justify-between text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-md">
+                  <span>
+                    {discountCode.code === 'TGC10'
+                      ? `Launch offer TGC10 applied: -₹${(discount / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}`
+                      : `Coupon ${discountCode.code} applied: -₹${(discount / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => applyDiscount(null)}
+                    className="text-[11px] font-semibold underline text-emerald-800 hover:text-rose-700 cursor-pointer ml-2"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="text-[11px] text-charcoal-muted">
+                  Have a code?{' '}
+                  <Link href="/cart" className="underline hover:text-navy">
+                    Apply it in your bag
+                  </Link>
                 </div>
               )}
 
@@ -1289,6 +1309,18 @@ export default function CheckoutPage() {
                   ₹{(total / 100).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
                 </span>
               </div>
+              {paymentMethod === 'cod' && total > 20000 && (
+                <div className="pt-2 space-y-1 text-[11px] border-t border-zariGold/10">
+                  <div className="flex justify-between text-emerald-700 font-semibold">
+                    <span>Paid online (COD advance)</span>
+                    <span>₹200</span>
+                  </div>
+                  <div className="flex justify-between text-amber-700 font-semibold">
+                    <span>To pay on delivery</span>
+                    <span>₹{Math.max(0, Math.round((total - 20000) / 100)).toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

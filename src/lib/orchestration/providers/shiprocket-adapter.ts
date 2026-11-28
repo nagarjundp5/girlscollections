@@ -82,7 +82,7 @@ async function fetchFreshToken(orderId?: string): Promise<string> {
   return token;
 }
 
-async function getShiprocketToken(orderId?: string, forceRefresh = false): Promise<string> {
+export async function getShiprocketToken(orderId?: string, forceRefresh = false): Promise<string> {
   if (!forceRefresh) {
     if (memoryToken && memoryToken.expiresAt > Date.now()) {
       return memoryToken.token;

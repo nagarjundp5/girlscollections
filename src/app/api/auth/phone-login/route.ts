@@ -139,8 +139,9 @@ export async function POST(req: Request) {
     const payload = await phoneEmailRes.json();
     rawPhone = payload.user_phone_number || payload.phone_no;
     rawCc = payload.user_country_code || payload.country_code || '+91';
-    firstName = payload.user_first_name || '';
-    lastName = payload.user_last_name || '';
+    // Do not store names from the OTP step; profile/onboarding is the single source
+    firstName = '';
+    lastName = '';
 
     if (!rawPhone) {
       console.warn(`[phone-login] stage=fetch-phone-json error=Missing phone in verification payload`);

@@ -28,7 +28,7 @@ export const ANNOUNCEMENT_MESSAGES: AnnouncementMessage[] = [
   {
     id: 'discount-code',
     icon: 'tag',
-    text: "USE CODE 'FESTIVE10' FOR 10% OFF YOUR FIRST ORDER",
+    text: 'Launch offer: use TGC10 for 10% off your first order',
   },
   {
     id: 'easy-returns',

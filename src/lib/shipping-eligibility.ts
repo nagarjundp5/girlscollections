@@ -47,12 +47,51 @@ export async function checkDeliveryEligibility(pincode: string): Promise<Eligibi
   let shiprocketAvailable = true; // Default standard serviceability
   let codAvailable = true;
 
-  // Determine standard Shiprocket delivery days
+  // Determine standard Shiprocket delivery days & COD availability (real API with safe fallback)
   let estimatedStandardDays = 5; // Default 4-6 days
   if (cleanPincode.startsWith('560')) {
     estimatedStandardDays = 2; // Bangalore local 1-2 days
   } else if (cleanPincode.startsWith('5')) {
     estimatedStandardDays = 3; // Karnataka 2-3 days
+  }
+
+  const shiprocketEmail = process.env.SHIPROCKET_EMAIL;
+  const shiprocketPassword = process.env.SHIPROCKET_PASSWORD;
+  if (shiprocketEmail && shiprocketPassword && !shiprocketEmail.includes('placeholder')) {
+    try {
+      const { getShiprocketToken } = await import('@/lib/orchestration/providers/shiprocket-adapter');
+      const token = await getShiprocketToken();
+      const pickupPostcode = process.env.SHIPROCKET_PICKUP_PINCODE || '560004';
+      const srRes = await fetch(
+        `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickupPostcode}&delivery_postcode=${cleanPincode}&cod=1&weight=0.5`,
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+          signal: AbortSignal.timeout(4000),
+        }
+      );
+      if (srRes.ok) {
+        const srData = await srRes.json();
+        const couriers = srData?.data?.available_courier_companies || [];
+        if (couriers.length > 0) {
+          shiprocketAvailable = true;
+          codAvailable = couriers.some((c: any) => Number(c.cod) === 1);
+          const minDays = Math.min(
+            ...couriers
+              .map((c: any) => parseInt(c.estimated_delivery_days || '5', 10))
+              .filter((d: number) => !Number.isNaN(d) && d > 0)
+          );
+          if (Number.isFinite(minDays)) {
+            estimatedStandardDays = minDays;
+          }
+        } else if (srData?.status === 200) {
+          shiprocketAvailable = false;
+          codAvailable = false;
+        }
+      }
+    } catch (srErr) {
+      console.warn(`[Shipping Eligibility] Shiprocket serviceability fallback for ${cleanPincode}:`, srErr);
+    }
   }
 
   const borzoKey = process.env.BORZO_API_KEY;

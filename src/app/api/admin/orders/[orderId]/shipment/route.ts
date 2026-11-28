@@ -190,110 +190,32 @@ export async function POST(
       if (isShiprocketConfigured && !trackingNumber) {
         console.log('Shiprocket configuration found. Attempting automatic shipment creation...');
         try {
-          // Step A: Login to Shiprocket
-          const loginPayload = { email: shiprocketEmail, password: shiprocketPassword };
-          const { ok: authOk, data: authData } = await callShiprocketApi<{ token?: string; message?: string }>({
-            endpoint: 'auth/login',
-            url: 'https://apiv2.shiprocket.in/v1/external/auth/login',
-            options: {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(loginPayload),
-            },
-            orderId: order.order_number,
-            requestPayload: { email: shiprocketEmail, password: '***REDACTED***' },
+          const { ShiprocketAdapter } = await import('@/lib/orchestration/providers/shiprocket-adapter');
+          const isCod =
+            order.payment_mode === 'cod' ||
+            order.payment_type === 'cod' ||
+            order.payment_status === 'partially_paid';
+          const remainingPaise = isCod
+            ? (order.cod_balance || order.remaining_amount || Math.max(0, order.total - (order.advance_paid || 20000)))
+            : 0;
+
+          const shipResult = await ShiprocketAdapter.createOrder({
+            orderId: order.id,
+            orderNumber: order.order_number,
+            customerName: order.customer_name,
+            customerEmail: order.customer_email,
+            customerPhone: order.customer_phone,
+            shippingAddress: shippingAddr,
+            items: (order.items as any[]) || [],
+            subtotal: order.subtotal,
+            total: order.total,
+            paymentType: isCod ? 'cod' : 'prepaid',
+            remainingAmount: remainingPaise,
           });
 
-          if (!authOk || !authData.token) {
-            throw new Error(authData.message || 'Shiprocket authentication failed');
-          }
-
-          const token = authData.token;
-
-          // Parse customer first and last name
-          const nameParts = order.customer_name.trim().split(' ');
-          const firstName = nameParts[0] || 'Customer';
-          const lastName = nameParts.slice(1).join(' ') || 'Streetwear';
-
-          // Format items for Shiprocket
-          const itemsPayload = order.items.map((i: any) => ({
-            name: i.name,
-            sku: i.slug || `prod-${i.id}`,
-            units: i.quantity,
-            selling_price: (i.price / 100).toString(),
-          }));
-
-          const createPayload = {
-            order_id: order.order_number,
-            order_date: new Date().toISOString().split('T')[0],
-            pickup_location: process.env.SHIPROCKET_PICKUP_LOCATION || 'Primary',
-            billing_customer_name: firstName,
-            billing_last_name: lastName,
-            billing_address: shippingAddr.line1,
-            billing_address_2: shippingAddr.line2 || '',
-            billing_city: shippingAddr.city,
-            billing_pincode: shippingAddr.pincode,
-            billing_state: shippingAddr.state,
-            billing_country: 'India',
-            billing_email: order.customer_email,
-            billing_phone: order.customer_phone,
-            shipping_is_billing: true,
-            order_items: itemsPayload,
-            payment_method: order.payment_status === 'paid' ? 'Prepaid' : 'COD',
-            sub_total: (order.total / 100).toString(),
-            length: 10,
-            width: 10,
-            height: 10,
-            weight: totalWeightGrams / 1000,
-          };
-
-          // Step B: Create custom order in Shiprocket
-          const { ok: orderOk, data: orderData } = await callShiprocketApi({
-            endpoint: 'orders/create/adhoc',
-            url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
-            options: {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify(createPayload),
-            },
-            orderId: order.order_number,
-            requestPayload: createPayload,
-          });
-
-          if (!orderOk || !orderData.order_id) {
-            throw new Error(orderData.message || 'Shiprocket order creation failed');
-          }
-
-          shiprocketOrderId = String(orderData.order_id);
-          const shipmentId = orderData.shipment_id;
-
-          // Step C: Generate AWB for shipment
-          const awbPayload = { shipment_id: shipmentId };
-          const { ok: awbOk, data: awbData } = await callShiprocketApi({
-            endpoint: 'courier/assign/awb',
-            url: 'https://apiv2.shiprocket.in/v1/external/courier/assign/awb',
-            options: {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify(awbPayload),
-            },
-            orderId: order.order_number,
-            requestPayload: awbPayload,
-          });
-
-          if (awbOk && awbData.response?.data?.awb_code) {
-            awb = awbData.response.data.awb_code;
-            courierName = awbData.response.data.courier_name || 'Shiprocket Partner';
-          } else {
-            console.warn(`[ShiprocketAPI] courier/assign/awb deferred for order ${order.order_number}: ${JSON.stringify(awbData)}`);
-            awb = `SR-${shipmentId}`;
-          }
+          shiprocketOrderId = shipResult.shipmentId;
+          awb = shipResult.awbCode;
+          courierName = shipResult.courierName || 'Shiprocket Partner';
         } catch (err: any) {
           console.error('Shiprocket API integration exception:', err);
           return NextResponse.json(

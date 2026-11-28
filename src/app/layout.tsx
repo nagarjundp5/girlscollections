@@ -1,7 +1,9 @@
+import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import StorefrontShell from '@/components/StorefrontShell';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
+import ScrollToTop from '@/components/ScrollToTop';
 import { ClerkProvider } from '@clerk/nextjs';
 import { AuthSessionProvider } from '@/context/AuthContext';
 import { ShopProvider } from '@/context/ShopContext';
@@ -62,7 +64,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider publishableKey={publishableKey} afterSignOutUrl="/">
+    <ClerkProvider
+      publishableKey={publishableKey}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/onboarding"
+      afterSignOutUrl="/"
+    >
       <html
         lang="en"
         suppressHydrationWarning
@@ -110,6 +119,9 @@ export default function RootLayout({
           className="antialiased min-h-screen flex flex-col bg-ivory text-deep p-0 m-0 font-sans selection:bg-blush selection:text-navy"
         >
           <SmoothScrollProvider>
+            <Suspense fallback={null}>
+              <ScrollToTop />
+            </Suspense>
             <AuthSessionProvider>
               <ShopProvider>
                 <StorefrontShell>{children}</StorefrontShell>

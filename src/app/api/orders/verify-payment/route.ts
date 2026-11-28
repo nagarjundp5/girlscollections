@@ -55,6 +55,20 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
+
+    try {
+      const { buyAttemptLimiter } = await import('@/lib/buy-limiter');
+      const { success, reset } = await buyAttemptLimiter.limit(`verify:${finalUserId || ip}`);
+      if (!success) {
+        return NextResponse.json(
+          { error: 'Too many verification attempts. Please wait a moment.' },
+          { status: 429, headers: { 'Retry-After': String(reset) } }
+        );
+      }
+    } catch (rlErr) {
+      console.error('[verify-payment] Rate limiter warning:', rlErr);
+    }
+
     const body = await request.json();
     reqBody = body;
 
@@ -95,10 +109,11 @@ export async function POST(request: Request) {
       .where(eq(schema.orders.id, orderId))
       .limit(1);
 
-    if (existingNeonOrder && existingNeonOrder.payment_status === 'paid') {
+    if (existingNeonOrder && (existingNeonOrder.payment_status === 'paid' || existingNeonOrder.payment_status === 'partially_paid')) {
       return NextResponse.json({
         success: true,
         orderNumber: existingNeonOrder.order_number,
+        orderId: existingNeonOrder.id,
         message: 'Order already processed',
       });
     }
@@ -288,7 +303,7 @@ export async function POST(request: Request) {
 
       try {
         const checkout = await firestoreService.getDoc('pending_checkouts', orderId);
-        if (checkout) {
+        if (checkout && checkout.status !== 'REFUNDED_OUT_OF_STOCK' && checkout.payment_status !== 'refunded') {
           const refundAmount = checkout.payment_type === 'cod_with_deposit' ? 20000 : checkout.total;
           
           if (razorpay) {
@@ -304,7 +319,7 @@ export async function POST(request: Request) {
           }
 
           await firestoreService.updateDoc('pending_checkouts', orderId, {
-            status: 'failed',
+            status: 'REFUNDED_OUT_OF_STOCK',
             payment_status: 'refunded',
             payment_id: razorpay_payment_id,
             updated_at: new Date().toISOString(),

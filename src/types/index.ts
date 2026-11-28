@@ -210,7 +210,7 @@ export interface Order {
   discount_code?: string | null;
   discount_amount?: number | null;
   total: number;
-  payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
+  payment_status: 'pending' | 'partially_paid' | 'paid' | 'failed' | 'refunded';
   payment_id?: string;
   razorpay_order_id?: string | null;
   order_status: 'placed' | 'confirmed' | 'packed' | 'shipped' | 'delivered' | 'cancelled' | 'pending_payment' | 'payment_verifying' | 'failed' | 'expired' | 'preparing' | 'ready_for_pickup' | 'collected' | 'payment_mismatch';
@@ -228,7 +228,11 @@ export interface Order {
   courier_provider?: 'borzo' | 'shiprocket' | null;
   zone?: 'BLR_EXPRESS' | 'STANDARD' | null;
   invoice_number?: string | null;
-  payment_type?: 'prepaid' | 'cod_with_deposit';
+  payment_type?: 'prepaid' | 'cod' | 'cod_with_deposit';
+  payment_mode?: 'prepaid' | 'cod';
+  advance_paid?: number | null;
+  cod_balance?: number | null;
+  needs_attention?: boolean;
   deposit_amount?: number | null;
   remaining_amount?: number | null;
   deposit_status?: 'pending' | 'paid' | 'failed' | null;

@@ -194,7 +194,14 @@ export default function TrackOrderPage() {
                           {stage.label}
                         </p>
                         {isCurrent && order.tracking_number && stage.id === 'shipped' && (
-                          <p className="text-xs text-white/80 mt-1 font-mono">AWB: {order.tracking_number}</p>
+                          <a
+                            href={order.tracking_url || `https://shiprocket.co/tracking/${order.tracking_number}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-white/90 underline mt-1 font-mono block"
+                          >
+                            AWB: {order.tracking_number}
+                          </a>
                         )}
                         {isCurrent && order.courier_partner && stage.id === 'shipped' && (
                           <p className="text-xs text-zinc-400 mt-1">{order.courier_partner}</p>

@@ -9,10 +9,10 @@ interface AnnouncementItem {
 }
 
 const ANNOUNCEMENTS: AnnouncementItem[] = [
+  { text: 'Launch offer: use TGC10 for 10% off your first order', link: '/shop' },
   { text: 'USE CODE "GIRLS100" FOR ₹100 OFF FIRST ORDER', link: '/shop' },
   { text: 'COMPLIMENTARY SHIPPING ON ORDERS OVER ₹1,999', link: '/shop' },
   { text: 'CASH ON DELIVERY AVAILABLE ACROSS INDIA' },
-  { text: 'NEW FESTIVE COUTURE EDIT \u201926 NOW LIVE', link: '/shop?sort=newest' },
   { text: 'HANDCRAFTED PURE SILK & ZARI WEAVES', link: '/shop' },
 ];
 

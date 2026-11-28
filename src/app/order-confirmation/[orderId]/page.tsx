@@ -243,10 +243,29 @@ export default async function OrderConfirmationPage({ params }: { params: { orde
                 {order.payment_mode === 'cod' ? 'Cash on Delivery (COD)' : 'Prepaid (Razorpay / UPI)'}
               </span>
             </div>
-            <div className="border-t border-[#EFE7E2] pt-3 flex justify-between text-sm sm:text-base font-serif font-bold text-[#3B1230]">
-              <span>Total Paid</span>
-              <span>₹{totalRupees.toLocaleString('en-IN')}</span>
-            </div>
+            {order.payment_mode === 'cod' || order.payment_type === 'cod' || order.payment_method === 'cod' ? (
+              <>
+                <div className="border-t border-[#EFE7E2] pt-3 flex justify-between text-sm font-serif font-bold text-[#1C1417]">
+                  <span>Order Total</span>
+                  <span>₹{totalRupees.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex justify-between text-xs font-semibold text-emerald-700">
+                  <span>Paid online</span>
+                  <span>₹{Math.round((order.advance_paid || 20000) / 100).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex justify-between text-xs font-semibold text-amber-700">
+                  <span>To pay on delivery</span>
+                  <span>
+                    ₹{Math.round((order.cod_balance ?? order.remaining_amount ?? Math.max(0, (order.total || totalRupees * 100) - (order.advance_paid || 20000))) / 100).toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="border-t border-[#EFE7E2] pt-3 flex justify-between text-sm sm:text-base font-serif font-bold text-[#3B1230]">
+                <span>Total Paid</span>
+                <span>₹{totalRupees.toLocaleString('en-IN')}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

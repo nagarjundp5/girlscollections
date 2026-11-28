@@ -33,7 +33,7 @@ export const faqsData: {
         {
           question: 'Can I use personal coupon codes?',
           answer:
-            'Yes! You can apply eligible promotional coupons (such as our 10% first-order discount FESTIVE10) directly in the checkout summary. Note that personal promo codes cannot be shared on third-party voucher sites.',
+            'Yes! You can apply eligible promotional coupons (such as our Launch offer — 10% off your first order with TGC10) directly in your bag. Note that personal promo codes cannot be shared on third-party voucher sites.',
           category: 'Orders & Payments',
         },
         {

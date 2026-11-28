@@ -207,23 +207,23 @@ const CategoryCarouselRow: React.FC<{
                   onMouseEnter={() => setHoveredId(product.id)}
                   onMouseLeave={() => setHoveredId(null)}
                 >
-                  {/* Borderless Product Card */}
-                  <div className="group relative flex flex-col w-full">
-                    {/* 3:4 Portrait Image Container */}
-                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-white/60 rounded-2xl md:rounded-none">
+                  {/* Rounded 16px Product Card */}
+                  <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6]/60 p-2">
+                    {/* 2:3 Portrait Image Container (object-contain, full image visible) */}
+                    <div className="relative w-full aspect-[2/3] overflow-hidden bg-[#FBF8F4] rounded-xl">
                       <Link
                         href={productUrl}
                         className="block w-full h-full relative"
                         aria-label={product.name}
                       >
-                        {/* Fixed aspect-[3/4] object-cover */}
+                        {/* Fixed aspect-[2/3] object-contain */}
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
                           fill
                           priority={isFirstSection && cardIdx === 0}
                           sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                          className={`object-cover transition-opacity duration-500 ease-in-out ${
+                          className={`object-contain object-center transition-opacity duration-500 ease-in-out ${
                             isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
                           }`}
                           loading={isFirstSection && cardIdx === 0 ? 'eager' : 'lazy'}
@@ -234,8 +234,8 @@ const CategoryCarouselRow: React.FC<{
                             src={optimizedSecondary}
                             alt={`${product.name} alternate view`}
                             fill
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                            className={`object-cover transition-opacity duration-500 ease-in-out ${
+                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
+                            className={`object-contain object-center transition-opacity duration-500 ease-in-out ${
                               isHovered ? 'opacity-100' : 'opacity-0'
                             }`}
                             loading="lazy"

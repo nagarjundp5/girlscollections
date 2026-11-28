@@ -169,8 +169,9 @@ export async function POST(request: Request) {
       }
     }
 
-    // Fire idempotent delivery status email (shipped, out_for_delivery, delivered)
-    if (canonicalStatus === 'shipped' || canonicalStatus === 'out_for_delivery') {
+    // Fire idempotent delivery status email & push (only once per status transition)
+    const statusChanged = order.status !== canonicalStatus;
+    if (statusChanged && (canonicalStatus === 'shipped' || canonicalStatus === 'out_for_delivery')) {
       const { sendDeliveryStatusEmail } = await import('@/lib/email');
       sendDeliveryStatusEmail({
         orderNumber: order.order_number,
@@ -183,7 +184,7 @@ export async function POST(request: Request) {
         trackingNumber: awb || order.awb_code,
         trackingUrl,
       }).catch((e) => console.error('[Shiprocket Webhook] Email send note:', e));
-    } else if (canonicalStatus === 'delivered') {
+    } else if (statusChanged && canonicalStatus === 'delivered') {
       const { sendDeliverySuccessEmail } = await import('@/lib/email');
       sendDeliverySuccessEmail({
         orderNumber: order.order_number,
@@ -195,6 +196,16 @@ export async function POST(request: Request) {
         trackingNumber: awb || order.awb_code,
         trackingUrl,
       }).catch((e) => console.error('[Shiprocket Webhook] Delivered email note:', e));
+    }
+
+    if (statusChanged && order.user_id && (canonicalStatus === 'shipped' || canonicalStatus === 'out_for_delivery' || canonicalStatus === 'delivered')) {
+      const { sendOrderStatusPush } = await import('@/lib/push');
+      sendOrderStatusPush({
+        userId: order.user_id,
+        orderId: order.id,
+        orderNumber: order.order_number,
+        status: canonicalStatus,
+      }).catch((e) => console.error('[Shiprocket Webhook] Push send note:', e));
     }
 
     await db

@@ -63,7 +63,7 @@ export const CartDrawer: React.FC = () => {
             return parsed;
           }
         }
-      } catch {}
+      } catch { }
     }
     return [];
   });
@@ -87,7 +87,7 @@ export const CartDrawer: React.FC = () => {
           return;
         }
       }
-    } catch {}
+    } catch { }
 
     let isCancelled = false;
     setIsLoadingRecommended(true);
@@ -118,7 +118,7 @@ export const CartDrawer: React.FC = () => {
           setRecommendedProducts(curated);
           try {
             sessionStorage.setItem('tgc_cart_recommended_v2', JSON.stringify(curated));
-          } catch {}
+          } catch { }
         }
       } catch (err) {
         console.warn('[CartDrawer] Recommended fetch note:', err);
@@ -208,7 +208,7 @@ export const CartDrawer: React.FC = () => {
               animate={{ x: '0%' }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="w-screen max-w-full sm:max-w-md bg-[#FBF7F1] text-[#1C1417] shadow-2xl flex flex-col justify-between border-l border-[#EFE7E2] pointer-events-auto"
+              className="w-screen max-w-full sm:max-w-md h-[100dvh] bg-[#FBF7F1] text-[#1C1417] shadow-2xl flex flex-col justify-between border-l border-[#EFE7E2] pointer-events-auto"
             >
               {/* TOP HEADER ROW */}
               <div className="px-5 sm:px-6 pt-[calc(1.25rem+env(safe-area-inset-top,0px))] pb-4 border-b border-[#EFE7E2] flex items-center justify-between bg-[#FBF7F1] shrink-0">
@@ -250,18 +250,20 @@ export const CartDrawer: React.FC = () => {
                 </div>
                 <div className="w-full bg-white rounded-full h-1.5 overflow-hidden border border-[#E5D7CE]">
                   <div
-                    className={`h-full rounded-full origin-left transition-transform duration-500 ${
-                      amountNeededForFreeShipping === 0
-                        ? 'bg-emerald-600'
-                        : 'bg-gradient-to-r from-[#B8903A] to-[#D4AF37]'
-                    }`}
+                    className={`h-full rounded-full origin-left transition-transform duration-500 ${amountNeededForFreeShipping === 0
+                      ? 'bg-emerald-600'
+                      : 'bg-gradient-to-r from-[#B8903A] to-[#D4AF37]'
+                      }`}
                     style={{ transform: `scaleX(${Math.min(1, Math.max(0, freeShippingProgress / 100))})` }}
                   />
                 </div>
               </div>
 
-              {/* DRAWER CONTENT */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+              {/* DRAWER CONTENT (Single scrollable middle area) */}
+              <div
+                className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 pb-8 space-y-5"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
                 {cart.length === 0 ? (
                   /* 1. EMPTY STATE */
                   <div className="py-12 text-center space-y-4">
@@ -301,15 +303,15 @@ export const CartDrawer: React.FC = () => {
                               transition={{ duration: 0.2 }}
                               className="origin-top flex space-x-3.5 p-3 rounded-xl bg-white border border-[#EFE7E2] shadow-2xs transition-colors hover:border-[#D5C2B6]"
                             >
-                              {/* Product Thumbnail */}
-                              <div className="relative w-18 h-22 sm:w-20 sm:h-24 rounded-xl overflow-hidden shrink-0 border border-[#EFE7E2] bg-[#F7F2EC]">
+                              {/* Product Thumbnail (72x96, object-contain, rounded 12px) */}
+                              <div className="relative w-[72px] h-[96px] rounded-[12px] overflow-hidden shrink-0 border border-[#EADFD6] bg-[#FBF8F4]">
                                 {item.product.images && item.product.images[0] ? (
                                   <Image
                                     src={item.product.images[0]}
                                     alt={item.product.name}
                                     fill
-                                    className="object-cover object-top"
-                                    sizes="80px"
+                                    className="object-contain object-center"
+                                    sizes="72px"
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center text-[#B8903A] font-serif font-bold text-lg">
@@ -425,26 +427,25 @@ export const CartDrawer: React.FC = () => {
                         </div>
                         {couponMessage && (
                           <p
-                            className={`text-[11px] px-1 font-medium ${
-                              couponMessage.isError ? 'text-[#9A1F2A]' : 'text-emerald-700'
-                            }`}
+                            className={`text-[11px] px-1 font-medium ${couponMessage.isError ? 'text-[#9A1F2A]' : 'text-emerald-700'
+                              }`}
                           >
                             {couponMessage.text}
                           </p>
                         )}
                         {!appliedCoupon && (
                           <div className="flex items-center space-x-1.5 text-[11px] text-[#1C1417]/70 pt-0.5 px-1">
-                            <span>Use code</span>
+                            <span>Launch offer: use</span>
                             <button
                               type="button"
                               onClick={() => {
-                                setCouponCode('FESTIVE10');
-                                setAppliedCoupon('FESTIVE10');
-                                setCouponMessage({ text: 'Code FESTIVE10 applied! 10% discount added.' });
+                                setCouponCode('TGC10');
+                                setAppliedCoupon('TGC10');
+                                setCouponMessage({ text: 'Launch offer TGC10 applied! 10% off your first order.' });
                               }}
                               className="font-bold text-[#3B1230] underline underline-offset-2 hover:text-[#B8903A] cursor-pointer"
                             >
-                              FESTIVE10
+                              TGC10
                             </button>
                             <span>for 10% off</span>
                           </div>

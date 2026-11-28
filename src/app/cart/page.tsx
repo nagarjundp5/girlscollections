@@ -180,13 +180,13 @@ export default function CartPage() {
                 role="listitem"
               >
                 {/* Product Thumbnail */}
-                <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-xl overflow-hidden bg-sand/20 border border-zariGold/20 shrink-0">
+                <div className="relative w-[72px] h-[96px] sm:w-24 sm:h-32 rounded-[12px] overflow-hidden bg-[#FBF8F4] border border-[#EADFD6] shrink-0">
                   <NextImage
-                    src={getOptimizedImageUrl(item.image, 200) || 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=300'}
+                    src={getOptimizedImageUrl(item.image, 200) || '/logo.png'}
                     alt={`${item.name} — size ${item.size}`}
                     fill
                     sizes="96px"
-                    className="object-cover object-top"
+                    className="object-contain object-center"
                   />
                 </div>
 
@@ -483,7 +483,7 @@ export default function CartPage() {
                 type="text"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value)}
-                placeholder="Enter FESTIVE10 / WELCOME10"
+                placeholder="Enter TGC10 / WELCOME10"
                 className="flex-1 bg-ivory border border-zariGold/30 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold uppercase text-navy placeholder:text-charcoal-muted/60 focus:outline-none focus:border-zariGold"
               />
               <button
@@ -500,19 +500,19 @@ export default function CartPage() {
                   type="button"
                   onClick={() => {
                     applyDiscount({
-                      id: 'festive10',
-                      code: 'FESTIVE10',
+                      id: 'tgc10',
+                      code: 'TGC10',
                       discount_type: 'percent',
                       discount_value: 10,
                       min_order_value: 0,
                       used_count: 0,
                       is_active: true,
                     });
-                    toast.success('FESTIVE10 applied! 10% discount added.');
+                    toast.success('Launch offer TGC10 applied! 10% discount added.');
                   }}
                   className="font-bold text-[var(--cta)] underline underline-offset-2 cursor-pointer"
                 >
-                  Tap to apply FESTIVE10
+                  Tap to apply TGC10
                 </button>{' '}
                 for 10% off!
               </p>

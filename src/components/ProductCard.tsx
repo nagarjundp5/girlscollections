@@ -70,8 +70,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         variant === 'rail' ? 'w-full h-full justify-between' : 'w-full h-full justify-between'
       }`}
     >
-      {/* Borderless Product Image Stage */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden block rounded-2xl bg-sand/20 shadow-xs group-hover:shadow-md transition-shadow duration-300">
+      {/* Product Image Stage (2:3, object-contain so full image is visible) */}
+      <div className="relative aspect-[2/3] w-full overflow-hidden block rounded-2xl bg-[#FBF8F4] shadow-xs group-hover:shadow-md transition-shadow duration-300">
         <Link
           href={`/shop/${product.slug}`}
           prefetch={false}
@@ -116,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 priority={priorityImage}
                 placeholder="blur"
                 blurDataURL={clBlur(product.images[0])}
-                className={`object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.04] ${
+                className={`object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.04] ${
                   isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'
                 }`}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -129,7 +129,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   alt={`${product.name} hover view`}
                   fill
                   loading="lazy"
-                  className={`object-cover object-top transition-opacity duration-300 ease-out ${
+                  className={`object-contain object-center transition-opacity duration-300 ease-out ${
                     isHovered ? 'opacity-100' : 'opacity-0'
                   }`}
                   sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
