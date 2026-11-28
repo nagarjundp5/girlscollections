@@ -50,16 +50,28 @@ export const CartDrawer: React.FC = () => {
     return `₹${rupees.toLocaleString('en-IN')}`;
   };
 
-  const bagHasKids = cart.some((item) => {
-    const g = String((item.product as any)?.gender || (item.product as any)?.target || '').toLowerCase();
-    const c = String(item.product?.category || '').toLowerCase();
-    return g === 'kids' || c.includes('kid') || c.includes('frock') || c.includes('pattu');
-  });
-  const bagHasWomen = cart.some((item) => {
-    const g = String((item.product as any)?.gender || (item.product as any)?.target || '').toLowerCase();
-    const c = String(item.product?.category || '').toLowerCase();
-    return !(g === 'kids' || c.includes('kid') || c.includes('frock') || c.includes('pattu'));
-  });
+  const isKidsProduct = (prod: any) => {
+    const g = String(prod?.gender || prod?.target || '').toLowerCase();
+    const c = String(prod?.category || '').toLowerCase();
+    const n = String(prod?.name || '').toLowerCase();
+    if (g === 'women' || g === 'ladies' || g === 'womens') return false;
+    return (
+      g === 'kids' ||
+      g === 'girls' ||
+      g === 'boys' ||
+      g === 'children' ||
+      c.includes('kid') ||
+      c.includes('girl') ||
+      c.includes('frock') ||
+      c.includes('pattu') ||
+      n.includes('kids') ||
+      n.includes('girls') ||
+      n.includes('frock')
+    );
+  };
+
+  const bagHasKids = cart.some((item) => isKidsProduct(item.product));
+  const bagHasWomen = cart.some((item) => !isKidsProduct(item.product));
   const bagDivision: 'women' | 'kids' | 'all' =
     bagHasKids && !bagHasWomen ? 'kids' : bagHasWomen && !bagHasKids ? 'women' : 'all';
 
@@ -68,7 +80,7 @@ export const CartDrawer: React.FC = () => {
     if (memoryRecommendedCache[bagDivision]?.length > 0) return memoryRecommendedCache[bagDivision];
     if (typeof window !== 'undefined') {
       try {
-        const stored = sessionStorage.getItem(`tgc_cart_recommended_v4_${bagDivision}`);
+        const stored = sessionStorage.getItem(`tgc_cart_recommended_v5_${bagDivision}`);
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
@@ -91,7 +103,7 @@ export const CartDrawer: React.FC = () => {
     }
 
     try {
-      const stored = sessionStorage.getItem(`tgc_cart_recommended_v4_${bagDivision}`);
+      const stored = sessionStorage.getItem(`tgc_cart_recommended_v5_${bagDivision}`);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -130,7 +142,7 @@ export const CartDrawer: React.FC = () => {
           memoryRecommendedCache[bagDivision] = curated;
           setRecommendedProducts(curated);
           try {
-            sessionStorage.setItem(`tgc_cart_recommended_v4_${bagDivision}`, JSON.stringify(curated));
+            sessionStorage.setItem(`tgc_cart_recommended_v5_${bagDivision}`, JSON.stringify(curated));
           } catch { }
         }
       } catch (err) {
@@ -187,7 +199,12 @@ export const CartDrawer: React.FC = () => {
     cart.map((item) => String(item.product?.id || item.product?.slug || ''))
   );
   const visibleRecommendations = recommendedProducts
-    .filter((p) => !cartProductKeys.has(String(p.id)) && !cartProductKeys.has(String(p.slug)))
+    .filter((p) => {
+      if (cartProductKeys.has(String(p.id)) || cartProductKeys.has(String(p.slug))) return false;
+      if (bagDivision === 'women' && isKidsProduct(p)) return false;
+      if (bagDivision === 'kids' && !isKidsProduct(p)) return false;
+      return true;
+    })
     .slice(0, 4);
 
   const totalSavings = cart.reduce((sum, item) => {

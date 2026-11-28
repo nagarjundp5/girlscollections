@@ -52,6 +52,7 @@ async function fetchSlimCatalogueRaw(): Promise<SlimCatalogueProduct[]> {
         sizes: schema.products.sizes,
         age_ranges: schema.products.age_ranges,
         images: schema.products.images,
+        primary_image: sql<string>`coalesce(nullif(${schema.products.images}[1], ''), (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = ${schema.products.id} ORDER BY pi.sort_order ASC LIMIT 1), '')`,
         stock_quantity: schema.products.stock_quantity,
         is_featured: schema.products.is_featured,
         is_trending: schema.products.is_trending,
@@ -63,7 +64,7 @@ async function fetchSlimCatalogueRaw(): Promise<SlimCatalogueProduct[]> {
       .from(schema.products)
       .where(eq(schema.products.is_active, true))
       .orderBy(desc(schema.products.is_featured), desc(schema.products.created_at))
-      .limit(50);
+      .limit(250);
 
     return rows.map((r: any) => {
       const stockMap = r.stock_quantity && typeof r.stock_quantity === 'object' ? r.stock_quantity : {};
@@ -78,8 +79,8 @@ async function fetchSlimCatalogueRaw(): Promise<SlimCatalogueProduct[]> {
       }
 
       // Extract card images (primary and secondary hover only, max 2)
-      const rawImgs = Array.isArray(r.images) ? r.images : [];
-      const cardImgs = rawImgs.slice(0, 2);
+      const rawImgs = Array.isArray(r.images) ? r.images.filter(Boolean) : [];
+      const cardImgs = rawImgs.length > 0 ? rawImgs.slice(0, 2) : (r.primary_image ? [r.primary_image] : []);
 
       // Standardize sizes list to string array
       let sizesList: string[] = [];
@@ -126,7 +127,7 @@ async function fetchSlimCatalogueRaw(): Promise<SlimCatalogueProduct[]> {
  */
 export const getCachedSlimCatalogue = unstable_cache(
   fetchSlimCatalogueRaw,
-  ['tgc-slim-catalogue-v1'],
+  ['tgc-slim-catalogue-v2'],
   {
     revalidate: 3600,
     tags: ['products'],
