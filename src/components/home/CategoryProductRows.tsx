@@ -155,7 +155,7 @@ const CategoryCarouselRow: React.FC<{
           */}
           <div
             ref={scrollRef}
-            className="flex items-stretch gap-[14px] md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth transition-transform duration-[450ms] ease-out"
+            className="flex items-start gap-[14px] md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 no-scrollbar scroll-smooth transition-transform duration-[450ms] ease-out"
             style={{
               scrollSnapType: 'x mandatory',
               WebkitOverflowScrolling: 'touch',
@@ -208,36 +208,33 @@ const CategoryCarouselRow: React.FC<{
                   onMouseLeave={() => setHoveredId(null)}
                 >
                   {/* Rounded 16px Product Card */}
-                  <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6]/60 p-2">
-                    {/* 2:3 Portrait Image Container (object-contain, full image visible) */}
-                    <div className="relative w-full aspect-[2/3] overflow-hidden bg-[#FBF8F4] rounded-xl">
+                  <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6] shadow-[0_2px_10px_rgba(28,20,23,0.04)]">
+                    {/* Flush Full-Width Natural Ratio Image */}
+                    <div className="relative w-full overflow-hidden rounded-t-2xl">
                       <Link
                         href={productUrl}
-                        className="block w-full h-full relative"
+                        className="block w-full relative"
                         aria-label={product.name}
                       >
-                        {/* Fixed aspect-[2/3] object-contain */}
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
-                          fill
+                          width={(product as any).imageWidth || 800}
+                          height={(product as any).imageHeight || 1200}
                           priority={isFirstSection && cardIdx === 0}
                           sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                          className={`object-contain object-center transition-opacity duration-500 ease-in-out ${
-                            isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'
-                          }`}
+                          className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
                           loading={isFirstSection && cardIdx === 0 ? 'eager' : 'lazy'}
                         />
 
-                        {hasSecondImage && (
+                        {hasSecondImage && isHovered && (
                           <Image
                             src={optimizedSecondary}
                             alt={`${product.name} alternate view`}
-                            fill
+                            width={(product as any).imageWidth || 800}
+                            height={(product as any).imageHeight || 1200}
                             sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                            className={`object-contain object-center transition-opacity duration-500 ease-in-out ${
-                              isHovered ? 'opacity-100' : 'opacity-0'
-                            }`}
+                            className="hidden md:block w-full h-full object-contain absolute inset-0 rounded-t-2xl"
                             loading="lazy"
                           />
                         )}

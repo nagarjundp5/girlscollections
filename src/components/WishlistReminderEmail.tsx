@@ -156,7 +156,7 @@ export const WishlistReminderEmail: React.FC<WishlistReminderEmailProps> = ({
                         color: '#A1A1AA',
                       }}
                     >
-                      Hey {customerName}, your saved streetwear pieces are reserved in your wishlist. Stock is limited and demand is high — secure your sizes before they run out.
+                      Hey {customerName}, your saved favourites are waiting in your wishlist. Stock is limited — secure your size before it sells out.
                     </p>
                   </td>
                 </tr>

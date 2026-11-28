@@ -132,6 +132,8 @@ function mapRowToProduct(r: any): Product {
     gender: r.gender || normGender,
     target: normGender === 'kids' ? 'kids' : 'women',
     images: r.image ? [r.image] : [],
+    imageWidth: r.image_width ? Number(r.image_width) : 800,
+    imageHeight: r.image_height ? Number(r.image_height) : 1200,
     sizes: parseSizes(r.sizes),
     stock_quantity: parseStockQuantity(r.stock_quantity),
     created_at: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
@@ -161,6 +163,10 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
         COALESCE(p.stock, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
+        COALESCE(pi.width, 800) AS image_width,
+        COALESCE(pi.height, 1200) AS image_height,
+        COALESCE(pi.width, 800) AS image_width,
+        COALESCE(pi.height, 1200) AS image_height,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
             OR lower(coalesce(p.category, '')) LIKE '%kid%'
@@ -194,19 +200,31 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
       WHERE p.is_active = true
         AND COALESCE(pi.image_url, p.images[1], '') <> ''
     ),
+    recent_signals AS (
+      SELECT
+        elem->>'id' AS product_id,
+        SUM(COALESCE((elem->>'quantity')::int, 1)) AS order_qty
+      FROM orders o,
+      LATERAL jsonb_array_elements(o.items) AS elem
+      WHERE o.created_at >= NOW() - INTERVAL '7 days'
+        AND o.order_status <> 'CANCELLED'
+      GROUP BY elem->>'id'
+    ),
     ranked_trending AS (
-      SELECT *,
+      SELECT bp.*,
+        COALESCE(rs.order_qty, 0) AS signal_7d,
         ROW_NUMBER() OVER (
-          PARTITION BY norm_gender
+          PARTITION BY bp.norm_gender
           ORDER BY
-            is_trending DESC,
-            is_featured DESC,
-            is_best_seller DESC,
-            units_sold DESC,
-            created_at DESC,
-            id DESC
+            COALESCE(rs.order_qty, 0) DESC,
+            bp.is_trending DESC,
+            bp.is_best_seller DESC,
+            bp.units_sold DESC,
+            bp.created_at DESC,
+            bp.id DESC
         ) AS rn_trend
-      FROM base_products
+      FROM base_products bp
+      LEFT JOIN recent_signals rs ON rs.product_id = bp.id::text
     ),
     ranked_new AS (
       SELECT *,
@@ -217,13 +235,13 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
       FROM base_products
     )
     SELECT
-      id, name, slug, price, compare_price, category, gender, created_at, image, sizes, stock_quantity, norm_gender,
+      id, name, slug, price, compare_price, category, gender, created_at, image, image_width, image_height, sizes, stock_quantity, norm_gender,
       'trending' AS section, rn_trend AS rn
     FROM ranked_trending
     WHERE rn_trend <= 12
     UNION ALL
     SELECT
-      id, name, slug, price, compare_price, category, gender, created_at, image, sizes, stock_quantity, norm_gender,
+      id, name, slug, price, compare_price, category, gender, created_at, image, image_width, image_height, sizes, stock_quantity, norm_gender,
       'new' AS section, rn_new AS rn
     FROM ranked_new
     WHERE rn_new <= 12;
@@ -244,6 +262,10 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
         COALESCE(p.stock, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
+        COALESCE(pi.width, 800) AS image_width,
+        COALESCE(pi.height, 1200) AS image_height,
+        COALESCE(pi.width, 800) AS image_width,
+        COALESCE(pi.height, 1200) AS image_height,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
             OR lower(coalesce(p.category, '')) LIKE '%kid%'
@@ -281,9 +303,9 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         ) AS rn
       FROM base_products
     )
-    SELECT id, name, slug, price, compare_price, category, gender, created_at, image, sizes, stock_quantity, norm_gender
+    SELECT id, name, slug, price, compare_price, category, gender, created_at, image, image_width, image_height, sizes, stock_quantity, norm_gender
     FROM ranked_cat
-    WHERE rn <= 6;
+    WHERE rn <= 10;
   `;
 
   const [tAndNResult, catResult] = await Promise.all([
@@ -372,25 +394,54 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
     return false;
   }
 
+  function dailySeedShuffle<T extends { id: string }>(arr: T[]): T[] {
+    const daySeed = new Date().toISOString().slice(0, 10);
+    return [...arr].sort((a, b) => {
+      const ha = `${daySeed}:${a.id}`;
+      const hb = `${daySeed}:${b.id}`;
+      let va = 0;
+      let vb = 0;
+      for (let i = 0; i < ha.length; i++) va = (va * 31 + ha.charCodeAt(i)) | 0;
+      for (let i = 0; i < hb.length; i++) vb = (vb * 31 + hb.charCodeAt(i)) | 0;
+      return va - vb;
+    });
+  }
+
   function buildCategoryRowsForGender(
     taxonomyCategories: CategoryItem[],
     pool: Product[],
+    initialSeenIds: Set<string>,
     maxRows = 5
   ): CategoryRowData[] {
     const rows: CategoryRowData[] = [];
-    const usedProductIds = new Set<string>();
+    const usedProductIds = new Set<string>(initialSeenIds);
 
     for (const cat of taxonomyCategories) {
       if (rows.length >= maxRows) break;
-      const matched = pool.filter((p) => matchCategory(p, cat) && !usedProductIds.has(p.id));
-      if (matched.length >= 3) {
-        const slice = matched.slice(0, 8);
-        slice.forEach((p) => usedProductIds.add(p.id));
-        rows.push({
-          category: cat,
-          products: slice,
-        });
+      const catAll = dailySeedShuffle(pool.filter((p) => matchCategory(p, cat)));
+      if (catAll.length === 0) continue;
+
+      const unseen = catAll.filter((p) => !usedProductIds.has(p.id));
+      const slice = unseen.slice(0, 8);
+
+      // If fewer than 4 unseen products, backfill from same category without repeating inside this row
+      if (slice.length < 4) {
+        const inRow = new Set(slice.map((p) => p.id));
+        for (const p of catAll) {
+          if (!inRow.has(p.id)) {
+            slice.push(p);
+            inRow.add(p.id);
+            if (slice.length >= 4) break;
+          }
+        }
       }
+
+      if (slice.length === 0) continue;
+      slice.forEach((p) => usedProductIds.add(p.id));
+      rows.push({
+        category: cat,
+        products: slice,
+      });
     }
 
     return rows;
@@ -399,8 +450,11 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
   const womenCatPool = catProducts.filter((p: any) => p.gender === 'women' || p.gender === 'unisex' || p.target === 'women');
   const kidsCatPool = catProducts.filter((p: any) => p.gender === 'kids' || p.gender === 'unisex' || p.target === 'kids');
 
-  const womenCategoryRows = buildCategoryRowsForGender(WOMEN_CATEGORIES, womenCatPool, 5);
-  const kidsCategoryRows = buildCategoryRowsForGender(KIDS_CATEGORIES, kidsCatPool, 5);
+  const womenSeen = new Set<string>(trendingWomen.map((p) => p.id));
+  const kidsSeen = new Set<string>(trendingKids.map((p) => p.id));
+
+  const womenCategoryRows = buildCategoryRowsForGender(WOMEN_CATEGORIES, womenCatPool, womenSeen, 5);
+  const kidsCategoryRows = buildCategoryRowsForGender(KIDS_CATEGORIES, kidsCatPool, kidsSeen, 5);
   const allCategoryRows = [
     ...womenCategoryRows.slice(0, 3),
     ...kidsCategoryRows.slice(0, 2),

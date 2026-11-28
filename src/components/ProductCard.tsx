@@ -66,16 +66,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`group relative flex flex-col bg-transparent overflow-hidden select-none p-0 transition-opacity duration-300 ${
-        variant === 'rail' ? 'w-full h-full justify-between' : 'w-full h-full justify-between'
+      className={`group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-[#EADFD6] shadow-[0_2px_10px_rgba(28,20,23,0.04)] select-none p-0 transition-opacity duration-300 ${
+        variant === 'rail' ? 'w-full' : 'w-full'
       }`}
     >
-      {/* Product Image Stage (2:3, object-contain so full image is visible) */}
-      <div className="relative aspect-[2/3] w-full overflow-hidden block rounded-2xl bg-[#FBF8F4] shadow-xs group-hover:shadow-md transition-shadow duration-300">
+      {/* Flush Full-Width Natural Ratio Image */}
+      <div className="relative w-full overflow-hidden block rounded-t-2xl">
         <Link
           href={`/shop/${product.slug}`}
           prefetch={false}
-          className={`relative w-full h-full block overflow-hidden ${
+          className={`relative w-full block overflow-hidden ${
             archShape ? 'arch-frame-sm arch-inner' : ''
           }`}
         >
@@ -110,28 +110,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.images[0] ? (
             <>
               <Image
-                src={cl(product.images[0], { w: 400, q: 'auto:good' })}
+                src={cl(product.images[0], { w: 700, q: 'auto:good' })}
                 alt={product.name}
-                fill
+                width={(product as any).imageWidth || 800}
+                height={(product as any).imageHeight || 1200}
                 priority={priorityImage}
                 placeholder="blur"
                 blurDataURL={clBlur(product.images[0])}
-                className={`object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.04] ${
-                  isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'
-                }`}
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
+                sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 25vw"
               />
 
               {/* Hover Crossfade Image — only mount when hovered to save mobile payload */}
               {product.images[1] && isHovered && (
                 <Image
-                  src={cl(product.images[1], { w: 400, q: 'auto:good' })}
+                  src={cl(product.images[1], { w: 700, q: 'auto:good' })}
                   alt={`${product.name} hover view`}
-                  fill
+                  width={(product as any).imageWidth || 800}
+                  height={(product as any).imageHeight || 1200}
                   loading="lazy"
-                  className={`object-contain object-center transition-opacity duration-300 ease-out ${
-                    isHovered ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className="hidden md:block w-full h-full object-contain absolute inset-0 rounded-t-2xl"
                   sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
                 />
               )}
@@ -146,7 +144,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Product Details Section */}
-      <div className="pt-3 pb-1 flex flex-col text-left shrink-0">
+      <div className="p-3 flex flex-col text-left shrink-0">
         
         {/* Uniform Size Chips Row */}
         {availableSizes.length > 0 && (

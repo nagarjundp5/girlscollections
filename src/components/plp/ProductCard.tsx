@@ -30,18 +30,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const primaryImgRaw = productImages[0] || '';
   const hasMultipleImages = productImages.length > 1;
 
-  // Cloudinary responsive srcset for primary image (w_400 mobile budget)
-  const primarySrc = primaryImgRaw ? cl(primaryImgRaw, { w: 400, ar: '2:3', c: 'fill', g: 'auto' }) : '';
+  // Cloudinary responsive srcset for primary image (natural ratio, no crop)
+  const primarySrc = primaryImgRaw ? cl(primaryImgRaw, { w: 600, q: 'auto:good' }) : '';
   const primarySrcset = primaryImgRaw
-    ? `${cl(primaryImgRaw, { w: 320, ar: '2:3', c: 'fill', g: 'auto' })} 320w, ` +
-      `${cl(primaryImgRaw, { w: 400, ar: '2:3', c: 'fill', g: 'auto' })} 400w, ` +
-      `${cl(primaryImgRaw, { w: 540, ar: '2:3', c: 'fill', g: 'auto' })} 540w, ` +
-      `${cl(primaryImgRaw, { w: 720, ar: '2:3', c: 'fill', g: 'auto' })} 720w`
+    ? `${cl(primaryImgRaw, { w: 320, q: 'auto:good' })} 320w, ` +
+      `${cl(primaryImgRaw, { w: 480, q: 'auto:good' })} 480w, ` +
+      `${cl(primaryImgRaw, { w: 640, q: 'auto:good' })} 640w, ` +
+      `${cl(primaryImgRaw, { w: 800, q: 'auto:good' })} 800w`
     : undefined;
 
   // Blur placeholder
   const blurPlaceholder = primaryImgRaw
-    ? cl(primaryImgRaw, { w: 24, blur: 200, ar: '2:3', c: 'fill' })
+    ? cl(primaryImgRaw, { w: 24, blur: 200 })
     : undefined;
 
   // Normalize sizes
@@ -74,10 +74,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         contentVisibility: isBelowFold ? 'auto' : undefined,
         containIntrinsicSize: isBelowFold ? '0 540px' : undefined,
       }}
-      className="group relative flex flex-col w-full bg-transparent p-0 m-0 border-0 rounded-none shadow-none select-none"
+      className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6] shadow-[0_2px_10px_rgba(28,20,23,0.04)] p-0 m-0 select-none"
     >
-      {/* Clickable Image Area with Mini Carousel */}
-      <div className="relative block w-full aspect-[2/3] overflow-hidden bg-[#F3EFEA]">
+      {/* Clickable Image Area with Mini Carousel (flush top, natural ratio) */}
+      <div className="relative block w-full overflow-hidden rounded-t-2xl">
         {hasMultipleImages ? (
           /* CSS Scroll-Snap Mini Carousel */
           <div
@@ -118,7 +118,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                           imgIdx === 0 && blurPlaceholder ? `url(${blurPlaceholder})` : undefined,
                         backgroundSize: 'cover',
                       }}
-                      className="w-full h-full object-contain object-center transition-transform duration-500 ease-out sm:group-hover:scale-[1.02]"
+                      className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
                     />
                   </Link>
                 </div>
@@ -143,7 +143,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 backgroundImage: blurPlaceholder ? `url(${blurPlaceholder})` : undefined,
                 backgroundSize: 'cover',
               }}
-              className="w-full h-full object-contain object-center transition-transform duration-500 ease-out sm:group-hover:scale-[1.02]"
+              className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
             />
           </Link>
         ) : (
@@ -208,10 +208,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      {/* Text Info Under the Image (Left aligned, 12px top padding, 8px sides) */}
+      {/* Text Info Under the Image (Left aligned, 12px padding) */}
       <Link
         href={`/shop/${product.slug}`}
-        className="block pt-3 px-2 pb-2 text-left"
+        className="block p-3 text-left"
         prefetch={index < 4}
       >
         {/* Product Title: UPPERCASE 13px (14px desktop), weight 400, dark #1C1417, 1 line with ellipsis */}

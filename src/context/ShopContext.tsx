@@ -2,9 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@clerk/nextjs';
-import { Product, MOCK_PRODUCTS } from '@/data/shopData';
+import { Product } from '@/data/shopData';
 import { useCartStore } from '@/lib/cartStore';
 import { haptic } from '@/lib/haptics';
+import { useToast } from '@/components/ToastContainer';
 
 export interface CartItem {
   id: string; // unique cart item id: product.id + size + color
@@ -41,13 +42,15 @@ const FREE_SHIPPING_LIMIT = 1999; // ₹1,999 free shipping threshold
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded: authLoaded } = useAuth();
+  const { addToast } = useToast();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wishlistTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const hasHydratedRef = useRef(false);
 
   // Load cart and wishlist from localStorage on initial render
@@ -117,14 +120,55 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [cart, isSignedIn]);
 
-  // Save wishlist to localStorage
+  // Sync wishlist with Firestore when signed in (merge guest localStorage list then clear it)
   useEffect(() => {
+    if (!authLoaded || !isSignedIn) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        let localIds: string[] = [];
+        try {
+          const raw = localStorage.getItem('tgc_wishlist');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) localIds = parsed.filter((id) => typeof id === 'string');
+          }
+        } catch {}
+
+        if (localIds.length > 0) {
+          await fetch('/api/wishlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productIds: localIds }),
+          }).catch(() => {});
+          try {
+            localStorage.removeItem('tgc_wishlist');
+          } catch {}
+        }
+
+        const res = await fetch('/api/wishlist?idsOnly=true');
+        if (res.ok && !cancelled) {
+          const data = await res.json();
+          if (Array.isArray(data.productIds)) {
+            setWishlist(data.productIds);
+          }
+        }
+      } catch (err) {
+        console.warn('[ShopContext] Wishlist sync note:', err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authLoaded, isSignedIn]);
+
+  // Save guest wishlist to localStorage only when not signed in
+  useEffect(() => {
+    if (isSignedIn) return;
     try {
       localStorage.setItem('tgc_wishlist', JSON.stringify(wishlist));
     } catch (e) {
       console.error('Failed to save wishlist to localStorage', e);
     }
-  }, [wishlist]);
+  }, [wishlist, isSignedIn]);
 
   const addToCart = async (product: Product, size: string, color?: string, quantity = 1) => {
     const selectedColor = color || (product.colors?.[0]?.name ?? 'Standard');
@@ -183,9 +227,37 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const toggleWishlist = (productId: string) => {
+    const currentlyLiked = wishlist.includes(productId);
+    const nextLiked = !currentlyLiked;
+
+    // Optimistic update
     setWishlist((prev) =>
-      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
+      currentlyLiked ? prev.filter((id) => id !== productId) : (prev.includes(productId) ? prev : [productId, ...prev])
     );
+
+    if (!isSignedIn) return;
+
+    // Debounce rapid taps per product before syncing to Firestore API
+    if (wishlistTimersRef.current[productId]) {
+      clearTimeout(wishlistTimersRef.current[productId]);
+    }
+
+    wishlistTimersRef.current[productId] = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/wishlist', {
+          method: nextLiked ? 'POST' : 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId }),
+        });
+        if (!res.ok) throw new Error('Wishlist sync failed');
+      } catch {
+        // Rollback optimistic update on failure
+        setWishlist((prev) =>
+          nextLiked ? prev.filter((id) => id !== productId) : (prev.includes(productId) ? prev : [productId, ...prev])
+        );
+        addToast('Could not update wishlist. Please try again.', 'error');
+      }
+    }, 250);
   };
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);

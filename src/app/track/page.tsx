@@ -71,52 +71,53 @@ export default function TrackOrderPage() {
   }, [order?.order_number, contact]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 py-16 min-h-[70vh]">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl md:text-5xl font-extrabold tracking-widest text-brand-offwhite uppercase mb-4">
-          Track Your Order
-        </h1>
-        <p className="text-zinc-500 max-w-lg mx-auto text-sm">
-          Enter your order number and the email or phone number used during checkout to view the current status of your shipment.
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1A1E3A] px-4 md:px-8 py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#1A1E3A] mb-3">
+            Track your order
+          </h1>
+          <p className="text-[#6B6F85] max-w-lg mx-auto text-sm sm:text-base">
+            Enter your order number and the email or phone number used during checkout to view your shipment status.
+          </p>
+        </div>
 
-      <div className="bg-zinc-900/30 border border-zinc-800 p-6 md:p-8 rounded-none max-w-2xl mx-auto mb-12">
-        <form onSubmit={handleTrack} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Order Number</label>
-              <input
-                type="text"
-                placeholder="e.g. TGC-7K9M2P"
-                value={orderNumber}
-                onChange={(e) => setOrderNumber(e.target.value)}
-                className="w-full bg-zinc-900/80 border border-zinc-800 text-brand-offwhite px-4 py-3 focus:outline-none focus:border-white transition-colors"
-                required
-              />
+        <div className="bg-white border border-[#EADFD6] p-6 md:p-8 rounded-2xl shadow-sm max-w-2xl mx-auto mb-10">
+          <form onSubmit={handleTrack} className="space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#1A1E3A] block">Order number</label>
+                <input
+                  type="text"
+                  placeholder="e.g. TGC-7K9M2P"
+                  value={orderNumber}
+                  onChange={(e) => setOrderNumber(e.target.value)}
+                  className="w-full min-h-[48px] bg-[#FBF8F4] border border-[#EADFD6] rounded-xl text-[#1A1E3A] px-4 py-3 text-base focus:outline-none focus:border-[#D94F7E]"
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#1A1E3A] block">Email or phone</label>
+                <input
+                  type="text"
+                  placeholder="Entered at checkout"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  className="w-full min-h-[48px] bg-[#FBF8F4] border border-[#EADFD6] rounded-xl text-[#1A1E3A] px-4 py-3 text-base focus:outline-none focus:border-[#D94F7E]"
+                  required
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Email or Phone</label>
-              <input
-                type="text"
-                placeholder="Entered at checkout"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                className="w-full bg-zinc-900/80 border border-zinc-800 text-brand-offwhite px-4 py-3 focus:outline-none focus:border-white transition-colors"
-                required
-              />
-            </div>
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-white text-black px-8 py-4 font-bold uppercase tracking-widest text-sm hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {isLoading ? 'Searching...' : 'Track Order'}
-            {!isLoading && <Search className="w-4 h-4" />}
-          </button>
-        </form>
-      </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full min-h-[48px] bg-[#D94F7E] hover:bg-[#C23F6D] text-white px-8 py-3.5 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+            >
+              {isLoading ? 'Searching...' : 'Track order'}
+              {!isLoading && <Search className="w-4 h-4" />}
+            </button>
+          </form>
+        </div>
 
       {order && (
         <div className="animate-fade-in bg-zinc-900/50 border border-zinc-800 p-6 md:p-12">
@@ -198,13 +199,13 @@ export default function TrackOrderPage() {
                             href={order.tracking_url || `https://shiprocket.co/tracking/${order.tracking_number}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-white/90 underline mt-1 font-mono block"
+                            className="text-xs text-[#D94F7E] underline mt-1 font-medium block"
                           >
                             AWB: {order.tracking_number}
                           </a>
                         )}
                         {isCurrent && order.courier_partner && stage.id === 'shipped' && (
-                          <p className="text-xs text-zinc-400 mt-1">{order.courier_partner}</p>
+                          <p className="text-xs text-[#6B6F85] mt-1">{order.courier_partner}</p>
                         )}
                       </div>
                     </div>
@@ -215,22 +216,22 @@ export default function TrackOrderPage() {
           )}
 
           {/* Items Summary */}
-          <div className="bg-brand-black border border-zinc-800 p-6">
-            <h3 className="text-sm font-bold text-brand-offwhite uppercase tracking-wider mb-4 pb-2 border-b border-zinc-800">
-              Items in Shipment
+          <div className="bg-white border border-[#EADFD6] rounded-2xl p-6 shadow-sm">
+            <h3 className="text-sm font-serif font-bold text-[#1A1E3A] mb-4 pb-2 border-b border-[#EADFD6]">
+              Items in shipment
             </h3>
             <div className="space-y-4">
               {order.items.map((item: any, idx: number) => (
                 <div key={`${item.id}-${idx}`} className="flex items-center gap-4">
-                  <div className="w-12 h-16 bg-zinc-900 flex-shrink-0">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <div className="w-12 h-16 bg-[#FBF8F4] rounded-xl overflow-hidden flex-shrink-0 border border-[#EADFD6]">
+                    <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-brand-offwhite truncate">{item.name}</p>
-                    <p className="text-xs text-zinc-500">Size: {item.size} | Qty: {item.quantity}</p>
+                    <p className="text-sm font-semibold text-[#1A1E3A] truncate">{item.name}</p>
+                    <p className="text-xs text-[#6B6F85]">Size: {item.size} | Qty: {item.quantity}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-zinc-400 font-mono">₹{(item.price / 100).toFixed(2)}</p>
+                    <p className="text-sm text-[#1A1E3A] font-semibold">₹{(item.price / 100).toFixed(2)}</p>
                   </div>
                 </div>
               ))}
@@ -238,6 +239,7 @@ export default function TrackOrderPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

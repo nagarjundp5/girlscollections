@@ -154,4 +154,40 @@ export const firestoreService = {
       return filtered;
     }
   },
+
+  async setSubcollectionDoc(parentCol: string, parentId: string, subCol: string, docId: string, data: any): Promise<void> {
+    if (db) {
+      await db.collection(parentCol).doc(parentId).collection(subCol).doc(docId).set(data, { merge: true });
+    } else {
+      await redis.set(`mock_firestore:${parentCol}:${parentId}:${subCol}:${docId}`, JSON.stringify(data));
+      await redis.sadd(`mock_firestore_index:${parentCol}:${parentId}:${subCol}`, docId);
+    }
+  },
+
+  async deleteSubcollectionDoc(parentCol: string, parentId: string, subCol: string, docId: string): Promise<void> {
+    if (db) {
+      await db.collection(parentCol).doc(parentId).collection(subCol).doc(docId).delete();
+    } else {
+      await redis.del(`mock_firestore:${parentCol}:${parentId}:${subCol}:${docId}`);
+      await redis.srem(`mock_firestore_index:${parentCol}:${parentId}:${subCol}`, docId);
+    }
+  },
+
+  async getSubcollectionDocs(parentCol: string, parentId: string, subCol: string): Promise<any[]> {
+    if (db) {
+      const snap = await db.collection(parentCol).doc(parentId).collection(subCol).get();
+      return snap.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+    } else {
+      const ids = (await redis.smembers(`mock_firestore_index:${parentCol}:${parentId}:${subCol}`)) || [];
+      const docs: any[] = [];
+      for (const id of ids) {
+        const raw = await redis.get(`mock_firestore:${parentCol}:${parentId}:${subCol}:${id}`);
+        if (raw) {
+          const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          docs.push({ id, ...parsed });
+        }
+      }
+      return docs;
+    }
+  },
 };

@@ -4,6 +4,7 @@ import './globals.css';
 import StorefrontShell from '@/components/StorefrontShell';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import ScrollToTop from '@/components/ScrollToTop';
+import { TopProgressBar } from '@/components/TopProgressBar';
 import { ClerkProvider } from '@clerk/nextjs';
 import { AuthSessionProvider } from '@/context/AuthContext';
 import { ShopProvider } from '@/context/ShopContext';
@@ -120,6 +121,7 @@ export default function RootLayout({
         >
           <SmoothScrollProvider>
             <Suspense fallback={null}>
+              <TopProgressBar />
               <ScrollToTop />
             </Suspense>
             <AuthSessionProvider>

@@ -17,8 +17,8 @@ import { useScrollLock } from '@/lib/useScrollLock';
 import { formatSizeLabel } from '@/lib/formatSizeLabel';
 import { haptic } from '@/lib/haptics';
 
-// In-memory cache for Cart Drawer recommendations (0 DB and 0 network hits on repeated opens)
-let memoryRecommendedCache: any[] | null = null;
+// In-memory cache for Cart Drawer recommendations keyed by division (women | kids | all)
+const memoryRecommendedCache: Record<string, any[]> = {};
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -50,16 +50,29 @@ export const CartDrawer: React.FC = () => {
     return `₹${rupees.toLocaleString('en-IN')}`;
   };
 
-  // Recommended products with 2-tier client cache (memory + sessionStorage), 0 DB hits
+  const bagHasKids = cart.some((item) => {
+    const g = String((item.product as any)?.gender || (item.product as any)?.target || '').toLowerCase();
+    const c = String(item.product?.category || '').toLowerCase();
+    return g === 'kids' || c.includes('kid') || c.includes('frock') || c.includes('pattu');
+  });
+  const bagHasWomen = cart.some((item) => {
+    const g = String((item.product as any)?.gender || (item.product as any)?.target || '').toLowerCase();
+    const c = String(item.product?.category || '').toLowerCase();
+    return !(g === 'kids' || c.includes('kid') || c.includes('frock') || c.includes('pattu'));
+  });
+  const bagDivision: 'women' | 'kids' | 'all' =
+    bagHasKids && !bagHasWomen ? 'kids' : bagHasWomen && !bagHasKids ? 'women' : 'all';
+
+  // Recommended products with 2-tier client cache keyed by bag division
   const [recommendedProducts, setRecommendedProducts] = useState<any[]>(() => {
-    if (memoryRecommendedCache && memoryRecommendedCache.length > 0) return memoryRecommendedCache;
+    if (memoryRecommendedCache[bagDivision]?.length > 0) return memoryRecommendedCache[bagDivision];
     if (typeof window !== 'undefined') {
       try {
-        const stored = sessionStorage.getItem('tgc_cart_recommended_v2');
+        const stored = sessionStorage.getItem(`tgc_cart_recommended_v3_${bagDivision}`);
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            memoryRecommendedCache = parsed;
+            memoryRecommendedCache[bagDivision] = parsed;
             return parsed;
           }
         }
@@ -72,17 +85,17 @@ export const CartDrawer: React.FC = () => {
   useEffect(() => {
     if (!isCartOpen) return;
 
-    if (memoryRecommendedCache && memoryRecommendedCache.length > 0) {
-      setRecommendedProducts(memoryRecommendedCache);
+    if (memoryRecommendedCache[bagDivision]?.length > 0) {
+      setRecommendedProducts(memoryRecommendedCache[bagDivision]);
       return;
     }
 
     try {
-      const stored = sessionStorage.getItem('tgc_cart_recommended_v2');
+      const stored = sessionStorage.getItem(`tgc_cart_recommended_v3_${bagDivision}`);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          memoryRecommendedCache = parsed;
+          memoryRecommendedCache[bagDivision] = parsed;
           setRecommendedProducts(parsed);
           return;
         }
@@ -94,7 +107,7 @@ export const CartDrawer: React.FC = () => {
 
     async function loadRecommended() {
       try {
-        const res = await fetch('/api/products/recommended', {
+        const res = await fetch(`/api/products/recommended?division=${bagDivision}`, {
           headers: { Accept: 'application/json' },
         });
         if (!res.ok) return;
@@ -113,11 +126,11 @@ export const CartDrawer: React.FC = () => {
           )
           .slice(0, 6);
 
-        if (!isCancelled && curated.length > 0) {
-          memoryRecommendedCache = curated;
+        if (!isCancelled) {
+          memoryRecommendedCache[bagDivision] = curated;
           setRecommendedProducts(curated);
           try {
-            sessionStorage.setItem('tgc_cart_recommended_v2', JSON.stringify(curated));
+            sessionStorage.setItem(`tgc_cart_recommended_v3_${bagDivision}`, JSON.stringify(curated));
           } catch { }
         }
       } catch (err) {
@@ -134,7 +147,7 @@ export const CartDrawer: React.FC = () => {
     return () => {
       isCancelled = true;
     };
-  }, [isCartOpen]);
+  }, [isCartOpen, bagDivision]);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();

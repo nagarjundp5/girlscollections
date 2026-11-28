@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbHttp } from '@/db';
 import * as schema from '@/db/schema';
-import { eq, desc, sql } from 'drizzle-orm';
+import { and, eq, desc, sql } from 'drizzle-orm';
 import { rateLimitPublicCatalogue } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
@@ -21,6 +21,16 @@ export async function GET(request: Request) {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const division = (searchParams.get('division') || 'all').toLowerCase();
+
+    const divisionFilter =
+      division === 'kids'
+        ? sql`(lower(coalesce(${schema.products.gender}, '')) IN ('kids', 'girls', 'boys', 'children') OR lower(coalesce(${schema.products.category}, '')) LIKE '%kid%' OR lower(coalesce(${schema.products.category}, '')) LIKE '%frock%' OR lower(coalesce(${schema.products.category}, '')) LIKE '%pattu%')`
+        : division === 'women'
+        ? sql`(lower(coalesce(${schema.products.gender}, '')) IN ('women', 'ladies', 'womens') OR (lower(coalesce(${schema.products.gender}, '')) NOT IN ('kids', 'girls', 'boys', 'children') AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%kid%' AND lower(coalesce(${schema.products.category}, '')) NOT LIKE '%frock%'))`
+        : undefined;
+
     // Query max 8 recommended products with slim columns
     const rows = await dbHttp
       .select({
@@ -30,10 +40,11 @@ export async function GET(request: Request) {
         price: schema.products.price,
         compare_price: schema.products.compare_price,
         category: schema.products.category,
+        gender: schema.products.gender,
         image: sql<string>`coalesce(${schema.products.images}[1], '')`,
       })
       .from(schema.products)
-      .where(eq(schema.products.is_active, true))
+      .where(divisionFilter ? and(eq(schema.products.is_active, true), divisionFilter) : eq(schema.products.is_active, true))
       .orderBy(desc(schema.products.is_featured), desc(schema.products.units_sold), desc(schema.products.created_at))
       .limit(8);
 
@@ -53,6 +64,7 @@ export async function GET(request: Request) {
         sizes: [],
         colors: [],
         category: p.category,
+        gender: p.gender,
       };
     });
 

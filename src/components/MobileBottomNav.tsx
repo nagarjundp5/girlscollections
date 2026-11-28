@@ -15,7 +15,12 @@ export default function MobileBottomNav() {
 
   const [isVisible, setIsVisible] = useState(true);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [pendingTab, setPendingTab] = useState<string | null>(null);
   const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    setPendingTab(null);
+  }, [pathname]);
 
   const isExcluded = pathname?.startsWith('/admin');
 
@@ -106,9 +111,9 @@ export default function MobileBottomNav() {
     {
       id: 'profile',
       label: 'Profile',
-      href: isSignedIn ? '/account/orders' : undefined,
+      href: isSignedIn ? '/profile/orders' : undefined,
       icon: User,
-      isActive: (pathname?.startsWith('/account') || pathname === '/sign-in') && !isSearchOpen,
+      isActive: (pathname?.startsWith('/profile') || pathname?.startsWith('/account') || pathname === '/sign-in') && !isSearchOpen,
       onClick: !isSignedIn
         ? (e: React.MouseEvent) => {
             e.preventDefault();
@@ -134,7 +139,7 @@ export default function MobileBottomNav() {
       <div className="w-full h-16 flex items-center justify-around relative px-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const active = tab.isActive;
+          const active = pendingTab ? pendingTab === tab.id : tab.isActive;
 
           const content = (
             <div className="relative w-full h-full flex flex-col items-center justify-center py-1 group min-h-[48px] touch-manipulation active:scale-[0.94] transition-transform duration-120">
@@ -202,6 +207,8 @@ export default function MobileBottomNav() {
             <Link
               key={tab.id}
               href={tab.href!}
+              prefetch={true}
+              onClick={() => setPendingTab(tab.id)}
               className="flex-1 h-full flex items-center justify-center focus:outline-none min-w-[48px] min-h-[48px]"
               style={{ WebkitTapHighlightColor: 'transparent' }}
               aria-label={tab.label}
