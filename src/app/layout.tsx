@@ -57,7 +57,11 @@ export const metadata: Metadata = {
   },
 };
 
-const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const publishableKey =
+  process.env.NODE_ENV === 'production'
+    ? 'pk_live_Y2xlcmsudGhlZ2lybHNjb2xsZWN0aW9ucy5jb20k'
+    : process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+      'pk_live_Y2xlcmsudGhlZ2lybHNjb2xsZWN0aW9ucy5jb20k';
 
 export default function RootLayout({
   children,
