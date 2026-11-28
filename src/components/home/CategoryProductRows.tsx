@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import LuxuryHeartButton from '@/components/LuxuryHeartButton';
 import { Product } from '@/types';
 import { useShop } from '@/context/ShopContext';
-import { getOptimizedImageUrl } from '@/lib/cloudinary';
+import { clCard34 } from '@/lib/cloudinary';
 import { WOMEN_CATEGORIES, KIDS_CATEGORIES, CategoryItem } from '@/data/categoryTaxonomy';
 import { resolveCanonicalCategorySlug } from '@/lib/categoryHref';
 
@@ -169,8 +169,8 @@ const CategoryCarouselRow: React.FC<{
               const primaryImg = product.images[0];
               const secondaryImg = hasSecondImage ? product.images[1] : primaryImg;
 
-              const optimizedPrimary = getOptimizedImageUrl(primaryImg, { width: 700, quality: 85 });
-              const optimizedSecondary = getOptimizedImageUrl(secondaryImg, { width: 700, quality: 85 });
+              const optimizedPrimary = clCard34(primaryImg);
+              const optimizedSecondary = clCard34(secondaryImg);
 
               const rawSizes = (Array.isArray(product.sizes) ? product.sizes : [])
                 .map((s: any) => typeof s === 'string' ? s : (s?.size || String(s)))
@@ -209,32 +209,32 @@ const CategoryCarouselRow: React.FC<{
                 >
                   {/* Rounded 16px Product Card */}
                   <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6] shadow-[0_2px_10px_rgba(28,20,23,0.04)]">
-                    {/* Flush Full-Width Natural Ratio Image */}
-                    <div className="relative w-full overflow-hidden rounded-t-2xl">
+                    {/* 3:4 Uniform Card Image (Cloudinary c_pad,ar_3:4,w_600,b_auto) */}
+                    <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-2xl bg-[#FAF8F5]">
                       <Link
                         href={productUrl}
-                        className="block w-full relative"
+                        className="block w-full h-full relative"
                         aria-label={product.name}
                       >
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
-                          width={(product as any).imageWidth || 800}
-                          height={(product as any).imageHeight || 1200}
-                          priority={isFirstSection && cardIdx === 0}
+                          width={600}
+                          height={800}
+                          priority={false}
                           sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                          className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
-                          loading={isFirstSection && cardIdx === 0 ? 'eager' : 'lazy'}
+                          className="w-full h-full object-cover block rounded-t-2xl transition-opacity duration-300"
+                          loading="lazy"
                         />
 
                         {hasSecondImage && isHovered && (
                           <Image
                             src={optimizedSecondary}
                             alt={`${product.name} alternate view`}
-                            width={(product as any).imageWidth || 800}
-                            height={(product as any).imageHeight || 1200}
+                            width={600}
+                            height={800}
                             sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                            className="hidden md:block w-full h-full object-contain absolute inset-0 rounded-t-2xl"
+                            className="hidden md:block w-full h-full object-cover absolute inset-0 rounded-t-2xl"
                             loading="lazy"
                           />
                         )}

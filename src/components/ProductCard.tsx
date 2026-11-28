@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Product } from '@/data/shopData';
 import { useShop } from '@/context/ShopContext';
 import { LuxuryHeartButton } from '@/components/LuxuryHeartButton';
-import { cl, clBlur } from '@/lib/cloudinary';
+import { cl, clBlur, clCard34 } from '@/lib/cloudinary';
 import { formatSizeLabel } from '@/lib/formatSizeLabel';
 
 interface ProductCardProps {
@@ -70,12 +70,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         variant === 'rail' ? 'w-full' : 'w-full'
       }`}
     >
-      {/* Flush Full-Width Natural Ratio Image */}
-      <div className="relative w-full overflow-hidden block rounded-t-2xl">
+      {/* 3:4 Uniform Card Image */}
+      <div className="relative w-full aspect-[3/4] overflow-hidden block rounded-t-2xl bg-[#FAF8F5]">
         <Link
           href={`/shop/${product.slug}`}
           prefetch={false}
-          className={`relative w-full block overflow-hidden ${
+          className={`relative w-full h-full block overflow-hidden ${
             archShape ? 'arch-frame-sm arch-inner' : ''
           }`}
         >
@@ -110,26 +110,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.images[0] ? (
             <>
               <Image
-                src={cl(product.images[0], { w: 700, q: 'auto:good' })}
+                src={clCard34(product.images[0])}
                 alt={product.name}
-                width={(product as any).imageWidth || 800}
-                height={(product as any).imageHeight || 1200}
+                width={600}
+                height={800}
                 priority={priorityImage}
                 placeholder="blur"
                 blurDataURL={clBlur(product.images[0])}
-                className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
+                className="w-full h-full object-cover block rounded-t-2xl transition-opacity duration-300"
                 sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 25vw"
               />
 
               {/* Hover Crossfade Image — only mount when hovered to save mobile payload */}
               {product.images[1] && isHovered && (
                 <Image
-                  src={cl(product.images[1], { w: 700, q: 'auto:good' })}
+                  src={clCard34(product.images[1])}
                   alt={`${product.name} hover view`}
-                  width={(product as any).imageWidth || 800}
-                  height={(product as any).imageHeight || 1200}
+                  width={600}
+                  height={800}
                   loading="lazy"
-                  className="hidden md:block w-full h-full object-contain absolute inset-0 rounded-t-2xl"
+                  className="hidden md:block w-full h-full object-cover absolute inset-0 rounded-t-2xl"
                   sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
                 />
               )}
@@ -167,7 +167,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Title */}
         <Link href={`/shop/${product.slug}`}>
-          <h3 className="text-sm sm:text-base font-sans font-semibold text-[#1A1E3A] group-hover:text-[#D94F7E] transition-colors leading-snug line-clamp-2">
+          <h3 className="text-sm sm:text-base font-sans font-semibold text-[#1A1E3A] group-hover:text-[#D94F7E] transition-colors leading-snug line-clamp-2 min-h-[40px]">
             {product.name}
           </h3>
         </Link>

@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import LuxuryHeartButton from '@/components/LuxuryHeartButton';
 import { Product } from '@/types';
 import { useShop } from '@/context/ShopContext';
-import { getOptimizedImageUrl } from '@/lib/cloudinary';
+import { clCard34 } from '@/lib/cloudinary';
 
 interface ProductCarouselProps {
   title: string;
@@ -116,8 +116,8 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
               const primaryImg = product.images[0];
               const secondaryImg = hasSecondImage ? product.images[1] : primaryImg;
 
-              const optimizedPrimary = getOptimizedImageUrl(primaryImg, { width: 700, quality: 85 });
-              const optimizedSecondary = getOptimizedImageUrl(secondaryImg, { width: 700, quality: 85 });
+              const optimizedPrimary = clCard34(primaryImg);
+              const optimizedSecondary = clCard34(secondaryImg);
 
               const rawSizes = (Array.isArray(product.sizes) ? product.sizes : [])
                 .map((s: any) => typeof s === 'string' ? s : (s?.size || String(s)))
@@ -150,31 +150,31 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
                   {/* CARD CONTAINER */}
                   <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6] shadow-[0_2px_10px_rgba(28,20,23,0.04)]">
                     
-                    {/* FLUSH FULL-WIDTH NATURAL RATIO IMAGE */}
-                    <div className="relative w-full overflow-hidden rounded-t-2xl">
+                    {/* 3:4 UNIFORM CARD IMAGE (Cloudinary c_pad,ar_3:4,w_600,b_auto) */}
+                    <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-2xl bg-[#FAF8F5]">
                       <Link
                         href={productUrl}
-                        className="block w-full relative"
+                        className="block w-full h-full relative"
                         aria-label={product.name}
                       >
                         <Image
                           src={optimizedPrimary}
                           alt={product.name}
-                          width={(product as any).imageWidth || 800}
-                          height={(product as any).imageHeight || 1200}
-                          priority={cardIdx === 0}
+                          width={600}
+                          height={800}
+                          priority={cardIdx === 0 && variant === 'trending'}
                           sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                          className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
-                          loading={cardIdx === 0 ? 'eager' : 'lazy'}
+                          className="w-full h-full object-cover block rounded-t-2xl transition-opacity duration-300"
+                          loading={cardIdx === 0 && variant === 'trending' ? 'eager' : 'lazy'}
                         />
                         {hasSecondImage && isHovered && (
                           <Image
                             src={optimizedSecondary}
                             alt={`${product.name} alternate view`}
-                            width={(product as any).imageWidth || 800}
-                            height={(product as any).imageHeight || 1200}
+                            width={600}
+                            height={800}
                             sizes="(max-width: 640px) 74vw, (max-width: 1024px) 33vw, 340px"
-                            className="hidden md:block w-full h-full object-contain absolute inset-0 rounded-t-2xl"
+                            className="hidden md:block w-full h-full object-cover absolute inset-0 rounded-t-2xl"
                             loading="lazy"
                           />
                         )}
@@ -230,7 +230,7 @@ export const ProductCarousel: React.FC<ProductCarouselProps> = ({
                     {/* TEXT UNDER IMAGE: 12px compact padding */}
                     <div className="p-3 text-left">
                       <Link href={productUrl} className="block group/title">
-                        <h3 className="text-[15px] font-sans font-semibold text-[#1A1E3A] line-clamp-2 leading-snug">
+                        <h3 className="text-[15px] font-sans font-semibold text-[#1A1E3A] line-clamp-2 min-h-[42px] leading-snug">
                           {product.name}
                         </h3>
                       </Link>

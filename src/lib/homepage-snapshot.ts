@@ -165,8 +165,6 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         COALESCE(pi.image_url, p.images[1], '') AS image,
         COALESCE(pi.width, 800) AS image_width,
         COALESCE(pi.height, 1200) AS image_height,
-        COALESCE(pi.width, 800) AS image_width,
-        COALESCE(pi.height, 1200) AS image_height,
         CASE
           WHEN lower(coalesce(p.gender, '')) IN ('kids', 'girls', 'boys', 'children')
             OR lower(coalesce(p.category, '')) LIKE '%kid%'
@@ -262,8 +260,6 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
         COALESCE(p.sizes, ARRAY[]::text[]) AS sizes,
         COALESCE(p.stock, '{}'::jsonb) AS stock_quantity,
         COALESCE(pi.image_url, p.images[1], '') AS image,
-        COALESCE(pi.width, 800) AS image_width,
-        COALESCE(pi.height, 1200) AS image_height,
         COALESCE(pi.width, 800) AS image_width,
         COALESCE(pi.height, 1200) AS image_height,
         CASE
@@ -501,27 +497,35 @@ async function fetchHomepageSnapshotRaw(): Promise<HomepageSnapshot> {
  * Revalidate: 600 seconds
  * Tag: "homepage"
  */
-export const getHomepageSnapshot = unstable_cache(
+const getCachedHomepageSnapshot = unstable_cache(
   async () => {
-    try {
-      return await fetchHomepageSnapshotRaw();
-    } catch (err) {
-      console.error('[HomepageSnapshot] Failed to build snapshot:', err);
-      return {
-        trending: { all: [], women: [], kids: [] },
-        newDrops: { all: [], women: [], kids: [] },
-        categoryRows: { all: [], women: [], kids: [] },
-        spotlightProduct: null,
-        womenTrending: [],
-        kidsTrending: [],
-        trendingProducts: [],
-        updatedAt: new Date().toISOString(),
-      };
+    const snap = await fetchHomepageSnapshotRaw();
+    if (!snap.trending.all.length && !snap.newDrops.all.length) {
+      throw new Error('Empty homepage snapshot — skipping cache');
     }
+    return snap;
   },
-  ['homepage-snapshot-v4'],
-  { revalidate: 600, tags: ['homepage'] }
+  ['homepage-snapshot-v5'],
+  { revalidate: 300, tags: ['homepage'] }
 );
+
+export async function getHomepageSnapshot(): Promise<HomepageSnapshot> {
+  try {
+    return await getCachedHomepageSnapshot();
+  } catch (err) {
+    console.error('[HomepageSnapshot] Failed to build snapshot:', err);
+    return {
+      trending: { all: [], women: [], kids: [] },
+      newDrops: { all: [], women: [], kids: [] },
+      categoryRows: { all: [], women: [], kids: [] },
+      spotlightProduct: null,
+      womenTrending: [],
+      kidsTrending: [],
+      trendingProducts: [],
+      updatedAt: new Date().toISOString(),
+    };
+  }
+}
 
 export async function saveHomepageSnapshot(): Promise<void> {
   // No-op: Invalidation is handled via revalidateTag('homepage')

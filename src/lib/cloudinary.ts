@@ -18,6 +18,8 @@ export interface CloudinaryUrlOptions {
   crop?: string;
   g?: string; // e.g. 'auto', 'face', 'subject'
   gravity?: string;
+  b?: string; // e.g. 'auto', 'rgb:FAF8F5'
+  background?: string;
   dpr?: string | number;
   blur?: number;
 }
@@ -32,6 +34,9 @@ const CLOUD_NAME =
  * to strictly prevent transformation sprawl on Cloudinary Free Tier (25 credits/month).
  */
 function snapToFixedWidth(requestedWidth?: number): number {
+  if (requestedWidth === 600) {
+    return 600; // Standard 3:4 card width (600x800)
+  }
   if (!requestedWidth || requestedWidth <= 500) {
     return 400; // Small: Cards, thumbnails, related products
   }
@@ -76,6 +81,7 @@ export function cl(
   let ar: string | undefined;
   let crop: string = 'limit';
   let gravity: string | undefined;
+  let background: string | undefined;
   let blur: number | undefined;
 
   if (typeof options === 'number') {
@@ -86,6 +92,7 @@ export function cl(
     ar = options.ar ?? options.aspectRatio;
     if (options.c || options.crop) crop = (options.c || options.crop) as string;
     if (options.g || options.gravity) gravity = options.g || options.gravity;
+    if (options.b || options.background) background = options.b || options.background;
     if (options.blur !== undefined) blur = options.blur;
   }
 
@@ -111,11 +118,16 @@ export function cl(
   if (height) transformations.push(`h_${height}`);
   if (ar) transformations.push(`ar_${ar}`);
   if (crop) transformations.push(`c_${crop}`);
-  if (gravity && crop !== 'limit' && crop !== 'fit') transformations.push(`g_${gravity}`);
+  if (background) transformations.push(`b_${background}`);
+  if (gravity && crop !== 'limit' && crop !== 'fit' && crop !== 'pad') transformations.push(`g_${gravity}`);
   if (blur) transformations.push(`e_blur:${blur}`);
 
   const transformStr = transformations.join(',');
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformStr}/${publicId}`;
+}
+
+export function clCard34(publicIdOrUrl: string): string {
+  return cl(publicIdOrUrl, { w: 600, ar: '3:4', c: 'pad', b: 'auto' });
 }
 
 export function clCard(publicIdOrUrl: string): string {

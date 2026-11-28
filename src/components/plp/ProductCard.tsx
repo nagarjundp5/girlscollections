@@ -30,13 +30,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const primaryImgRaw = productImages[0] || '';
   const hasMultipleImages = productImages.length > 1;
 
-  // Cloudinary responsive srcset for primary image (natural ratio, no crop)
-  const primarySrc = primaryImgRaw ? cl(primaryImgRaw, { w: 600, q: 'auto:good' }) : '';
+  // Cloudinary responsive srcset for primary image (3:4 padded with b_auto, no crop)
+  const primarySrc = primaryImgRaw ? cl(primaryImgRaw, { w: 600, ar: '3:4', c: 'pad', b: 'auto' }) : '';
   const primarySrcset = primaryImgRaw
-    ? `${cl(primaryImgRaw, { w: 320, q: 'auto:good' })} 320w, ` +
-      `${cl(primaryImgRaw, { w: 480, q: 'auto:good' })} 480w, ` +
-      `${cl(primaryImgRaw, { w: 640, q: 'auto:good' })} 640w, ` +
-      `${cl(primaryImgRaw, { w: 800, q: 'auto:good' })} 800w`
+    ? `${cl(primaryImgRaw, { w: 400, ar: '3:4', c: 'pad', b: 'auto' })} 400w, ` +
+      `${cl(primaryImgRaw, { w: 600, ar: '3:4', c: 'pad', b: 'auto' })} 600w, ` +
+      `${cl(primaryImgRaw, { w: 800, ar: '3:4', c: 'pad', b: 'auto' })} 800w`
     : undefined;
 
   // Blur placeholder
@@ -76,8 +75,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       }}
       className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-[#EADFD6] shadow-[0_2px_10px_rgba(28,20,23,0.04)] p-0 m-0 select-none"
     >
-      {/* Clickable Image Area with Mini Carousel (flush top, natural ratio) */}
-      <div className="relative block w-full overflow-hidden rounded-t-2xl">
+      {/* Clickable Image Area with Mini Carousel (3:4 fixed frame) */}
+      <div className="relative block w-full aspect-[3/4] overflow-hidden rounded-t-2xl bg-[#FAF8F5]">
         {hasMultipleImages ? (
           /* CSS Scroll-Snap Mini Carousel */
           <div
@@ -118,7 +117,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                           imgIdx === 0 && blurPlaceholder ? `url(${blurPlaceholder})` : undefined,
                         backgroundSize: 'cover',
                       }}
-                      className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
+                      className="w-full h-full object-cover block rounded-t-2xl transition-opacity duration-300"
                     />
                   </Link>
                 </div>
@@ -143,7 +142,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 backgroundImage: blurPlaceholder ? `url(${blurPlaceholder})` : undefined,
                 backgroundSize: 'cover',
               }}
-              className="w-full h-auto block rounded-t-2xl transition-opacity duration-300"
+              className="w-full h-full object-cover block rounded-t-2xl transition-opacity duration-300"
             />
           </Link>
         ) : (
@@ -215,7 +214,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         prefetch={index < 4}
       >
         {/* Product Title: UPPERCASE 13px (14px desktop), weight 400, dark #1C1417, 1 line with ellipsis */}
-        <h3 className="font-sans text-[13px] sm:text-[14px] font-normal uppercase tracking-[0.03em] text-[#1C1417] truncate leading-snug">
+        <h3 className="font-sans text-[14px] font-semibold text-[#1A1E3A] line-clamp-2 min-h-[38px] leading-snug">
           {product.name}
         </h3>
 
